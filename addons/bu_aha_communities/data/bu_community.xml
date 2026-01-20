@@ -1,0 +1,19 @@
+<odoo>
+    <data noupdate="1">
+
+      <record id="bu_community_tag_id1" model="bu_community.tag">
+        <field name="name">International</field>
+        <field name="color"> 4 </field>
+      </record>
+
+      <record id="bu_community_tag_id2" model="bu_community.tag">
+        <field name="name">Sub-Community</field>
+        <field name="color"> 3 </field>
+      </record>
+
+      <record id="bu_community_member_tag_category" model="res.partner.category">
+        <field name="name">Community</field>
+      </record>
+
+    </data>
+  </odoo>

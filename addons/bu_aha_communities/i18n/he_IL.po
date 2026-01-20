@@ -1,0 +1,1038 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bu_aha_communities
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-02 13:03+0000\n"
+"PO-Revision-Date: 2022-06-02 13:03+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bu_aha_communities
+#: model:ir.actions.report,print_report_name:bu_aha_communities.report_community_report_1
+msgid "'Community Report'"
+msgstr "דו\"ח קהילה"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_form
+msgid "0-11"
+msgstr ""
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_form
+msgid "12-17"
+msgstr ""
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_form
+msgid "18-64"
+msgstr ""
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_form
+msgid "65+"
+msgstr ""
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "<span class=\"o_stat_text\">All Expenses</span>"
+msgstr ""
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "<strong>Responsible: </strong>"
+msgstr ""
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_needaction
+msgid "Action Needed"
+msgstr "פעולה נדרשת"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__active
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__res_partner__reserve_service_status__active
+msgid "Active"
+msgstr "פעילות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__active_lang_count
+msgid "Active Lang Count"
+msgstr ""
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__activity_ids
+msgid "Activities"
+msgstr "פעילויות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__activity_state
+msgid "Activity State"
+msgstr "שלב פעילות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__activity_theme
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__activity_theme
+msgid "Activity Theme"
+msgstr "נושא הפעילות בפרויקט"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "אייקון סוג פעילות"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_form
+msgid "Actual amount of attendees"
+msgstr "כמות משתתפים בפועל"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__address
+msgid "Address"
+msgstr "כתובת"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_search_view
+msgid "Archived"
+msgstr "ארכיון"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__moving_date
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__moving_date
+msgid "Arrival at city"
+msgstr "ת. מעבר לישוב"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__res_partner__degree_theme__arts
+msgid "Arts"
+msgstr "אומנויות"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Att. 0-11"
+msgstr "בפועל )0-11("
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Att. 12-17"
+msgstr "בפועל )12-17("
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Att. 18-64"
+msgstr "בפועל )18-64("
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Att. 65+"
+msgstr "בפועל )+65("
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Att. Total"
+msgstr "סך הכול בפועל"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_attachment_count
+msgid "Attachment Count"
+msgstr "ספירת קבצים מצורפים"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__attended1
+msgid "Attended1"
+msgstr "בפועל 1"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__attended2
+msgid "Attended2"
+msgstr "בפועל 2"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__attended3
+msgid "Attended3"
+msgstr "בפועל 3"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__attended4
+msgid "Attended4"
+msgstr "בפועל 4"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Attendees"
+msgstr "משתתפים"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__attending_member
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Attending Member"
+msgstr "שם משתתף"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__res_partner__degree__bachelors
+msgid "Bachelor's"
+msgstr "תואר ראשון"
+
+#. module: bu_aha_communities
+#: model:ir.model,name:bu_aha_communities.model_bu_community
+msgid "Bu Community"
+msgstr "גרעין קהילה"
+
+#. module: bu_aha_communities
+#: model:ir.model,name:bu_aha_communities.model_bu_community_stage
+msgid "Bu Community Stage"
+msgstr "שלב גרעין קהילה"
+
+#. module: bu_aha_communities
+#: model:ir.model,name:bu_aha_communities.model_bu_community_tag
+msgid "Bu Community Tag"
+msgstr "תגית גרעין קהילה"
+
+#. module: bu_aha_communities
+#: model:ir.model,name:bu_aha_communities.model_calendar_event
+msgid "Calendar Event"
+msgstr "אירוע לוח שנה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__channel_id
+msgid "Channel"
+msgstr "ערוץ"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__city
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_member_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_search_view
+msgid "City"
+msgstr "עיר"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_tag__color
+msgid "Color"
+msgstr "צבע"
+
+#. module: bu_aha_communities
+#: model:ir.module.category,name:bu_aha_communities.module_category_bu_community
+#: model:ir.ui.menu,name:bu_aha_communities.bu_community_menu_root
+msgid "Communities"
+msgstr "קהילות"
+
+#. module: bu_aha_communities
+#: model:ir.actions.act_window,name:bu_aha_communities.bu_community_act_window
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__community_id
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_employee__community_id
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_expense__community_id
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__community_id
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__community_id
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_employee_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_expense_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_member_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_form
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.hr_employee_community_view_form
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.hr_employee_community_view_search
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.hr_expense_community_view_search
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.res_partner_community_view_form
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.res_partner_community_view_search
+msgid "Community"
+msgstr "קהילה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__hr_expense__related_to__event
+msgid "Community (Event)"
+msgstr "קהילה )מפגש("
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__hr_expense__related_to__community
+msgid "Community (General)"
+msgstr "קהילה )כללי("
+
+#. module: bu_aha_communities
+#: model:ir.actions.act_window,name:bu_aha_communities.bu_community_employees_act_window
+msgid "Community Employees"
+msgstr "עובדי קהילות"
+
+#. module: bu_aha_communities
+#: model:ir.actions.act_window,name:bu_aha_communities.bu_community_events_act_window
+msgid "Community Events"
+msgstr "מפגשי קהילות"
+
+#. module: bu_aha_communities
+#: model:ir.actions.act_window,name:bu_aha_communities.bu_community_expenses_act_window
+msgid "Community Expenses"
+msgstr "הוצאות הקהילות"
+
+#. module: bu_aha_communities
+#: model:ir.actions.act_window,name:bu_aha_communities.bu_community_members_act_window
+msgid "Community Members"
+msgstr "חברי קהילות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_employee__community_position
+msgid "Community Position"
+msgstr "תפקיד בקהילה"
+
+#. module: bu_aha_communities
+#: model:ir.actions.report,name:bu_aha_communities.report_community_report_1
+msgid "Community Report"
+msgstr "דו\"ח קהילה"
+
+#. module: bu_aha_communities
+#: model:ir.actions.act_window,name:bu_aha_communities.bu_community_tag_act_window
+msgid "Community Tag"
+msgstr "קהילות- תגיות"
+
+#. module: bu_aha_communities
+#: model:ir.ui.menu,name:bu_aha_communities.bu_community_first_level_configuration
+msgid "Configuartion"
+msgstr "תצורה"
+
+#. module: bu_aha_communities
+#: model:ir.model,name:bu_aha_communities.model_res_partner
+msgid "Contact"
+msgstr "צור קשר"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_member_search_view
+msgid "Country"
+msgstr "עיר"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__created_on
+msgid "Created On"
+msgstr "תאריך הקמת הגרעין"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__create_uid
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_stage__create_uid
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_tag__create_uid
+msgid "Created by"
+msgstr "נוצר ע\"י"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__create_date
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_stage__create_date
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_tag__create_date
+msgid "Created on"
+msgstr "הוקם"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__aliyah_date
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__aliyah_date
+msgid "Date of Aliyah"
+msgstr "ת. עלייה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__dob
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__dob
+msgid "Date of birth"
+msgstr "ת. לידה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__degree
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__degree
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__degree
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Degree"
+msgstr "סוג תואר"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__degree_theme
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__degree_theme
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__degree_theme
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Degree Theme"
+msgstr "נושא תואר"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_kanban_view
+msgid "Delete"
+msgstr "מחק"
+
+#. module: bu_aha_communities
+#: model:ir.actions.client,name:bu_aha_communities.community_action_discuss
+msgid "Discuss"
+msgstr "לשוחח"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__display_name
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_stage__display_name
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_tag__display_name
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__display_name
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_expense__display_name
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__display_name
+msgid "Display Name"
+msgstr "הצגת שם"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__res_partner__degree__doctoral
+msgid "Doctoral"
+msgstr "דוקטורט"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_kanban_view
+msgid "Dropdown Menu"
+msgstr "תפריט מגולל מטה"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Duration"
+msgstr "משך זמן"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_kanban_view
+msgid "Edit"
+msgstr "ערוך"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__email
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_employee_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Email"
+msgstr "דוא\"ל"
+
+#. module: bu_aha_communities
+#: model:ir.model,name:bu_aha_communities.model_hr_employee
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_expense_search_view
+msgid "Employee"
+msgstr "עובד"
+
+#. module: bu_aha_communities
+#: model:ir.ui.menu,name:bu_aha_communities.bu_community_employees_menu
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Employees"
+msgstr "עובדים"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_expense__event_id
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_expense_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.hr_expense_community_view_search
+msgid "Event"
+msgstr "מפגש"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__event_ids
+#: model:ir.ui.menu,name:bu_aha_communities.bu_community_events_menu
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Events"
+msgstr "מפגשים"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Exp. 0-11"
+msgstr "מתוכנן )0-11("
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Exp. 12-17"
+msgstr "מתוכנן )12-17("
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Exp. 18-64"
+msgstr "מתוכנן )18-64("
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Exp. 65+"
+msgstr "מתוכנן )65+("
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Exp. Total"
+msgstr "סה\"כ מתוכנן"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__expected_expenses
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Expected Expenses"
+msgstr "הוצאות מתוכננות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__expected1
+msgid "Expected1"
+msgstr "מתוכנן 1"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__expected2
+msgid "Expected2"
+msgstr "מתוכנן 2"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__expected3
+msgid "Expected3"
+msgstr "מתוכנן 3"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__expected4
+msgid "Expected4"
+msgstr "מתוכנן 4"
+
+#. module: bu_aha_communities
+#: model:ir.model,name:bu_aha_communities.model_hr_expense
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__expense_ids
+msgid "Expense"
+msgstr "מאשר הוצאות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__expense_ids
+#: model:ir.ui.menu,name:bu_aha_communities.bu_community_expenses_menu
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Expenses"
+msgstr "הוצאות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__is_family
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__is_family
+msgid "Family (children under 18)"
+msgstr "האם בעל/ת משפחה עם ילדים מתחת לגיל 18?"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_follower_ids
+msgid "Followers"
+msgstr "עוקבים"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "עוקבים"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "עוקבים"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_search
+msgid "Future"
+msgstr "עתידי"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_employee_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_expense_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_member_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_search
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.hr_employee_community_view_search
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.hr_expense_community_view_search
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.res_partner_community_view_search
+msgid "Group By"
+msgstr "קבץ לפי"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_employee__has_community
+msgid "Has Community"
+msgstr "קיימת קהילה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__high_priority
+msgid "High Priority"
+msgstr "עדיפות גבוהה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__res_partner__degree_theme__history
+msgid "History"
+msgstr "היסטוריה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__id
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_stage__id
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_tag__id
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__id
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_employee__id
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_expense__id
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__id
+msgid "ID"
+msgstr "ת.ז"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__member_id_number
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__member_id_number
+msgid "ID Number"
+msgstr "ת.ז"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__activity_exception_icon
+msgid "Icon"
+msgstr "אייקון"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__message_needaction
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__message_unread
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__message_has_error
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__image
+msgid "Image"
+msgstr "תמונה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__res_partner__reserve_service_status__inactive
+msgid "Inactive"
+msgstr "לא פעיל"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_is_follower
+msgid "Is Follower"
+msgstr "האם עוקב?"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_employee__job_percentage
+msgid "Job Percentage"
+msgstr "אחוז משרה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__joining_date
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__joining_date
+msgid "Joined Community"
+msgstr "ת. הצטרפות לגרעין"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__language
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_employee__language
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_search_view
+msgid "Language"
+msgstr "שפה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community____last_update
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_stage____last_update
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_tag____last_update
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event____last_update
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_employee____last_update
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_expense____last_update
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner____last_update
+msgid "Last Modified on"
+msgstr "שונה לאחרונה בתאריך\n"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__write_uid
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_stage__write_uid
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_tag__write_uid
+msgid "Last Updated by"
+msgstr "עודכן לאחרונה ע\"י"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__write_date
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_stage__write_date
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_tag__write_date
+msgid "Last Updated on"
+msgstr "עודכן לאחרונה ב"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__lecturer
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.res_partner_community_view_form
+msgid "Lecturer"
+msgstr "שם מרצה"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Location"
+msgstr "מיקום"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "מסמך ראשי"
+
+#. module: bu_aha_communities
+#: model:res.groups,name:bu_aha_communities.bu_community_group_manager
+msgid "Manager"
+msgstr "מנהל"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__res_partner__degree__masters
+msgid "Master's"
+msgstr "תואר שני"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__member_ids
+#: model:ir.ui.menu,name:bu_aha_communities.bu_community_members_menu
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Members"
+msgstr "חברי קהילה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_has_error
+msgid "Message Delivery error"
+msgstr "שגיאת מסירת הודעה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_ids
+msgid "Messages"
+msgstr "הודעות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__service
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__service
+msgid "Military/National/Civil Service"
+msgstr "האם פעיל בשירות צבאי/ לאומי/ אזרחי?"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__contact_mobile
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_employee_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_event_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Mobile"
+msgstr "נייד"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_employee__monthly_salary
+msgid "Monthly Salary"
+msgstr "משכורת חודשית"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "מועד אחרון לפעילות שלי"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__name
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_stage__name
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_tag__name
+msgid "Name"
+msgstr "שם"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Name..."
+msgstr "שם הקהילה..."
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__neighborhood
+msgid "Neighborhood"
+msgstr "שכונת שיקום"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Neighborhood?"
+msgstr "האם הגרעין ממוקם בשכונת שיקום?"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__bu_community__stage__new
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_search_view
+msgid "New"
+msgstr "חדשה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "המועד אחרון לפעילות הבאה שלי"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__activity_summary
+msgid "Next Activity Summary"
+msgstr "סיכום הפעילות הבאה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__activity_type_id
+msgid "Next Activity Type"
+msgstr "סוג הפעילות הבאה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__notes
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Notes"
+msgstr "הערות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_needaction_counter
+msgid "Number of Actions"
+msgstr "מספר הפעולות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_has_error_counter
+msgid "Number of errors"
+msgstr "מספר השגיאות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr "מספר ההודעות הדורשות פעולה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "מספר ההודעות עם שגיאות שליחה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__message_unread_counter
+msgid "Number of unread messages"
+msgstr "מספר ההודעות שלא נקראו"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__bu_community__stage__operational
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_search_view
+msgid "Operational"
+msgstr "פעילה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__phone
+msgid "Phone"
+msgstr "נייד"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_form
+msgid "Planned amount of attendees"
+msgstr "כמות משתתפים מתוכננת"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_employee_search_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_employee_tree_view
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Position"
+msgstr "התפקיד"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__project_name
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__project_name
+msgid "Project Name"
+msgstr "שם פרויקט"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_expense__related_to
+msgid "Related To"
+msgstr "מקושר ל"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__res_partner__degree_theme__religion
+msgid "Religion"
+msgstr "דת"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__reserve_service_status
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__reserve_service_status
+msgid "Reserve Service"
+msgstr "האם משרת/ת מילואים פעיל/ לא פעיל?"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__responsible_id
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__hr_employee__community_position__responsible
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_search_view
+msgid "Responsible"
+msgstr "רכז קהילה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__activity_user_id
+msgid "Responsible User"
+msgstr "משתמש מסוג רכז קהילה"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Responsible:"
+msgstr "רכז קהילה:"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "שגיאת שליחת הודעת SMS"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__res_partner__degree_theme__science
+msgid "Science"
+msgstr "מדעים"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__sequence
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community_stage__sequence
+msgid "Sequence"
+msgstr "סדר פעולות"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__stage
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_search_view
+msgid "Stage"
+msgstr "שלב"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_search
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Start"
+msgstr "שעת התחלה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"סטטוס מבוסס על פעילויות- איחור: תאריך היעד כבר עבר,\n"
+"היום: תאריך הפעילות הוא היום,\n"
+"מתוכנן: פעילויות עתידיות."
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Stop"
+msgstr "שעת סיום"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Subject"
+msgstr "נושא פעילות )התנדבות("
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__tag_ids
+#: model:ir.ui.menu,name:bu_aha_communities.bu_community_tag_menu
+msgid "Tags"
+msgstr "תגיות"
+
+#. module: bu_aha_communities
+#: model:ir.model.constraint,message:bu_aha_communities.constraint_hr_employee_check_job_percentage
+msgid "The job percentage cannot be over 100."
+msgstr "אחוזי המשרה לא יכולים להיות מעל 100"
+
+#. module: bu_aha_communities
+#: model:ir.model.constraint,message:bu_aha_communities.constraint_hr_employee_check_monthly_salary
+msgid "The monthly salary cannot be negative."
+msgstr "המשכורת החודשית לא יכולה להיות שלילית"
+
+#. module: bu_aha_communities
+#: model:ir.model.constraint,message:bu_aha_communities.constraint_bu_community_check_name_unique
+#: model:ir.model.constraint,message:bu_aha_communities.constraint_bu_community_tag_check_name_unique
+msgid "The name must be unique."
+msgstr "השם צריך להיות ייחודי"
+
+#. module: bu_aha_communities
+#: model:ir.model.constraint,message:bu_aha_communities.constraint_hr_employee_check_yearly_salary
+msgid "The yearly salary cannot be negative."
+msgstr "המשכורת השנתית לא יכולה להיות שלילית"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.res_partner_community_view_form
+msgid "Theme"
+msgstr "נושא תואר"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.calendar_event_community_view_form
+msgid "Total"
+msgstr "סה\"כ"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__total_attended
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Total Attended"
+msgstr "סה\"כ בפועל"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__total_expected
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Total Expected"
+msgstr "סה\"כ מתוכנן"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_calendar_event__total_expenses
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.report_community_template_id1
+msgid "Total Expenses"
+msgstr "סה\"כ הוצאות"
+
+#. module: bu_aha_communities
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_form_view
+msgid "Type down your notes here..."
+msgstr "הזנת הערות...."
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "הזנת סוג הפעילות החריגה"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_unread
+msgid "Unread Messages"
+msgstr "הודעות שלא נקראו"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "מונה הודעות שלא נקראו"
+
+#. module: bu_aha_communities
+#: model:res.groups,name:bu_aha_communities.bu_community_group_user
+msgid "User"
+msgstr "משתמש"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_partner__volunteer_hours
+#: model:ir.model.fields,field_description:bu_aha_communities.field_res_users__volunteer_hours
+msgid "Volunteer Hours"
+msgstr "מס' שעות התנדבות שנתי"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__website_message_ids
+msgid "Website Messages"
+msgstr "הודעות מהאתר"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,help:bu_aha_communities.field_bu_community__website_message_ids
+msgid "Website communication history"
+msgstr "היסטוריית תקשורת מהאתר"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields.selection,name:bu_aha_communities.selection__hr_employee__community_position__worker
+msgid "Worker"
+msgstr "עובד"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_bu_community__employee_ids
+#: model_terms:ir.ui.view,arch_db:bu_aha_communities.bu_community_employee_search_view
+msgid "Workers"
+msgstr "עובדים"
+
+#. module: bu_aha_communities
+#: model:ir.model.fields,field_description:bu_aha_communities.field_hr_employee__yearly_salary
+msgid "Yearly Salary"
+msgstr "שכר שנתי"

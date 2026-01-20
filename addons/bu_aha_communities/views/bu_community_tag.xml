@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    # Copyright (C) 2022- PRESENT to Yves Goldberg - Ygol InternetWork - All Rights Reserved
+    # Part of module bu_aha_communities.
+    # See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+
+    <record model="ir.ui.view" id="bu_community_tag_form_view">
+        <field name="name">bu_community.tag.form (in bu_aha_communities)</field>
+        <field name="model">bu_community.tag</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" />
+                    </group>
+                </sheet>
+                <div class="oe_chatter" />
+            </form>
+        </field>
+    </record>
+<!--
+    <record model="ir.ui.view" id="bu_community_tag_search_view">
+        <field name="name">bu_community.tag.search (in bu_aha_communities)</field>
+        <field name="model">bu_community.tag</field>
+        <field name="arch" type="xml">
+            <search>
+            </search>
+        </field>
+    </record> -->
+
+    <record model="ir.ui.view" id="bu_community_tag_tree_view">
+        <field name="name">bu_community.tag.tree </field>
+        <field name="model">bu_community.tag</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name" />
+                <field name="color" widget="color_picker" />
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="bu_community_tag_act_window">
+        <field name="name">Community Tag</field> <!-- TODO -->
+        <field name="res_model">bu_community.tag</field>
+        <field name="view_mode">list,form</field>
+        <!-- <field name="domain">[]</field>
+        <field name="context">{}</field> -->
+    </record>
+
+
+    <record model="ir.ui.menu" id="bu_community_tag_menu">
+        <field name="name">Tags</field>
+        <field
+            name="parent_id"
+            ref="bu_community_first_level_configuration"
+        /> <!-- TODO -->
+        <field name="action" ref="bu_community_tag_act_window" />
+    </record>
+
+
+</odoo>

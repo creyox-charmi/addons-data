@@ -1,0 +1,237 @@
+<odoo>
+
+    <!-- Inherited form view -->
+    <record id="res_partner_community_view_form" model="ir.ui.view">
+        <field name="name">res.partner.community.view.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//div[1]" position="replace">
+                <div class="alert alert-warning oe_edit_only" role="alert" invisible="not same_vat_partner_id">
+                    <h1>A partner with the same
+                        <span>
+                            <span class="o_vat_label">Tax ID</span>
+                        </span>
+                        already exists (<field name="same_vat_partner_id"/>), are you sure to create a new one?
+                    </h1>
+                </div>
+            </xpath>
+            <xpath expr="//page[@name='contact_addresses']" position="after">
+                <page
+                        string="Community"
+                        invisible="company_type == 'company'"
+                >
+                    <group>
+                        <field name="community_id"/>
+                        <field name="member_id_number"/>
+                        <field name="dob"/>
+                        <field name="country_of_origin"/>
+                        <field name="aliyah_date"/>
+                        <field name="moving_date"/>
+                        <field name="service"/>
+                        <field name="reserve_service_status"/>
+                        <field name="joining_date"/>
+                        <field name="is_family"/>
+                        <field name="activity_theme"/>
+                        <field name="volunteer_hours"/>
+                        <field name="lang"/>
+                        <field name="project_name"/>
+                        <field name="is_registration_summary"/>
+                        <field name="has_signed_statement"/>
+                    </group>
+                    <group string="Lecturer">
+                        <field name="degree"/>
+                        <field name="show_to_user" invisible="1"/>
+                        <field name="following_community_ids" invisible="1"/>
+                        <field name="following_community_member_ids" invisible="1"/>
+                        <field name="degree_theme" string="Theme"/>
+                    </group>
+                </page>
+            </xpath>
+            <!-- <field name="vat" position="after">
+                <field
+                    name="community_id"
+                    attrs="{'invisible': [('company_type','==','company')]}"
+                />
+            </field> -->
+        </field>
+    </record>
+
+
+    <!-- Inherited form view -->
+    <record id="res_partner_community_user_invoice_view_form" model="ir.ui.view">
+        <field name="name">res.partner.community.user.invoice.view.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='accounting']" position="replace">
+                <page string="Invoicing" name="accounting" invisible="not is_company and parent_id"
+                      groups="bu_aha_communities.bu_community_group_user">
+                    <group>
+                        <group string="Bank Accounts" name="banks" groups="bu_aha_communities.bu_community_group_user">
+                            <field name="bank_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="bank_id"/>
+                                    <field name="acc_number"/>
+                                    <field name="acc_holder_name" invisible="1"/>
+                                </list>
+                            </field>
+                            <button
+                                    type="action"
+                                    class="btn-link"
+                                    name="64"
+                                    context="{
+        'search_default_partner_id': id,
+        'default_partner_id': id,
+        'form_view_ref': 'account.view_company_partner_bank_form'
+    }"
+                                    string="View accounts detail"
+                                    colspan="2"
+                            />
+                        </group>
+                        <group string="Accounting Entries" name="accounting_entries"
+                               groups="bu_aha_communities.bu_community_group_user">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="property_account_receivable_id"/>
+                            <field name="property_account_payable_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherited tree view -->
+    <record id="res_partner_community_view_tree" model="ir.ui.view">
+        <field name="name">res.partner.community.view.tree</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="complete_name" position="before">
+                <field name="community_id" optional="hide"/>
+            </field>
+            <field name="country_id" position="after">
+                <field name="is_registration_summary"/>
+                <field name="has_signed_statement"/>
+            </field>
+        </field>
+    </record>
+
+
+    <!-- Inherited search view -->
+    <record id="res_partner_community_view_search" model="ir.ui.view">
+        <field name="name">res.partner.community.view.search</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+
+                <field name="community_id"/>
+                <separator/>
+                <group>
+                    <filter
+                            string="Community"
+                            name="community_id"
+                            context="{'group_by':'community_id'}"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Community Member search view -->
+    <record model="ir.ui.view" id="bu_community_member_search_view">
+        <field name="name">bu_community.member.search</field>
+        <field name="model">res.partner</field>
+        <field name="priority" eval="17"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="community_id"/>
+                <field name="city"/>
+                <separator/>
+                <!-- <filter string="Workers" name="community_position" domain="[('community_position','=','worker')]" />
+            <filter string="Helpers" name="community_position" domain="[('community_position','=','helper')]" /> -->
+                <group>
+                    <filter
+                            string="Community"
+                            name="community_id"
+                            context="{'group_by':'community_id'}"
+                    />
+                    <filter
+                            string="Country of Origin"
+                            name="country_of_origin"
+                            context="{'group_by':'country_of_origin'}"
+                    />
+                    <filter string="City" name="city" context="{'group_by':'city'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Community Member tree view -->
+    <record model="ir.ui.view" id="bu_community_member_tree_view">
+        <field name="name">bu_community.member.tree</field>
+        <field name="model">res.partner</field>
+        <field name="priority" eval="17"/>
+        <field name="arch" type="xml">
+            <list>
+                <field name="community_id"/>
+                <field name="name"/>
+                <field name="phone" optional="show"/>
+                <field name="email" optional="show"/>
+                <field name="city" optional="show"/>
+                <field name="country_of_origin" optional="show"/>
+                <field name="lang" optional="show"/>
+                <field name="dob" optional="hide"/>
+                <field name="member_id_number" optional="hide"/>
+                <field name="aliyah_date" optional="hide"/>
+                <field name="moving_date" optional="hide"/>
+                <field name="joining_date" optional="hide"/>
+                <field name="is_family" optional="hide"/>
+                <field name="volunteer_hours" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Community Members action -->
+    <record model="ir.actions.act_window" id="bu_community_members_act_window">
+        <field name="name">Community Members</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field
+                name="view_ids"
+                eval="[(5, 0, 0),
+    (0, 0, {'view_mode': 'list', 'view_id': ref('bu_community_member_tree_view')})]"
+        />
+        <field name="search_view_id" ref="bu_community_member_search_view"/>
+        <field name="domain">[('show_to_user', '=', True)]</field>
+
+        <!-- <field name="context">{}</field> -->
+    </record>
+
+
+    <record id="action_server_menu_user_role" model="ir.actions.server">
+        <field name="name">Community Members</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="bu_aha_communities.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">action = model.get_menu_action()</field>
+    </record>
+
+
+    <!-- Community Members menu -->
+    <record model="ir.ui.menu" id="bu_community_members_menu">
+        <field name="name">Members</field>
+        <field name="parent_id" ref="bu_community_menu_root"/> <!-- TODO -->
+        <field name="action" ref="action_server_menu_user_role"/>
+        <field name="sequence">20</field>
+
+    </record>
+
+
+</odoo>

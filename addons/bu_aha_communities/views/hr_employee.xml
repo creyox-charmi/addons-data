@@ -1,0 +1,161 @@
+<odoo>
+
+    <!-- Inherited form view -->
+    <record id="hr_employee_community_view_form" model="ir.ui.view">
+        <field name="name">hr.employee.community.view.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <notebook>
+                <page string="Community">
+                    <group>
+                        <field name="community_id"/>
+                        <field name="community_position"/>
+                        <field name="language"/>
+                        <field name="job_percentage"/>
+                        <field name="monthly_salary"/>
+                        <field name="yearly_salary"/>
+                        <field name="show_to_user" invisible="1"/>
+                        <field name="following_community_ids" invisible="1"/>
+                        <field name="following_community_employee_ids"
+                               invisible="1"/>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+
+    <!-- Inherited tree view -->
+    <record id="hr_employee_community_view_tree" model="ir.ui.view">
+        <field name="name">hr.employee.community.view.tree</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="community_id" optional="hide"/>
+                <field name="show_to_user" invisible="1"/>
+                <field name="following_community_ids" invisible="1"/>
+                <field name="following_community_employee_ids" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+
+    <!-- Inherited search view -->
+    <record id="hr_employee_community_view_search" model="ir.ui.view">
+        <field name="name">hr.employee.community.view.search</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+
+                <field name="community_id"/>
+                <separator/>
+                <group>
+                    <filter
+                            string="Community"
+                            name="community_id"
+                            context="{'group_by':'community_id'}"
+                    />
+                </group>
+
+
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Community Employee search view -->
+    <record model="ir.ui.view" id="bu_community_employee_search_view">
+        <field name="name">bu_community.employee.search</field>
+        <field name="model">hr.employee</field>
+        <field name="priority" eval="17"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="community_id"/>
+                <field name="community_position"/>
+                <separator/>
+                <filter
+                        string="Workers"
+                        name="community_position"
+                        domain="[('community_position','=','worker')]"
+                />
+                <!-- <filter
+                    string="Helpers"
+                    name="community_position"
+                    domain="[('community_position','=','helper')]"
+                /> -->
+                <group>
+                    <filter
+                            string="Community"
+                            name="community_id"
+                            context="{'group_by':'community_id'}"
+                    />
+                    <filter
+                            string="Position"
+                            name="community_position"
+                            context="{'group_by':'community_position'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Community Employee tree view -->
+    <record model="ir.ui.view" id="bu_community_employee_tree_view">
+        <field name="name">bu_community.employee.tree</field>
+        <field name="model">hr.employee</field>
+        <field name="priority" eval="17"/>
+        <field name="arch" type="xml">
+            <list>
+                <field name="community_id"/>
+                <field name="name"/>
+                <field name="mobile_phone" optional="show" string="Mobile"/>
+                <field name="work_email" optional="show" string="Email"/>
+                <field name="language" optional="show"/>
+                <field name="community_position" readonly='0'
+                       string="Position"/>
+                <field name="job_percentage" optional="hide"/>
+                <field name="monthly_salary" optional="hide"/>
+                <field name="yearly_salary" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Community Employee action -->
+    <record model="ir.actions.act_window"
+            id="bu_community_employees_act_window">
+        <field name="name">Community Employees</field> <!-- TODO -->
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field
+                name="view_ids"
+                eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('bu_community_employee_tree_view')})]"
+        />
+        <field name="search_view_id" ref="bu_community_employee_search_view"/>
+        <field name="domain">[('community_id','!=',False)]</field>
+        <!-- <field name="context">{}</field> -->
+    </record>
+
+    <record id="action_server_menu_user_role_employee" model="ir.actions.server">
+        <field name="name">Community Employees</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="bu_aha_communities.model_hr_employee" />
+        <field name="state">code</field>
+        <field name="code">action = model.get_menu_action()</field>
+    </record>
+
+    <!-- Community Employee menu -->
+    <record model="ir.ui.menu" id="bu_community_employees_menu">
+        <field name="name">Employees</field>
+        <field name="parent_id" ref="bu_community_menu_root"/> <!-- TODO -->
+        <field name="action" ref="action_server_menu_user_role_employee"/>
+        <field name="sequence">10</field>
+    </record>
+
+
+</odoo>

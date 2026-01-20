@@ -1,0 +1,265 @@
+<odoo>
+
+    <!-- Inherited form view -->
+    <record id="hr_expense_community_view_form" model="ir.ui.view">
+        <field name="name">hr.expense.community.view.form</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <!-- <notebook>
+                <page string="Community">
+                    <group>
+                    <field name="community_id" />
+                    <field name="event_id"/>
+                </group>
+                </page>
+            </notebook> -->
+
+            <field name="manager_id" position="after">
+                <field name="related_to" />
+                <field
+                    name="community_id"
+                    invisible="related_to != 'community'"
+                />
+                <field
+                    name="event_id"
+                    invisible="related_to != 'event'"
+                />
+                <field name="following_community_ids" invisible="1"/>
+                <field name="following_community_exp_ids" invisible="1"/>
+                <field name="show_to_user" invisible="1"/>
+                <field name="expense_provider" required="1"/>
+                <field name="expense_receipt" required="1"/>
+                <field name="expense_receipt_date" required="1"/>
+                <field name="receipt_date"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Inherited tree view -->
+    <record id="hr_expense_community_view_tree" model="ir.ui.view">
+        <field name="name">hr.expense.community.view.tree</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.view_my_expenses_tree" />
+        <field name="arch" type="xml">
+            <field name="date" position="after">
+                <field name="expense_receipt_date"/>
+            </field>
+            <field name="date" position="before">
+                <field name="community_id" optional="hide" />
+                <field name="event_id" optional="hide" />
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_expense_community_view_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.expense.community.view.tree</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_expenses_analysis_tree"/>
+        <field name="arch" type="xml">
+            <field name="payment_mode" position="after">
+                <field name="expense_provider"/>
+                <field name="expense_receipt"/>
+            </field>
+        </field>
+    </record>
+
+
+    <!-- Inherited search view -->
+<!--     <record id="hr_expense_community_view_search" model="ir.ui.view">
+        <field name="name">hr.expense.community.view.search</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Datess"
+                        name="date"
+                        date="date"/>
+
+                <field name="community_id" />
+                <separator />
+                <group expand="1" string="Group By">
+                    <filter
+                        string="Community"
+                        name="community_id"
+                        context="{'group_by':'community_id'}"
+                    />
+                    <filter
+                        string="Event Type"
+                        name="event_id"
+                        context="{'group_by':'event_id'}"
+                    />
+                </group>
+
+
+            </xpath>
+        </field>
+    </record> -->
+    <record id="hr_expense_community_view_search" model="ir.ui.view">
+        <field name="name">hr.expense.community.view.search</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Date Expense" name="date" date="date"/>
+                <field name="community_id"/>
+                <filter string="Payment Mode" name="payment_mode"/>
+                <separator/>
+                <group>
+                    <filter
+                        string="Community"
+                        name="community_id"
+                        context="{'group_by':'community_id'}"
+                    />
+                    <filter
+                        string="Event"
+                        name="event_id"
+                        context="{'group_by':'event_id'}"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <!-- Community Expense search view -->
+<!--     <record model="ir.ui.view" id="bu_community_expense_search_view">
+        <field name="name">bu_community.expense.search </field>
+        <field name="model">hr.expense</field>
+        <field name="priority" eval="17" />
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="employee_id" />
+                <filter string="Date Expense"/>
+                <separator /> -->
+                <!-- <filter string="Workers" name="community_position" domain="[('community_position','=','worker')]" />
+            <filter string="Helpers" name="community_position" domain="[('community_position','=','helper')]" /> -->
+<!--                 <group expand="1" string="Group By">
+                    <filter
+                        string="Community"
+                        name="community_id"
+                        context="{'group_by':'community_id'}"
+                    />
+                    <filter
+                        string="Event"
+                        name="event_id"
+                        context="{'group_by':'event_id'}"
+                    />
+                    <filter
+                        string="Employee"
+                        name="employee_id"
+                        context="{'group_by':'employee_id'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record> -->
+
+
+    <!-- Community Expense tree view -->
+    <record model="ir.ui.view" id="bu_community_expense_tree_view">
+        <field name="name">bu_community.expense.tree</field>
+        <field name="model">hr.expense</field>
+        <field name="priority" eval="17" />
+        <field name="arch" type="xml">
+            <list>
+                <field name="community_id" />
+                <field name="name" />
+                <field name="date" />
+                <field name="total_amount" optional="show" />
+                <field name="employee_id" optional="show" />
+                <field name="state" optional="hide" />
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="bu_community_expense_search_view">
+        <field name="name">bu_community.expense.search </field>
+        <field name="model">hr.expense</field>
+        <field name="priority" eval="17" />
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <!-- <filter string="Date Expense" name="date" date="date/> -->
+                <separator/>
+                <group>
+                    <filter
+                        string="Community"
+                        name="community_id"
+                        context="{'group_by':'community_id'}"
+                    />
+                    <filter
+                        string="Event Type"
+                        name="event_id"
+                        context="{'group_by':'event_id'}"
+                    />
+                    <filter
+                        string="Employee"
+                        name="employee_id"
+                        context="{'group_by':'employee_id'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+        <!-- Community ALL Expenses tree view -->
+    <record model="ir.ui.view" id="bu_community_expense_all_tree_view">
+        <field name="name">bu_community.expense_all.tree</field>
+        <field name="model">hr.expense</field>
+        <field name="priority" eval="17" />
+        <field name="arch" type="xml">
+            <list>
+                <field name="event_id" />
+                <field name="name" />
+                <field name="date" />
+                <field name="total_amount" optional="show" />
+                <field name="employee_id" optional="show" />
+                <field name="state" optional="hide" />
+            </list>
+        </field>
+    </record>
+
+    <!-- Community Expenses action -->
+<!--     <record model="ir.actions.act_window" id="bu_community_expenses_act_window">
+        <field name="name">Community Expenses</field>
+        <field name="res_model">hr.expense</field>
+        <field name="view_mode">tree,form</field> -->
+      <!--   <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+    (0, 0, {'view_mode': 'tree', 'view_id': ref('bu_community_expense_tree_view')})]"
+        /> -->
+<!--         <field name="search_view_id" ref="hr_expense.hr_expense_view_search"/>
+        <field name="domain">[('community_id','!=',False)]</field>
+        <field name="context">{'search_default_date' : 1}</field>
+    </record>
+ -->
+    <record model="ir.actions.act_window" id="bu_community_expenses_act_window_fresh">
+        <field name="name">Community Expenses</field>
+        <field name="res_model">hr.expense</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hr_expense_community_view_search"/>
+        <field name="domain">[('community_id','!=',False)]</field>
+    </record>
+
+    <record id="action_server_menu_user_role_exp" model="ir.actions.server">
+        <field name="name">Community Expenses</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="bu_aha_communities.model_hr_expense"/>
+        <field name="state">code</field>
+        <field name="code">action = model.get_menu_action()</field>
+    </record>
+
+    <!-- Community Expenses menu -->
+    <record model="ir.ui.menu" id="bu_community_expenses_menu">
+        <field name="name">Expenses</field>
+        <field name="parent_id" ref="bu_community_menu_root" /> <!-- TODO -->
+        <field name="action" ref="bu_community_expenses_act_window_fresh"/>
+        <field name="sequence">40</field>
+
+    </record>
+</odoo>

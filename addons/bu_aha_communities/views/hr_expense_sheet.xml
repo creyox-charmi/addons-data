@@ -1,0 +1,28 @@
+<odoo>
+	<record id="hr_expense_sheet_community_view_search" model="ir.ui.view">
+		<field name="name">hr.expense.sheet.community.view.search</field>
+		<field name="model">hr.expense</field>
+		<field name="inherit_id" ref="hr_expense.hr_expense_view_search_with_panel"/>
+		<field name="arch" type="xml">
+			<xpath expr="//searchpanel" position="inside">
+
+				<field name="community_id"/>
+				<separator/>
+
+				<group expand="1" string="Group By">
+					<filter 
+						string="Community" 
+						name="group_community" 
+						context="{'group_by': 'community_id'}"
+					/>
+					<filter 
+						string="Event" 
+						name="group_event" 
+						context="{'group_by': 'event_id'}"/>
+				</group>
+
+			</xpath>
+		</field>
+	</record>
+
+</odoo>

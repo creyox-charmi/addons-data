@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bu_community,bu_community,model_bu_community,bu_community_group_manager,1,1,1,1
+access_bu_community_stage,bu_community.stage,model_bu_community_stage,bu_community_group_manager,1,1,1,1
+access_bu_community_tag,bu_community.tag,model_bu_community_tag,bu_community_group_manager,1,1,1,1
+
+access_bu_community_user,bu_community.user,model_bu_community,bu_community_group_user,1,1,0,0
+access_bu_community_stage_user,bu_community.stage.user,model_bu_community_stage,bu_community_group_user,1,0,0,0
+access_bu_community_tag_user,bu_community.tag.user,model_bu_community_tag,bu_community_group_user,1,1,0,0
+access_bu_calendar_report,bu_calendar_report_name,model_calendar_report,base.group_user,1,1,1,1

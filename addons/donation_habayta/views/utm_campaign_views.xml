@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="utm_campaign_view_form_receipts" model="ir.ui.view">
+            <field name="name">utm.campaign.receipt</field>
+            <field name="model">utm.campaign</field>
+            <field name="inherit_id" ref="utm.utm_campaign_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name="bu_community_id"/>
+                </xpath>
+               <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                    <button name="action_redirect_to_receipt" type="object" class="oe_stat_button receipt-1" icon="fa-usd">
+                        <field name="receipt_amount" widget="statinfo" string="Receipt Revenues"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

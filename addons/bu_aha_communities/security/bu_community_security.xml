@@ -1,0 +1,88 @@
+<odoo>
+
+    <!-- Create category under "Other" section -->
+    <record id='module_category_other' model='ir.module.category'>
+        <field name='name'>Communities</field>
+        <field name='sequence'>100</field>
+    </record>
+
+    <!-- Create privilege for Communities under Other category -->
+    <record id='res_groups_privilege_communities' model='res.groups.privilege'>
+        <field name='name'>Communities Access</field>
+        <field name='category_id' ref='module_category_other'/>
+    </record>
+
+    <!-- Create groups and link them to the privilege -->
+    <record id="bu_community_group_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="privilege_id" ref="res_groups_privilege_communities"/>
+    </record>
+
+    <record id="bu_community_group_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="implied_ids" eval="[Command.link(ref('bu_community_group_user'))]"/>
+        <field name="privilege_id" ref="res_groups_privilege_communities"/>
+    </record>
+
+    <record model="res.users" id="base.user_root">
+        <field
+                eval="[(4,ref('bu_aha_communities.bu_community_group_manager'))]"
+                name="group_ids"
+        />
+    </record>
+
+    <record model="res.users" id="base.user_admin">
+        <field
+                eval="[(4,ref('bu_aha_communities.bu_community_group_manager'))]"
+                name="group_ids"
+        />
+    </record>
+
+    <!-- User can see/update only communities for which user is responsible or user is follower -->
+    <record id="rule_community_user" model="ir.rule">
+        <field name="name">Community : User can see/update only communities for which user is responsible</field>
+        <field name="model_id" ref="bu_aha_communities.model_bu_community"/>
+        <field name="domain_force">['|', ('responsible_id', '=', user.id), ('message_is_follower', '=', True)]</field>
+        <field name="groups" eval="[(4, ref('bu_aha_communities.bu_community_group_user'))]"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">1</field>
+        <field name="perm_create">0</field>
+        <field name="perm_unlink">0</field>
+    </record>
+
+    <!--    Manager can Do all the operation-->
+    <record id="rule_community_manager" model="ir.rule">
+        <field name="name">Community : Manger can do all the operations</field>
+        <field name="model_id" ref="bu_aha_communities.model_bu_community"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('bu_aha_communities.bu_community_group_manager'))]"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">1</field>
+        <field name="perm_create">1</field>
+        <field name="perm_unlink">1</field>
+    </record>
+
+    <record id="rule_community_user_member" model="ir.rule">
+        <field name="name">Community : User can See Only following members</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">[('show_to_user', '=', True)]</field>
+        <field name="groups" eval="[(4, ref('bu_aha_communities.bu_community_group_user'))]"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">1</field>
+        <field name="perm_create">0</field>
+        <field name="perm_unlink">0</field>
+    </record>
+
+    <record id="rule_community_manager_member" model="ir.rule">
+        <field name="name">Community : Manager can do anything with Members</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('bu_aha_communities.bu_community_group_manager'))]"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">1</field>
+        <field name="perm_create">1</field>
+        <field name="perm_unlink">1</field>
+    </record>
+
+
+</odoo>

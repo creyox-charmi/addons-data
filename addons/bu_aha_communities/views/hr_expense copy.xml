@@ -1,0 +1,117 @@
+<odoo>
+
+    <!-- Inherited form view -->
+    <record id="hr_expense_community_view_form" model="ir.ui.view">
+        <field name="name">hr.expense.community.view.form</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <!-- <notebook>
+                <page string="Community">
+                    <group>
+                    <field name="community_id" />
+                </group>
+                </page>
+            </notebook> -->
+
+            <field name="sheet_id" invisible="1" position="after">
+                <field name="community_id" />
+            </field>
+        </field>
+    </record>
+
+    <!-- Community Expense search view -->
+    <record model="ir.ui.view" id="bu_community_expense_search_view">
+        <field name="name">bu_community.expense.search </field>
+        <field name="model">hr.expense</field>
+        <field name="priority" eval="17" />
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="community_id" />
+                <field name="employee_id" />
+                <separator />
+                <filter
+                    string="To Submit"
+                    name="state"
+                    domain="[('state','=','draft')]"
+                />
+                <filter
+                    string="Submitted"
+                    name="state"
+                    domain="[('state','=','reported')]"
+                />
+                <filter
+                    string="Approved"
+                    name="state"
+                    domain="[('state','=','approved')]"
+                />
+                <filter string="Paid" name="state" domain="[('state','=','done')]" />
+                <filter
+                    string="Refused"
+                    name="state"
+                    domain="[('state','=','refused')]"
+                />
+                <group expand="1" string="Group By">
+                    <filter
+                        string="Community"
+                        name="community_id"
+                        context="{'group_by':'community_id'}"
+                    />
+                    <filter
+                        string="Employee"
+                        name="employee_id"
+                        context="{'group_by':'employee_id'}"
+                    />
+                    <filter
+                        string="Status"
+                        name="state"
+                        context="{'group_by':'state'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Community Expense tree view -->
+    <record model="ir.ui.view" id="bu_community_expense_tree_view">
+        <field name="name">bu_community.expense.tree</field>
+        <field name="model">hr.expense</field>
+        <field name="priority" eval="17" />
+        <field name="arch" type="xml">
+            <list>
+                <field name="community_id" />
+                <field name="name" />
+                <field name="date" />
+                <field name="total_amount" optional="show" />
+                <field name="employee_id" optional="show" />
+                <field name="state" optional="hide" />
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Community Expense action -->
+    <record model="ir.actions.act_window" id="bu_community_expenses_act_window">
+        <field name="name">Community Expenses</field>
+        <field name="res_model">hr.expense</field>
+        <field name="view_mode">form</field>
+        <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('bu_community_expense_tree_view')})]"
+        />
+        <field name="search_view_id" ref="bu_community_expense_search_view" />
+        <field name="domain">[('community_id','!=',False),('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01'))]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Community Expense menu -->
+    <record model="ir.ui.menu" id="bu_community_expenses_menu">
+        <field name="name">Expenses</field>
+        <field name="parent_id" ref="bu_community_menu_root" />
+        <field name="action" ref="bu_community_expenses_act_window" />
+    </record>
+
+
+</odoo>

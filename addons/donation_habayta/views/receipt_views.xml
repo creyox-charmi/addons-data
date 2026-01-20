@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="receipt_register_payment_account_invoice" model="ir.ui.view">
+            <field name="name">lyg.account.receipt</field>
+            <field name="model">lyg.account.receipt</field>
+            <field name="inherit_id" ref="lyg_receipt.view_account_receipt_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="link_tracker_information" string="Link Tracker Information">
+                        <group colspan="4">
+                            <group>
+                                <field name="utm_source_id"/>
+                                <field name="utm_campaign_id"/>
+                                <field name="utm_medium_id" />
+                                <field name="bu_community_id" options="{'no_create': True}"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

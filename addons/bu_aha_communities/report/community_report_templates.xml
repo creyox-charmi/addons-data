@@ -1,0 +1,139 @@
+<odoo>
+
+
+    <template id="report_community_template_id1">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="community">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>
+                            <span t-field="community.name" />
+                        </h2>
+                        <div>
+                            <strong>Responsible: </strong>
+                            <span t-field="community.responsible_id" />
+
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Start</th>
+                                        <th>Stop</th>
+                                        <th>Lecturer</th>
+                                        <th>Degree</th>
+                                        <th>Degree Theme</th>
+                                        <th>Attendees</th>
+                                        <th>Location</th>
+                                        <th>Duration</th>
+
+                                        <th>Exp. 0-11</th>
+                                        <th>Att. 0-11</th>
+                                        <th>Exp. 12-17</th>
+                                        <th>Att. 12-17</th>
+                                        <th>Exp. 18-64</th>
+                                        <th>Att. 18-64</th>
+                                        <th>Exp. 65+</th>
+                                        <th>Att. 65+</th>
+
+                                        <th>Total Expected</th>
+                                        <th>Total Attended</th>
+                                        <th>Attending Member</th>
+                                        <th>Mobile</th>
+                                        <th>Expected Expenses</th>
+                                        <th>Total Expenses</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t
+                                        t-set="events"
+                                        t-value="community.mapped('event_ids')"
+                                    />
+                                    <tr t-foreach="events" t-as="event">
+                                        <td>
+                                            <span t-field="event.name" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.start" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.stop" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.lecturer" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.lecturer.degree" />
+                                        </td>
+                                        <td>
+                                            <span
+                                                t-field="event.lecturer.degree_theme"
+                                            />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.partner_ids" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.location" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.duration" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.expected1" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.attended1" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.expected2" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.attended2" />
+                                        </td>
+
+                                        <td>
+                                            <span t-field="event.expected3" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.attended3" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.expected4" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.attended4" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.total_expected" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.total_attended" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.attending_member" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.contact_mobile" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.expected_expenses" />
+                                        </td>
+                                        <td>
+                                            <span t-field="event.total_expenses" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+
+</odoo>

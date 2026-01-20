@@ -1,0 +1,209 @@
+<odoo>
+
+    <!-- Inherited form view -->
+    <record id="calendar_event_community_view_form" model="ir.ui.view">
+        <field name="name">calendar.event.community.view.form</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form" />
+        <field name="arch" type="xml">
+            <notebook>
+                <page string="Community">
+                    <group>
+                        <field name="community_id" />
+                        <!-- <field name="attending_member_domain" invisible="1"/> -->
+                        <!-- <field name="attending_member"  options="{'no_create_edit':True, 'no_create':True}" domain = "attending_member_domain"/> -->
+                        <field
+                            name="attending_member"
+                            options="{'no_create_edit':True, 'no_create':True}"
+                        />
+                        <field name="contact_mobile" />
+                        <field name="lecturer" />
+                        <field name="degree" />
+                        <field name="degree_theme" />
+                        <field name="expected_expenses" />
+                        <field name="show_to_user" invisible="1" />
+                        <field name="following_community_ids" invisible="1" />
+                        <field name="following_community_event_ids" invisible="1" />
+                    </group>
+                    <group>
+                        <group string="Planned amount of attendees">
+                            <!-- <strong>Planned amount of attendees</strong> -->
+                            <field name="expected1" string="0-11" />
+                            <field name="expected2" string="12-17" />
+                            <field name="expected3" string="18-64" />
+                            <field name="expected4" string="65+" />
+                            <field name="total_expected" string="Total" />
+                        </group>
+                        <group string="Actual amount of attendees">
+                            <field name="attended1" string="0-11" />
+                            <field name="attended2" string="12-17" />
+                            <field name="attended3" string="18-64" />
+                            <field name="attended4" string="65+" />
+                            <field name="total_attended" string="Total" />
+                        </group>
+                    </group>
+
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+
+    <!-- Inherited tree view -->
+    <record id="calendar_event_community_view_tree" model="ir.ui.view">
+        <field name="name">calendar.event.community.view.tree</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="community_id" />
+            </field>
+            <field name="partner_ids" position="attributes">
+                <attribute name="widget">many2many_tags</attribute>
+        </field>
+        </field>
+    </record>
+
+
+    <!-- Inherited search view -->
+    <record id="calendar_event_community_view_search" model="ir.ui.view">
+        <field name="name">calendar.event.community.view.search</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="community_id" />
+                <separator />
+                <group>
+                    <filter
+                        string="Start"
+                        name="start"
+                        context="{'group_by':'start'}"
+                    />
+                </group>
+                <filter
+                    string="Future"
+                    name="future"
+                    domain="[('start','>=', (context_today()).strftime('%%Y-%%m-%%d'))]"
+                />
+<!--                 <filter
+                    string="Date"
+                    name="start_date"
+                    date="start"
+                /> -->
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Community Event search view -->
+    <record model="ir.ui.view" id="bu_community_event_search_view">
+        <field name="name">bu_community.event.search </field>
+        <field name="model">calendar.event</field>
+        <field name="priority" eval="17" />
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="location" />
+                <field name="partner_ids" />
+                <separator />
+                <filter
+                    string="Future"
+                    name="future"
+                    domain="[('start_date','>',current_date  )]"
+                />
+                <filter
+                    string="Date today"
+                    name="start"
+                    date="start"
+                />
+                <group>
+                    <filter
+                        string="Community"
+                        name="community_id"
+                        context="{'group_by':'community_id'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Community Event tree view -->
+    <record model="ir.ui.view" id="bu_community_event_tree_view">
+        <field name="name">bu_community.event.tree</field>
+        <field name="model">calendar.event</field>
+        <field name="priority" eval="17" />
+        <field name="arch" type="xml">
+            <list>
+                <field name="community_id" />
+                <field name="name" />
+                <field name="start" />
+                <field name="stop" />
+                <field name="duration" optional="show" />
+                <field name="partner_ids" optional="show" widget="many2many_tags" />
+                <field name="location" optional="show" />
+
+
+                <field name="lecturer" optional="show" />
+                <field name="degree" optional="hide" />
+                <field name="degree_theme" optional="hide" />
+
+                <field name="expected1" string="Exp. 0-11" optional="hide" />
+                <field name="attended1" string="Att. 0-11" optional="hide" />
+
+                <field name="expected2" string="Exp. 12-17" optional="hide" />
+                <field name="attended2" string="Att. 12-17" optional="hide" />
+
+                <field name="expected3" string="Exp. 18-64" optional="hide" />
+                <field name="attended3" string="Att. 18-64" optional="hide" />
+
+                <field name="expected4" string="Exp. 65+" optional="hide" />
+                <field name="attended4" string="Att. 65+" optional="hide" />
+
+                <field name="total_expected" string="Exp. Total" optional="hide" />
+                <field name="total_attended" string="Att. Total" optional="hide" />
+                <field
+                    name="attending_member"
+                    string="Attending Member"
+                    optional="show"
+                />
+                <field name="contact_mobile" string="Mobile" optional="show" />
+                <field name="expected_expenses" optional="hide" />
+                <field name="total_expenses" optional="show" />
+                <field name="expense_ids" optional="show" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Community Event action -->
+    <record model="ir.actions.act_window" id="bu_community_events_act_window">
+        <field name="name">Community Events</field>
+        <field name="res_model">calendar.event</field>
+        <field name="view_mode">calendar,list,form,search</field>
+        <field name="view_ids"
+            eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('bu_community_event_tree_view')})]"
+        />
+        <field name="search_view_id" ref="calendar_event_community_view_search"/>
+        <field name="domain">[('community_id','!=',False)]</field>
+        <!-- <field name="context">{}</field> -->
+    </record>
+
+    <record id="action_server_menu_user_role_events" model="ir.actions.server">
+        <field name="name">Community Events</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="bu_aha_communities.model_calendar_event" />
+        <field name="state">code</field>
+        <field name="code">action = model.get_menu_action()</field>
+    </record>
+
+    <!-- Community Events menu -->
+    <record model="ir.ui.menu" id="bu_community_events_menu">
+        <field name="name">Events</field>
+        <field name="parent_id" ref="bu_community_menu_root" />
+        <field name="action" ref="bu_community_events_act_window"/>
+        <field name="sequence">30</field>
+    </record>
+
+
+</odoo>

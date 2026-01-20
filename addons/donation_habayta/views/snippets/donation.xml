@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add hidden inputs to the donation snippet form -->
+    <template id="s_donation_button_donation" inherit_id="website_payment.s_donation_button">
+        <xpath expr="//form" position="inside">
+            <input id="test_input1" value="" type="hidden"/>
+            <input id="test_input2" value="" type="hidden"/>
+            <input id="test_input3" value="" type="hidden"/>
+        </xpath>
+    </template>
+
+    <!-- Add hidden inputs to the payment checkout page -->
+    <template id="payment_checkout_donation" inherit_id="website_payment.donation_information">
+        <xpath expr="//div[@class='row']" position="after">
+            <input name="utm_campaign_id" t-att-value="utm_campaign_id if utm_campaign_id else ''"
+                   id="utm_campaign_id" type="hidden"/>
+            <input name="utm_source_id" t-att-value="utm_source_id if utm_source_id else ''" id="utm_source_id" type="hidden"/>
+            <input name="utm_medium_id" t-att-value="utm_medium_id if utm_medium_id else ''" id="utm_medium_id" type="hidden"/>
+
+        </xpath>
+    </template>
+
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    # Copyright (C) 2022- PRESENT to Yves Goldberg - Ygol InternetWork - All Rights Reserved
+    # Part of module bu_aha_communities.
+    # See LICENSE file for full copyright and licensing details.
+-->
+<odoo noupdate="1">
+
+    <record model="mail.channel" id="community_channel_1">
+        <field name="name">TLV-CHANNEL</field>
+        <field name="description">Board meetings, budgets, strategic plans</field>
+    </record>
+
+
+    <record model="bu_community" id="bu_community_demo_1">
+       <field name="name">TLV</field>
+       <field name="stage">'operational'</field>
+       <field name="language">'hebrew'</field>
+       <field name="channel_id" ref="bu_aha_communities.community_channel_1" />
+       <field name="responsible_id" ref="base.user_admin" />
+       <field name="city">Tel-Aviv</field>
+       <field name="phone">03-1234567</field>
+<!--
+       <field name="event_ids" ref = " " />
+       <field name="employee_ids" ref = ""/> -->
+
+    </record>
+
+
+
+
+</odoo>
