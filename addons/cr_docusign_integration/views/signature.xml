@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cr_signature_view_form" model="ir.ui.view">
+        <field name="name">cr.signature.view.form</field>
+        <field name="model">cr.signature</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <field name="cr_is_doc_sent" invisible="1"/>
+                <header>
+                    <button string="Send document for signature"
+                            class="oe_highlight"
+                            type="object"
+                            name="action_send_doc"
+                            icon="fa-solid fa-paper-plane"
+                            attrs="{'invisible': [('cr_is_doc_sent', '=', True)]}"/>
+                    <button string="Update Document Status"
+                            class="oe_highlight"
+                            type="object"
+                            name="action_update_status"
+                            icon="fa-solid fa-rotate-right"/>
+                    <button string="Download Signed Documents"
+                            class="oe_highlight"
+                            type="object"
+                            name="action_download_doc"
+                            icon="fa-solid fa-download"/>
+                    <field name="cr_status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="cr_is_doc_sent" invisible="1"/>
+                            <field name="invisible_contact" invisible="1"/>
+                            <field name="invisible_sale_order" invisible="1"/>
+                            <field name="invisible_purchase_order" invisible="1"/>
+                            <field name="invisible_invoice" invisible="1"/>
+                            <field name="cr_seq_name"/>
+                            <field name="cr_responsible"/>
+                            <field name="cr_model_reference"/>
+                            <field name="cr_contact" attrs="{'invisible': [('invisible_contact', '=', True)]}"/>
+                            <field name="cr_sale_order_name" attrs="{'invisible': [('invisible_sale_order', '=', True)]}"/>
+                            <field name="cr_purchase_order_name" attrs="{'invisible': [('invisible_purchase_order', '=', True)]}"/>
+                            <field name="cr_invoice_name" attrs="{'invisible': [('invisible_invoice', '=', True)]}"/>
+                            <field name="invisible_document" invisible="1"/>
+                            <field name="cr_hr_employee_document_id" attrs="{'invisible': [('invisible_document', '=', True)]}"/>
+                        </group>
+                        <group>
+                            <field name="cr_docs_policy"/>
+                            <field name="cr_docusign_account"/>
+                            <field name="cr_attachment" widget="binary"/>
+                            <label string="(Only PDF files are allowed)" for="cr_attachment" class="text-muted"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Recipients">
+                            <field name="cr_recipients">
+                                <tree editable="true">
+                                    <field name="cr_partner" string="Partner"/>
+                                    <field name="cr_name"/>
+                                    <field name="cr_email" string="Email"/>
+                                    <field name="cr_send_status"/>
+                                    <field name="cr_sign_status"/>
+                                    <field name="cr_unsigned_attachments" widget="binary"/>
+                                    <field name="cr_signed_attachments" widget="binary"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="seq_signature" model="ir.sequence">
+        <field name="name">signature code</field>
+        <field name="code">cr.signature</field>
+        <field name="prefix">DOC-</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+    </record>
+    <record id="view_cr_signature_tree" model="ir.ui.view">
+        <field name="name">cr.signature.tree</field>
+        <field name="model">cr.signature</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="cr_contact_id"/>
+                <field name="cr_sale_order_id"/>
+                <field name="cr_purchase_order_id"/>
+                <field name="cr_invoice_id"/>
+                <field name="cr_hr_employee_document_id"/>
+                <field name="cr_model_reference"/>
+                <field name="cr_status"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

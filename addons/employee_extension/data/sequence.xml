@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+     <!---  Sequences for sale.order -->
+          <record id="seq_employee_extension" model="ir.sequence">
+            <field name="name">Employee Sequence</field>
+            <field name="code">Employee.Extension.Sequence</field>
+            <field name="padding">00001</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

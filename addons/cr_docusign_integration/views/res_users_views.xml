@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_configuration_form" model="ir.ui.view">
+        <field name="name">res.users.form.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Docusign Settings">
+                    <group>
+                        <group>
+                            <field name="cr_app_name"/>
+                            <field name="cr_account_type"/>
+                            <field name="cr_integration_key"/>
+                            <field name="cr_use_pkce"/>
+                            <field name="cr_redirect_url"/>
+                            <field name="cr_secret_key"/>
+                            <field name="cr_account_id"/>
+                            <field name="cr_auth_url" invisible='1'/>
+                            <field name="cr_token_url" invisible="1"/>
+                            <field name="cr_user_info_url" invisible="1"/>
+                        </group>
+                        <group>
+                            <h3>Docusign Login</h3>
+                            <button name="open_docusign_auth"
+                                    type="object"
+                                    icon="fa-arrow-right"
+                                    string="Get login with Docusign account"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

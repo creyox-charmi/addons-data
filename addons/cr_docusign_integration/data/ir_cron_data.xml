@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="send_token_reminder_cron" model="ir.cron">
+            <field name="name">send token Reminder</field>
+            <field name="model_id" ref="cr_docusign_integration.model_res_users"/>
+            <field name="state">code</field>
+            <field name="code">model.send_token_reminder()</field>
+            <field name="interval_number">7</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">True</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

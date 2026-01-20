@@ -1,0 +1,621 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* employee_extension
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0-20220412\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-09-13 06:59+0000\n"
+"PO-Revision-Date: 2022-09-13 06:59+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__hours_available
+msgid "( Hours )available"
+msgstr "(Uren) beschikbaar"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_contract_extension_form_view
+msgid "<span>/ month</span>"
+msgstr "<span>/ maand</span>"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "<span>Km</span>"
+msgstr "km"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__agb_code
+msgid "AGB Code"
+msgstr "AGB-code"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__accr_number
+msgid "Accr.number"
+msgstr "Accr.nummer"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__accreditation_exp_date
+msgid "Accreditation Expiry Date"
+msgstr "Vervaldatum accreditatie"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__accreditation_type
+msgid "Accreditation Type"
+msgstr "Accreditatietype:"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__address
+msgid "Address"
+msgstr "Adres"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Address Line 1"
+msgstr "Adres regel 1"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__address_line_2
+msgid "Address Line 2"
+msgstr "Adres lijn 2"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__preferred_location__amstelveen_&_aalsmeer
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__work_locations__amstelveen_&_aalsmeer
+msgid "Amstelveen & Aalsmeer"
+msgstr "Amstelveen & Aalsmeer"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__preferred_location__amsterdam/almere/duo/gooi_en_vecht/utrecht
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__work_locations__amsterdam/almere/duo/gooi_en_vecht/utrecht
+msgid "Amsterdam/Almere/DUO/Gooi en Vecht/Utrecht"
+msgstr "Amsterdam/Almere/DUO/Gooi en Vecht/Utrecht"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__accreditation_type__big
+msgid "BIG"
+msgstr "GROOT"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__challenge_name
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Challenge Name"
+msgstr "Naam van de uitdaging"
+
+#. module: employee_extension
+#: model:ir.model,name:employee_extension.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__contact_1
+msgid "Contact Person 1"
+msgstr "Contactpersoon 1"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__contact_2
+msgid "Contact Person 2"
+msgstr "Contactpersoon 2"
+
+#. module: employee_extension
+#: code:addons/employee_extension/models/employee.py:0
+#, python-format
+msgid "Contacts"
+msgstr "Contacten"
+
+#. module: employee_extension
+#: model:ir.model,name:employee_extension.model_hr_contract
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__contract_id
+msgid "Contract"
+msgstr "Contract"
+
+#. module: employee_extension
+#: model:ir.model.fields,help:employee_extension.field_hr_employee__contract_id
+msgid "Current contract of the employee"
+msgstr "Huidig contract van de werknemer"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__customer_count
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Customer"
+msgstr "Klant"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__date_service
+msgid "Date Service"
+msgstr "Datumservice"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__date_of_birth
+msgid "Date of Birth"
+msgstr "Geboortedatum"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__declarability
+msgid "Declarability"
+msgstr "Declareerbaarheid"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__display_mode
+msgid "Display Mode"
+msgstr "Weergavemodus:"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__display_name
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:employee_extension.field_res_partner__display_name
+msgid "Display Name"
+msgstr "Schermnaam"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__driver_license
+msgid "Driver License"
+msgstr "Rijbewijs"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__duration_contract_in_month
+msgid "Duration Contract In Month"
+msgstr "Duur Contract In Maand"
+
+#. module: employee_extension
+#: model:ir.model,name:employee_extension.model_hr_employee
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__challenge_id
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__employee_id
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__employee_type__employee
+msgid "Employee"
+msgstr "Werknemer"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__employee_no_wage
+msgid "Employee Number Wages"
+msgstr "Werknemersnummer Loon"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__employee_type
+msgid "Employee Type"
+msgstr "Werknemerstype"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__name_seq
+msgid "Employee number EPD: "
+msgstr "Personeelsnummer EPD:"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__employment_no
+msgid "Employment Number"
+msgstr "Werkgelegenheidsnummer"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__end_pdp_date
+msgid "End Date"
+msgstr "Einddatum"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__end_contract_date
+msgid "End Date Contract "
+msgstr "Einddatum contract"
+
+#. module: employee_extension
+#: model:ir.model.fields,help:employee_extension.field_hr_employee__end_contract_date
+msgid "End date of the contract (if it's a fixed-term contract)."
+msgstr "Einddatum van het contract (indien het een contract voor bepaalde tijd is)."
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__free_field_1
+msgid "Free Field 1"
+msgstr "Vrij veld 1"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__free_field_13
+msgid "Free Field 13"
+msgstr "Vrij veld 13"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__free_field_14
+msgid "Free Field 14"
+msgstr "Vrij veld 14"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__free_field_15
+msgid "Free Field 15"
+msgstr "Vrij veld 15"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__free_field_16
+msgid "Free Field 16"
+msgstr "Vrij veld 16"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__free_field_9
+msgid "Free Field 9"
+msgstr "Vrij veld 9"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__free_field_10
+msgid "Free Field 10"
+msgstr "Vrij veld 10"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__free_field_17
+msgid "Free Field 17"
+msgstr "Vrij veld 17"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__free_field_3
+msgid "Free Field 3"
+msgstr "Vrij veld 3"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__free_field_4
+msgid "Free Field 4"
+msgstr "Vrij veld 4"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__free_field_42
+msgid "Free Field 42"
+msgstr "Vrij veld 42"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__free_field_5
+msgid "Free Field 5"
+msgstr "Vrij veld 5"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__free_field_6
+msgid "Free Field 6"
+msgstr "Vrij veld 6"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__free_field_7
+msgid "Free Field 7"
+msgstr "Vrij veld 7"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__free_field_8
+msgid "Free Field 8"
+msgstr "Vrij veld 8"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_contract_extension_form_view
+msgid "Functie"
+msgstr "Functie"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__accreditation_type__None, don't want
+msgid "None, don't want"
+msgstr "Geen, wil niet"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__accreditation_type__None, wants to register
+msgid "None, wants to register"
+msgstr "Geen, wil zich regsitreren"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__gross_full_salary
+msgid "Gross full time Salary"
+msgstr "Bruto fulltime salaris"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__preferred_location__haarlemmermeer
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__work_locations__haarlemmermeer
+msgid "Haarlemmermeer"
+msgstr ""
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__hours_rate
+msgid "Hourly Rate"
+msgstr "Uurtarief"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__hours_balance
+msgid "Hours Balance +/-"
+msgstr " +/- Uren"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__hour_leave
+msgid "Hours Of Leave"
+msgstr "Verlofuren +/-"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__id
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__id
+#: model:ir.model.fields,field_description:employee_extension.field_res_partner__id
+msgid "ID"
+msgstr "ID kaart"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__preferred_location__ijmond_and_south_kennemerland
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__work_locations__ijmond_and_south_kennemerland
+msgid "IJmond and South Kennemerland"
+msgstr "IJmond and South Kennemerland"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__initials
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Initials"
+msgstr "initialen"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract____last_update
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee____last_update
+#: model:ir.model.fields,field_description:employee_extension.field_res_partner____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__salutation__mr
+msgid "MR."
+msgstr "DHR."
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__salutation__mrs
+msgid "MRS."
+msgstr "MEVR."
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__salutation__ms
+msgid "MS"
+msgstr "MEVR."
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_contract_extension_form_view
+msgid "Monthly Advantages in Cash"
+msgstr "Maandelijkse voordelen in contanten"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__salutation__no
+msgid "NO"
+msgstr "NEE"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Nationality"
+msgstr "Nationaliteit"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__driver_license__no
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__preferred_location__no
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__work_locations__no
+msgid "No"
+msgstr "Nee"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__preferred_location__north_east_brabant
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__work_locations__north_east_brabant
+msgid "North east Brabant"
+msgstr "Noordoost Brabant"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__no_of_points
+msgid "Number of points"
+msgstr "Aantal punten"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "PDP"
+msgstr "PDP"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__part_time_percent
+msgid "Part time Percentage"
+msgstr "Parttime Percentage"
+
+#. module: employee_extension
+#: model:ir.model.fields,help:employee_extension.field_hr_employee__periodicity
+msgid ""
+"Period of automatic goal assigment. If none is selected, should be launched "
+"manually."
+msgstr "Periode van automatische doeltoewijzing. Als er geen is geselecteerd, moet worden gestart 'handmatig.'"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__periodic
+msgid "Periodic"
+msgstr "periodiek"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Personal Info"
+msgstr "Persoonlijke informatie"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Phone Number"
+msgstr "Telefoonnummer"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__postal_code
+msgid "Postal Code"
+msgstr "Postcode"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__preferred_location
+msgid "Preferred Location"
+msgstr "voorkeurslocatie"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Private Contact"
+msgstr "Privécontact"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Private Email"
+msgstr "Privé e-mail"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__probation_end
+msgid "Probation Ends"
+msgstr "Proeftijd eindigt"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__residence
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Residence"
+msgstr "Residentie"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__responsible
+msgid "Responsible"
+msgstr "Aansprakelijk"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__accreditation_type__sjk
+msgid "SJK"
+msgstr "SJK"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__salary_structure_type
+msgid "Salary Structure Type"
+msgstr "Type salarisstructuur"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_res_partner__emp_id
+#: model:ir.model.fields,field_description:employee_extension.field_res_users__emp_id
+msgid "Sales Name"
+msgstr "Verkoopnaam:"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Salutation"
+msgstr "Begroeting"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__salutation
+msgid "Salutatuion"
+msgstr "Begroeting"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__scale
+msgid "Scale"
+msgstr "Schaal"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__start_pdp_date
+msgid "Start Date"
+msgstr "Startdatum"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__start_contract_date
+msgid "Start Date Contract"
+msgstr "Startdatum contract"
+
+#. module: employee_extension
+#: model:ir.model.fields,help:employee_extension.field_hr_employee__start_contract_date
+msgid "Start date of the contract."
+msgstr "Startdatum van het contract."
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_contract__step
+msgid "Step"
+msgstr "Stap"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__street
+msgid "Street"
+msgstr "Straat"
+
+#. module: employee_extension
+#: model:ir.model.fields,help:employee_extension.field_hr_employee__end_pdp_date
+msgid ""
+"The day a new challenge will be automatically closed. If no periodicity is "
+"set, will use this date as the goal end date."
+msgstr "De dag dat een nieuwe uitdaging automatisch wordt gesloten. Als er geen periodiciteit is "
+"set, gebruikt deze datum als de einddatum van het doel."
+
+#. module: employee_extension
+#: model:ir.model.fields,help:employee_extension.field_hr_employee__start_pdp_date
+msgid ""
+"The day a new challenge will be automatically started. If no periodicity is "
+"set, will use this date as the goal start date."
+msgstr "De dag dat er automatisch een nieuwe uitdaging wordt gestart. Als er geen periodiciteit is "
+"set, gebruikt deze datum als de startdatum van het doel."
+
+#. module: employee_extension
+#: model:ir.model.fields,help:employee_extension.field_hr_employee__responsible
+msgid "The user responsible for the challenge."
+msgstr "De gebruiker die verantwoordelijk is voor de uitdaging."
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__employee_type__trainee
+msgid "Trainee"
+msgstr "Stagiair"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__vog_issue_date
+msgid "VOG issue Date"
+msgstr "VOG-uitgiftedatum"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__work_locations
+msgid "Work Location"
+msgstr "Werk locatie"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__working_hour
+msgid "Working Hour"
+msgstr "Werkuur"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__accreditation_type__sjk
+msgid "SJK"
+msgstr "SJK"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__accreditation_type__big
+msgid "BIG"
+msgstr "GROOT"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__accreditation_type__none_dwant
+msgid "None, do not want"
+msgstr "Geen, wil niet"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__accreditation_type__none_want-register
+msgid "None, wants to register"
+msgstr "Geen, wil zich registreren"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__driver_license__yes_has_car
+msgid "Yes,has car"
+msgstr "Ja, heeft auto"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__driver_license__yes_has_no_car
+msgid "Yes,has no car"
+msgstr "Ja, geen auto"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__your_date_field
+msgid "Your string"
+msgstr "Jouw string"
+
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "ZZP"
+msgstr "ZZP"
+#. module: employee_extension
+#: model_terms:ir.ui.view,arch_db:employee_extension.employee_extension_form_view
+msgid "Seller"
+msgstr "Verkoper"
+
+#. module: employee_extension
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__preferred_location__zaanstreek-waterland/alkmaar/west_friesland
+#: model:ir.model.fields.selection,name:employee_extension.selection__hr_employee__work_locations__zaanstreek-waterland/alkmaar/west_friesland
+msgid "Zaanstreek-Waterland/Alkmaar/West Friesland"
+msgstr "Zaanstreek-Waterland/Alkmaar/West-Friesland"
+
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__periodicity
+msgid "periodicity"
+msgstr "periodiciteit"
+#. module: employee_extension
+#: model:ir.model.fields,field_description:employee_extension.field_hr_employee__periodicity
+msgid "Telephone"
+msgstr "Telefoon"

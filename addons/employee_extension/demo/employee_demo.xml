@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+
+        <record id="resource_calendar_id" model="resource.calendar">
+            <field name="name">N/A</field>
+            <field name="name">1 t/m 40 uur per week</field>
+        </record>
+
+
+    </data>
+</odoo>

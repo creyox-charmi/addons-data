@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="employee_extension_form_view" model="ir.ui.view">
+            <field name="name">employee.extension.form.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <header>
+                    <!--                    <button name="assign_seq" string="Assign Employee No" type="object" attrs="{'invisible':[('name_seq','!=','New')]}"></button>-->
+                </header>
+                <div name="button_box" position="inside">
+                    <button class="oe_stat_button" type="object" name="get_vehicles"
+                            icon="fa-users" invisible="1">
+                        <field name="customer_count" string="Customer" widget="statinfo"/>
+                    </button>
+                </div>
+                <!--                -->
+                <xpath expr="//field[@name='category_ids']" position="attributes">
+                    <attribute name="required">True</attribute>
+                </xpath>
+                <!--                hide not connected -->
+                <xpath expr="//button[@id='hr_presence_button']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!--Generate sequences -->
+                <xpath expr="//field[@name='category_ids']" position="before">
+                    <h3>
+                        <label for="name_seq"/>
+                        <br/>
+                        <field name="name_seq" string="Employee number EPD:"/>
+                        <!--                        <div>-->
+                        <!--                           <label for="name_seq"/>-->
+                        <!--                            <field name="name_seq" string="Employee number EPD: "/>-->
+                        <!--                        </div>-->
+                    </h3>
+                </xpath>
+                <!--hide the department from right top -->
+                <xpath expr="//field[@name='department_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!--             replace mobile_phone to mobile_no    -->
+                <xpath expr="//field[@name='mobile_phone']" position="replace">
+                    <field name="mobile_no" widget="phone"/>
+                </xpath>
+                <!--        replace work_phone to work_no        -->
+                <xpath expr="//field[@name='work_phone']" position="replace">
+                    <field name="work_no" widget="phone"/>
+                </xpath>
+                <!--Add the after the Email address-->
+                <xpath expr="//field[@name='work_email']" position="after">
+                    <field name="date_of_birth"/>
+                    <field name="driver_license"/>
+                    <field name="address"/>
+                    <field name="job_id"/>
+                    <field name="work_locations_main" widget="many2many_tags"/>
+                    <field name="preferred_location" widget="many2many_tags"/>
+                    <field name="department_id"/>
+                    <field name="contact_1"/>
+                    <field name="contact_2"/>
+                    <field name="free_field_1"/>
+                    <field name="free_field_42"/>
+                </xpath>
+                <!--Add the field before Manager field-->
+                <xpath expr="//field[@name='parent_id']" position="before">
+                    <field name="hours_available"/>
+                    <field name="salary_structure_type"/>
+                    <field name="working_hour"/>
+                    <field name="hours_balance" options="{'type':'number','step':1}"/>
+                    <field name="start_contract_date"/>
+                    <field name="end_contract_date"/>
+                    <field name="declarability"/>
+                    <field name="hour_leave" options="{'type':'number','step':1}"/>
+                    <field name="free_field_3"/>
+                    <field name="free_field_4"/>
+                </xpath>
+                <!--hide the coach field-->
+                <xpath expr="//field[@name='coach_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!--hide the Manager field-->
+                <xpath expr="//field[@name='parent_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!--                <xpath expr="//page[@name='public']/div/div[@id='o_work_employee_main']/group[1]" position="replace"></xpath>-->
+                <!--                <xpath expr="//page[@name='public']/div/div[@id='o_work_employee_main']/group[1]" position="replace"></xpath>-->
+                <xpath expr="//page[@name='public']/div/div[@id='o_work_employee_main']/group[2]"
+                       position="replace"></xpath>
+                <!--                change the Working Address into readonly-->
+                <xpath expr="//field[@name='birthday']" position="attributes">
+                    <attribute name="required">True</attribute>
+                </xpath>
+                <xpath expr="//page[@name='public']/div/div/group/field[@name='work_location']" position="replace">
+                    <field name="work_location_cover" widget="many2many_tags"/>
+                </xpath>
+                <xpath expr="//page[@name='public']/div/div[@id='o_work_employee_main']" position="inside">
+                    <group>
+                        <field name="accreditation_type"/>
+                        <field name="accr_number"/>
+                        <field name="accreditation_exp_date"/>
+                        <field name="no_of_points" invisible="1"/>
+                        <field name="no_of_points_int"/>
+                        <field name="no_of_points_date"/>
+                        <field name="agb_code"/>
+                        <field name="vog_issue_date"/>
+                        <field name="free_field_5"/>
+                        <field name="free_field_6"/>
+                        <field name="free_field_7"/>
+                        <field name="free_field_8"/>
+                    </group>
+                </xpath>
+                <xpath expr="//page[@name='personal_information']/group/group[1]" position="replace">
+                    <group string="Personal Info">
+                        <!--                        <field name="gender"/>-->
+                        <field name="salutation" string="Salutation"/>
+                        <field name="initials" string="Initials"/>
+                        <!--                        <field name="identification_id" groups="hr.group_hr_user"/>-->
+                        <!--                        <field name="country_id" string="Nationality"/>-->
+                        <field name="bank_account_id" context="{'default_partner_id': address_home_id}"/>
+                        <label for="km_home_work"/>
+                        <div class="o_row" name="div_km_home_work">
+                            <field name="km_home_work" groups="hr.group_hr_user"/>
+                            <span>Km</span>
+                        </div>
+                        <field name="free_field_9" string="Free field 9"/>
+                        <field name="free_field_10" string="Free field 10"/>
+
+                    </group>
+                </xpath>
+<!--Citizenship-->
+<!--                <xpath expr="//page[@name='personal_information']/group/group[2]" position="replace">-->
+<!--                    <group string="Citizenship">-->
+<!--                        <field name="country_id" options='{"no_open": True, "no_create": True}' string="Nationality (Country)"/>-->
+<!--                        <field name="identification_id" groups="hr.group_hr_user"/>-->
+<!--                        <field name="passport_id" groups="hr.group_hr_user"/>-->
+<!--                        <field name="gender"/>-->
+<!--                        <field name="birthday"/>-->
+<!--                        <field name="place_of_birth" groups="hr.group_hr_user"/>-->
+<!--                        <field name="country_of_birth" groups="hr.group_hr_user"/>-->
+<!--                    </group>-->
+<!--                </xpath>-->
+
+                <xpath expr="//page[@name='personal_information']/group/group[3]" position="after">
+                    <group string="Private Contact">
+                        <field name="address_home_id" string="Address Line 1"/>
+                        <field name="address_line_2"/>
+                        <field name="street"/>
+                        <field name="postal_code"/>
+                        <field name="residence" string="Residence"/>
+
+                        <field name="phone" class="o_force_ltr" groups="hr.group_hr_user" string="Phone Number" widget="phone"/>
+                        <field name="private_email1" string="Private Email" widget="email"/>
+
+                    </group>
+                </xpath>
+                <!--                <xpath expr="//page[@name='personal_information']/group/group[3]" position="replace"></xpath>-->
+                <!--                <xpath expr="//page[@name='personal_information']/group/group[3]" position="replace"></xpath>-->
+                <!--Adding pages ZZP and PDP-->
+                <xpath expr="//notebook" position="inside">
+                    <page name="zzp" string="ZZP" invisible="1">
+                        <group>
+                            <group>
+                                <label for="hours_rate"/>
+                                <div class="o_row" name="hours_rate">
+                                    <span>$</span>
+                                    <field name="hours_rate"/>
+                                </div>
+                                <field name="free_field_17"/>
+                                <field name="free_field_17"/>
+                                <field name="free_field_17"/>
+                                <field name="free_field_17"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page name="pdp" string="PDP" invisible="1">
+                        <group>
+                            <group>
+                                <field name="challenge_name" string="Challenge Name"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="periodicity"/>
+                                <field name="display_mode" widget="radio"/>
+
+                            </group>
+                            <group>
+                                <br/>
+                                <field name="responsible"/>
+                                <field name="start_pdp_date"/>
+                                <field name="end_pdp_date"/>
+                            </group>
+                        </group>
+
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        <record id="contact_extension_form_view" model="ir.ui.view">
+            <field name="name">contact.extension.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group[1]/group[1]/field[@name='vat']" position="after">
+                    <field name="emp_id"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="employee_address_tree" model="ir.ui.view">
+            <field name="name">Employee.Address.tree</field>
+            <field name="model">employee.address</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="employee_address_form" model="ir.ui.view">
+            <field name="name">Employee.Address.form</field>
+            <field name="model">employee.address</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="employee_address_action">
+            <field name="name">Work Location</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">employee.address</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your First Address !
+                </p>
+            </field>
+        </record>
+        <menuitem id="employee_id" name="Work Location" parent="hr.menu_human_resources_configuration"
+                  action="employee_address_action" sequence="4"/>
+
+    </data>
+</odoo>
