@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_production_data_list" model="ir.ui.view">
+        <field name="name">production.data.list</field>
+        <field name="model">cr.production.data</field>
+        <field name="arch" type="xml">
+            <list string="Overhead Data">
+                <field name="overhead_master_id"/>
+                <field name="cost"/>
+                <field name="subtotal"/>
+                <field name="mrp_production_id"/>
+            </list>
+        </field>
+    </record>
+</odoo>

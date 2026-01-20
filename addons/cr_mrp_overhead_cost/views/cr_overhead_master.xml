@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_overhead_master_form" model="ir.ui.view">
+        <field name="name">overhead.master.form</field>
+        <field name="model">cr.overhead.master</field>
+        <field name="arch" type="xml">
+            <form string="Overhead Master">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="description"/>
+                        </group>
+                    </group>
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Debit Account </strong><field name="debit_account_id" />
+                        </div>
+                        <div class="col-6">
+                            <strong>Credit Account </strong><field name="credit_account_id" />
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_overhead_master_list" model="ir.ui.view">
+        <field name="name">overhead.master.list</field>
+        <field name="model">cr.overhead.master</field>
+        <field name="arch" type="xml">
+            <list string="Overhead Masters">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="debit_account_id"/>
+                <field name="credit_account_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="overhead_master_action" model="ir.actions.act_window">
+        <field name="name">Overhead Masters</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cr.overhead.master</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="overhead_master_menu"
+              name="Overhead Masters"
+              parent="mrp.menu_mrp_configuration"
+              action="overhead_master_action"
+              sequence="9999"/>
+</odoo>

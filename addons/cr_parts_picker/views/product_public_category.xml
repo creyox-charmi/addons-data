@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_product_public_category_form_inherit" model="ir.ui.view">
+    <field name="name">product.public.category.form.inherit.parts.picker</field>
+    <field name="model">product.public.category</field>
+    <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+    <field name="arch" type="xml">
+        <xpath expr="//group" position="after">
+            <group class="parts_picker_conf">
+            <group string="Parts Picker Configuration">
+                <field name="is_show_in_parts_picker"/>
+                <field name="allow_multiple_products"/>
+                <field name="is_optional"/>
+            </group>
+            </group>
+
+        </xpath>
+    </field>
+</record>
+
+</odoo>

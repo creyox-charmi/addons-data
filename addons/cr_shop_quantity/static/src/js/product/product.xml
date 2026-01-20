@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+        <t t-inherit="sale.Product" t-inherit-mode="extension" owl="1">
+        <xpath expr="//QuantityButtons" position="attributes">
+            <attribute name="product_tmpl_id">this.props.product_tmpl_id</attribute>
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8577e2a3-dee6-4123-8bd8-1b6f259aa41b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../addons/delivery/models/delivery_carrier.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/delivery/models/delivery_carrier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/mail/static/src/core/common/composer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/mail/static/src/core/common/composer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/mrp/report/mrp_report_bom_structure.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/mrp/report/mrp_report_bom_structure.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/mrp/static/src/components/bom_overview/mrp_bom_overview.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/mrp/static/src/components/bom_overview/mrp_bom_overview.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/purchase_stock/models/stock_rule.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/purchase_stock/models/stock_rule.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/stock/models/stock_move.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/stock/models/stock_move.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/stock/models/stock_move_line.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/stock/models/stock_move_line.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/stock/models/stock_picking.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/stock/models/stock_picking.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/website/models/mixins.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/website/models/mixins.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/website/models/website.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/website/models/website.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/website/models/website_page.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/website/models/website_page.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../addons/website/views/snippets/snippets.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../addons/website/views/snippets/snippets.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../odoo/tools/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../odoo/tools/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../requirements.txt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="353R1Jc88W4oiPCmup7FdV2Pxo7" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "18.0"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-1f77c24022e5-d902c0275401-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-252.26830.99" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8577e2a3-dee6-4123-8bd8-1b6f259aa41b" name="Changes" comment="" />
+      <created>1762336551659</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1762336551659</updated>
+    </task>
+    <servers />
+  </component>
+</project>

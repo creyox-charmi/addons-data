@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+        <t t-inherit="sale.QuantityButtons" t-inherit-mode="extension" owl="1">
+        <xpath expr="//button[@name='sale_quantity_button_plus']" position="after">
+            <input type='hidden' class="multi_quantity_product" t-att-value="props.product_tmpl_id"/>
+        </xpath>
+    </t>
+</templates>

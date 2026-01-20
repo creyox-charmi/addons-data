@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="product_approval_wiz_form_view_id">
+        <field name="name">product.approval.wiz.form.view.id</field>
+        <field name="model">product.approval.wiz</field>
+        <field name="arch" type="xml">
+            <form >
+                <group>
+                    <field name="reason_approval"/>
+                </group>
+                <footer>
+                    <button name="action_save_approve_button" type="object" string="Approve" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_product_approval_wizard" model="ir.actions.act_window">
+        <field name="name">Approve</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.approval.wiz</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

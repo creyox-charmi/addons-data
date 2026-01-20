@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="web.ListView" t-inherit-mode="extension" t-name="cr_sale_order_re_nre.ListView">
+                 <xpath expr="//t[@t-set-slot='control-panel-create-button']" position="inside">
+                      <t t-if="model.root.resModel == 'sale.order.line.re.sub'">
+                        <div class="alert alert-warning w-100 d-flex align-items-center gap-1" role="alert">
+                        <span>Warning: Please do not forgot to add the required date</span>
+                        </div>
+                      </t>
+                 </xpath>
+    </t>
+</templates>

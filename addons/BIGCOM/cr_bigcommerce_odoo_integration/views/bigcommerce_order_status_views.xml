@@ -1,0 +1,52 @@
+<!-- views/bigcommerce_order_status_views.xml -->
+<odoo>
+    <!-- Tree View -->
+    <record id="view_bigcommerce_order_status_tree" model="ir.ui.view">
+        <field name="name">bigcommerce.order.status.tree</field>
+        <field name="model">bigcommerce.order.status</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="store_id"/>
+                <field name="bigcommerce_status_id"/>
+                <field name="name"/>
+                <field name="system_label"/>
+                <field name="custom_label"/>
+                <field name="order"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_bigcommerce_order_status_form" model="ir.ui.view">
+        <field name="name">bigcommerce.order.status.form</field>
+        <field name="model">bigcommerce.order.status</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="store_id"/>
+                        <field name="bigcommerce_status_id"/>
+                        <field name="name"/>
+                        <field name="system_label"/>
+                        <field name="custom_label"/>
+                        <field name="system_description"/>
+                        <field name="order"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bigcommerce_order_status" model="ir.actions.act_window">
+        <field name="name">Order Statuses</field>
+        <field name="res_model">bigcommerce.order.status</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_bigcommerce_order_status"
+              name="Order Statuses"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_store_sale_orders"
+              action="action_bigcommerce_order_status"/>
+</odoo>

@@ -1,0 +1,18 @@
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<odoo>-->
+<!--    <record id="view_delivery_carrier_form_inherit" model="ir.ui.view">-->
+<!--        <field name="name">delivery.carrier.form.inherit</field>-->
+<!--        <field name="model">delivery.carrier</field>-->
+<!--        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//notebook/page[@name='pricing']" position="after">-->
+<!--                <page name="city_wise_shipping" string="City-Wise Shipping">-->
+<!--                    <group>-->
+<!--                        <field name="city_ids" widget="many2many_tags"/>-->
+<!--                        <field name="city_based_rate"/>-->
+<!--                    </group>-->
+<!--                </page>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+<!--</odoo>-->

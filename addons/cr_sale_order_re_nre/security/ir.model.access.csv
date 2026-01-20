@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_order_line_re_sub_salesman,sale.order.line.re.sub.salesman,model_sale_order_line_re_sub,,1,1,1,1
+access_sale_order_line_nre_sub_salesman,sale.order.line.nre.sub.salesman,model_sale_order_line_nre_sub,,1,1,1,1
+access_sale_order_line_nre_sub_wizard,sale.order.line.nre.sub.wizard,model_sale_order_line_nre_sub_wizard,base.group_user,1,1,1,1
+access_sale_order_line_nre_sub_wizard_line,sale.order.line.nre.sub.wizard.line,model_sale_order_line_nre_sub_wizard_line,base.group_user,1,1,1,1
+access_sale_order_line_re_sub_wizard,sale.order.line.re.sub.wizard,model_sale_order_line_re_sub_wizard,base.group_user,1,1,1,1
+access_sale_order_line_re_sub_wizard_line,sale.order.line.re.sub.wizard.line,model_sale_order_line_re_sub_wizard_line,base.group_user,1,1,1,1

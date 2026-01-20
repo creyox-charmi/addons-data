@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Create a default product for the delivery carrier -->
+
+
+    <record id="delivery_product_city_wise" model="product.product">
+        <field name="name">City-Based Shipping</field>
+        <field name="default_code">Delivery_0021</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">0.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+<!--    <record id="delivery_product_city_wise" model="product.product">-->
+<!--        <field name="name">City-Based Shipping</field>-->
+<!--        <field name="type">service</field>-->
+<!--        <field name="sale_ok">False</field>-->
+<!--        <field name="purchase_ok">False</field>-->
+<!--        <field name="invoice_policy">order</field>-->
+<!--        <field name="taxes_id" eval="[]"/>-->
+<!--        <field name="supplier_taxes_id" eval="[]"/>-->
+<!--    </record>-->
+
+    <!-- Create the delivery carrier with the associated product -->
+    <record id="delivery_city_wise_example" model="delivery.carrier">
+        <field name="name">City-Based Shipping</field>
+        <field name="delivery_type">fixed</field>
+        <field name="delivery_type">base_on_rule</field>
+        <field name="website_published">True</field>
+        <field name="product_id" ref="city_wise_shipping.delivery_product_city_wise"/>
+    </record>
+
+<!--    <record id="free_delivery_carrier" model="delivery.carrier">-->
+<!--        <field name="name">Standard delivery</field>-->
+<!--        <field name="fixed_price">0.0</field>-->
+<!--        <field name="sequence">1</field>-->
+<!--        <field name="delivery_type">fixed</field>-->
+<!--        <field name="product_id" ref="delivery.product_product_delivery"/>-->
+<!--    </record>-->
+</odoo>

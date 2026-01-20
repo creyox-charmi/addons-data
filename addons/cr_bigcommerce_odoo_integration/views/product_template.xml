@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_product_template_form_bigcommerce" model="ir.ui.view">
+        <field name="name">product.template.form.bigcommerce</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="import_product_image" string="Import Image" class="oe_highlight"
+                        type="object"
+                        invisible="not bigcommerce_product_id"
+                        icon="fa-download"/>
+                <button name="import_bigcommerce_variants" string="Import Variants" class="oe_highlight"
+                        type="object"
+                        invisible="not bigcommerce_product_id"
+                        icon="fa-download"/>
+                <button name="bigcommerce_update_product"
+                        type="object"
+                        string="Update Product In BigCommerce"
+                        class="btn-primary"
+                        icon="fa-refresh"
+                        invisible="not bigcommerce_product_id"/>
+                <button name="action_delete_product_from_bigcommerce"
+                        type="object"
+                        string="Delete Product In BigCommerce"
+                        class="btn-primary"
+                        icon="fa-trash"
+                        invisible="not bigcommerce_product_id"/>
+            </xpath>
+            <xpath expr="//sheet/notebook" position="inside">
+                <page name="bigcommerce" string="BigCommerce">
+                    <group>
+
+                        <group string="Identification">
+                            <field name="bigcommerce_store_id"/>
+                            <field name="bigcommerce_product_id"/>
+                            <field name="bigcommerce_type"/>
+                            <field name="bigcommerce_brand_id"/>
+                            <field name="bigcommerce_categories"/>
+                            <field name="bigcommerce_option_set_id"/>
+                        </group>
+
+                        <group string="Dimensions &amp; Weight" colspan="2">
+                            <field name="bigcommerce_weight"/>
+                            <field name="bigcommerce_width"/>
+                            <field name="bigcommerce_depth"/>
+                            <field name="bigcommerce_height"/>
+                        </group>
+
+                        <group string="Pricing">
+                            <field name="bigcommerce_cost_price"/>
+                            <field name="bigcommerce_sale_price"/>
+                            <field name="bigcommerce_map_price"/>
+                            <field name="bigcommerce_calculated_price"/>
+                        </group>
+
+                        <group string="Tax Information">
+                            <field name="bigcommerce_tax_class_id"/>
+                            <field name="bigcommerce_product_tax_code"/>
+                        </group>
+
+                        <group string="Inventory">
+                            <field name="bigcommerce_inventory_level"/>
+                            <field name="bigcommerce_tracking"/>
+                            <field name="bigcommerce_total_sold"/>
+                        </group>
+
+                        <group string="Product Identifiers">
+                            <field name="bigcommerce_upc"/>
+                            <field name="bigcommerce_mpn"/>
+                            <field name="bigcommerce_gtin"/>
+                        </group>
+
+                        <group string="Storefront Info">
+                            <field name="bigcommerce_url"/>
+                            <field name="bigcommerce_is_visible"/>
+                            <field name="bigcommerce_availability"/>
+                            <field name="bigcommerce_condition"/>
+                            <field name="bigcommerce_layout_file"/>
+                        </group>
+
+                        <group string="SEO">
+                            <field name="bigcommerce_page_title"/>
+                            <field name="bigcommerce_meta_description"/>
+                        </group>
+
+                        <group string="Stats">
+                            <field name="bigcommerce_view_count"/>
+                        </group>
+
+                        <group string="Description">
+                            <field name="bigcommerce_description"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Action for BigCommerce Products -->
+    <record id="action_bigcommerce_products" model="ir.actions.act_window">
+        <field name="name">BigCommerce Products</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('bigcommerce_product_id', '!=', None)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Menu item under BigCommerce Product Info -->
+    <menuitem id="menu_bigcommerce_store_product_template"
+              name="Products"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_product_info"
+              action="action_bigcommerce_products"/>
+
+    <record id="action_bulk_export_products_bigcommerce" model="ir.actions.server">
+        <field name="name">Export Products To BigCommerce</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_product_template"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_export_to_bigcommerce()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+    <record id="action_bulk_update_products_bigcommerce" model="ir.actions.server">
+        <field name="name">Update Products In BigCommerce</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_product_template"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_update_bigcommerce_product()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+
+</odoo>

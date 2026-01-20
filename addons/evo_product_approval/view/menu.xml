@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="action_product_approval_workflow" model="ir.actions.act_window">
+            <field name="name">Product Approval Workflow</field>
+            <field name="res_model">product.approval.workflow.master</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_empty_folder">
+                    No Approval workflows yet. Please create one.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_product_approval_root"
+                  name="Product Approval Workflow"
+                  parent="base.menu_users"
+                  action="action_product_approval_workflow"
+                  sequence="15"
+        />
+        <menuitem id="menu_product_approval_draft"
+                  name="Products In Draft"
+                  parent="sale.product_menu_catalog"
+                  action="product_draft_action_id"
+                  sequence="11"
+        />
+        <menuitem id="menu_product_approval_pending"
+                  name="Products In Pending"
+                  parent="sale.product_menu_catalog"
+                  action="product_pending_action_id"
+                  sequence="12"
+        />
+        <menuitem id="menu_product_approval_reject"
+                  name="Products In Reject"
+                  parent="sale.product_menu_catalog"
+                  action="product_rejected_action_id"
+                  sequence="13"
+        />
+
+    </data>
+
+</odoo>

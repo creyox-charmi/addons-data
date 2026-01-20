@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_partial_payment_wizard_form" model="ir.ui.view">
+            <field name="name">partial.payment.wizard.form</field>
+            <field name="model">partial.payment.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Partial Payment Wizard">
+                    <group>
+                        <group>
+                            <field name="payment_name"/>
+                            <field name="partner_id"/>
+                            <br/>
+                            <separator string="Payment" colspan="4" />
+                            <field name="account_move_line_id"/>
+                            <field name="currency_id"/>
+                            <field name="residual_amount"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="partner_type" style ="width: 400px; display:flex; gap:10px;" readonly="1"/>
+                                <field name="payment_type" style ="width: 400px; display:flex; gap:10px;" readonly="1"/>
+                            </group>
+                            <div style ="margin-top: 21vh; width: 400px; display:flex; gap:10px; color: black;">
+                                <label for='remain_amount'>Remain Amount</label>
+                                <field name="remain_amount" style = "width:65%"/>
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string ="Move Lines">
+                            <field name="account_move_ids">
+                                <list editable="bottom">
+                                    <field name="state" invisible ="1"/>
+                                    <field name="name" string="Account Move"/>
+                                    <field name="currency_id"/>
+                                    <field name="amount_residual" string="Residual Amount"/>
+                                    <field name="amount_to_pay" string="Amount to Pay" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>    
+                    <footer>
+                        <button string="Register Payment" type="object" name="process_payment" class="btn-primary"/>
+                        <button string="Discard" special="cancel" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_open_cr_partial_payment_wizard_customer" model="ir.actions.act_window">
+            <field name="name">Partial Payment</field>
+            <field name="res_model">partial.payment.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_partial_payment_wizard_form"/>
+            <field name="target">new</field>
+            <field name="context">
+                {
+                    'default_partner_type': 'customer', 
+                    'default_payment_type': 'inbound'
+                }
+            </field>
+        </record>
+        <record id="action_open_cr_partial_payment_wizard_vendor" model="ir.actions.act_window">
+            <field name="name">Partial Payment</field>
+            <field name="res_model">partial.payment.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_partial_payment_wizard_form"/>
+            <field name="target">new</field>
+            <field name="context">
+                {
+                    'default_partner_type': 'supplier', 
+                    'default_payment_type': 'outbound'
+                }
+            </field>
+        </record>
+
+        <menuitem id="partial_payment_customer_id"
+            name="Partial Payments"
+            parent="account.menu_finance_receivables"
+            action="action_open_cr_partial_payment_wizard_customer"
+            sequence="8"/>
+            
+        <menuitem id="Partial_payment_vendor_id"
+            name="Partial Payments"
+            parent="account.menu_finance_payables"
+            action="action_open_cr_partial_payment_wizard_vendor"
+            sequence="9"/>
+    </data>
+</odoo>

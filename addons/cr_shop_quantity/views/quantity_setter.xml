@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <template id="product_cart_line_inherit" inherit_id="website_sale.cart_lines">
+        <xpath expr="//div[@id='cart_products']//img" position="before">
+            <input type="hidden" id="min_sale_qty" class="min_sale_qty" t-att-value="line.product_id.product_tmpl_id.min_sale_qty"/>
+            <input type="hidden" id="max_sale_qty" class="max_sale_qty" t-att-value="line.product_id.product_tmpl_id.max_sale_qty"/>
+            <input type="hidden" id="qty_steps" class="qty_steps" t-att-value="line.product_id.product_tmpl_id.qty_steps"/>
+        </xpath>
+<!--        <xpath expr="//input[@type='text']" position="attributes">-->
+<!--            <attribute name="readonly">readonly</attribute>-->
+<!--            <attribute name="style">pointer-events: none; background-color: #f5f5f5;</attribute>-->
+<!--        </xpath>-->
+    </template>
+
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_simple_modif_inherit_daily_report" model="ir.ui.view">
+        <field name="name">res.users.form.simple.modif.inherit.daily.report</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences_page']" position="after">
+                <page name="daily_report_page" string="Daily Report" invisible="True">
+                    <group name="daily_report_settings" string="Daily Opportunity Report">
+                        <field name="receive_daily_opportunity_report" widget="boolean_toggle"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_users_form_inherit_daily_report" model="ir.ui.view">
+        <field name="name">res.users.form.inherit.daily.report</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='preferences']" position="after">
+                <group name="daily_report_settings" string="Daily Opportunity Report" invisible="True">
+                    <field name="receive_daily_opportunity_report" widget="boolean_toggle"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

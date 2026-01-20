@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_view_success_message,access_res_user_success_message,model_res_users,,1,1,1,1
+access_cr_signature_view_form,access_cr_signature_view_form,model_cr_signature,,1,1,1,1
+access_cr_recipients_view_form,access_cr_recipients_view_form,model_cr_recipients,,1,1,1,1

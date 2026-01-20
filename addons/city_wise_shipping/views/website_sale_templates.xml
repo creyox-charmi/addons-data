@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="website_sale_delivery_inherit" inherit_id="website_sale_delivery.delivery_carrier">
+        <xpath expr="//div[@id='delivery_carrier']" position="inside">
+            <t t-if="order.partner_shipping_id.city_id">
+                <span t-esc="order.partner_shipping_id.city_id.name"
+                      t-att-class="'badge bg-info text-white ms-2'"/>
+            </t>
+        </xpath>
+    </template>
+</odoo>

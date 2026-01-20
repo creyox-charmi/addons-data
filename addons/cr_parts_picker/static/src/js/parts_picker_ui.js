@@ -1,0 +1,54 @@
+/** @odoo-module **/
+
+import publicWidget from "@web/legacy/js/public/public_widget";
+
+publicWidget.registry.PartsPickerUI = publicWidget.Widget.extend({
+    selector: '.category-block',
+
+    events: Object.assign({}, publicWidget.Widget.prototype.events, {
+        'click .product-row': '_onClickProductRow',
+    }),
+
+    start: function () {
+        this._checkCategoryLimits();
+        this._setRowCursor();
+    },
+
+    _checkCategoryLimits() {
+        this.$el.each(function () {
+            const $block = $(this);
+            const allowMultiple = $block.data('allow-multiple'); // expects true/false
+
+            if (!allowMultiple) {
+                const $products = $block.find('.product-row');
+                if ($products.length >= 1) {
+                    $block.find('.add-product .btn').hide();
+                }
+            }
+        });
+    },
+
+    _setRowCursor() {
+        this.$('.product-row').css('cursor', 'pointer');
+    },
+
+    _onClickProductRow: function (ev) {
+        const $target = $(ev.target);
+        const $row = $(ev.currentTarget);
+
+        // Prevent navigation when clicking on buttons/links inside the row
+        if ($target.closest('a, .btn').length === 0) {
+            const href = $row.data('href');
+            if (href) {
+                window.location.href = href;
+            }
+        }
+    },
+});
+export default publicWidget.registry.PartsPickerUI;
+
+
+
+
+
+

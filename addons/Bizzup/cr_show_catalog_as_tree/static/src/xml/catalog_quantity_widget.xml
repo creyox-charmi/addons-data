@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="cr_show_catalog_as_tree.CatalogQuantityWidget">
+        <div class="o_catalog_quantity_widget d-flex align-items-center gap-2">
+            <t t-if="!showButtons">
+                <button class="btn btn-primary btn-sm" t-on-click="onAdd" t-att-disabled="state.loading">
+                    <t t-if="state.loading">
+                        <i class="fa fa-spinner fa-spin"/>
+                    </t>
+                    <t t-else="">
+                        Add
+                    </t>
+                </button>
+            </t>
+            <t t-else="">
+                <button class="btn btn-outline-secondary btn-sm" t-on-click="onDecrease" t-att-disabled="state.loading">
+                    <i class="fa fa-minus"/>
+                </button>
+                <input type="number"
+                       class="form-control form-control-sm text-center"
+                       style="width: 60px;"
+                       t-att-value="state.quantity"
+                       t-on-change="onQuantityChange"
+                       t-att-disabled="state.loading"
+                       min="0"
+                       step="1"/>
+                <button class="btn btn-outline-secondary btn-sm" t-on-click="onIncrease" t-att-disabled="state.loading">
+                    <i class="fa fa-plus"/>
+                </button>
+                <button class="btn btn-outline-danger btn-sm" t-on-click="onRemove" t-att-disabled="state.loading">
+                    <i class="fa fa-trash"/>
+                </button>
+            </t>
+        </div>
+    </t>
+</templates>

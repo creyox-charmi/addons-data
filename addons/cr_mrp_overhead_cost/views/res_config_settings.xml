@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="overhead_setting" model="ir.ui.view">
+        <field name="name">overhead.settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='main_currency_setting_container']" position="before">
+                    <block title="Overhead Cost Journal" name="overhead_settings_container">
+                        <setting id="overhead_setting_config_creyox" >
+                             <label for="cr_journal_id"/>
+                            <field name="cr_journal_id" options="{'no_create_edit': True, 'no_open': True}" context="{'active_test': False}"/>
+                        </setting>
+                    </block>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_invoice_journal_overhead_configuration" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="overhead_setting"/>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'mrp', 'bin_size': False}</field>
+    </record>
+</odoo>

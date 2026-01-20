@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+        <t t-inherit="mail.Composer.attachFiles" t-inherit-mode="extension" t-name="remove_chatter_attach_for_crm_msg">
+
+       <xpath expr="//t[@t-name='mail.Composer.attachFiles']/FileUploader" position="replace">
+        <FileUploader t-if="allowUpload and !isCrmLead"
+                      multiUpload="true"
+                      onUploaded.bind="(data) => { attachmentUploader.uploadData(data) }">
+            <t t-set-slot="toggler">
+                <button t-att-disabled="!state.active"
+                        class="o-mail-Composer-attachFiles btn border-0 rounded-pill p-1"
+                        title="Attach files"
+                        aria-label="Attach files"
+                        type="button"
+                        t-on-click="onClickAddAttachment">
+                    <i class="fa fa-fw fa-paperclip"/>
+                </button>
+            </t>
+        </FileUploader>
+    </xpath>
+        </t>
+</templates>

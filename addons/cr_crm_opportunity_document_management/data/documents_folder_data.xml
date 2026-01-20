@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Root Marketing Folder -->
+        <record id="folder_marketing" model="documents.document">
+            <field name="name">Marketing</field>
+            <field name="type">folder</field>
+            <field name="folder_id" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="is_master_folder">True</field>
+        </record>
+        <!-- Opportunities Folder -->
+        <record id="folder_opportunities" model="documents.document">
+            <field name="name">Opportunities</field>
+            <field name="type">folder</field>
+            <field name="folder_id" ref="folder_marketing"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="is_master_folder">True</field>
+        </record>
+    </data>
+</odoo>

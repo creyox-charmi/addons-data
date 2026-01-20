@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_aged_payable_custom,access.aged.payable.custom,model_account_aged_payable_custom,base.group_user,1,0,0,0
+access_aged_receivable_custom,access.aged.receivable.custom,model_account_aged_receivable_custom,base.group_user,1,0,0,0
+access_partner_ledger_custom,access.partner.ledger.custom,model_account_partner_ledger_custom,base.group_user,1,0,0,0

@@ -1,0 +1,430 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* cr_sale_order_re_nre
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-05 12:29+0000\n"
+"PO-Revision-Date: 2025-09-05 12:29+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,help:cr_sale_order_re_nre.field_sale_order_line__updated_delivery_date
+msgid "Actual delivery date after or before required date"
+msgstr ""
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,help:cr_sale_order_re_nre.field_sale_order_line__remaining_invoiced_amount
+msgid ""
+"Amount still to be invoiced for this line, based on ordered qty minus "
+"invoiced qty."
+msgstr ""
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__billing_percentage
+msgid "Billing %"
+msgstr "% חיוב"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__billing_amount
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__billing_amount
+msgid "Billing Amount"
+msgstr "סכום חיוב"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__billing_percentage
+msgid "Billing Percentage"
+msgstr "אחוז חיוב"
+
+#. module: cr_sale_order_re_nre
+#: model_terms:ir.ui.view,arch_db:cr_sale_order_re_nre.view_nre_sub_line_wizard_form
+msgid "Cancel"
+msgstr "לְבַטֵל"
+
+#. module: cr_sale_order_re_nre
+#: model_terms:ir.ui.view,arch_db:cr_sale_order_re_nre.view_nre_sub_line_wizard_form
+msgid "Confirm"
+msgstr "לְאַשֵׁר"
+
+#. module: cr_sale_order_re_nre
+#: model_terms:ir.ui.view,arch_db:cr_sale_order_re_nre.view_nre_sub_line_wizard_form
+msgid "Create Invoice"
+msgstr "צור חשבונית"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__create_uid
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard__create_uid
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__create_uid
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__create_uid
+msgid "Created by"
+msgstr "נוצר על ידי"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__create_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard__create_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__create_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__create_date
+msgid "Created on"
+msgstr "נוצר ב"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__currency_id
+msgid "Currency"
+msgstr "מַטְבֵּעַ"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__customer_pn
+msgid "Customer PN"
+msgstr "PN לקוח"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,help:cr_sale_order_re_nre.field_sale_order_line__customer_pn
+msgid "Customer Part Number - to be filled manually"
+msgstr "מספר חלק של הלקוח - יש למלא באופן ידני"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields.selection,name:cr_sale_order_re_nre.selection__sale_order_line_re_sub__state__delivered
+msgid "Delivered"
+msgstr "נמסר"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__qty_delivered
+msgid "Delivered Qty"
+msgstr "נמסר כמות"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__delivery_note_number
+msgid "Delivery Note Number"
+msgstr "מספר תעודת משלוח"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__display_name
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard__display_name
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__display_name
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__display_name
+msgid "Display Name"
+msgstr "שם תצוגה"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__everest_pn
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__everest_pn
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__everest_pn
+msgid "Everest PN"
+msgstr "אוורסט PN"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__everest_pn
+msgid "Everest Pn"
+msgstr "אוורסט Pn"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,help:cr_sale_order_re_nre.field_sale_order_line__required_delivery_date
+msgid "Expected delivery date"
+msgstr "תאריך אספקה ​​צפוי"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,help:cr_sale_order_re_nre.field_sale_order_line__everest_pn
+msgid "Generated part number: EVR + SO Number + Quantity + Row"
+msgstr "מספר חלק שנוצר: EVR + מספר SO + כמות + שורה"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__id
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard__id
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__id
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__id
+msgid "ID"
+msgstr "תְעוּדַת זֶהוּת"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__invoice_id
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__invoice_id
+msgid "Invoice"
+msgstr "חֶשׁבּוֹנִית"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields.selection,name:cr_sale_order_re_nre.selection__sale_order_line_nre_sub__invoicing_status__invoiced
+#: model:ir.model.fields.selection,name:cr_sale_order_re_nre.selection__sale_order_line_nre_sub_wizard_line__invoicing_status__invoiced
+#: model:ir.model.fields.selection,name:cr_sale_order_re_nre.selection__sale_order_line_re_sub__state__invoiced
+msgid "Invoiced"
+msgstr "חשבונית"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__nre_invoiced_amount
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__invoiced_amount
+msgid "Invoiced Amount"
+msgstr "סכום חשבונית"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__invoicing_status
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__invoicing_status
+msgid "Invoicing Status"
+msgstr "סטטוס חשבונית"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__write_uid
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard__write_uid
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__write_uid
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__write_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard__write_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__write_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard__line_ids
+msgid "Line"
+msgstr "קַו"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__line_number
+msgid "Line N"
+msgstr "קו N"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields.selection,name:cr_sale_order_re_nre.selection__sale_order_line__re_nre__nre
+msgid "NRE"
+msgstr "NRE"
+
+#. module: cr_sale_order_re_nre
+#: model_terms:ir.ui.view,arch_db:cr_sale_order_re_nre.view_nre_sub_line_form
+msgid "NRE Sub Line"
+msgstr "קו משנה NRE"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__nre_sub_line_ids
+msgid "NRE Sub Lines"
+msgstr ""
+
+#. module: cr_sale_order_re_nre
+#: model_terms:ir.ui.view,arch_db:cr_sale_order_re_nre.view_nre_sub_line_wizard_form
+msgid "NRE Sub Lines Wizard"
+msgstr "קווי משנה NRE"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model,name:cr_sale_order_re_nre.model_sale_order_line_nre_sub_wizard_line
+msgid "NRE Sub-line Wizard Line"
+msgstr "קו אשף תת-קו NRE"
+
+#. module: cr_sale_order_re_nre
+#: model_terms:ir.ui.view,arch_db:cr_sale_order_re_nre.view_sale_order_line_tree_custom
+msgid "Order Lines"
+msgstr "קווי הזמנה"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields.selection,name:cr_sale_order_re_nre.selection__sale_order_line_re_sub__state__pending
+msgid "Pending"
+msgstr "תָלוּי וְעוֹמֵד"
+
+#. module: cr_sale_order_re_nre
+#. odoo-python
+#: code:addons/cr_sale_order_re_nre/wizard/sale_order_line_nre_sub_wizard.py:0
+msgid "Persistent NRE sub-line not found for %s"
+msgstr "לא נמצאה שורת משנה NRE מתמדת עבור %s"
+
+#. module: cr_sale_order_re_nre
+#. odoo-python
+#: code:addons/cr_sale_order_re_nre/wizard/sale_order_line_nre_sub_wizard.py:0
+msgid "Please select at least one sub-line to create invoice."
+msgstr "אנא בחר לפחות שורה משנה אחת ליצירת חשבונית."
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model,name:cr_sale_order_re_nre.model_product_template
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__product_id
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__product_id
+msgid "Product"
+msgstr "מוּצָר"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model,name:cr_sale_order_re_nre.model_product_product
+msgid "Product Variant"
+msgstr "וריאנט מוצר"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__quantity
+msgid "Quantity"
+msgstr "כַּמוּת"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,help:cr_sale_order_re_nre.field_sale_order_line__remaining_qty_to_deliver
+msgid "Quantity remaining to be delivered"
+msgstr "כמות שנותרה לספק"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields.selection,name:cr_sale_order_re_nre.selection__sale_order_line__re_nre__re
+msgid "RE"
+msgstr "מִחָדָשׁ"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__re_nre
+msgid "RE & NRE"
+msgstr "RE & NRE"
+
+#. module: cr_sale_order_re_nre
+#: model_terms:ir.ui.view,arch_db:cr_sale_order_re_nre.view_re_sub_line_form
+msgid "RE Sub Line"
+msgstr "RE Sub Line"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__re_sub_line_ids
+msgid "RE Sub Lines"
+msgstr "RE Sub Lines"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__nre_remaining_amount
+msgid "Remaining Amount"
+msgstr "כמות שנותרה"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__remaining_invoiced_amount
+msgid "Remaining Invoiced Amount"
+msgstr "סכום חשבונית שנותר"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__remaining_qty_to_deliver
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__remaining_qty_to_deliver
+msgid "Remaining Qty to Deliver"
+msgstr "כמות שנותרה למשלוח"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__required_delivery_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__required_delivery_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__required_delivery_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__required_delivery_date
+msgid "Required Delivery Date"
+msgstr "תאריך אספקה ​​נדרש"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__sale_line_id
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard__sale_line_id
+msgid "Sale Line"
+msgstr "קו מכירה"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__sale_line_id
+msgid "Sale Order Line"
+msgstr "שורת הזמנת מבצע"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model,name:cr_sale_order_re_nre.model_sale_order_line_nre_sub
+msgid "Sale Order Line NRE Sub Lines"
+msgstr ""
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model,name:cr_sale_order_re_nre.model_sale_order_line_re_sub
+msgid "Sale Order Line RE Sub Lines"
+msgstr ""
+
+#. module: cr_sale_order_re_nre
+#. odoo-python
+#: code:addons/cr_sale_order_re_nre/wizard/sale_order_line_nre_sub_wizard.py:0
+msgid "Sale Order not found or not saved - cannot create invoice."
+msgstr "הזמנת המכירה לא נמצאה או לא נשמרה - לא ניתן ליצור חשבונית."
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model,name:cr_sale_order_re_nre.model_sale_order_line
+msgid "Sales Order Line"
+msgstr ""
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__selected
+msgid "Select"
+msgstr "לִבחוֹר"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,help:cr_sale_order_re_nre.field_sale_order_line__re_nre
+msgid "Select RE or NRE"
+msgstr "בחר RE או NRE"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__sequence
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__sequence
+msgid "Sequence"
+msgstr "רֶצֶף"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,help:cr_sale_order_re_nre.field_sale_order_line__line_number
+msgid "Sequential line number starting from 1"
+msgstr ""
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__state
+msgid "Status"
+msgstr "סטָטוּס"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__sub_line_code
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__sub_line_code
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__sub_line_code
+msgid "Sub Line Code"
+msgstr "קוד משנה"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__sub_line_description
+msgid "Sub Line Description"
+msgstr "תיאור קו משנה"
+
+#. module: cr_sale_order_re_nre
+#. odoo-python
+#: code:addons/cr_sale_order_re_nre/wizard/sale_order_line_nre_sub_wizard.py:0
+msgid "Sub-line %s is already invoiced (Invoice %s)."
+msgstr "שורה משנה %s כבר חויב (חשבונית %s)."
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__sub_line_description
+msgid "Sub-line Description"
+msgstr "תיאור שורת משנה"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields.selection,name:cr_sale_order_re_nre.selection__sale_order_line_nre_sub__invoicing_status__to_invoice
+#: model:ir.model.fields.selection,name:cr_sale_order_re_nre.selection__sale_order_line_nre_sub_wizard_line__invoicing_status__to_invoice
+msgid "To Invoice"
+msgstr "לחשבונית"
+
+#. module: cr_sale_order_re_nre
+#. odoo-python
+#: code:addons/cr_sale_order_re_nre/wizard/sale_order_line_nre_sub_wizard.py:0
+msgid "Total Billing Percentage cannot exceed 100%%. Currently: %s"
+msgstr "אחוז החיוב הכולל לא יכול לעלות על 100%. נכון לעכשיו: %s"
+
+#. module: cr_sale_order_re_nre
+#. odoo-python
+#: code:addons/cr_sale_order_re_nre/wizard/sale_order_line_nre_sub_wizard_line.py:0
+msgid ""
+"Total Billing Percentage cannot exceed 100%. Current total would be {:.2f}%"
+msgstr "אחוז החיוב הכולל לא יעלה על 100%. הסכום הכולל הנוכחי יהיה {:.2f}%"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model,name:cr_sale_order_re_nre.model_stock_picking
+msgid "Transfer"
+msgstr "לְהַעֲבִיר"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line__updated_delivery_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub__updated_delivery_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__updated_delivery_date
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_re_sub__updated_delivery_date
+msgid "Updated Delivery Date"
+msgstr "תאריך אספקה ​​מעודכן"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model.fields,field_description:cr_sale_order_re_nre.field_sale_order_line_nre_sub_wizard_line__wizard_id
+msgid "Wizard"
+msgstr "אַשָׁף"
+
+#. module: cr_sale_order_re_nre
+#: model:ir.model,name:cr_sale_order_re_nre.model_sale_order_line_nre_sub_wizard
+msgid "Wizard for NRE Sub-lines"
+msgstr ""

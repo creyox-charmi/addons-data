@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bigcommerce_import_progress_wizard_form" model="ir.ui.view">
+        <field name="name">bigcommerce.import.progress.wizard.form</field>
+        <field name="model">bigcommerce.import.progress.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Progress">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="import_type" readonly="1" class="oe_inline"/>
+                            Import Progress
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="store_id" readonly="1"/>
+                            <field name="status" readonly="1"/>
+                            <field name="elapsed_time" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="total_processed" readonly="1"/>
+                           <!-- Show "Created" except for product and address -->
+<field name="created_count"
+       readonly="1"
+       string="Created"
+       invisible="import_type in ('product', 'address')"/>
+
+<!-- Show "Updated" when import_type != product -->
+<field name="updated_count"
+       readonly="1"
+       string="Updated"
+       invisible="import_type == 'product'"/>
+
+<!-- Show "Skipped" when import_type == product -->
+<field name="updated_count"
+       readonly="1"
+       string="Skipped"
+       invisible="import_type != 'product'"/>
+
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="progress_percentage" widget="progressbar" readonly="1"/>
+                    </group>
+
+                    <group invisible="not error_message">
+                        <field name="error_message" readonly="1" class="text-danger"/>
+                    </group>
+
+                    <div class="alert alert-info" invisible="status != 'In Progress'">
+                        <p><strong>Import is running in the background.</strong></p>
+                        <p>You can close this window and the import will continue. Click refresh to see updated progress.</p>
+                    </div>
+
+                    <div class="alert alert-success" invisible="status != 'Completed'">
+                        <p><strong>Import completed successfully!</strong></p>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_refresh"
+                            string="Refresh"
+                            type="object"
+                            class="btn-primary"
+                            invisible="status in ('Completed', 'Failed')"/>
+                    <button name="action_close"
+                            string="Close"
+                            type="object"
+                            class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

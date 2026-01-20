@@ -1,0 +1,53 @@
+<odoo>
+    <data>
+        <record id="view_mail_template_form_inherit" model="ir.ui.view">
+            <field name="name">mail.template.form.inherit</field>
+            <field name="model">mail.template</field>
+            <field name="inherit_id" ref="mail.email_template_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='model_id']" position="after">
+
+                    <field name="is_res_users_model" invisible="1"/>
+                    <field name="user_ids"
+                           widget="many2many_tags"
+                           invisible="is_res_users_model != True"
+                           required="is_res_users_model == True"/>
+
+                    <field name="frequency_type"
+                           invisible="is_res_users_model != True"
+                           required="is_res_users_model == True"/>
+
+                    <field name="frequency_interval"
+                           invisible="1"/>
+
+                    <field name="week_day"
+                           invisible="is_res_users_model != True or frequency_type != 'weeks'"
+                           required="is_res_users_model == True and frequency_type == 'weeks'"/>
+
+                    <field name="month_day"
+                           invisible="is_res_users_model != True or frequency_type != 'months'"
+                           required="is_res_users_model == True and frequency_type == 'months'"/>
+
+
+                    <!-- 2. Update view to show time fields for weeks also -->
+                    <field name="execution_hour"
+                           invisible="is_res_users_model != True or frequency_type not in ['days', 'weeks']"
+                           required="is_res_users_model == True and frequency_type in ['days', 'weeks']"/>
+
+                    <field name="execution_minute"
+                           invisible="is_res_users_model != True or frequency_type not in ['days', 'weeks']"
+                           required="is_res_users_model == True and frequency_type in ['days', 'weeks']"/>
+
+                    <field name="execution_period"
+                           invisible="is_res_users_model != True or frequency_type not in ['days', 'weeks']"
+                           required="is_res_users_model == True and frequency_type in ['days', 'weeks']"/>
+
+                    <field name="scheduled_action_id"
+                           readonly="1"
+                           invisible="scheduled_action_id == False"/>
+
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

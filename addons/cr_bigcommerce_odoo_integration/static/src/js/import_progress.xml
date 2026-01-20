@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- Empty wrapper template for the action -->
+    <t t-name="bigcommerce.ImportProgressAction">
+        <div></div>
+    </t>
+
+    <!-- The actual dialog content -->
+    <t t-name="bigcommerce.ImportProgressDialog">
+        <div class="modal-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <strong>Status: </strong>
+                    <span t-if="state.status === 'true'" class="badge bg-info">In Progress</span>
+                    <span t-elif="state.status === 'completed'" class="badge bg-success">Completed</span>
+                    <span t-elif="state.status === 'failed'" class="badge bg-danger">Failed</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Elapsed Time: </strong>
+                    <span t-esc="state.elapsed_time"/>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Total Processed: </strong>
+                    <span t-esc="state.total_processed"/>
+                    <t t-if="state.total_expected > 0">
+                        / <span t-esc="state.total_expected"/>
+                    </t>
+                </div>
+                <div class="col-md-4" t-if="props.importType !== 'address'">
+                    <strong>Created: </strong>
+                    <span t-esc="state.created"/>
+                </div>
+                <div class="col-md-4">
+                    <strong t-if="props.importType === 'product'">Skipped: </strong>
+                    <strong t-else="">Updated: </strong>
+                    <span t-esc="state.updated"/>
+                </div>
+            </div>
+
+            <div class="progress" style="height: 30px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                     role="progressbar"
+                     t-att-style="'width: ' + state.progress_percentage + '%'">
+                    <t t-esc="Math.round(state.progress_percentage)"/>%
+                </div>
+            </div>
+
+            <div t-if="state.status === 'true'" class="alert alert-info mt-3">
+                <p><strong>Import is running in the background.</strong></p>
+                <p>Progress updates automatically every 2 seconds.</p>
+            </div>
+
+            <div t-if="state.status === 'completed'" class="alert alert-success mt-3">
+                <p><strong>Import completed successfully!</strong></p>
+            </div>
+
+            <div t-if="state.error_message" class="alert alert-danger mt-3">
+                <strong>Error: </strong>
+                <p t-esc="state.error_message"/>
+            </div>
+        </div>
+    </t>
+</templates>

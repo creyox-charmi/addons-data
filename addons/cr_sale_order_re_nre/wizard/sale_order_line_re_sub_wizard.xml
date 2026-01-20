@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Wizard Form for RE Sub-lines -->
+    <record id="view_sale_order_line_re_sub_wizard_form" model="ir.ui.view">
+        <field name="name">sale.order.line.re.sub.wizard.form</field>
+        <field name="model">sale.order.line.re.sub.wizard</field>
+        <field name="arch" type="xml">
+            <form string="RE Sub Lines">
+                <sheet>
+                    <group>
+                        <field name="sale_line_id" readonly="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Sub-lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="everest_pn"/>
+                                    <field name="remaining_qty_to_deliver"/>
+                                    <field name="delivery_note_number"/>
+                                    <field name="updated_delivery_date"/>
+                                    <field name="required_delivery_date"/>
+                                    <field name="quantity"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <footer>
+                        <button string="Confirm" type="object" name="action_confirm" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_sale_order_line_re_sub_wizard_line_tree" model="ir.ui.view">
+        <field name="name">sale.order.line.re.sub.wizard.line.tree</field>
+        <field name="model">sale.order.line.re.sub.wizard.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="everest_pn"/>
+                <field name="remaining_qty_to_deliver"/>
+                <field name="delivery_note_number"/>
+                <field name="updated_delivery_date"/>
+                <field name="required_delivery_date"/>
+                <field name="quantity"/>
+            </list>
+        </field>
+    </record>
+</odoo>
+

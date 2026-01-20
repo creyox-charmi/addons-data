@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_approval_form_view_id">
+            <field name="name">product.approval.workflow.master.form.view.id</field>
+            <field name="model">product.approval.workflow.master</field>
+            <field name="arch" type="xml">
+                <form string="Product Approval Workflow">
+                    <header>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="active_status"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Product Approval Lines">
+                                <field name="approval_line_ids" string="Approvals"
+                                       readonly="active_status == False">
+                                    <list editable='bottom'>
+                                        <field name="job_position_id"/>
+                                        <field name="approval_level"/>
+                                    </list>
+                                    <form>
+                                        <group>
+                                            <field name="job_position_id"/>
+                                            <field name="approval_level"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_approval_list_view_id">
+            <field name="name">product.approval.workflow.master.list.view.id</field>
+            <field name="model">product.approval.workflow.master</field>
+            <field name="arch" type="xml">
+                <list string="Product Approval Workflow">
+                    <field name="name"/>
+                    <field name="active_status"/>
+                </list>
+            </field>
+        </record>
+    </data>
+</odoo>

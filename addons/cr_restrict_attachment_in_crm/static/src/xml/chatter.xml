@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mail.Chatter.attachFiles" t-inherit-mode="extension" t-name="remove_chatter_attach_for_crm">
+          <xpath expr="." position="replace">
+            <!-- Show button only if not crm.lead -->
+            <t t-if="props.threadModel !== 'crm.lead'">
+                <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center"
+                        aria-label="Attach files"
+                        t-att-class="{ 'my-2': !props.compactHeight }"
+                        t-on-click="onClickAddAttachments"
+                        t-att-disabled="state.isSearchOpen">
+                    <i class="fa fa-paperclip fa-lg me-1"/>
+                    <sup t-if="attachments.length > 0" t-esc="attachments.length"/>
+                    <i t-if="!state.thread.areAttachmentsLoaded and state.thread.isLoadingAttachments and state.showAttachmentLoading"
+                       class="fa fa-circle-o-notch fa-spin"
+                       aria-label="Attachment counter loading..."/>
+                </button>
+            </t>
+        </xpath>
+    </t>
+
+    <t t-inherit="mail.Chatter"
+       t-inherit-mode="extension"
+       t-name="remove_chatter_attachment_box_for_crm">
+
+        <!-- Find the AttachmentBox container -->
+        <xpath expr="//div[@class='o-mail-AttachmentBox position-relative']" position="replace">
+            <!-- Show only if not crm.lead -->
+            <t t-if="props.threadModel !== 'crm.lead'">
+                <div t-if="state.isAttachmentBoxOpened" class="o-mail-AttachmentBox position-relative">
+                    <div class="d-flex align-items-center">
+                        <hr class="flex-grow-1"/>
+                        <span class="p-3 fw-bold">
+                            Files
+                        </span>
+                        <hr class="flex-grow-1"/>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <AttachmentList
+                            attachments="attachments"
+                            unlinkAttachment.bind="unlinkAttachment"
+                            imagesHeight="100"
+                        />
+                        <FileUploader multiUpload="true"
+                                      fileUploadClass="'o-mail-Chatter-fileUploader'"
+                                      onUploaded.bind="onUploaded"
+                                      onClick="(ev) => this.onClickAttachFile(ev)">
+                            <t t-set-slot="toggler">
+                                <button class="btn btn-link"
+                                        type="button"
+                                        t-att-disabled="!state.thread.hasWriteAccess">
+                                    <i class="fa fa-plus-square"/>
+                                    Attach files
+                                </button>
+                            </t>
+                        </FileUploader>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

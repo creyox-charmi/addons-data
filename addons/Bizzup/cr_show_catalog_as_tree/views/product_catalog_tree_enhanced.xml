@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_catalog_tree_view" model="ir.ui.view">
+        <field name="name">product.product.catalog.tree</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <list string="Product Catalog" create="false" edit="false" class="o_product_catalog_tree">
+                <field name="id" column_invisible="1"/>
+                <field name="image_128" string="Image" widget="image" options="{'size': [64, 64]}"/>
+                <field name="name"/>
+                <field name="list_price" string="Price"/>
+                <field name="uom_id"/>
+                <button name="catalog_add_to_order" string="Add" type="object" class="btn-primary catalog_add_btn" context="{'order_id': context.get('order_id')}"/>
+            </list>
+        </field>
+    </record>
+</odoo>

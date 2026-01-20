@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="product_template_view_inherit_approval_form" model="ir.ui.view">
+            <field name="name">product.template.common.form.view.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/header" position="inside">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,pending,approved"/>
+                    <field name="user_approve_boolean" invisible="1"/>
+                    <button id="button_approval" name="action_send_approval" invisible="state != 'draft'"
+                            string="Send For Approval" class="btn-primary" type="object"/>
+                    <button id="button_reset_draft" name="action_reset_to_draft" invisible="state != 'reject'"
+                            string="Reset To Draft" class="btn-primary" type="object"/>
+                    <button name="%(evo_product_approval.action_product_approval_wizard)d" string="Approve" type="action"
+                            invisible="state != 'pending' or user_approve_boolean == False"
+                            class="btn-primary" />
+                    <button name="%(evo_product_approval.action_product_reject_wizard)d" string="Reject" type="action"
+                            invisible="state != 'pending' or user_approve_boolean == False"
+                            class="btn-primary" />
+                </xpath>
+                <xpath expr="/form/sheet/div[hasclass('oe_button_box')]" position="after">
+                    <widget name="web_ribbon" title="Draft" bg_color="bg-info" invisible="state != 'draft'"/>
+                    <widget name="web_ribbon" title="Pending" bg_color="bg-warning" invisible="state != 'draft'"/>
+                    <widget name="web_ribbon" title="Approved" bg_color="bg-success" invisible="state != 'approved'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="bg-danger" invisible="state != 'reject'"/>
+                </xpath>
+                <notebook position="inside">
+                    <page string=" Product Approval History">
+                        <field name="related_users_ids" readonly="True" widget="many2many_tags"/>
+                        <field name="product_approval_history_ids" string="Approval history" readonly="True">
+                            <list editable="bottom">
+                                <field name="approved_by"/>
+                                <field name="approved_on"/>
+                                <field name="approval_reason"/>
+                                <field name="approved_rejected"/>
+                                <field name="level_admin_user" column_invisible="1"/>
+                            </list>
+                            <form>
+                            <group>
+                                <field name="approved_by"/>
+                                <field name="approved_on"/>
+                                <field name="approval_reason"/>
+                                <field name="approved_rejected"/>
+                            </group>
+                        </form>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <record id="product.product_template_action" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,list,form,activity</field>
+            <field name="view_id" ref="product.product_template_kanban_view"/>
+            <field name="search_view_id" ref="product.product_template_search_view"/>
+            <field name="context">{'search_default_filter_to_sell':1, 'sale_multi_pricelist_product_template': 1}
+            </field>
+            <field name="domain">[('state','=','approved'),('active','=',True)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new product
+                </p>
+                <p>
+                    You must define a product for everything you sell or purchase,
+                    whether it's a storable product, a consumable or a service.
+                </p>
+            </field>
+        </record>
+
+        <record id="product_draft_action_id" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,list,form,activity</field>
+            <field name="view_id" ref="product.product_template_kanban_view"/>
+            <field name="search_view_id" ref="product.product_template_search_view"/>
+            <field name="context">{'search_default_filter_to_sell':1, 'sale_multi_pricelist_product_template': 1, 'create': False}</field>
+            <field name="domain">[('state','=','draft'), ('active','=', False)]</field>
+        </record>
+
+        <record id="product_pending_action_id" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,list,form,activity</field>
+            <field name="view_id" ref="product.product_template_kanban_view"/>
+            <field name="search_view_id" ref="product.product_template_search_view"/>
+            <field name="context">{'create': False, 'search_default_filter_to_sell':1, 'sale_multi_pricelist_product_template': 1, 'create': False}</field>
+            <field name="domain">[('state','=','pending'), ('active','=', False)]</field>
+        </record>
+
+        <record id="product_rejected_action_id" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,list,form,activity</field>
+            <field name="view_id" ref="product.product_template_kanban_view"/>
+            <field name="search_view_id" ref="product.product_template_search_view"/>
+            <field name="context">{'edit': False, 'create': False, 'search_default_filter_to_sell':1, 'sale_multi_pricelist_product_template': 1, 'create': False}</field>
+            <field name="domain">[('state','=','reject'), ('active','=', False)]</field>
+        </record>
+    </data>
+
+</odoo>
