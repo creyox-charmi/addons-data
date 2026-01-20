@@ -1,0 +1,775 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_blogs" inherit_id="portal.portal_my_home" name="Portal My Home Blogs"
+              customize_show="True">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <!--                <t t-set="title">Blogs</t>-->
+                <t t-set="title">Perfil Público</t>
+                <t t-set="url" t-value="'/my/blogs'"/>
+                <t t-set="placeholder_count" t-value="'blogs_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mensajes</t>
+                <t t-set="url" t-value="'/my/messages'"/>
+                <t t-set="placeholder_count" t-value="'message_count'"/>
+            </t>
+        </xpath>
+
+        <!--        <xpath expr="//div[hasclass('o_portal_docs')]" position="after">-->
+        <!--            <div class="o_portal_docs">-->
+        <!--                <h3>Your New Custom Section</h3>-->
+        <!--                <t t-foreach="your_custom_data" t-as="item">-->
+        <!--                    <t t-call="portal.portal_docs_entry">-->
+        <!--                        <t t-set="title" t-value="item['name']"/>-->
+        <!--                        <t t-set="url" t-value="item['url']"/>-->
+        <!--                        <t t-set="count" t-value="item['count']"/>-->
+        <!--                    </t>-->
+        <!--                </t>-->
+        <!--                <t t-if="not your_custom_data">-->
+        <!--                    <p>No items available for your custom section.</p>-->
+        <!--                </t>-->
+        <!--            </div>-->
+        <!--        </xpath>-->
+
+        <!--        <xpath expr="//a[@href='/my/home']/ancestor::div[hasclass('o_portal_docs')]/div[hasclass('o_portal_docs_entry')][1]/div[hasclass('col-auto')]" position="inside">-->
+        <!--            <a t-att-href="'/your/custom/account/settings'" class="btn btn-sm btn-primary">Custom Settings</a>-->
+        <!--        </xpath>-->
+    </template>
+
+    <!-- Modify portal templates -->
+    <template id="portal_my_home_menu_blogs" name="Portal layout : Blogs menu entry"
+              inherit_id="portal.portal_breadcrumbs" priority="10">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'my_blogs'"
+                t-attf-class="breadcrumb-item #{'active' if not blog_posts else ''}">
+                <!--                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Blogs</a>-->
+                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Perfil Público</a>
+                <!--                <t t-else="">Blogs</t>-->
+                <t t-else="">Perfil Público</t>
+            </li>
+            <li t-if="page_name == 'blog_edit'"
+                t-attf-class="breadcrumb-item #{'active' if not blog_posts else ''}">
+                <!--                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Blogs</a>-->
+                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Perfil Público</a>
+                <!--                <t t-else="">Blogs</t>-->
+                <t t-else="">Perfil Picocli</t>
+            </li>
+            <li t-if="blog_entry" class="breadcrumb-item active">
+                <!--                <span t-field="blog_posts.type_name"/>-->
+                <t t-esc="blog_entry.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_blogs_list_view" name="Mis Blogs">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Blogs</t>
+            </t>
+            <t t-if="not blog_posts">
+                <p>You don't have any subscriptions yet.</p>
+            </t>
+            <t t-if="blog_posts" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <!--                        <th>ID</th>-->
+                        <th>Autor</th>
+                        <th>Fecha de Publicación</th>
+                        <th>Nº de Visitas</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="blog_posts" t-as="post">
+                        <tr>
+                            <!--                            <td>-->
+                            <!--                                <a t-attf-href="/my/blog/edit/#{post.id}">-->
+
+                            <!--                                    <t t-esc="post.id"/>-->
+                            <!--                                </a>-->
+
+                            <!--                            </td>-->
+                            <td>
+                                <!--                                                                <a t-attf-href="/blog/#{post.blog_id.id}/post/#{slug(post)}">-->
+                                <a t-attf-href="/my/blog/edit/#{post.id}">
+                                    <t t-esc="post.name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="post.post_date" t-options='{"widget": "date"}'/>
+                            </td>
+                            <td>
+                                <t t-esc="post.visits or 0"/>
+                            </td>
+                            <td>
+                                <t t-if="post.is_published">
+                                    <span class="badge bg-success">Publicado</span>
+                                </t>
+                                <t t-if="not post.is_published">
+                                    <span class="badge bg-secondary">No Publicado</span>
+                                </t>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_blogs_form_view_edit" name="Editar Entrada del Blog en Portal">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4 bg-white p-5 border g-0 rounded">
+                <!-- Mensajes de alerta -->
+                <t t-if="error == False">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fa fa-check-circle mt-1 position-relative"/>
+                        <strong>¡Genial!</strong>
+                        Hemos actualizado tu información correctamente. Tus cambios ya se han guardado.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                    </div>
+                </t>
+                <t t-if="error == True">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fa fa-exclamation-triangle mt-1 position-relative"/>
+                        <strong>¡Oops!</strong>
+                        No pudimos actualizar tu información. Por favor, inténtalo de nuevo más tarde.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                    </div>
+                </t>
+
+                <t t-if="blog_entry or action == 'new'">
+                    <form id="blogForm" t-attf-action="/my/blog/#{action}/#{blog_entry.id or 0}" method="post"
+                          enctype="multipart/form-data">
+                        <div class="row mb-3">
+                            <div class="col-md-9">
+                                <!--                                <h2>Editar Entrada del Blog</h2>-->
+                                <h2>Editar mi perfil</h2>
+                            </div>
+                            <div class="col-md-3 text-md-end">
+                                <div class="btn-group w-75" role="group" aria-label="Toggle publish status">
+                                    <!-- Opción "Publicado" -->
+                                    <input type="radio" class="btn-check" name="is_published" id="btnradio_pub"
+                                           autocomplete="off" value="1"
+                                           t-att-checked="blog_entry.is_published and 'checked' or None"/>
+                                    <label class="btn btn-outline-primary flex-fill w-50" for="btnradio_pub">
+                                        Publicado
+                                    </label>
+
+                                    <!-- Opción "No Publicado" -->
+                                    <input type="radio" class="btn-check" name="is_published" id="btnradio_unpub"
+                                           autocomplete="off" value="0"
+                                           t-att-checked="not blog_entry.is_published and 'checked' or None"/>
+                                    <label class="btn btn-outline-primary flex-fill w-50" for="btnradio_unpub">
+                                        No Publicado
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- Token CSRF -->
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                        <!-- Campo: Blog (lectura/selección) -->
+                        <div class="row mb-3" style="display: none;">
+                            <div class="col-md-6">
+                                <label class="form-label">Blog</label>
+                                <select name="blog_id_edit" class="form-select" required="required">
+                                    <!--                                    <option t-if="not blog_entry.blog_id" value="" selected="selected">Seleccione un-->
+                                    <!--                                        blog-->
+                                    <!--                                    </option>-->
+                                    <t t-foreach="blog_ids" t-as="blog">
+                                        <option t-att-value="blog.id"
+                                                t-att-selected="blog_entry.blog_id and blog_entry.blog_id.id == blog.id and 'selected' or null">
+                                            <t t-esc="blog.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <!--                                <div class="form-check form-switch">-->
+                                <!--                                    <input type="checkbox"-->
+                                <!--                                           class="form-check-input"-->
+                                <!--                                           name="is_published"-->
+                                <!--                                           id="is_published"-->
+                                <!--                                           t-att-checked="blog_entry.is_published and 'checked' or None"/>-->
+                                <!--                                    <label class="form-check-label fw-bold" for="is_published">-->
+                                <!--                                        <t t-if="blog_entry.is_published">-->
+                                <!--                                            <span class="badge bg-success">Publicado</span>-->
+                                <!--                                        </t>-->
+                                <!--                                        <t t-if="not blog_entry.is_published">-->
+                                <!--                                            <span class="badge bg-danger">No Publicado</span>-->
+                                <!--                                        </t>-->
+                                <!--                                    </label>-->
+                                <!--                                </div>-->
+                            </div>
+                        </div>
+
+
+                        <!-- Campo: Título -->
+                        <div class="mb-3">
+                            <!--                            <label for="name" class="form-label">Título</label>-->
+                            <label for="name" class="form-label">Autor</label>
+                            <input type="text" name="name" class="form-control"
+                                   t-att-value="blog_entry.name" required="required"/>
+                        </div>
+
+                        <!-- Campo: Subtítulo -->
+                        <div class="mb-3">
+                            <!--                            <label for="subtitle" class="form-label">Subtítulo</label>-->
+                            <label for="subtitle" class="form-label">Pequeña descripción</label>
+                            <input type="text" name="subtitle" class="form-control"
+                                   t-att-value="blog_entry.subtitle or ''"/>
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <!--                            <label class="form-label">Categorías</label>-->
+                            <!--                            <t t-foreach="tag_ids" t-as="tag">-->
+                            <!--                                <div class="form-check mb-1">-->
+                            <!--                                    <input type="checkbox"-->
+                            <!--                                           t-att-name="'category-%s' % tag.id"-->
+                            <!--                                           class="form-check-input"-->
+                            <!--                                           t-att-id="'category-%s' % tag.id"-->
+                            <!--                                           t-att-value="'%s' % tag.id"-->
+                            <!--                                           t-att-checked="'checked' if blog_entry.tag_ids and tag.id in blog_entry.tag_ids.ids else None"/>-->
+                            <!--                                    <label class="form-check-label fw-normal"-->
+                            <!--                                           t-att-for="'category-%s' % tag.id"-->
+                            <!--                                           t-field="tag.name"/>-->
+                            <!--                                </div>-->
+                            <!--                            </t>-->
+                            <!--</div>-->
+                            <div>
+                                <label class="form-label">Categorías</label>
+                            </div>
+                            <div class="btn-group d-flex flex-wrap gap-2" role="group" aria-label="Basic checkbox toggle button group">
+                                <t t-foreach="tag_ids" t-as="tag">
+                                    <input type="checkbox"
+                                           class="btn-check"
+                                           t-att-id="'category-%s' % tag.id"
+                                           t-att-name="'category-%s' % tag.id"
+                                           t-att-value="'%s' % tag.id"
+                                           t-att-checked="'checked' if blog_entry.tag_ids and tag.id in blog_entry.tag_ids.ids else None"
+                                           autocomplete="off"/>
+                                    <label class="btn btn-outline-primary" t-att-for="'category-%s' % tag.id"
+                                           t-field="tag.name"/>
+                                </t>
+
+                            </div>
+                        </div>
+                        <!-- Campo: IMAGEN (editable) -->
+                        <!--                        <div class="mb-3">-->
+                        <!--                            <label for="bg-img" class="form-label">Imagen de fondo para el título</label>-->
+                        <!--                            <textarea-->
+                        <!--                                    class="form-control o_public_user_editor_test_textarea o_wysiwyg_loader"-->
+                        <!--                                    rows="10" name="bg-img" required="required" id="bg-img">-->
+                        <!--                                <p>-->
+                        <!--                                    <t t-esc="blog_entry_html"/>-->
+                        <!--                                </p>-->
+                        <!--                            </textarea>-->
+                        <!--                            <small class="form-text text-muted">-->
+                        <!--                                Dimensión de la foto de fondo: 1920x1024 px y máximo 2 MB.-->
+                        <!--                            </small>-->
+                        <!--                        </div>-->
+
+                        <!--Campo: Imagen Título-->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Imagen de fondo para el título</label>
+
+                            <div class="card shadow-sm mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Sube tu archivo</h5>
+                                        <t t-if="blog_entry.blog_entry_html">
+                                            <button type="button" class="btn btn-sm delete-image-btn w-auto">
+                                                <i class="fa fa-trash"/>
+                                            </button>
+                                        </t>
+                                    </div>
+                                    <div t-att-class="'mt-3' + (' d-none' if blog_entry.blog_entry_html else '')">
+                                        <div class="input-group">
+                                            <input type="file" name="blog_entry_html" id="blog_entry_html"
+                                                   class="form-control"
+                                                   accept="image/*"/>
+                                        </div>
+                                        <small class="form-text text-muted">
+                                            Archivos permitidos: Imagen. Dimensión mínima permitida: 1920x1080 px y
+                                            máximo 2 MB.
+                                        </small>
+                                        <small id="blog-entry-html-alert" class="form-text text-danger d-none"
+                                               role="alert"/>
+                                    </div>
+                                    <div class="real-time-preview mt-3 p-3 bg-light rounded text-center">
+                                        <t t-if="blog_entry.blog_entry_html">
+                                            <img t-attf-src="/web/image/blog.post/#{blog_entry.id}/blog_entry_html"
+                                                 alt="Previsualización de imagen"
+                                                 class="img-fluid rounded shadow-sm"
+                                                 style="max-height: 400px;max-width: 550px;"
+                                            />
+                                        </t>
+                                        <t t-else="">
+                                            <p class="text-muted">La previsualización aparecerá aquí.</p>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FIN Imagen Título-->
+
+                        <!--Campo: Imagen Principal-->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Imagen Principal</label>
+
+                            <div class="card shadow-sm mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Sube tu archivo</h5>
+                                        <t t-if="blog_entry.main_image">
+                                            <button type="button" class="btn btn-sm delete-image-btn w-auto">
+                                                <i class="fa fa-trash"/>
+                                            </button>
+                                        </t>
+                                    </div>
+
+                                    <div t-att-class="'mt-3' + (' d-none' if blog_entry.main_image else '')">
+                                        <div class="input-group">
+                                            <input type="file" name="main_image" id="main_image" class="form-control"
+                                                   accept="image/*"/>
+                                        </div>
+                                        <small class="form-text text-muted">Archivos permitidos: Imagen. Dimensión
+                                            máxima de la imagen permitida: 1920x1024 px y máximo 2 MB
+                                        </small>
+                                        <small id="main-image-alert" class="form-text text-danger d-none" role="alert"/>
+                                    </div>
+
+                                    <div class="real-time-preview mt-3 p-3 bg-light rounded text-center">
+                                        <t t-if="blog_entry.main_image">
+                                            <img t-attf-src="/web/image/blog.post/#{blog_entry.id}/main_image"
+                                                 alt="Previsualización de imagen"
+                                                 class="img-fluid rounded shadow-sm"
+                                                 style="max-height: 400px;max-width: 550px;"
+                                            />
+                                        </t>
+                                        <t t-else="">
+                                            <p class="text-muted">La previsualización aparecerá aquí.</p>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FIN Imagen Principal-->
+
+                        <!-- Campo: Contenido Solo Texto (editable) -->
+                        <div class="mb-3">tarde
+                            <label for="only_text_content" class="form-label">Contenido</label>
+                            <textarea name="only_text_content" id="only_text_content"
+                                      class="form-control o_public_user_editor_test_textarea o_wysiwyg_loader"
+                                      rows="10"
+                                      contenteditable="True"
+                                      placeholder="Escribe aquí tu descripción personal. Puedes agregar cualquier tipo de contenido que desees: texto, fotos, videos, enlaces o cualquier otro elemento que te represente.">
+                                <t t-esc="blog_entry.only_text_content"/>
+                            </textarea>
+                        </div>
+
+                        <!-- Campo: Contenido (COMPLETO) -->
+                        <!--                        <div class="mb-3">-->
+                        <!--                            <label for="content" class="form-label">Contenido</label>-->
+                        <!--                            <textarea class="form-control o_public_user_editor_test_textarea o_wysiwyg_loader"-->
+                        <!--                                      rows="10" name="content" required="required" id="content"-->
+                        <!--                                      placeholder="Escribe aquí tu descripción personal. Puedes agregar cualquier tipo de contenido que desees: texto, fotos, videos, enlaces o cualquier otro elemento que te represente.">-->
+                        <!--                                &lt;!&ndash;                                <t t-if="blog_entry.content" t-esc="blog_entry.content"/>&ndash;&gt;-->
+                        <!--                                <t t-esc="full_content"/>-->
+                        <!--                            </textarea>-->
+                        <!--                        </div>-->
+
+                        <!-- Opciones de Publicación (solo lectura) -->
+                        <div class="mb-3">
+                            <h3>Opciones de Publicación</h3>
+                            <div class="row">
+                                <div class="col-md-6" style="display: none;">
+                                    <label class="form-label">Autor</label>
+                                    <input type="text" class="form-control"
+                                           t-att-value="blog_entry.author_id and blog_entry.author_id.name or ''"
+                                           readonly="readonly"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Último colaborador</label>
+                                    <input type="text" class="form-control"
+                                           t-att-value="blog_entry.write_uid.name or ''"
+                                           readonly="readonly"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Nº de visitas</label>
+                                    <input type="text" class="form-control"
+                                           t-att-value="blog_entry.visits or 0" readonly="readonly"/>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Fecha de publicación</label>
+                                    <input type="text" class="form-control"
+                                           t-att-value="blog_entry.post_date"
+                                           readonly="readonly"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Última actualización</label>
+                                    <input type="text" class="form-control"
+                                           t-att-value="blog_entry.write_date"
+                                           readonly="readonly"/>
+                                </div>
+                                <!--                                <div class="col-md-6">-->
+                                <!--                                    <label class="form-label">Último colaborador</label>-->
+                                <!--                                    <input type="text" class="form-control"-->
+                                <!--                                           t-att-value="blog_entry.write_uid.name or ''"-->
+                                <!--                                           readonly="readonly"/>-->
+                                <!--                                </div>-->
+                            </div>
+                            <div class="row mt-3">
+                                <!--                                <div class="col-md-12">-->
+                                <!--                                    <label class="form-label">Última actualización</label>-->
+                                <!--                                    <input type="text" class="form-control"-->
+                                <!--                                           t-att-value="blog_entry.write_date"-->
+                                <!--                                           readonly="readonly"/>-->
+                                <!--                                </div>-->
+                            </div>
+                        </div>
+
+                        <!-- Sección para Contenido Multimedia -->
+                        <div class="mt-5 mb-3">
+                            <hr class="mb-5"/>
+                            <h3>Contenido Multimedia</h3>
+                            <p>Puedes agregar hasta 3 elementos multimedia (imágenes, videos, archivos).</p>
+
+                            <div id="multimedia-container">
+                                <t t-foreach="blog_entry.multimedia_ids" t-as="media">
+                                    <div class="card shadow-sm mb-5 multimedia-block">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">
+                                                Contenido Multimedia
+                                            </h5>
+                                            <button type="button" class="btn btn-sm delete-multimedia-btn w-auto">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="card-body">
+                                            <input type="hidden"
+                                                   t-attf-name="multimedia_ids[#{media.id}].id"
+                                                   t-att-value="media.id or 0"/>
+                                            <div class="row align-items-center">
+                                                <div class="col-md-4 mb-3">
+                                                    <label class="form-label fw-bold">Tipo de Contenido</label>
+                                                    <t t-if="media.content_file or media.content_url">
+                                                        <p class="form-control-plaintext">
+                                                            <t t-if="media.content_type == 'image'">Imagen</t>
+                                                            <t t-if="media.content_type == 'file'">Archivo (PDF, DOCX,
+                                                                XLSX, PPTX)
+                                                            </t>
+                                                            <t t-if="media.content_type == 'videoMp4'">Video
+                                                                (video/mp4)
+                                                            </t>
+                                                            <t t-if="media.content_type == 'video'">Video (Enlace URL)
+                                                            </t>
+                                                        </p>
+                                                        <input type="hidden"
+                                                               t-attf-name="multimedia_ids[#{media.id}].content_type"
+                                                               t-att-value="media.content_type"/>
+                                                        <input type="hidden"
+                                                               t-if="media.content_url"
+                                                               t-attf-name="multimedia_ids[#{media.id}].content_url"
+                                                               t-att-value="media.content_url"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <select t-attf-name="multimedia_ids[#{media.id}].content_type"
+                                                                class="form-select content-type-select">
+                                                            <option value="none"
+                                                                    t-att-selected="media.content_type == 'none' or not media.content_type">
+                                                                Ninguno
+                                                            </option>
+                                                            <option value="image"
+                                                                    t-att-selected="media.content_type == 'image'">
+                                                                Imagen
+                                                            </option>
+                                                            <option value="file"
+                                                                    t-att-selected="media.content_type == 'file'">
+                                                                Archivo (PDF, DOCX, XLSX, PPTX)
+                                                            </option>
+                                                            <option value="videoMp4"
+                                                                    t-att-selected="media.content_type == 'videoMp4'">
+                                                                Video (video/mp4)
+                                                            </option>
+                                                            <option value="video"
+                                                                    t-att-selected="media.content_type == 'video'">
+                                                                Video (Enlace URL)
+                                                            </option>
+                                                        </select>
+                                                    </t>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <t t-if="not (media.content_file or media.content_url)">
+                                                        <div t-attf-class="file-container mb-3 #{'d-block' if media.content_type in ('image', 'file', 'videoMp4') else 'd-none'}">
+                                                            <label class="form-label">Sube tu archivo</label>
+                                                            <input type="file"
+                                                                   t-attf-name="multimedia_ids[#{media.id}].content_file"
+                                                                   class="form-control content-file-input"/>
+                                                            <small class="form-text text-muted">Archivos permitidos:
+                                                                Imagen,
+                                                                Video, Documento.
+                                                            </small>
+                                                            <input type="hidden"
+                                                                   t-attf-name="multimedia_ids[#{media.id}].content_file_filename"
+                                                                   t-att-value="media.content_file_filename or ''"/>
+                                                            <input type="hidden"
+                                                                   t-attf-name="multimedia_ids[#{media.id}].content_file_mimetype"
+                                                                   t-att-value="media.content_file_mimetype or ''"/>
+                                                        </div>
+                                                        <div t-attf-class="url-container mb-3 #{'d-block' if media.content_type == 'video' else 'd-none'}">
+                                                            <label class="form-label">Pega el enlace del video</label>
+                                                            <input type="url"
+                                                                   t-attf-name="multimedia_ids[#{media.id}].content_url"
+                                                                   class="form-control content-url-input"
+                                                                   t-att-value="media.content_url or ''"/>
+                                                        </div>
+                                                    </t>
+                                                    <div class="real-time-preview mt-3 p-3 bg-light rounded text-center">
+                                                        <t t-if="media.content_file and media.content_type == 'image'">
+                                                            <img t-attf-src="/web/image/blog.post.multimedia/#{media.id}/content_file"
+                                                                 class="img-fluid rounded shadow-sm"
+                                                                 alt="Previsualización de imagen"/>
+                                                        </t>
+                                                        <t t-elif="media.content_file and media.content_type == 'videoMp4'">
+                                                            <video t-attf-src="/web/content/blog.post.multimedia/#{media.id}/content_file"
+                                                                   width="100%" style="border-radius: 8px;"
+                                                                   controls="controls"/>
+                                                        </t>
+                                                        <t t-elif="media.content_file and media.content_type == 'file'">
+                                                            <t t-if="media.content_file_mimetype == 'application/pdf'">
+                                                                <embed t-attf-src="/web/content/blog.post.multimedia/#{media.id}/content_file"
+                                                                       width="100%" height="400px"
+                                                                       style="border:none;"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <i class="fa fa-file-word-o fa-5x text-primary mb-3"
+                                                                   t-if="media.content_file_mimetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"/>
+                                                                <i class="fa fa-file-excel-o fa-5x text-success mb-3"
+                                                                   t-elif="media.content_file_mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'"/>
+                                                                <i class="fa fa-file-powerpoint-o fa-5x text-warning mb-3"
+                                                                   t-elif="media.content_file_mimetype == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"/>
+                                                                <i class="fa fa-file-o fa-5x text-secondary mb-3"
+                                                                   t-else=""/>
+                                                            </t>
+                                                        </t>
+                                                        <t t-elif="media.content_url and media.content_type == 'video'">
+                                                            <t t-set="youtube_id"
+                                                               t-value="(media.content_url.split('v=')[1] if 'v=' in media.content_url else media.content_url.split('/')[-1]) or ''"/>
+                                                            <iframe width="560" height="315"
+                                                                    t-attf-src="https://www.youtube.com/embed/#{youtube_id}"
+                                                                    frameborder="0"
+                                                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                                                    allowfullscreen="allowfullscreen"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <p class="text-muted">La previsualización aparecerá aquí.
+                                                            </p>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="button" class="btn btn-secondary" id="add-multimedia-btn">
+                                    <i class="fa fa-plus-circle me-2"/>
+                                    Agregar Contenido Multimedia
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Sección SEO -->
+                        <hr/>
+                        <div class="mt-5 mb-3">
+                            <h3>SEO</h3>
+
+                            <!-- Campo: Meta Title -->
+                            <div class="mb-3">
+                                <label for="website_meta_title" class="form-label">Meta Title</label>
+                                <input type="text" name="website_meta_title" class="form-control"
+                                       t-att-value="blog_entry.website_meta_title or ''"/>
+                            </div>
+
+                            <!-- Campo: Meta Description -->
+                            <div class="mb-3">
+                                <label for="website_meta_description" class="form-label">Meta Description</label>
+                                <textarea name="website_meta_description" class="form-control" rows="4">
+                                    <t t-esc="blog_entry.website_meta_description or ''"/>
+                                </textarea>
+                            </div>
+
+                            <!-- Campo: Meta Keywords -->
+                            <div class="mb-3">
+                                <label for="website_meta_keywords" class="form-label">Meta Keywords</label>
+                                <input type="text" name="website_meta_keywords" class="form-control"
+                                       t-att-value="blog_entry.website_meta_keywords or ''"/>
+                                <small class="form-text text-muted">
+                                    Separate every keyword with a comma
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Campo: social_media_display -->
+                        <t t-call="wb_portal_blogs.portal_my_blogs_form_view_edit_social_media_display"/>
+
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </t>
+            </div>
+
+            <!-- Sección para comentarios o thread -->
+            <div class="container my-4">
+                <t t-if="blog_entry">
+                    <h2>Chartter</h2>
+                    <t t-call="portal.message_thread">
+                        <t t-set="object" t-value="blog_entry"/>
+                    </t>
+                </t>
+            </div>
+
+        </t>
+    </template>
+
+    <template id="portal_my_account_inherit" inherit_id="portal.portal_layout">
+        <xpath expr="//div[contains(@class, 'row') and contains(@class, 'align-items-center') and contains(@class, 'bg-white') and contains(@class, 'g-0') and contains(@class, 'border') and contains(@class, 'rounded')]"
+               position="inside">
+            <div t-if="page_name == 'my_details'" class="col-2">
+                <!--                <a href="/my/blog/new/0" class="" title="Ver cómo otros usuarios ven tu perfil público">-->
+                <a t-attf-href="/my/blog/edit/0" class="" title="Ver cómo otros usuarios ven tu perfil público">
+                    <i class="fa fa-user me-2"/>
+                    Perfil Público
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_my_blogs_form_view_edit_social_media_display" name="Editar Entrada del Blog en Portal">
+
+        <div class="container my-4 bg-white p-5 border g-0 rounded">
+            <div class="mt-5 mb-3">
+                <h3>Redes Sociales</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="facebook_url" class="form-label">Facebook URL</label>
+                        <input type="url" name="facebook_url" id="facebook_url" class="form-control"
+                               t-att-value="blog_entry.author_id.facebook_url or ''"/>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="instagram_url" class="form-label">Instagram URL</label>
+                        <input type="url" name="instagram_url" id="instagram_url" class="form-control"
+                               t-att-value="blog_entry.author_id.instagram_url or ''"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="linkedin_url" class="form-label">LinkedIn URL</label>
+                        <input type="url" name="linkedin_url" id="linkedin_url" class="form-control"
+                               t-att-value="blog_entry.author_id.linkedin_url or ''"/>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="twitter_url" class="form-label">X URL</label>
+                        <input type="url" name="twitter_url" id="twitter_url" class="form-control"
+                               t-att-value="blog_entry.author_id.twitter_url or ''"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="youtube_url" class="form-label">YouTube URL</label>
+                        <input type="url" name="youtube_url" id="youtube_url" class="form-control"
+                               t-att-value="blog_entry.author_id.youtube_url or ''"/>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="github_url" class="form-label">GitHub URL</label>
+                        <input type="url" name="github_url" id="github_url" class="form-control"
+                               t-att-value="blog_entry.author_id.github_url or ''"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!--    <template id="opt_blog_post_author_social_links" name="Author Social Links" inherit_id="website_blog.post_author">-->
+    <!--&lt;!&ndash;               inherit_id="website_blog.blog_post_sidebar" active="True" priority="7">&ndash;&gt;-->
+    <!--        &lt;!&ndash;        <xpath expr="//div[hasclass('o_wblog_social_links')]" position="after">&ndash;&gt;-->
+    <!--        &lt;!&ndash;        <xpath expr="//div[@id='o_wblog_post_sidebar']" position="inside">&ndash;&gt;-->
+    <!--        &lt;!&ndash;            <div class="o_wblog_sidebar_block pb-5">&ndash;&gt;-->
+    <!--        <xpath expr="//div[contains(@t-attf-class, 'o_not_editable') and contains(@t-attf-class, 'align-items-center') and contains(@t-attf-class, 'position-relative')]"-->
+    <!--               position="after">-->
+    <!--            <t t-set="blog_spot_id" t-value="request.params.get('blog_post').id"/>-->
+    <!--            <t t-set="blog_entry" t-value="env['blog.post'].search([('id','=',blog_spot_id)])"/>-->
+    <!--            <t t-if="blog_entry.author_id">-->
+    <!--                &lt;!&ndash;            <t t-set="social_urls"&ndash;&gt;-->
+    <!--                &lt;!&ndash;               t-value="[blog_entry.author_id.facebook_url, blog_entry.author_id.twitter_url, blog_entry.author_id.linkedin_url, blog_entry.author_id.youtube_url, blog_entry.author_id.instagram_url, blog_entry.author_id.github_url]"/>&ndash;&gt;-->
+
+    <!--                &lt;!&ndash;                <t t-if="any(social_urls)">&ndash;&gt;-->
+    <!--                <div class="o_wblog_sidebar_block pb-5 mt-4">-->
+    <!--                    <h6 class="text-uppercase pb-3 mb-4 border-bottom fw-bold">Sígueme en mis redes</h6>-->
+    <!--                    &lt;!&ndash;                    <p>&ndash;&gt;-->
+    <!--                    &lt;!&ndash;                        Representación del objeto:&ndash;&gt;-->
+    <!--                    &lt;!&ndash;                        <span t-esc="repr(blog_entry)"/>&ndash;&gt;-->
+    <!--                    &lt;!&ndash;                    <br/>&ndash;&gt;-->
+    <!--                    &lt;!&ndash;                    <t t-set="blog_spot_id" t-value="request.params.get('blog_post').id"/>&ndash;&gt;-->
+    <!--                    &lt;!&ndash;                    <t t-set="blog_entry" t-value="env['blog.post'].search([('id','=',blog_spot_id)])"/>&ndash;&gt;-->
+    <!--                    &lt;!&ndash;                    <span t-esc="repr(blog_entry)"/>&ndash;&gt;-->
+    <!--                    &lt;!&ndash;                    <br/>&ndash;&gt;-->
+
+    <!--                    &lt;!&ndash;                        <span t-esc="repr(blog_entry.author_id.name)"/>&ndash;&gt;-->
+
+
+    <!--                    &lt;!&ndash;                    </p>&ndash;&gt;-->
+    <!--                    <div t-if="blog_entry" class="d-flex flex-wrap gap-2">-->
+    <!--                        <t t-if="blog_entry.author_id.facebook_url">-->
+    <!--                            <a t-attf-href="{{blog_entry.author_id.facebook_url}}" target="_blank"-->
+    <!--                               class="social-icon" aria-label="Facebook">-->
+    <!--                                <i class="fa fa-facebook"/>-->
+    <!--                            </a>-->
+    <!--                        </t>-->
+    <!--                        <t t-if="blog_entry.author_id.twitter_url">-->
+    <!--                            <a t-attf-href="{{blog_entry.author_id.twitter_url}}" target="_blank"-->
+    <!--                               class="social-icon" aria-label="X">-->
+    <!--                                <i class="fa fa-twitter text-twitter"/>-->
+    <!--                            </a>-->
+    <!--                        </t>-->
+    <!--                        <t t-if="blog_entry.author_id.linkedin_url">-->
+    <!--                            <a t-attf-href="{{blog_entry.author_id.linkedin_url}}" target="_blank"-->
+    <!--                               class="social-icon" aria-label="LinkedIn">-->
+    <!--                                <i class="fa fa-linkedin"/>-->
+    <!--                            </a>-->
+    <!--                        </t>-->
+    <!--                        <t t-if="blog_entry.author_id.youtube_url">-->
+    <!--                            <a t-attf-href="{{blog_entry.author_id.youtube_url}}" target="_blank"-->
+    <!--                               class="social-icon" aria-label="YouTube">-->
+    <!--                                <i class="fa fa-youtube-play"/>-->
+    <!--                            </a>-->
+    <!--                        </t>-->
+    <!--                        <t t-if="blog_entry.author_id.instagram_url">-->
+    <!--                            <a t-attf-href="{{blog_entry.author_id.instagram_url}}" target="_blank"-->
+    <!--                               class="social-icon" aria-label="Instagram">-->
+    <!--                                <i class="fa fa-instagram"/>-->
+    <!--                            </a>-->
+    <!--                        </t>-->
+    <!--                        <t t-if="blog_entry.author_id.github_url">-->
+    <!--                            <a t-attf-href="{{blog_entry.author_id.github_url}}" target="_blank"-->
+    <!--                               class="social-icon" aria-label="GitHub">-->
+    <!--                                <i class="fa fa-github"/>-->
+    <!--                            </a>-->
+    <!--                        </t>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </t>-->
+    <!--            &lt;!&ndash;            </div>&ndash;&gt;-->
+
+    <!--        </xpath>-->
+    <!--    </template>-->
+
+</odoo>

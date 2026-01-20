@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service_odoo_coud_solution" name="service_odoo_coud_solution">
+
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+
+        <section id="cr_service_web_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Odoo Cloud &amp; Infrastructure Management
+                    </h1>
+                    <p class="banner-tagline">
+                        Secure hosting, performance tuning, and infrastructure maintenance for Odoo.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">Odoo Cloud &amp; Infrastructure
+                                    Management
+                                </span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="cr-odoo-solution-intro o_website_snippet cr_font" aria-labelledby="odoo-solution-heading">
+            <div class="cr-odoo-container">
+                <!-- Header Row -->
+                <div class="cr-odoo-header-row">
+                    <div class="cr-odoo-header-text">
+                        <h1 id="odoo-solution-heading">Hassle-Free Odoo Cloud Management</h1>
+                        <p class="cr-odoo-subtext">
+                            Running Odoo in the cloud shouldn't be complicated. We handle everything from setup and
+                            monitoring
+                            to backups and security, so you can focus on growing your business. Whether you're migrating
+                            to the cloud
+                            or optimizing your current setup, we've got you covered with reliable, hands-on support that
+                            actually works.
+                        </p>
+                    </div>
+                    <div class="cr-odoo-header-img">
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&amp;q=80"
+                             alt="Odoo Cloud Management"/>
+                    </div>
+                </div>
+
+                <!-- Content Below -->
+                <div class="cr-odoo-content">
+
+                    <h2>Why Trust Us with Your Odoo Cloud?</h2>
+                    <p>
+                        We know cloud management can feel overwhelming. That's why we take a practical, no-nonsense
+                        approach.
+                        Our team makes sure your Odoo runs smoothly, stays secure, and scales with your business.
+                        Think of us as your behind-the-scenes tech partner—always there when you need us,
+                        keeping things running without the stress.
+                    </p>
+
+                    <ul class="odoo-features odoo-cloud">
+                        <li>
+                            <strong>Cloud Setup &amp; Migration:</strong>
+                            Move to the cloud seamlessly or start fresh with expert guidance.
+                        </li>
+                        <li>
+                            <strong>24/7 Monitoring:</strong>
+                            We keep an eye on your system so you don't have to.
+                        </li>
+                        <li>
+                            <strong>Automated Backups:</strong>
+                            Your data stays safe with regular, reliable backups.
+                        </li>
+                        <li>
+                            <strong>Security Management:</strong>
+                            Protection from threats with proactive security measures.
+                        </li>
+                        <li>
+                            <strong>Performance Tuning:</strong>
+                            Fast load times and smooth operations, always.
+                        </li>
+                        <li>
+                            <strong>Scalability Support:</strong>
+                            Grow without limits—we scale your infrastructure as needed.
+                        </li>
+                        <li>
+                            <strong>Server Optimization:</strong>
+                            Fine-tuned servers for maximum efficiency and uptime.
+                        </li>
+                        <li>
+                            <strong>Disaster Recovery:</strong>
+                            Quick restoration plans if anything goes wrong.
+                        </li>
+                        <li>
+                            <strong>Cost Optimization:</strong>
+                            Smart resource management to keep your cloud costs down.
+                        </li>
+                        <li>
+                            <strong>Expert Support:</strong>
+                            Real humans ready to help whenever you need assistance.
+                        </li>
+                    </ul>
+
+                    <h2>Our Simple Process</h2>
+                    <p>
+                        We start by understanding your current setup and business needs. Then we create a cloud strategy
+                        that actually makes sense for you—no cookie-cutter solutions here. Once everything's up and
+                        running,
+                        we stay involved with ongoing monitoring and support. It's really that straightforward.
+                        You get peace of mind knowing experts are managing your Odoo cloud infrastructure.
+                    </p>
+
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Is my data safe in the cloud?</dt>
+                        <dd>Absolutely. We implement industry-standard security protocols, regular backups, and
+                            encryption to keep your data protected at all times.
+                        </dd>
+                        <dt>Can you migrate my existing Odoo to the cloud?</dt>
+                        <dd>Yes, we handle the entire migration process with minimal downtime. We'll move your data,
+                            test everything, and make sure you're up and running smoothly.
+                        </dd>
+                        <dt>What if something goes wrong?</dt>
+                        <dd>We monitor your system around the clock and have disaster recovery plans ready. If issues
+                            arise, we handle them quickly so your business keeps moving.
+                        </dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!--    <record id="cr_internal_website_theme.service5_odoo_dev_solution_000_scss" model="ir.asset">-->
+    <!--        <field name="name">SERVICE-5 000 SCSS</field>-->
+    <!--        <field name="bundle">web.assets_frontend</field>-->
+    <!--        <field name="path">cr_internal_website_theme/static/src/snippets/service5_odoo_dev_solution/000.scss</field>-->
+    <!--    </record>-->
+</odoo>

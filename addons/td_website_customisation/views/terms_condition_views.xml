@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="terms_condition_tree_view" model="ir.ui.view">
+        <field name="name">terms.condition.tree</field>
+        <field name="model">terms.condition</field>
+        <field name="arch" type="xml">
+            <tree string="Terms and Conditions">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="active"/>
+                <field name="is_default"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="terms_condition_form_view" model="ir.ui.view">
+        <field name="name">terms.condition.form</field>
+        <field name="model">terms.condition</field>
+        <field name="arch" type="xml">
+            <form string="Terms and Conditions">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="is_default"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" widget="html" options="{'style-inline': true}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="terms_condition_action" model="ir.actions.act_window">
+        <field name="name">Terms and Conditions</field>
+        <field name="res_model">terms.condition</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Terms and Conditions!
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="terms_condition_menu_root" name="Terms &amp; Conditions" parent="website.menu_website_global_configuration" action="terms_condition_action" sequence="50"/>
+</odoo>

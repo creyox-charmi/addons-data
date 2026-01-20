@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="about_us_snippet_section2" name="AboutUS Section-2">
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+
+        <section class="vvm-milestone-style-section cr_font" aria-labelledby="vvm-heading">
+            <div class="milestone-wrapper">
+                <h2 id="vvm-heading" class="milestone-heading">Vision, Mission &amp; Values</h2>
+                <div class="milestone-grid" role="list">
+                    <div class="milestone-card" style="--i:1" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Our Vision</h3>
+                        <p>
+                            Delivering intelligent ERP solutions that redefine operational excellence and enable sustainable growth.
+                        </p>
+                    </div>
+                    <div class="milestone-card" style="--i:2" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3>Our Mission</h3>
+                        <p>
+                            Empower businesses by crafting tailored Odoo experiences, merging innovation, and strategy to drive impactful results.
+                        </p>
+                    </div>
+                    <div class="milestone-card" style="--i:3" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Our Core Values</h3>
+                        <p>
+                            Customer-first mindset. We uphold these pillars in
+                            every solution we design and deliver.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </template>
+
+
+<!--    <record id="cr_internal_website_theme.about_us_s2_000_scss" model="ir.asset">-->
+<!--        <field name="name">AboutUS SECTION-2 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/about_us_section2/000.scss</field>-->
+<!--    </record>-->
+</odoo>

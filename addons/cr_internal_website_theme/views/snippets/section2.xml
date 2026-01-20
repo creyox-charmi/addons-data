@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Snippet 2: Enhanced Rocket Growth Section -->
+    <template id="growth_snippet_template" name="section-2">
+        <section class="growth-section py-5 cr_font" aria-label="Business Growth Call to Action">
+            <div class="container">
+                <div class="row align-items-center">
+                    <!-- Left Side - Enhanced Rocket Illustration -->
+                    <div class="col-lg-6 text-center order-2 order-lg-1">
+                        <div class="growth-visual-container">
+                            <!-- Rocket Scene -->
+                            <div class="rocket-wrapper">
+                                <!-- Main Rocket -->
+                                <div class="rocket-body">
+                                    <div class="rocket-tip"></div>
+                                    <div class="rocket-window"></div>
+                                    <div class="rocket-stripe stripe-1"></div>
+                                    <div class="rocket-stripe stripe-2"></div>
+                                    <div class="rocket-fin rocket-fin-left"></div>
+                                    <div class="rocket-fin rocket-fin-right"></div>
+
+                                    <!-- Enhanced Flames -->
+                                    <div class="rocket-flame">
+                                        <div class="flame flame-large flame-1"></div>
+                                        <div class="flame flame-large flame-2"></div>
+                                        <div class="flame flame-large flame-3"></div>
+                                    </div>
+
+                                    <!-- Exhaust Particles -->
+                                    <div class="exhaust-particle ex-1"></div>
+                                    <div class="exhaust-particle ex-2"></div>
+                                    <div class="exhaust-particle ex-3"></div>
+                                    <div class="exhaust-particle ex-4"></div>
+                                </div>
+
+                                <!-- Stars with Twinkle -->
+                                <div class="star-particle star-p-1">✦</div>
+                                <div class="star-particle star-p-2">✦</div>
+                                <div class="star-particle star-p-3">✦</div>
+                                <div class="star-particle star-p-4">✦</div>
+                                <div class="star-particle star-p-5">✦</div>
+                                <div class="star-particle star-p-6">✦</div>
+                                <div class="star-particle star-p-7">✦</div>
+                                <div class="star-particle star-p-8">✦</div>
+
+
+                                <!-- Premium Achievement Badges -->
+                                <div class="achievement-badge badge-pos-1">
+                                    <div class="badge-glow"></div>
+                                    <div class="badge-inner">
+                                        <div class="badge-icon">🎯</div>
+                                        <div class="badge-text">Goal</div>
+                                        <div class="badge-value">100%</div>
+                                    </div>
+                                </div>
+
+                                <div class="achievement-badge badge-pos-2">
+                                    <div class="badge-glow"></div>
+                                    <div class="badge-inner">
+                                        <div class="badge-icon">⚡</div>
+                                        <div class="badge-text">Speed</div>
+                                        <div class="badge-value">Fast</div>
+                                    </div>
+                                </div>
+
+                                <div class="achievement-badge badge-pos-3">
+                                    <div class="badge-glow"></div>
+                                    <div class="badge-inner">
+                                        <div class="badge-icon">📈</div>
+                                        <div class="badge-text">Growth</div>
+                                        <div class="badge-value">+245%</div>
+                                    </div>
+                                </div>
+
+                                <div class="achievement-badge badge-pos-4">
+                                    <div class="badge-glow"></div>
+                                    <div class="badge-inner">
+                                        <div class="badge-icon">🚀</div>
+                                        <div class="badge-text">Success</div>
+                                        <div class="badge-value">High</div>
+                                    </div>
+                                </div>
+
+                                <!-- Orbit Rings with Glow -->
+                                <div class="orbit-ring ring-size-1">
+                                    <div class="orbit-dot dot-1"></div>
+                                    <div class="orbit-dot dot-2"></div>
+                                </div>
+                                <div class="orbit-ring ring-size-2">
+                                    <div class="orbit-dot dot-3"></div>
+                                    <div class="orbit-dot dot-4"></div>
+                                </div>
+
+                                <!-- Background Glow -->
+                                <div class="bg-glow glow-blue"></div>
+                                <div class="bg-glow glow-green"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side - Enhanced Content -->
+                    <div class="col-lg-6 order-1 order-lg-2">
+                        <div class="content-enhanced-wrapper">
+
+                            <h2 class="main-heading">
+                                Ready To Scale?
+                                <span class="highlight-text">We Help You Grow Smarter!</span>
+                            </h2>
+
+                            <h3 class="sub-heading">
+                                Stuck in Place? <strong>Accelerate Your Business</strong> with Our Expertise!
+                            </h3>
+
+                            <p class="description-text">
+                                Our software solutions are designed to help you <strong>take control of your business operations</strong> in a natural, intuitive way. With streamlined workflows and easy-to-use interfaces, you can focus on what matters most – <strong>growing your business and serving your customers.</strong>
+                            </p>
+
+                            <p class="description-text">
+                                We put our customers first. We offer a range of <strong>high-quality products and services</strong> designed to meet your specific needs and desires. Our team is dedicated to providing exceptional customer service and constantly improving our offerings to ensure your satisfaction.
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+</odoo>

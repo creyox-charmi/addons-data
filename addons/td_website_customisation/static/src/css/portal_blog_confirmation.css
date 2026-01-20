@@ -1,0 +1,32 @@
+#termsConfirmationModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+#termsConfirmationModal .modal-header {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+#termsConfirmationModal .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+#termsContent {
+    min-height: 150px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+}
+
+#agreeTerms:checked + label {
+    color: #198754 !important;
+}
+
+#confirmPublish:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

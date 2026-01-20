@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service6_odoo_integration_solution" name="service6_odoo_integration_solution">
+
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_odoo_integration_banner cr_font" class="service-intro-banner hero-section-wave">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Seamless Odoo Integration Solutions
+                    </h1>
+                    <p class="banner-tagline">
+                        Connect Odoo with your existing systems, third-party applications, and business tools to build a unified ecosystem that drives efficiency and growth.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">Odoo Integration</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-odoo-integration-intro o_website_snippet cr_font" aria-labelledby="odoo-integration-heading">
+            <div class="cr-odoo-container">
+                <!-- Header Row -->
+                <div class="cr-odoo-header-row">
+                    <div class="cr-odoo-header-text">
+                        <h1 id="odoo-integration-heading">Odoo Integration for Unified Business Operations</h1>
+                        <p class="cr-odoo-subtext">
+                            We specialize in integrating Odoo ERP with multiple third-party platforms, APIs, and business systems to provide a seamless digital experience.
+                            From payment gateways and e-commerce stores to CRM, HRMS, logistics, and cloud applications — our integration services enable a centralized ecosystem for better data visibility,
+                            efficiency, and business agility. With our robust integration approach, you can eliminate data silos, reduce manual errors, and accelerate business growth.
+                        </p>
+                    </div>
+                    <div class="cr-odoo-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/odoo-integration.png" alt="Odoo Integration"/>
+                    </div>
+                </div>
+
+                <!-- Content Below -->
+                <div class="cr-odoo-content">
+<!--                    <h2>Why Choose Our Odoo Integration Services?</h2>-->
+<!--                    <p>-->
+<!--                        Our certified Odoo integration experts ensure your business systems work together seamlessly.-->
+<!--                        Whether it’s connecting with external APIs, integrating e-commerce platforms, or syncing with financial, logistics, and marketing applications,-->
+<!--                        we provide secure, scalable, and customized integration solutions. With automation and real-time synchronization, we help you enhance efficiency, reduce costs,-->
+<!--                        and improve overall productivity across departments.-->
+<!--                    </p>-->
+
+
+
+                    <!-- 2. Pre-Built Integrations Showcase Section -->
+<!--<section class="cr-prebuilt-integrations" aria-labelledby="prebuilt-integrations-heading">-->
+<!--    <div class="cr-odoo-container">-->
+<!--        <h2 id="prebuilt-integrations-heading">Pre-Built Integration Solutions</h2>-->
+<!--        <p class="section-intro">-->
+<!--            Leverage our ready-to-deploy integration modules designed for popular platforms.-->
+<!--            Get up and running faster with our tested and proven connectors.-->
+<!--        </p>-->
+
+<!--        <div class="integration-cards-grid">-->
+<!--            <div class="integration-card">-->
+<!--                <div class="integration-card-header">-->
+<!--                    <i class="fab fa-shopify"></i>-->
+<!--                    <h3>Shopify</h3>-->
+<!--                </div>-->
+<!--                <p>Sync products, orders, inventory, and customer data in real-time between Odoo and Shopify.</p>-->
+<!--                <ul class="integration-features-list">-->
+<!--                    <li>Automated order sync</li>-->
+<!--                    <li>Inventory management</li>-->
+<!--                    <li>Customer data sync</li>-->
+<!--                </ul>-->
+<!--            </div>-->
+
+<!--            <div class="integration-card">-->
+<!--                <div class="integration-card-header">-->
+<!--                    <i class="fab fa-stripe"></i>-->
+<!--                    <h3>Stripe</h3>-->
+<!--                </div>-->
+<!--                <p>Accept payments seamlessly with full transaction tracking and automated reconciliation.</p>-->
+<!--                <ul class="integration-features-list">-->
+<!--                    <li>Payment processing</li>-->
+<!--                    <li>Subscription management</li>-->
+<!--                    <li>Auto reconciliation</li>-->
+<!--                </ul>-->
+<!--            </div>-->
+
+<!--            <div class="integration-card">-->
+<!--                <div class="integration-card-header">-->
+<!--                    <i class="fab fa-salesforce"></i>-->
+<!--                    <h3>Salesforce</h3>-->
+<!--                </div>-->
+<!--                <p>Unify your sales pipeline with bi-directional CRM synchronization for better customer insights.</p>-->
+<!--                <ul class="integration-features-list">-->
+<!--                    <li>Lead synchronization</li>-->
+<!--                    <li>Opportunity tracking</li>-->
+<!--                    <li>Contact management</li>-->
+<!--                </ul>-->
+<!--            </div>-->
+
+<!--            <div class="integration-card">-->
+<!--                <div class="integration-card-header">-->
+<!--                    <i class="fab fa-aws"></i>-->
+<!--                    <h3>AWS S3</h3>-->
+<!--                </div>-->
+<!--                <p>Store and manage your documents, backups, and media files securely in the cloud.</p>-->
+<!--                <ul class="integration-features-list">-->
+<!--                    <li>Document storage</li>-->
+<!--                    <li>Automated backups</li>-->
+<!--                    <li>Media management</li>-->
+<!--                </ul>-->
+<!--            </div>-->
+
+<!--            <div class="integration-card">-->
+<!--                <div class="integration-card-header">-->
+<!--                    <i class="fab fa-google"></i>-->
+<!--                    <h3>Google Workspace</h3>-->
+<!--                </div>-->
+<!--                <p>Integrate Gmail, Calendar, Drive, and Sheets for enhanced productivity and collaboration.</p>-->
+<!--                <ul class="integration-features-list">-->
+<!--                    <li>Email integration</li>-->
+<!--                    <li>Calendar sync</li>-->
+<!--                    <li>Drive storage</li>-->
+<!--                </ul>-->
+<!--            </div>-->
+
+<!--            <div class="integration-card">-->
+<!--                <div class="integration-card-header">-->
+<!--                    <i class="fab fa-fedex"></i>-->
+<!--                    <h3>Shipping Partners</h3>-->
+<!--                </div>-->
+<!--                <p>Connect with FedEx, UPS, DHL for automated shipping labels and tracking.</p>-->
+<!--                <ul class="integration-features-list">-->
+<!--                    <li>Label generation</li>-->
+<!--                    <li>Real-time tracking</li>-->
+<!--                    <li>Rate calculation</li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+
+                    <section class="cr-prebuilt-integrations" aria-labelledby="prebuilt-integrations-heading">
+  <div class="cr-odoo-container">
+    <h2 id="prebuilt-integrations-heading">Pre-Built Integration Solutions</h2>
+    <p class="section-intro">
+      Accelerate your business with our ready-to-deploy Odoo integration connectors —
+      purpose-built to simplify data flow, enhance automation, and connect Odoo with world-class platforms.
+    </p>
+
+    <div class="integration-cards-grid">
+
+      <!-- 3CX CRM Connector -->
+      <div class="integration-card">
+        <div class="integration-card-header">
+          <i class="fas fa-phone-volume"></i>
+          <h3><a href="https://apps.odoo.com/apps/modules/19.0/cr_3cx_crm_connector" target="_blank">3CX CRM Connector</a></h3>
+        </div>
+        <p>Enable seamless telephony integration between Odoo and 3CX for advanced call management.</p>
+        <ul class="integration-features-list">
+          <li>Click-to-call and call popups in Odoo</li>
+          <li>Auto-create leads from incoming calls</li>
+          <li>Track communication history inside CRM</li>
+        </ul>
+      </div>
+
+      <!-- TikTok Shop Connector -->
+      <div class="integration-card">
+        <div class="integration-card-header">
+          <i class="fab fa-tiktok"></i>
+          <h3><a href="https://apps.odoo.com/apps/modules/19.0/cr_tiktok_shop_connector" target="_blank">TikTok Shop Connector</a></h3>
+        </div>
+        <p>Connect your TikTok Shop with Odoo for unified product, order, and inventory synchronization.</p>
+        <ul class="integration-features-list">
+          <li>Automatic product and order sync</li>
+          <li>Inventory updates in real time</li>
+          <li>Centralized TikTok analytics in Odoo</li>
+        </ul>
+      </div>
+
+      <!-- BigQuery Connector -->
+      <div class="integration-card">
+        <div class="integration-card-header">
+          <i class="fas fa-database"></i>
+          <h3><a href="https://apps.odoo.com/apps/modules/19.0/cr_bigquery_connector" target="_blank">BigQuery Connector</a></h3>
+        </div>
+        <p>Send your Odoo data directly to Google BigQuery for large-scale analytics and visualization.</p>
+        <ul class="integration-features-list">
+          <li>Data export automation to BigQuery</li>
+          <li>Supports custom models and filters</li>
+          <li>Perfect for advanced BI workflows</li>
+        </ul>
+      </div>
+
+      <!-- Power BI Desktop Connector -->
+      <div class="integration-card">
+        <div class="integration-card-header">
+          <i class="fas fa-chart-line"></i>
+          <h3><a href="https://apps.odoo.com/apps/modules/19.0/cr_power_bi_desktop_connector" target="_blank">Power BI Desktop Connector</a></h3>
+        </div>
+        <p>Empower business decisions with direct, real-time Power BI data connectivity from Odoo.</p>
+        <ul class="integration-features-list">
+          <li>Direct Power BI data connection</li>
+          <li>Scheduled synchronization</li>
+          <li>Live dashboards with Odoo KPIs</li>
+        </ul>
+      </div>
+
+      <!-- Odoo to Sheets Connector -->
+      <div class="integration-card">
+        <div class="integration-card-header">
+          <i class="fab fa-google"></i>
+          <h3><a href="https://apps.odoo.com/apps/modules/19.0/cr_odoo_to_sheets_connector" target="_blank">Odoo to Sheets Connector</a></h3>
+        </div>
+        <p>Export live Odoo data to Google Sheets with ease — perfect for teams using collaborative analytics.</p>
+        <ul class="integration-features-list">
+          <li>Real-time data sync with Sheets</li>
+          <li>Customizable export fields</li>
+          <li>Auto-refresh and scheduled updates</li>
+        </ul>
+      </div>
+
+      <!-- Brevo (Sendinblue) Integration -->
+      <div class="integration-card">
+        <div class="integration-card-header">
+          <i class="fas fa-envelope-open-text"></i>
+          <h3><a href="https://apps.odoo.com/apps/modules/19.0/cr_odoo_brevo_integratio" target="_blank">Odoo Brevo Integration</a></h3>
+        </div>
+        <p>Connect Odoo with Brevo (Sendinblue) for email marketing, automation, and customer engagement.</p>
+        <ul class="integration-features-list">
+          <li>Sync Odoo contacts to Brevo lists</li>
+          <li>Automated campaign triggers</li>
+          <li>Email tracking and analytics</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- 3. Integration Flow Diagram Section -->
+<section class="cr-integration-flow" aria-labelledby="integration-flow-heading">
+    <div class="cr-odoo-container">
+        <h2 id="integration-flow-heading">How Our Integration Process Works</h2>
+        <p class="section-intro">
+            A systematic, proven approach to ensure seamless integration with minimal disruption to your business operations.
+        </p>
+
+        <div class="flow-diagram">
+            <div class="flow-step">
+                <div class="flow-step-number">1</div>
+                <div class="flow-step-content">
+                    <h3>Discovery &amp; Analysis</h3>
+                    <p>We analyze your current systems, understand business requirements, and identify integration touchpoints.</p>
+                </div>
+            </div>
+
+            <div class="flow-connector"></div>
+
+            <div class="flow-step">
+                <div class="flow-step-number">2</div>
+                <div class="flow-step-content">
+                    <h3>Architecture Design</h3>
+                    <p>Design scalable integration architecture with proper data mapping, security protocols, and error handling.</p>
+                </div>
+            </div>
+
+            <div class="flow-connector"></div>
+
+            <div class="flow-step">
+                <div class="flow-step-number">3</div>
+                <div class="flow-step-content">
+                    <h3>Development &amp; Testing</h3>
+                    <p>Build custom connectors, implement APIs, and conduct rigorous testing in a sandbox environment.</p>
+                </div>
+            </div>
+
+            <div class="flow-connector"></div>
+
+            <div class="flow-step">
+                <div class="flow-step-number">4</div>
+                <div class="flow-step-content">
+                    <h3>Deployment &amp; Migration</h3>
+                    <p>Deploy to production with careful data migration, validation checks, and rollback plans.</p>
+                </div>
+            </div>
+
+            <div class="flow-connector"></div>
+
+            <div class="flow-step">
+                <div class="flow-step-number">5</div>
+                <div class="flow-step-content">
+                    <h3>Training &amp; Documentation</h3>
+                    <p>Provide comprehensive training and detailed documentation for your team members.</p>
+                </div>
+            </div>
+
+            <div class="flow-connector"></div>
+
+            <div class="flow-step">
+                <div class="flow-step-number">6</div>
+                <div class="flow-step-content">
+                    <h3>Monitoring &amp; Support</h3>
+                    <p>Continuous monitoring, performance optimization, and ongoing technical support.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Use Cases / Real-World Scenarios Section -->
+<!--<section class="cr-use-cases" aria-labelledby="use-cases-heading">-->
+<!--    <div class="cr-odoo-container">-->
+<!--        <h2 id="use-cases-heading">Real-World Integration Success Stories</h2>-->
+<!--        <p class="section-intro">-->
+<!--            Discover how businesses across industries have transformed their operations with our Odoo integration solutions.-->
+<!--        </p>-->
+
+<!--        <div class="use-cases-grid">-->
+<!--            <div class="use-case-card">-->
+<!--                <div class="use-case-icon">-->
+<!--                    <i class="fas fa-shopping-bag"></i>-->
+<!--                </div>-->
+<!--                <h3>E-Commerce Automation</h3>-->
+<!--                <div class="use-case-content">-->
+<!--                    <p class="use-case-challenge"><strong>Challenge:</strong> Manual order processing causing delays and inventory discrepancies.</p>-->
+<!--                    <p class="use-case-solution"><strong>Solution:</strong> Integrated Odoo with Shopify and WooCommerce for automated order sync and inventory management.</p>-->
+<!--                    <p class="use-case-result"><strong>Result:</strong> 80% reduction in order processing time and zero inventory sync errors.</p>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="use-case-card">-->
+<!--                <div class="use-case-icon">-->
+<!--                    <i class="fas fa-chart-line"></i>-->
+<!--                </div>-->
+<!--                <h3>Sales Pipeline Unification</h3>-->
+<!--                <div class="use-case-content">-->
+<!--                    <p class="use-case-challenge"><strong>Challenge:</strong> Disconnected CRM and ERP systems leading to lost opportunities.</p>-->
+<!--                    <p class="use-case-solution"><strong>Solution:</strong> Bi-directional integration between Odoo and Salesforce with real-time data sync.</p>-->
+<!--                    <p class="use-case-result"><strong>Result:</strong> 35% improvement in sales conversion rate and complete visibility across sales pipeline.</p>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="use-case-card">-->
+<!--                <div class="use-case-icon">-->
+<!--                    <i class="fas fa-coins"></i>-->
+<!--                </div>-->
+<!--                <h3>Financial Reconciliation</h3>-->
+<!--                <div class="use-case-content">-->
+<!--                    <p class="use-case-challenge"><strong>Challenge:</strong> Hours spent on manual reconciliation between accounting software and ERP.</p>-->
+<!--                    <p class="use-case-solution"><strong>Solution:</strong> Automated integration with QuickBooks and payment gateways for real-time transaction sync.</p>-->
+<!--                    <p class="use-case-result"><strong>Result:</strong> 90% time savings in month-end closing and improved financial accuracy.</p>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="use-case-card">-->
+<!--                <div class="use-case-icon">-->
+<!--                    <i class="fas fa-truck-loading"></i>-->
+<!--                </div>-->
+<!--                <h3>Logistics Optimization</h3>-->
+<!--                <div class="use-case-content">-->
+<!--                    <p class="use-case-challenge"><strong>Challenge:</strong> Lack of visibility in shipping and delivery processes.</p>-->
+<!--                    <p class="use-case-solution"><strong>Solution:</strong> Integration with FedEx, UPS, and DHL for automated label generation and tracking.</p>-->
+<!--                    <p class="use-case-result"><strong>Result:</strong> 60% faster shipping processing and real-time delivery tracking for customers.</p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+
+                    <section class="cr-use-cases-modern" aria-labelledby="use-cases-heading">
+  <div class="cr-odoo-container">
+    <h2 id="use-cases-heading">Real-World Integration Success Stories</h2>
+    <p class="section-intro">
+      Discover how businesses across industries have transformed their operations with our Odoo integration solutions.
+    </p>
+
+    <div class="use-cases-layout">
+      <!-- Left Side Image -->
+      <div class="use-cases-image">
+        <img src="/cr_internal_website_theme/static/src/img/use-case-illustration.png" alt="Integration success illustration" />
+      </div>
+
+      <!-- Right Side Cards -->
+      <div class="use-cases-grid">
+        <div class="use-case-card">
+          <div class="use-case-icon"><i class="fas fa-shopping-bag"></i></div>
+          <h3>E-Commerce Automation</h3>
+          <p><strong>Challenge:</strong> Manual order processing causing delays.</p>
+          <p><strong>Solution:</strong> Odoo integrated with Shopify for automation.</p>
+          <p><strong>Result:</strong> 80% faster order handling.</p>
+        </div>
+
+        <div class="use-case-card">
+          <div class="use-case-icon"><i class="fas fa-chart-line"></i></div>
+          <h3>Sales Pipeline Unification</h3>
+          <p><strong>Challenge:</strong> Disconnected CRM and ERP systems.</p>
+          <p><strong>Solution:</strong> Odoo ↔ Salesforce real-time sync.</p>
+          <p><strong>Result:</strong> +35% conversion rate.</p>
+        </div>
+
+        <div class="use-case-card">
+          <div class="use-case-icon"><i class="fas fa-coins"></i></div>
+          <h3>Financial Reconciliation</h3>
+          <p><strong>Challenge:</strong> Manual reconciliation taking hours.</p>
+          <p><strong>Solution:</strong> Odoo + QuickBooks integration.</p>
+          <p><strong>Result:</strong> 90% time saved.</p>
+        </div>
+
+        <div class="use-case-card">
+          <div class="use-case-icon"><i class="fas fa-truck-loading"></i></div>
+          <h3>Logistics Optimization</h3>
+          <p><strong>Challenge:</strong> Poor shipping visibility.</p>
+          <p><strong>Solution:</strong> Integration with FedEx &amp; DHL.</p>
+          <p><strong>Result:</strong> 60% faster shipping.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+                                        <section class="web-cta-section o_wfull" aria-labelledby="web-cta-heading">
+                        <!-- Floating bubbles -->
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+
+                        <div class="container web-cta-container">
+                            <div class="web-cta-row">
+                                <!-- Text -->
+                                <div class="web-cta-text">
+                                    <h2 id="web-cta-heading">
+                                        Have a Specific<span class="highlight"> Integration </span>Need?
+                                    </h2>
+                                </div>
+
+                                <!-- Button (same pattern as ERP CTA) -->
+                                <a href="/contactus" class="dark-cta-btn" title="Request Free Integration Demo"
+                                   aria-label="Get Website Demo">
+                                    <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                                    <span>Request a Integration Demo</span>
+                                </a>
+
+
+                            </div>
+                        </div>
+                    </section>
+
+<!-- 15. Industry-Specific Solutions Section -->
+<section class="cr-industry-solutions" aria-labelledby="industry-solutions-heading">
+    <div class="cr-odoo-container">
+        <h2 id="industry-solutions-heading">Industry-Specific Integration Solutions</h2>
+        <p class="section-intro">
+            Tailored integration strategies designed to meet the unique challenges and requirements of your industry.
+        </p>
+
+        <div class="industry-tabs">
+            <div class="industry-tab-buttons">
+                <button class="industry-tab-btn active" data-industry="manufacturing">
+                    <i class="fas fa-industry"></i>
+                    <span>Manufacturing</span>
+                </button>
+                <button class="industry-tab-btn" data-industry="retail">
+                    <i class="fas fa-store"></i>
+                    <span>Retail</span>
+                </button>
+                <button class="industry-tab-btn" data-industry="healthcare">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Healthcare</span>
+                </button>
+                <button class="industry-tab-btn" data-industry="logistics">
+                    <i class="fas fa-shipping-fast"></i>
+                    <span>Logistics</span>
+                </button>
+                <button class="industry-tab-btn" data-industry="finance">
+                    <i class="fas fa-university"></i>
+                    <span>Finance</span>
+                </button>
+            </div>
+
+            <div class="industry-tab-content active" data-content="manufacturing">
+                <h3>Manufacturing Industry Solutions</h3>
+                <div class="industry-features">
+                    <div class="industry-feature-item">
+                        <i class="fas fa-cogs"></i>
+                        <div>
+                            <h4>Production Planning Integration</h4>
+                            <p>Connect MES systems with Odoo for real-time production tracking and capacity planning.</p>
+                        </div>
+                    </div>
+                    <div class="industry-feature-item">
+                        <i class="fas fa-warehouse"></i>
+                        <div>
+                            <h4>Supply Chain Management</h4>
+                            <p>Integrate supplier portals, procurement systems, and inventory management tools.</p>
+                        </div>
+                    </div>
+                    <div class="industry-feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>Quality Control Systems</h4>
+                            <p>Sync quality inspection data and compliance reporting across systems.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="industry-tab-content" data-content="retail">
+                <h3>Retail Industry Solutions</h3>
+                <div class="industry-features">
+                    <div class="industry-feature-item">
+                        <i class="fas fa-cash-register"></i>
+                        <div>
+                            <h4>POS Integration</h4>
+                            <p>Real-time synchronization between point-of-sale systems and inventory management.</p>
+                        </div>
+                    </div>
+                    <div class="industry-feature-item">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <h4>Customer Loyalty Programs</h4>
+                            <p>Integrate loyalty platforms for unified customer experience and rewards tracking.</p>
+                        </div>
+                    </div>
+                    <div class="industry-feature-item">
+                        <i class="fas fa-store-alt"></i>
+                        <div>
+                            <h4>Multi-Channel Retail</h4>
+                            <p>Seamless integration across online stores, marketplaces, and physical locations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="industry-tab-content" data-content="healthcare">
+                <h3>Healthcare Industry Solutions</h3>
+                <div class="industry-features">
+                    <div class="industry-feature-item">
+                        <i class="fas fa-user-md"></i>
+                        <div>
+                            <h4>EMR/EHR Integration</h4>
+                            <p>Secure integration with electronic medical records systems ensuring HIPAA compliance.</p>
+                        </div>
+                    </div>
+                    <div class="industry-feature-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <div>
+                            <h4>Appointment Scheduling</h4>
+                            <p>Connect patient scheduling systems with resource management and billing.</p>
+                        </div>
+                    </div>
+                    <div class="industry-feature-item">
+                        <i class="fas fa-pills"></i>
+                        <div>
+                            <h4>Pharmacy &amp; Inventory</h4>
+                            <p>Integrate pharmacy management with inventory tracking and regulatory compliance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="industry-tab-content" data-content="logistics">
+                <h3>Logistics &amp; Transportation Solutions</h3>
+                <div class="industry-features">
+                    <div class="industry-feature-item">
+                        <i class="fas fa-route"></i>
+                        <div>
+                            <h4>Fleet Management</h4>
+                            <p>Integrate GPS tracking, vehicle maintenance, and route optimization systems.</p>
+                        </div>
+                    </div>
+                    <div class="industry-feature-item">
+                        <i class="fas fa-box"></i>
+                        <div>
+                            <h4>Warehouse Management</h4>
+                            <p>Connect WMS with Odoo for automated picking, packing, and shipping processes.</p>
+                        </div>
+                    </div>
+                    <div class="industry-feature-item">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <div>
+                            <h4>Real-Time Tracking</h4>
+                            <p>Customer portals with live shipment tracking and delivery notifications.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="industry-tab-content" data-content="finance">
+                <h3>Financial Services Solutions</h3>
+                <div class="industry-features">
+                    <div class="industry-feature-item">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <div>
+                            <h4>Banking Integration</h4>
+                            <p>Automated bank reconciliation and payment processing with financial institutions.</p>
+                        </div>
+                    </div>
+                    <div class="industry-feature-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <h4>Compliance &amp; Reporting</h4>
+                            <p>Integrate regulatory reporting systems and audit trail management.</p>
+                        </div>
+                    </div>
+                    <div class="industry-feature-item">
+                        <i class="fas fa-chart-pie"></i>
+                        <div>
+                            <h4>Financial Analytics</h4>
+                            <p>Connect BI tools for advanced financial analysis and forecasting.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<script>
+// Industry tabs functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.industry-tab-btn');
+    const tabContents = document.querySelectorAll('.industry-tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const industry = this.getAttribute('data-industry');
+
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Add active class to clicked button and corresponding content
+            this.classList.add('active');
+            document.querySelector(`[data-content="${industry}"]`).classList.add('active');
+        });
+    });
+});
+</script>
+
+
+
+
+
+
+
+                    <h2>Why Choose Our Odoo Integration Services?</h2>
+                    <p>
+                        Our certified Odoo integration experts ensure your business systems work together seamlessly.
+                        Whether it’s connecting with external APIs, integrating e-commerce platforms, or syncing with financial, logistics, and marketing applications,
+                        we provide secure, scalable, and customized integration solutions. With automation and real-time synchronization, we help you enhance efficiency, reduce costs,
+                        and improve overall productivity across departments.
+                    </p>
+
+                    <ul class="odoo-integration-features">
+                        <li>
+                            <strong>API Integrations:</strong>
+                            Secure integration with REST, SOAP, and GraphQL APIs.
+                        </li>
+                        <li>
+                            <strong>E-commerce Integration:</strong>
+                            Sync Odoo with Shopify, Magento, WooCommerce, and more.
+                        </li>
+                        <li>
+                            <strong>Payment Gateway Integration:</strong>
+                            Integrate PayPal, Stripe, Razorpay, and other gateways.
+                        </li>
+                        <li>
+                            <strong>CRM &amp; Marketing:</strong>
+                            Connect with Salesforce, HubSpot, Mailchimp, and others.
+                        </li>
+                        <li>
+                            <strong>Accounting &amp; Finance:</strong>
+                            Integrate with QuickBooks, Xero, or other financial apps.
+                        </li>
+                        <li>
+                            <strong>Logistics &amp; Shipping:</strong>
+                            Integration with FedEx, DHL, UPS, and real-time tracking.
+                        </li>
+                        <li>
+                            <strong>Cloud &amp; Storage:</strong>
+                            Connect Odoo with AWS, Google Drive, or Dropbox.
+                        </li>
+                        <li>
+                            <strong>Legacy Systems:</strong>
+                            Bridge Odoo with your existing ERP/CRM tools.
+                        </li>
+                        <li>
+                            <strong>Custom Connectors:</strong>
+                            Build tailor-made connectors for unique integrations.
+                        </li>
+                        <li>
+                            <strong>Real-time Sync:</strong>
+                            Ensure instant updates across all connected platforms.
+                        </li>
+                    </ul>
+
+                    <h2>Our Integration Approach</h2>
+                    <p>
+                        We follow a systematic methodology to ensure smooth and reliable Odoo integrations.
+                        Starting with business analysis and mapping integration requirements, we design scalable architecture and implement secure data flows.
+                        Our agile approach ensures faster deployment, reduced downtime, and minimal business disruption.
+                        Post-deployment, we provide continuous monitoring, performance tuning, and support to ensure your integrations remain stable and up-to-date.
+                    </p>
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Can you integrate Odoo with my e-commerce store?</dt>
+                        <dd>Yes, we integrate Odoo with Shopify, WooCommerce, Magento, and other platforms for seamless sales and inventory management.</dd>
+                        <dt>Is payment gateway integration possible?</dt>
+                        <dd>Absolutely! We integrate Odoo with leading gateways like PayPal, Stripe, Razorpay, and more.</dd>
+                        <dt>Do you build custom connectors?</dt>
+                        <dd>Yes, we design and implement custom connectors to meet your unique integration requirements.</dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+<!--    <record id="cr_internal_website_theme.service6_odoo_integration_solution_000_scss" model="ir.asset">-->
+<!--        <field name="name">SERVICE-6 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/service6_odoo_integration_solution/000.scss</field>-->
+<!--    </record>-->
+</odoo>

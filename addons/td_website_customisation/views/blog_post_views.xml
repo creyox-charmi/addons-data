@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_blog_post_form_inherit_tag_categories" model="ir.ui.view">
+        <field name="name">blog.post.form.inherit.tag.categories</field>
+        <field name="model">blog.post</field>
+        <field name="inherit_id" ref="website_blog.view_blog_post_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="tag_category_ids" widget="many2many_tags" readonly="1" options="{'no_create': True}" string="Tag Categories"/>
+                <field name="td_available_tags_ids" widget="many2many_tags" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="domain">[('id', 'in', td_available_tags_ids)]</attribute>
+                <attribute name="options">{'no_create': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_blog_post_tree_inherit_tag_categories" model="ir.ui.view">
+        <field name="name">blog.post.tree.inherit.tag.categories</field>
+        <field name="model">blog.post</field>
+        <field name="inherit_id" ref="website_blog.view_blog_post_list"/>
+        <field name="arch" type="xml">
+            <tree position="inside">
+                <field name="td_available_tags_ids" widget="many2many_tags" invisible="1"/>
+                <field name="tag_ids" widget="many2many_tags" string="Tag Categories" domain="[('id', 'in', td_available_tags_ids)]" options="{'no_create': True}"/>
+                <field name="tag_category_ids" widget="many2many_tags" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service11_odoo_consulting_solution" name="service11_odoo_consulting_solution">
+
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_odoo_consulting_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Expert Odoo Consulting Services
+                    </h1>
+                    <p class="banner-tagline">
+                        Unlock the full potential of Odoo with our strategic consulting—covering requirement analysis,
+                        workflow design, process optimization, and digital transformation guidance.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">Odoo Consulting</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-odoo-consulting-intro o_website_snippet cr_font" aria-labelledby="odoo-consulting-heading">
+            <div class="cr-odoo-container">
+                <!-- Header Row -->
+                <div class="cr-odoo-header-row">
+                    <div class="cr-odoo-header-text">
+                        <h1 id="odoo-consulting-heading">Transform Your Business with Odoo Consulting</h1>
+                        <p class="cr-odoo-subtext">
+                            Implementing Odoo is not just about installing software—it’s about rethinking processes,
+                            maximizing efficiency, and enabling growth. Our certified consultants analyze your business
+                            workflows, identify gaps, and design tailored ERP solutions that deliver measurable results.
+                            <br/>
+                            <br/>
+                            From initial discovery workshops to full-scale digital transformation strategies,
+                            we align Odoo with your unique goals. Whether you're migrating from legacy systems,
+                            expanding globally, or seeking process automation, our consulting services
+                            provide the roadmap for long-term success.
+                        </p>
+                    </div>
+                    <div class="cr-odoo-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/odoo-consulting.png" alt="Odoo Consulting"/>
+                    </div>
+                </div>
+
+                <!-- Content Below -->
+                <div class="cr-odoo-content">
+
+                    <section class="cr-consulting-services">
+                        <div class="container">
+                            <h2 class="section-title">Our Consulting Services</h2>
+                            <div class="services-grid">
+                                <div class="service-box">
+                                    <div class="service-icon">
+                                        <i class="fas fa-clipboard-check"></i>
+                                    </div>
+                                    <h3>Business Analysis</h3>
+                                    <p>Deep-dive workshops to understand your processes, challenges, and opportunities
+                                        for optimization.
+                                    </p>
+                                </div>
+                                <div class="service-box">
+                                    <div class="service-icon">
+                                        <i class="fas fa-route"></i>
+                                    </div>
+                                    <h3>ERP Roadmap</h3>
+                                    <p>Strategic planning with phased implementation timelines and milestone
+                                        definitions.
+                                    </p>
+                                </div>
+                                <div class="service-box">
+                                    <div class="service-icon">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </div>
+                                    <h3>System Migration</h3>
+                                    <p>Seamless transition from legacy systems with data mapping and validation
+                                        strategies.
+                                    </p>
+                                </div>
+                                <div class="service-box">
+                                    <div class="service-icon">
+                                        <i class="fas fa-cogs"></i>
+                                    </div>
+                                    <h3>Process Optimization</h3>
+                                    <p>Identify bottlenecks and redesign workflows for maximum efficiency and
+                                        automation.
+                                    </p>
+                                </div>
+                                <div class="service-box">
+                                    <div class="service-icon">
+                                        <i class="fas fa-users-cog"></i>
+                                    </div>
+                                    <h3>Change Management</h3>
+                                    <p>User adoption strategies, training programs, and organizational change support.
+                                    </p>
+                                </div>
+                                <div class="service-box">
+                                    <div class="service-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <h3>Performance Review</h3>
+                                    <p>Regular audits and optimization recommendations to enhance system performance.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. Consulting Process Steps -->
+                    <section class="cr-consulting-process">
+                        <div class="container">
+                            <h2 class="section-title">Our Consulting Process</h2>
+                            <div class="process-steps">
+                                <div class="step-item">
+                                    <div class="step-number">01</div>
+                                    <div class="step-content">
+                                        <h3>Discovery Workshop</h3>
+                                        <p>Understanding your business model, pain points, and strategic objectives
+                                            through collaborative sessions.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">02</div>
+                                    <div class="step-content">
+                                        <h3>Gap Analysis</h3>
+                                        <p>Identifying gaps between current processes and desired outcomes with detailed
+                                            documentation.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">03</div>
+                                    <div class="step-content">
+                                        <h3>Solution Design</h3>
+                                        <p>Creating a tailored Odoo architecture that aligns with your business
+                                            requirements and goals.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">04</div>
+                                    <div class="step-content">
+                                        <h3>Implementation Plan</h3>
+                                        <p>Developing a phased roadmap with clear milestones, timelines, and resource
+                                            allocation.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">05</div>
+                                    <div class="step-content">
+                                        <h3>Execution Support</h3>
+                                        <p>Hands-on guidance during implementation with regular checkpoints and issue
+                                            resolution.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">06</div>
+                                    <div class="step-content">
+                                        <h3>Continuous Advisory</h3>
+                                        <p>Ongoing support to optimize, scale, and evolve your Odoo system as your
+                                            business grows.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <h2>Why Choose Our Odoo Consulting Services?</h2>
+                    <p>
+                        We combine deep business knowledge with technical Odoo expertise to guide organizations at every
+                        stage.
+                        Our consulting approach emphasizes **process efficiency, scalability, and innovation**.
+                        With structured assessments, workshops, and solution roadmaps, we ensure your ERP delivers
+                        maximum ROI.
+                        <br/>
+                        <br/>
+                        Partner with us to bridge the gap between strategy and technology—
+                        and leverage Odoo to achieve digital excellence.
+                    </p>
+
+                    <ul class="odoo-consulting-features">
+                        <li>
+                            <strong>Business Process Analysis:</strong>
+                            In-depth review of workflows to align Odoo with your unique requirements.
+                        </li>
+                        <li>
+                            <strong>ERP Strategy &amp; Roadmap:</strong>
+                            Clear, step-by-step plans for ERP adoption and growth.
+                        </li>
+                        <li>
+                            <strong>Requirement Gathering:</strong>
+                            Detailed documentation and gap analysis to ensure smooth implementation.
+                        </li>
+                        <li>
+                            <strong>Module Selection Guidance:</strong>
+                            Choose the right Odoo apps for your business goals.
+                        </li>
+                        <li>
+                            <strong>Customization Planning:</strong>
+                            Define necessary customizations while keeping systems scalable.
+                        </li>
+                        <li>
+                            <strong>Process Optimization:</strong>
+                            Streamline operations and eliminate inefficiencies.
+                        </li>
+                        <li>
+                            <strong>Change Management:</strong>
+                            Training, adoption strategies, and user engagement.
+                        </li>
+                        <li>
+                            <strong>Migration Consulting:</strong>
+                            Smooth transition from legacy systems or previous ERP solutions.
+                        </li>
+                        <li>
+                            <strong>Digital Transformation:</strong>
+                            Leverage Odoo as a foundation for innovation and future growth.
+                        </li>
+                        <li>
+                            <strong>Long-Term Advisory:</strong>
+                            Continuous consulting to evolve with changing market needs.
+                        </li>
+                    </ul>
+
+                    <h2>Our Consulting Approach</h2>
+                    <p>
+                        Our methodology is **collaborative, agile, and business-driven**. We begin with discovery
+                        workshops,
+                        where our consultants understand your organizational structure, challenges, and growth
+                        ambitions.
+                        Next, we map your requirements to Odoo’s capabilities and design a roadmap that balances quick
+                        wins
+                        with long-term strategic value.
+                        <br/>
+                        <br/>
+                        Through iterative workshops, prototypes, and validation cycles, we ensure solutions are
+                        practical,
+                        user-friendly, and aligned with business goals. Our consulting doesn’t stop at recommendations—
+                        we stay with you to ensure measurable outcomes and a sustainable Odoo strategy.
+                    </p>
+
+
+                    <section class="contact-section">
+                        <div class="contact-wrapper">
+                            <!-- Left Side Form -->
+                            <div class="contact-form">
+                                <h2>Get in Touch</h2>
+                                <p>Fill out the form below and our team will reach out shortly.</p>
+                                <form id="erp-demo-form">
+
+                                    <div class="form-group">
+                                        <input type="text" name="name" placeholder=" " required="1"/>
+                                        <label>Your Name</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" name="email" placeholder=" " required="1"/>
+                                        <label>Your Email</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="tel" name="phone" placeholder=" " required="1"/>
+                                        <label>Contact Number</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="company" placeholder=" "/>
+                                        <label>Company Name</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea name="message" placeholder=" " required="1"></textarea>
+                                        <label>Your Message</label>
+                                    </div>
+                                    <button type="submit">Send Message</button>
+                                </form>
+
+                                <div id="successPopup">
+                                    <div class="popup-box">
+                                        <div class="popup-icon">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div id="popupMessage"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Right Side Image -->
+                            <div class="contact-image">
+                                <img src="/cr_internal_website_theme/static/src/img/b2.png" alt="Illustration"/>
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>What industries do you consult for?</dt>
+                        <dd>We serve manufacturing, retail, services, healthcare, logistics, and more with tailored Odoo
+                            consulting.
+                        </dd>
+                        <dt>Do you only consult or also implement?</dt>
+                        <dd>We provide end-to-end services—consulting, implementation, customization, and long-term
+                            support.
+                        </dd>
+                        <dt>Can you help us migrate from another ERP?</dt>
+                        <dd>Yes, we specialize in ERP migrations, ensuring data integrity, process continuity, and
+                            minimal downtime.
+                        </dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+    <!--    <record id="cr_internal_website_theme.service11_odoo_consulting_solution_000_scss" model="ir.asset">-->
+    <!--        <field name="name">SERVICE-11 000 SCSS</field>-->
+    <!--        <field name="bundle">web.assets_frontend</field>-->
+    <!--        <field name="path">cr_internal_website_theme/static/src/snippets/service11_odoo_consulting_solution/000.scss</field>-->
+    <!--    </record>-->
+</odoo>

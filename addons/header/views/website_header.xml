@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="custom_header_replace" inherit_id="website.layout" name="Custom Professional Header">
+        <xpath expr="//header" position="replace">
+            <header id="custom_header" class="custom-header">
+                <div class="container full-header-wrapper">
+                    <div class="header-content">
+                        <a href="/" class="logo" aria-label="Home">
+                            <img src="/header/static/src/img/logo.png" alt="Company Logo" loading="lazy"/>
+                        </a>
+                        <nav class="main-nav" role="navigation" aria-label="Main Navigation">
+                            <ul class="nav-list">
+                                <li>
+                                    <a href="/">Home</a>
+                                </li>
+                                <li>
+                                    <a href="/aboutus">About Us</a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-cr-toggle">Services
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu mega-menu">
+
+                                        <li class="mega-column">
+                                            <h4>Services</h4>
+                                            <a href="/services/erp"><i class="fa fa-caret-right"></i>    ERP Solution</a>
+                                            <a href="/services/crm"><i class="fa fa-caret-right"></i>    CRM Solution</a>
+                                            <a href="/services/pos"><i class="fa fa-caret-right"></i>    POS Solution</a>
+                                            <a href="/services/web"><i class="fa fa-caret-right"></i>    Web Development</a>
+                                        </li>
+                                        <li class="mega-column">
+                                            <h4>Odoo</h4>
+                                            <a href="/services/odoo-development"><i class="fa fa-caret-right"></i>    Odoo Development</a>
+                                            <a href="/services/odoo-integration"><i class="fa fa-caret-right"></i>    Odoo Integration</a>
+                                            <a href="/services/odoo-implementation"><i class="fa fa-caret-right"></i>    Odoo Implementation</a>
+                                            <a href="/services/odoo-customisation"><i class="fa fa-caret-right"></i>    Odoo Customisation</a>
+                                            <a href="/services/odoo-migration"><i class="fa fa-caret-right"></i>    Odoo Migration</a>
+                                            <a href="/services/odoo-support"><i class="fa fa-caret-right"></i>    Odoo Support</a>
+                                            <a href="/services/odoo-consulting"><i class="fa fa-caret-right"></i>    Odoo Consulting</a>
+                                            <a href="/services/odoo-training"><i class="fa fa-caret-right"></i>    Odoo Training</a>
+                                        </li>
+                                        <li class="mega-column">
+                                            <h4>SAP</h4>
+                                            <a href="/services/sap-services"><i class="fa fa-caret-right"></i>    SAP Services</a>
+                                        </li>
+                                    </ul>
+
+                                </li>
+                                <li>
+                                    <a href="/career">Career</a>
+                                </li>
+                                <li>
+                                    <a href="/blog">Blogs</a>
+                                </li>
+                                <li>
+                                    <a href="/case-study">Case Study</a>
+                                </li>
+                                <li>
+                                    <a href="/support">Support</a>
+                                </li>
+                                <li>
+                                    <a href="/contactus">Contact Us</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+        </xpath>
+    </template>
+</odoo>

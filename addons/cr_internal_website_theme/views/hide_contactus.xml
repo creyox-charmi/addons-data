@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="header_call_to_action" inherit_id="website.header_call_to_action" name="Header Call to Action">
+        <xpath expr="//section[@class='s_text_block']" position="replace">
+        </xpath>
+    </template>
+
+</odoo>

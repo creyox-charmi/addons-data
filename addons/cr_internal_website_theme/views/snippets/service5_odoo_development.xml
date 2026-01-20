@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service5_odoo_dev_solution" name="service5_odoo_dev_solution">
+
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_odoo_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Expert Odoo Development Solutions
+                    </h1>
+                    <p class="banner-tagline">
+                        Unlock the full potential of Odoo with custom modules, seamless integrations, and tailored ERP solutions for your business.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">Odoo Development</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-odoo-solution-intro o_website_snippet cr_font" aria-labelledby="odoo-solution-heading">
+            <div class="cr-odoo-container">
+                <!-- Header Row -->
+                <div class="cr-odoo-header-row">
+                    <div class="cr-odoo-header-text">
+                        <h1 id="odoo-solution-heading">Odoo Development for Modern Enterprises</h1>
+                        <p class="cr-odoo-subtext">
+                            We deliver comprehensive end-to-end Odoo development services, covering everything from custom module creation and ERP implementation
+                            to seamless integrations and ongoing support. Our expertise ensures optimized business workflows, enhanced scalability,
+                            and long-term efficiency tailored to your unique organizational needs. With a focus on innovation and reliability,
+                            we empower your business to unlock the full potential of Odoo.
+                        </p>
+
+                    </div>
+                    <div class="cr-odoo-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/odoo-development.png" alt="Odoo Development"/>
+                    </div>
+                </div>
+
+                <!-- Content Below -->
+                <div class="cr-odoo-content">
+
+                    <h2>Why Choose Our Odoo Development Services?</h2>
+                    <p>
+                        Our certified Odoo experts deliver tailored solutions designed to streamline and optimize your business operations.
+                        From seamless ERP setup and custom module development to advanced automation and system integrations,
+                        we ensure that your organization harnesses the full power of Odoo. With a focus on scalability, performance,
+                        and long-term efficiency, we empower your business to achieve sustainable growth and stay ahead in a competitive market.
+                    </p>
+
+
+                    <ul class="odoo-features">
+                        <li>
+                            <strong>Custom Module Development:</strong>
+                            Build tailor-made modules to match unique business processes.
+                        </li>
+                        <li>
+                            <strong>Odoo Implementation:</strong>
+                            End-to-end ERP deployment with best practices.
+                        </li>
+                        <li>
+                            <strong>Integration Services:</strong>
+                            Connect Odoo with third-party apps &amp; services seamlessly.
+                        </li>
+                        <li>
+                            <strong>Migration &amp; Upgrades:</strong>
+                            Smooth transition between Odoo versions without data loss.
+                        </li>
+                        <li>
+                            <strong>Odoo Customization:</strong>
+                            Personalize workflows, dashboards, and reports.
+                        </li>
+                        <li>
+                            <strong>Website &amp; E-commerce:</strong>
+                            Fully integrated Odoo websites and online stores.
+                        </li>
+                        <li>
+                            <strong>Performance Optimization:</strong>
+                            Enhance speed, scalability, and reliability of your Odoo ERP.
+                        </li>
+                        <li>
+                            <strong>Mobile Solutions:</strong>
+                            Access Odoo on the go with mobile-friendly solutions.
+                        </li>
+                        <li>
+                            <strong>Support &amp; Maintenance:</strong>
+                            Ongoing updates, bug fixes, and monitoring for stability.
+                        </li>
+                        <li>
+                            <strong>Training &amp; Consulting:</strong>
+                            Empower your team with expert-led Odoo training.
+                        </li>
+                    </ul>
+
+                   <h2>Our Implementation Approach</h2>
+                    <p>
+                        We follow a structured and transparent methodology, starting from in-depth requirement analysis to successful deployment and post-implementation support.
+                        Our agile approach emphasizes collaboration, iterative development, and continuous feedback, ensuring faster delivery with minimized risks.
+                        By aligning Odoo ERP with your unique business processes, we guarantee scalability, adaptability, and long-term success.
+                        Beyond go-live, our dedicated support ensures smooth adoption, performance optimization, and sustainable business growth.
+                    </p>
+
+
+
+                      <section class="contact-section">
+                        <div class="contact-wrapper">
+                            <!-- Left Side Form -->
+                            <div class="contact-form">
+                                <h2>Get in Touch</h2>
+                                <p>Fill out the form below and our team will reach out shortly.</p>
+                                <form id="erp-demo-form">
+
+                                    <div class="form-group">
+                                        <input type="text" name="name" placeholder=" " required="1"/>
+                                        <label>Your Name</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" name="email" placeholder=" " required="1"/>
+                                        <label>Your Email</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="tel" name="phone" placeholder=" " required="1"/>
+                                        <label>Contact Number</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="company" placeholder=" "/>
+                                        <label>Company Name</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea name="message" placeholder=" " required="1"></textarea>
+                                        <label>Your Message</label>
+                                    </div>
+                                    <button type="submit">Send Message</button>
+                                </form>
+
+                                <div id="successPopup">
+                                    <div class="popup-box">
+                                        <div class="popup-icon">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div id="popupMessage"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Right Side Image -->
+                            <div class="contact-image">
+                                <img src="/cr_internal_website_theme/static/src/img/b2.png" alt="Illustration"/>
+                            </div>
+                        </div>
+                    </section>
+
+
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Can you customize Odoo for my business?</dt>
+                        <dd>Yes, we create custom modules, dashboards, and reports tailored to your business needs.</dd>
+                        <dt>Do you handle Odoo migrations?</dt>
+                        <dd>Absolutely! We ensure safe and seamless migration to the latest Odoo version.</dd>
+                        <dt>Do you provide ongoing support?</dt>
+                        <dd>Yes, we offer dedicated support, upgrades, and performance monitoring services.</dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+<!--    <record id="cr_internal_website_theme.service5_odoo_dev_solution_000_scss" model="ir.asset">-->
+<!--        <field name="name">SERVICE-5 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/service5_odoo_dev_solution/000.scss</field>-->
+<!--    </record>-->
+</odoo>

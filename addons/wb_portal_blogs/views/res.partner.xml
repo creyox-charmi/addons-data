@@ -1,0 +1,23 @@
+<odoo>
+    <data>
+        <record id="view_partner_social_media_form" model="ir.ui.view">
+            <field name="name">res.partner.social.media.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Redes Sociales">
+                        <group>
+                            <field name="facebook_url" widget="url" placeholder="Ej: https://www.facebook.com/usuario"/>
+                            <field name="instagram_url" widget="url" placeholder="Ej: https://www.instagram.com/usuario"/>
+                            <field name="linkedin_url" widget="url" placeholder="Ej: https://www.linkedin.com/in/usuario"/>
+                            <field name="twitter_url" widget="url" placeholder="Ej: https://www.twitter.com/usuario"/>
+                            <field name="youtube_url" widget="url" placeholder="Ej: https://www.youtube.com/channel/id"/>
+                            <field name="github_url" widget="url" placeholder="Ej: https://www.github.com/usuario"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

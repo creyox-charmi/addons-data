@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="remove_user_dropdown_header" inherit_id="website.layout" name="Remove User Dropdown in Header">
+        <xpath expr="//t[@t-call='portal.user_dropdown']" position="replace">
+            <!-- Removed user dropdown -->
+        </xpath>
+    </template>
+
+    <template id="navbar_nav_custom" inherit_id="website.navbar_nav" name="Navbar Nav - Add Custom Classes">
+        <xpath expr="//ul[@id='top_menu']" position="attributes">
+            <attribute name="class" add="main-nav nav-list"/>
+        </xpath>
+    </template>
+
+
+    <template id="website.submenu" name="Custom Submenu Template">
+        <t t-set="show_dropdown"
+           t-value="(submenu.is_mega_menu and submenu.is_visible) or submenu.child_id.filtered(lambda menu: menu.is_visible)"/>
+
+        <!-- No dropdown - standard menu item -->
+        <li t-if="submenu.is_visible and not (submenu.child_id or submenu.is_mega_menu)"
+            t-attf-class="#{item_class or ''}" role="presentation">
+            <a t-att-href="submenu.clean_url()"
+               t-attf-class="#{link_class or ''} #{'active' if submenu.clean_url() and unslug_url(request.httprequest.path) == unslug_url(submenu.clean_url()) else ''}"
+               role="menuitem"
+               t-ignore="true"
+               t-att-target="'_blank' if submenu.new_window else None">
+                <span t-field="submenu.name"/>
+            </a>
+        </li>
+
+        <!-- Default dropdown menu -->
+        <li t-elif="show_dropdown and submenu.name == 'Services'" t-attf-class="#{item_class or ''} dropdown #{
+            (submenu.clean_url() and submenu.clean_url() != '/' and any(request.httprequest.path == child.url for child in submenu.child_id if child.url) or
+             (submenu.clean_url() and request.httprequest.path == submenu.clean_url())) and 'active'
+            } #{submenu.is_mega_menu and 'position-static'}">
+            <a t-attf-class="#{link_class or ''} dropdown-toggle #{submenu.is_mega_menu and 'o_mega_menu_toggle'}"
+               data-bs-toggle="dropdown" href="#">
+                <span t-field="submenu.name"/>
+            </a>
+
+            <ul class="dropdown-menu mega-menu">
+                <li class="mega-column">
+                    <h4>Services</h4>
+                    <a href="/services/erp">
+                        <i class="fa fa-caret-right"></i>
+                        ERP Solution
+                    </a>
+                    <a href="/services/crm">
+                        <i class="fa fa-caret-right"></i>
+                        CRM Solution
+                    </a>
+                    <a href="/services/pos">
+                        <i class="fa fa-caret-right"></i>
+                        POS Solution
+                    </a>
+                    <a href="/services/web">
+                        <i class="fa fa-caret-right"></i>
+                        Web Development
+                    </a>
+                </li>
+                <li class="mega-column">
+                    <h4>Odoo</h4>
+                    <a href="/services/odoo-development">
+                        <i class="fa fa-caret-right"></i>
+                        Odoo Development
+                    </a>
+                    <a href="/services/odoo-integration">
+                        <i class="fa fa-caret-right"></i>
+                        Odoo Integration
+                    </a>
+                    <a href="/services/odoo-implementation">
+                        <i class="fa fa-caret-right"></i>
+                        Odoo Implementation
+                    </a>
+                    <a href="/services/odoo-customisation">
+                        <i class="fa fa-caret-right"></i>
+                        Odoo Customisation
+                    </a>
+                    <a href="/services/odoo-migration">
+                        <i class="fa fa-caret-right"></i>
+                        Odoo Migration
+                    </a>
+                    <a href="/services/odoo-support">
+                        <i class="fa fa-caret-right"></i>
+                        Odoo Support
+                    </a>
+                    <a href="/services/odoo-consulting">
+                        <i class="fa fa-caret-right"></i>
+                        Odoo Consulting
+                    </a>
+                    <a href="/services/odoo-training">
+                        <i class="fa fa-caret-right"></i>
+                        Odoo Training
+                    </a>
+                </li>
+                <li class="mega-column">
+                    <h4>SAP</h4>
+                    <a href="/services/sap-services">
+                        <i class="fa fa-caret-right"></i>
+                        SAP Services
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- Default dropdown menu -->
+        <li t-elif="show_dropdown" t-attf-class="#{item_class or ''} dropdown #{
+            (submenu.clean_url() and submenu.clean_url() != '/' and any(request.httprequest.path == child.url for child in submenu.child_id if child.url) or
+             (submenu.clean_url() and request.httprequest.path == submenu.clean_url())) and 'active'
+            } #{submenu.is_mega_menu and 'position-static'}">
+            <a t-attf-class="#{link_class or ''} dropdown-toggle #{submenu.is_mega_menu and 'o_mega_menu_toggle'}"
+               data-bs-toggle="dropdown" href="#">
+                <span t-field="submenu.name"/>
+            </a>
+            <div t-if="submenu.is_mega_menu"
+                 t-attf-class="dropdown-menu o_mega_menu #{submenu.mega_menu_classes}"
+                 data-name="Mega Menu"
+                 t-field="submenu.mega_menu_content"/>
+            <ul t-else="" class="dropdown-menu" role="menu">
+                <t t-foreach="submenu.child_id" t-as="submenu">
+                    <t t-call="website.submenu">
+                        <t t-set="item_class" t-value="None"/>
+                        <t t-set="link_class" t-valuef="dropdown-item"/>
+                    </t>
+                </t>
+            </ul>
+        </li>
+    </template>
+
+
+</odoo>

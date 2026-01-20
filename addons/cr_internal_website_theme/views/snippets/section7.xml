@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="contact_snippet_template" name="section-7">
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section class="connect-section o_wfull cr_font" aria-labelledby="connect-heading">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+
+            <div class="container connect-container">
+                <div class="connect-row">
+                    <h2 id="connect-heading">
+                        Seeking Professional <span class="highlight">Odoo Advice</span>? Need Implementation Assistance?
+                        Let's Connect!
+                    </h2>
+                    <a href="/contactus" class="dark-cta-btn">
+                        <i class="fas fa-phone" aria-hidden="true"></i>
+                        <span>Contact Us</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </template>
+
+
+<!--    <record id="cr_internal_website_theme.s7_000_scss" model="ir.asset">-->
+<!--        <field name="name">SECTION-7 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/section7/000.scss</field>-->
+<!--    </record>-->
+</odoo>

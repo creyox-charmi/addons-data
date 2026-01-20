@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Hereda de la plantilla 'web.contact' -->
+        <template id="my_custom_contact_line_before_city" inherit_id="base.contact">
+            <!-- Usa XPath para seleccionar el elemento y posicionar tu nueva línea -->
+            <xpath expr="//span[@itemprop='addressCountry']" position="before">
+                <!-- Aquí está la línea que quieres agregar -->
+               <span t-esc="state_id"/>,
+            </xpath>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,376 @@
+/* =========================
+   Odoo Dev Intro Section
+========================= */
+.cr-odoo-solution-intro {
+    background: white;
+    padding: 80px 20px;
+//     margin-bottom: 50px;
+}
+
+.cr-odoo-container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.cr-odoo-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.cr-odoo-header-text {
+    flex: 0 0 50%;
+    max-width: 50%;
+    color: #001f54;
+}
+
+.cr-odoo-header-text h1 {
+    color: #002855;
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 20px;
+}
+
+.cr-odoo-subtext {
+    font-size: 1.05rem;
+    color: #333;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.cr-odoo-header-img {
+    flex: 0 0 50%;
+    max-width: 50%;
+    text-align: right;
+}
+
+.cr-odoo-header-img img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Content Below */
+.cr-odoo-content h2 {
+    color: #002855;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 70px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.cr-odoo-content p {
+    font-size: 1.05rem;
+    color: #333;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+/* =========================
+   Responsive Media Queries
+========================= */
+@media (max-width: 1024px) {
+    .cr-odoo-header-text h1 { font-size: 2.4rem; }
+    .cr-odoo-subtext { font-size: 1.05rem; }
+    .cr-odoo-content h2 { font-size: 1.8rem; }
+    .cr-odoo-content p {
+        font-size: 1.05rem;
+    }
+}
+@media (max-width: 768px) {
+    .cr-odoo-header-row { flex-direction: column; gap: 30px; }
+    .cr-odoo-header-text, .cr-odoo-header-img { flex: 1 1 100%; max-width: 100%; }
+    .cr-odoo-header-text h1 { font-size: 2rem; }
+    .cr-odoo-subtext { font-size: 1rem; }
+    .cr-odoo-content ul.odoo-features { gap: 15px; }
+    .cr-odoo-content ul.odoo-features li { flex: 1 1 100%; max-width: 100%; }
+}
+@media (max-width: 480px) {
+    .cr-odoo-header-text h1 { font-size: 1.75rem; }
+    .cr-odoo-subtext { font-size: 0.95rem; }
+    .cr-odoo-content h2 { font-size: 1.5rem; }
+    .cr-odoo-content p {font-size: 0.95rem;}
+}
+@media (max-width: 375px) {
+    .cr-odoo-header-text h1 { font-size: 1.5rem; }
+    .cr-odoo-subtext { font-size: 0.9rem; }
+    .cr-odoo-content h2 { font-size: 1.3rem; }
+    .cr-odoo-content ul.odoo-features li { padding: 20px 15px 25px; }
+}
+@media (max-width: 320px) {
+    .cr-odoo-header-text h1 { font-size: 1.35rem; }
+    .cr-odoo-subtext { font-size: 0.85rem; }
+    .cr-odoo-content h2 { font-size: 1.2rem; }
+}
+
+
+/* Large Tablets / Small Desktops (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .cr-odoo-content p {
+        font-size: 1.1rem;
+    }
+}
+
+/* Tablets / Mobile Large (max-width: 768px) */
+@media (max-width: 768px) {
+    .cr-odoo-content p {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+}
+
+/* Mobile Medium (max-width: 480px) */
+@media (max-width: 480px) {
+    .cr-odoo-content p {
+        font-size: 0.95rem;
+    }
+}
+
+/* Mobile Small / Extra Small (max-width: 375px) */
+@media (max-width: 375px) {
+    .cr-odoo-content p {
+        font-size: 0.9rem;
+    }
+}
+
+
+/* ================================
+   Odoo Features Box Style
+=================================*/
+.odoo-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    list-style: none;
+    padding: 0;
+    margin: 50px 0;
+}
+
+.odoo-features li {
+    background: linear-gradient(135deg, #f0f4ff, #ffffff);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0;
+    padding: 30px 20px 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.odoo-features li:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.18);
+    border-color: #1e3a8a;
+}
+
+.odoo-features li::before {
+    font-family: "Font Awesome 6 Free";
+    content: '';
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: #fff;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a173b, #1e3a8a);
+    margin-bottom: 16px;
+    transition: background 0.3s ease;
+}
+
+.odoo-features li:hover::before {
+    background: linear-gradient(135deg, #1e3a8a, #0ea5e9);
+}
+
+/* Assign icons to each li */
+.cr-odoo-content ul.odoo-features li:nth-child(1)::before { content: "\f5fc"; } /* Custom Module Dev - fa-puzzle-piece */
+.cr-odoo-content ul.odoo-features li:nth-child(2)::before { content: "\f135"; } /* Implementation - fa-rocket */
+.cr-odoo-content ul.odoo-features li:nth-child(3)::before { content: "\f0c1"; } /* Integration - fa-plug */
+.cr-odoo-content ul.odoo-features li:nth-child(4)::before { content: "\f362"; } /* Migration - fa-exchange-alt */
+.cr-odoo-content ul.odoo-features li:nth-child(5)::before { content: "\f044"; } /* Customization - fa-edit */
+.cr-odoo-content ul.odoo-features li:nth-child(6)::before { content: "\f07a"; } /* Website & E-commerce - fa-shopping-cart */
+.cr-odoo-content ul.odoo-features li:nth-child(7)::before { content: "\f201"; } /* Performance Optimization - fa-chart-line */
+.cr-odoo-content ul.odoo-features li:nth-child(8)::before { content: "\f3cd"; } /* Mobile Solutions - fa-mobile-alt */
+.cr-odoo-content ul.odoo-features li:nth-child(9)::before { content: "\f021"; } /* Support & Maintenance - fa-sync-alt */
+.cr-odoo-content ul.odoo-features li:nth-child(10)::before { content: "\f59d"; } /* Training - fa-chalkboard-teacher */
+
+/* Titles and Descriptions */
+.odoo-features li strong {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+.odoo-features li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #334155;
+}
+
+@media (max-width: 1024px) {
+    .odoo-features {
+        grid-template-columns: repeat(3, 1fr); /* 2 columns */
+        gap: 18px;
+    }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+    .odoo-features {
+        grid-template-columns: repeat(2, 1fr); /* still 2 columns */
+        gap: 16px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .odoo-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 14px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 375px) {
+    .odoo-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 12px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 320px) {
+    .odoo-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 10px;
+    }
+}
+
+
+/* FAQ Styling */
+.cr-odoo-content dl {
+    margin: 40px 0;
+    border-top: 2px solid #e0e6f0;
+    border-bottom: 2px solid #e0e6f0;
+    padding: 20px 0;
+    background: #ffffff;
+    border-radius: 10px;
+}
+
+.cr-odoo-content dt {
+    font-weight: 700;
+    color: #002855;
+    margin-top: 20px;
+    padding: 15px 20px 15px 45px;
+    background: #e6f0ff;
+    border-radius: 8px;
+    position: relative;
+    text-align: left;
+}
+
+.cr-odoo-content dt::before {
+    font-family: "Font Awesome 6 Free";
+    content: "\f128"; /* question-circle */
+    font-weight: 900;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #007bff;
+    font-size: 1.2rem;
+}
+
+.cr-odoo-content dd {
+    margin: 10px 0 20px 20px;
+    color: #333;
+    line-height: 1.6;
+    text-align: justify;
+    padding-left: 10px;
+    border-left: 3px solid #007bff;
+    background: #f5f7fb;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 1rem;
+}
+
+.cr-odoo-content dt + dd {
+    margin-top: 10px;
+}
+
+.cr-odoo-content dt:hover {
+    background: #d0e4ff;
+    cursor: default;
+}
+
+@media (max-width: 1024px) {
+    .cr-odoo-content dd , .cr-odoo-content dt{
+        font-size: 1.05rem;
+    }
+
+}
+
+/* Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+
+    .cr-odoo-content dd , .cr-odoo-content dt {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile Large (max-width: 480px) */
+@media (max-width: 480px) {
+    .cr-odoo-content dd , .cr-odoo-content dt {
+        font-size: 0.95rem;
+    }
+}
+
+/* Mobile Small (max-width: 375px) */
+@media (max-width: 375px) {
+    .cr-odoo-content dd , .cr-odoo-content dt {
+        font-size: 0.9rem;
+    }
+}
+
+/* Extra Small (max-width: 320px) */
+@media (max-width: 320px) {
+    .cr-odoo-content dd , .cr-odoo-content dt {
+        font-size: 0.85rem;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

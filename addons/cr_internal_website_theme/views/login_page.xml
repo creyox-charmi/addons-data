@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="login_custom" inherit_id="web.login" name="Custom Login Page">
+         <xpath expr="//input[@type='hidden']" position="after">
+             <div class="login_logo_section">
+                <img src="/cr_internal_website_theme/static/src/img/logo_creyox.png" alt="Company Logo" class="login_logo"/>
+            </div>
+         </xpath>
+<!--        <xpath expr="//form[@class='oe_login_form']" position="replace">-->
+<!--            <div class="custom_login_page">-->
+<!--            <div class="custom_login_container">-->
+<!--                <div class="login_card">-->
+
+<!--                    &lt;!&ndash; Logo Section &ndash;&gt;-->
+<!--                    <div class="login_logo_section">-->
+<!--                        <img src="/cr_internal_website_theme/static/src/img/logo_creyox.png" alt="Company Logo" class="login_logo"/>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Login Form &ndash;&gt;-->
+<!--                    <form class="custom_login_form" role="form" t-attf-action="/web/login" method="post" onsubmit="this.action = '/web/login' + location.hash">-->
+<!--                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
+
+<!--                        &lt;!&ndash; Database Selection &ndash;&gt;-->
+<!--                        <div class="form_group" t-if="databases and len(databases) &gt; 1">-->
+<!--                            <label for="db" class="form_label">-->
+<!--                                <i class="fa fa-database"></i> Database-->
+<!--                            </label>-->
+<!--                            <div class="input_wrapper">-->
+<!--                                <input type="text" name="db" t-att-value="request.db" id="db" class="form_input" required="required" readonly="readonly"/>-->
+<!--                                <a role="button" href="/web/database/selector" class="btn_select_db">Select</a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Email Field &ndash;&gt;-->
+<!--                        <div class="form_group">-->
+<!--                            <label for="login" class="form_label">-->
+<!--                                <i class="fa fa-user"></i> Email Address-->
+<!--                            </label>-->
+<!--                            <div class="input_wrapper">-->
+<!--                                <i class="fa fa-envelope input_icon"></i>-->
+<!--                                <input type="text" placeholder="Enter your email" name="login" t-att-value="login" id="login"-->
+<!--                                       class="form_input" required="required" autocomplete="username" autofocus="autofocus" autocapitalize="off"/>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Password Field &ndash;&gt;-->
+<!--                        <div class="form_group">-->
+<!--                            <label for="password" class="form_label">-->
+<!--                                <i class="fa fa-lock"></i> Password-->
+<!--                            </label>-->
+<!--                            <div class="input_wrapper">-->
+<!--                                <i class="fa fa-key input_icon"></i>-->
+<!--                                <input type="password" placeholder="Enter your password" name="password" id="password"-->
+<!--                                       class="form_input" required="required" autocomplete="current-password"-->
+<!--                                       t-att-autofocus="'autofocus' if login else None" maxlength="4096"/>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Remember Me & Forgot Password &ndash;&gt;-->
+<!--                        <div class="form_group form_options">-->
+<!--                            <label class="remember_me">-->
+<!--                                <input type="checkbox" name="remember" value="1"/>-->
+<!--                                <span>Remember me</span>-->
+<!--                            </label>-->
+<!--                            <a href="/web/reset_password" class="forgot_password">Forgot Password?</a>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Error/Success Messages &ndash;&gt;-->
+<!--                        <div class="alert alert_error" t-if="error" role="alert">-->
+<!--                            <i class="fa fa-exclamation-circle"></i>-->
+<!--                            <t t-esc="error"/>-->
+<!--                        </div>-->
+<!--                        <div class="alert alert_success" t-if="message" role="status">-->
+<!--                            <i class="fa fa-check-circle"></i>-->
+<!--                            <t t-esc="message"/>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Submit Button &ndash;&gt;-->
+<!--                        <div class="form_group">-->
+<!--                            <button type="submit" class="btn_login">-->
+<!--                                <span>Sign In</span>-->
+<!--                                <i class="fa fa-arrow-right"></i>-->
+<!--                            </button>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Superuser Login (Debug Mode) &ndash;&gt;-->
+<!--                        <div class="form_group" t-if="debug">-->
+<!--                            <button type="submit" name="redirect" value="/web/become" class="btn_superuser">-->
+<!--                                <i class="fa fa-user-secret"></i> Login as Superuser-->
+<!--                            </button>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; OAuth Login &ndash;&gt;-->
+<!--                        <div class="o_login_auth"/>-->
+
+<!--                        <input type="hidden" name="redirect" t-att-value="redirect"/>-->
+<!--                    </form>-->
+
+<!--                    &lt;!&ndash; Footer Links &ndash;&gt;-->
+<!--                    <div class="login_footer">-->
+<!--                        <p>Don't have an account? <a href="/web/signup">Sign Up</a></p>-->
+<!--                    </div>-->
+
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Side Panel &ndash;&gt;-->
+<!--&lt;!&ndash;                <div class="login_side_panel">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div class="panel_content">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <h3>Powerful Business Solutions</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <p>Manage your entire business with our comprehensive ERP system</p>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <ul class="features_list">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <li><i class="fa fa-check"></i> Complete ERP Solution</li>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <li><i class="fa fa-check"></i> CRM &amp; Sales Management</li>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <li><i class="fa fa-check"></i> Inventory Control</li>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <li><i class="fa fa-check"></i> Financial Management</li>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </ul>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--            </div>-->
+<!--            </div>-->
+<!--        </xpath>-->
+    </template>
+
+
+
+
+</odoo>

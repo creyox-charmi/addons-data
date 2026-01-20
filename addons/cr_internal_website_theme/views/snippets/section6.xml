@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="explore_clients" name="Section-6">
+        <section class="explore_clients cr_font">
+            <div class="container-fluid">
+                <div class="text-center py-5">
+                    <h2 class="c1">Our Clients</h2>
+                    <p>Your experience matters to us, and we’re driven by the desire to provide the best possible
+                        service, always with your needs in mind.
+                    </p>
+                </div>
+
+                <!-- element to store list of cities using JS -->
+                <div class="row justify-content-center" id="client-logo"/>
+            </div>
+        </section>
+    </template>
+
+    <!-- To be used in JS for snippet options -->
+    <template id="explore_clients_options" inherit_id="website.snippet_options">
+        <xpath expr="." position="inside">
+            <div data-js="ExploreClients" data-selector=".explore_clients"
+                        data-drop-in=".oe_structure"
+             data-drop-near=".oe_structure > *">
+                <!-- Animation Speed Selector -->
+                <we-select string="Animation Direction">
+                    <we-button data-select-class="normal">Normal</we-button>
+                    <we-button data-select-class="reverse">Reverse</we-button>
+                    <we-button data-select-class="alternate">Alternate</we-button>
+                </we-select>
+                <we-input class="speed o_we_large" data-select-data-attribute="" string="Animation Speed"
+                          data-attribute-name="speed"/>
+                <we-select string="Border">
+                    <we-button data-select-class="square">Square</we-button>
+                    <we-button data-select-class="round">Round</we-button>
+                </we-select>
+                <div>
+                </div>
+            </div>
+
+
+        </xpath>
+    </template>
+
+
+    <record id="cr_internal_website_theme.explore_clients_000_scss" model="ir.asset">
+        <field name="name">Client 000 SCSS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_internal_website_theme/static/src/snippets/section6/000.scss</field>
+    </record>
+
+    <record id="cr_internal_website_theme.explore_clients_000_js" model="ir.asset">
+        <field name="name">Client 000 JS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_internal_website_theme/static/src/snippets/section6/000.js</field>
+    </record>
+
+
+</odoo>

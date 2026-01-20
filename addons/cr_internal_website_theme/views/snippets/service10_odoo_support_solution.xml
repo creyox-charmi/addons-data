@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service10_odoo_support_solution" name="service10_odoo_support_solution">
+
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_odoo_support_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Reliable Odoo Support &amp; Maintenance Services
+                    </h1>
+                    <p class="banner-tagline">
+                        Ensure uninterrupted operations with our dedicated Odoo support—covering bug fixes, upgrades,
+                        performance tuning, and proactive monitoring for long-term ERP success.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">Odoo Support</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-odoo-support-intro o_website_snippet cr_font" aria-labelledby="odoo-support-heading">
+            <div class="cr-odoo-container">
+                <!-- Header Row -->
+                <div class="cr-odoo-header-row">
+                    <div class="cr-odoo-header-text">
+                        <h1 id="odoo-support-heading">Keep Your ERP Running Smoothly with Expert Odoo Support</h1>
+                        <p class="cr-odoo-subtext">
+                            Odoo ERP is powerful, but like any mission-critical system, it requires continuous monitoring,
+                            optimization, and expert guidance to ensure maximum ROI. Our comprehensive Odoo support services
+                            help you resolve issues quickly, maintain system stability, and adapt to changing business needs.
+                            <br/><br/>
+                            From incident management to ongoing enhancements, we act as your extended IT team—ensuring your
+                            Odoo environment stays secure, scalable, and performance-driven. Whether you need ad-hoc support
+                            or a managed service agreement, we provide round-the-clock assistance tailored to your workflows.
+                        </p>
+                    </div>
+                    <div class="cr-odoo-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/odoo-support.png" alt="Odoo Support"/>
+                    </div>
+                </div>
+
+                <!-- Content Below -->
+                <div class="cr-odoo-content">
+
+
+
+
+
+                    <section id="cr-odoo-support-philosophy" class="philosophy-section">
+    <div class="container">
+        <h2 class="section-title">Our Support Philosophy</h2>
+        <div class="philosophy-content">
+            <p>
+                We believe great support isn’t just about fixing bugs — it’s about **building trust**.
+                Our team treats your Odoo system like our own, combining proactive monitoring with transparent communication.
+            </p>
+            <ul>
+                <li><strong>Proactive, Not Reactive:</strong> We identify issues before they become incidents.</li>
+                <li><strong>Transparent Communication:</strong> You always know what’s happening and why.</li>
+                <li><strong>Continuous Improvement:</strong> We evolve your ERP along with your business goals.</li>
+                <li><strong>Long-Term Partnership:</strong> We grow with your team, not just work for it.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+
+                    <section id="cr-odoo-support-value" class="value-section">
+    <div class="container">
+        <h2 class="section-title">What’s Included in Every Odoo Support Plan</h2>
+        <div class="value-grid">
+            <div class="value-item">
+                <i class="fa-solid fa-clock"></i>
+                <h3>Guaranteed Response Time</h3>
+                <p>Every ticket gets acknowledged and prioritized under your SLA agreement.</p>
+            </div>
+            <div class="value-item">
+                <i class="fa-solid fa-file-circle-check"></i>
+                <h3>Ticket Tracking &amp; Reports</h3>
+                <p>Real-time ticket dashboard and monthly performance analytics.</p>
+            </div>
+            <div class="value-item">
+                <i class="fa-solid fa-user-shield"></i>
+                <h3>Security &amp; Compliance Checks</h3>
+                <p>Regular audits to ensure GDPR, ISO, and data protection compliance.</p>
+            </div>
+            <div class="value-item">
+                <i class="fa-solid fa-gears"></i>
+                <h3>Preventive Maintenance</h3>
+                <p>Automatic server health checks, log scans, and module optimizations.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+                    <section id="cr-odoo-industries" class="industries-timeline-section">
+  <div class="container">
+    <h2 class="section-title">Industries We Support</h2>
+    <p class="industry-note">
+      From startups to global enterprises — we provide tailored Odoo support for every sector.
+    </p>
+
+    <div class="industries-timeline">
+      <div class="industry-node">
+        <i class="fa-solid fa-store"></i>
+        <span>E-Commerce</span>
+      </div>
+      <div class="connector"></div>
+      <div class="industry-node">
+        <i class="fa-solid fa-industry"></i>
+        <span>Manufacturing</span>
+      </div>
+      <div class="connector"></div>
+      <div class="industry-node">
+        <i class="fa-solid fa-truck"></i>
+        <span>Logistics</span>
+      </div>
+      <div class="connector"></div>
+      <div class="industry-node">
+        <i class="fa-solid fa-hand-holding-heart"></i>
+        <span>Nonprofits</span>
+      </div>
+      <div class="connector"></div>
+      <div class="industry-node">
+        <i class="fa-solid fa-sack-dollar"></i>
+        <span>Finance</span>
+      </div>
+      <div class="connector"></div>
+      <div class="industry-node">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>Education</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+                    <h2>Why Choose Our Odoo Support Services?</h2>
+                    <p>
+                        Our certified consultants and support engineers bring years of Odoo expertise to ensure business continuity.
+                        We provide structured SLAs, proactive monitoring, and quick resolutions that minimize downtime.
+                        With continuous improvements, version upgrades, and personalized training, your ERP ecosystem stays aligned
+                        with your long-term business strategy.
+                    </p>
+
+                    <ul class="odoo-support-features">
+                        <li>
+                            <strong>24/7 Incident Support:</strong>
+                            Rapid response and resolution for critical system issues.
+                        </li>
+                        <li>
+                            <strong>Bug Fixing &amp; Debugging:</strong>
+                            Identification and correction of errors, ensuring system stability.
+                        </li>
+                        <li>
+                            <strong>Performance Optimization:</strong>
+                            Tuning servers, databases, and modules for faster operations.
+                        </li>
+                        <li>
+                            <strong>Functional Assistance:</strong>
+                            Helping users with configurations, workflows, and daily tasks.
+                        </li>
+                        <li>
+                            <strong>Upgrade &amp; Patching:</strong>
+                            Keeping your Odoo version updated with latest features and security fixes.
+                        </li>
+                        <li>
+                            <strong>Security Monitoring:</strong>
+                            Regular audits and updates to safeguard against vulnerabilities.
+                        </li>
+                        <li>
+                            <strong>Custom Enhancements:</strong>
+                            Continuous improvement of modules based on evolving needs.
+                        </li>
+                        <li>
+                            <strong>Integration Support:</strong>
+                            Assistance with APIs and third-party systems to keep your stack connected.
+                        </li>
+                        <li>
+                            <strong>Cloud &amp; Infrastructure:</strong>
+                            Managed hosting, scaling, and backup solutions for peace of mind.
+                        </li>
+                        <li>
+                            <strong>Dedicated Account Manager:</strong>
+                            A single point of contact for efficient and personalized service.
+                        </li>
+                    </ul>
+
+                    <h2>Our Support Approach</h2>
+                    <p>
+                        We follow a proactive, SLA-driven, and customer-first methodology. Our process starts with onboarding,
+                        where we document your ERP landscape, customizations, and key workflows. We then set up monitoring and
+                        define escalation protocols for incidents.
+                        <br/><br/>
+                        With structured reporting, periodic reviews, and continuous feedback loops, we ensure your Odoo ecosystem
+                        evolves with your business. Our agile support model provides flexibility—covering both urgent fixes and
+                        long-term improvements.
+                    </p>
+
+
+
+
+                    <section id="cr-odoo-commitment" class="commitment-section">
+    <div class="container">
+        <h2 class="section-title">Our Commitment to You</h2>
+        <blockquote>
+            “Your success is our uptime. Every resolved ticket, every optimized query, every stable release —
+            is a reflection of the trust you place in us.”
+        </blockquote>
+        <p class="commitment-text">
+            We don’t just fix issues — we empower your business to run smarter, faster, and stronger.
+            Partner with us and experience support that truly understands Odoo.
+        </p>
+    </div>
+</section>
+
+                     <section class="web-cta-section o_wfull" aria-labelledby="web-cta-heading">
+                        <!-- Floating bubbles -->
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+
+                        <div class="container web-cta-container">
+                            <div class="web-cta-row">
+                                <!-- Text -->
+                                <div class="web-cta-text">
+                                    <h2 id="web-cta-heading">
+                                        Have a <span class="highlight">Support</span> Need?
+                                    </h2>
+                                </div>
+
+                                <!-- Button (same pattern as ERP CTA) -->
+                                <a href="/contactus" class="dark-cta-btn" title="Request Odoo Support"
+                                   aria-label="Request Odoo Support">
+                                    <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                                    <span>Start Your Support Journey</span>
+                                </a>
+
+
+                            </div>
+                        </div>
+                    </section>
+
+
+
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Do you provide 24/7 Odoo support?</dt>
+                        <dd>Yes, we offer round-the-clock support packages with guaranteed response times based on SLA levels.</dd>
+                        <dt>Can you support both Community and Enterprise editions?</dt>
+                        <dd>Absolutely. We work across all Odoo editions, ensuring stability, scalability, and compliance.</dd>
+                        <dt>How do you handle urgent production issues?</dt>
+                        <dd>Critical incidents are prioritized with immediate escalation to senior engineers, backed by rollback and failover plans.</dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+<!--    <record id="cr_internal_website_theme.service10_odoo_support_solution_000_scss" model="ir.asset">-->
+<!--        <field name="name">SERVICE-10 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/service10_odoo_support_solution/000.scss</field>-->
+<!--    </record>-->
+</odoo>

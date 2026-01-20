@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_currency_form_inherit_bigcommerce" model="ir.ui.view">
+        <field name="name">res.currency.form.inherit.bigcommerce</field>
+        <field name="model">res.currency</field>
+        <field name="inherit_id" ref="base.view_currency_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_get_bigcommerce_currency"
+                            type="object"
+                            string="Update From BigCommerce"
+                            class="oe_highlight"
+                            attrs="{'invisible': [('bc_currency_id', '=', False)]}"/>
+
+                    <button name="action_update_bigcommerce_currency"
+                            type="object"
+                            string="Update In BigCommerce"
+                            class="btn-primary"
+                            attrs="{'invisible': [('bc_currency_id', '=', False)]}"/>
+
+                    <button name="action_delete_bigcommerce_currency"
+                            type="object"
+                            string="Delete From BigCommerce"
+                            class="btn-danger"
+                            confirm="Are you sure you want to delete this currency from BigCommerce?"
+                            attrs="{'invisible': [('bc_currency_id', '=', False)]}"/>
+                </header>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="BigCommerce Info">
+                    <group string="General Information">
+                        <group>
+                            <field name="bc_currency_id"/>
+                            <field name="bigcommerce_store_id"/>
+                            <field name="bc_currency_code"/>
+                            <field name="bc_name"/>
+                            <field name="bc_country_iso2"/>
+                        </group>
+                        <group>
+                            <field name="bc_is_default"/>
+                            <field name="bc_enabled"/>
+                            <field name="bc_is_transactional"/>
+                            <field name="bc_auto_update"/>
+                            <field name="bc_use_default_name"/>
+                            <field name="bc_last_updated"/>
+                        </group>
+                    </group>
+
+                    <group>
+
+                        <group string="Formatting" col="2">
+                            <field name="bc_token"/>
+                            <field name="bc_token_location"/>
+                            <field name="bc_decimal_places"/>
+                            <field name="bc_decimal_token"/>
+                            <field name="bc_thousands_token"/>
+                            <field name="bc_default_for_country_codes"/>
+                        </group>
+
+                        <group string="Exchange Rate" col="2">
+                            <field name="bc_exchange_rate"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_bigcommerce_currency" model="ir.actions.act_window">
+        <field name="name">BigCommerce Currencies</field>
+        <field name="res_model">res.currency</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('bigcommerce_store_id', '!=', False)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_bigcommerce_currency"
+              name="Currencies"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+              action="action_bigcommerce_currency"/>
+
+    <record id="action_bulk_update_bigcommerce_currency" model="ir.actions.server">
+        <field name="name">Update In BigCommerce</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_res_currency"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_res_currency"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_update_bigcommerce_currency()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+    <record id="action_bulk_get_bigcommerce_currency" model="ir.actions.server">
+        <field name="name">Update From BigCommerce</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_res_currency"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_res_currency"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_get_bigcommerce_currency()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+
+</odoo>

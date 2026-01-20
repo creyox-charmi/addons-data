@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Section 4: Odoo Services Full Block -->
+
+    <template id="service_snippet_template" name="section-4">
+        <section class="odoo-services-section cr_font" aria-labelledby="services-heading">
+            <h2 id="services-heading" class="odoo-services-heading">Our Odoo Services</h2>
+            <div class="services-grid" role="list">
+
+<!--                <div class="service-card" role="listitem">-->
+<!--                    <div class="service-icon" aria-hidden="true">-->
+<!--                        <i class="fas fa-user-tie"></i>-->
+<!--                    </div>-->
+<!--                    <h3>Odoo Consulting</h3>-->
+<!--                    <p>Strategic planning and workflow optimization for maximum ROI.</p>-->
+<!--                </div>-->
+
+<!--                <div class="service-card" role="listitem">-->
+<!--                    <div class="service-icon" aria-hidden="true">-->
+<!--                        <i class="fas fa-tools"></i>-->
+<!--                    </div>-->
+<!--                    <h3>Odoo Implementation</h3>-->
+<!--                    <p>End-to-end Odoo ERP setup, configuration, and user onboarding.</p>-->
+<!--                </div>-->
+
+<!--                <div class="service-card" role="listitem">-->
+<!--                    <div class="service-icon" aria-hidden="true">-->
+<!--                        <i class="fas fa-sliders-h"></i>-->
+<!--                    </div>-->
+<!--                    <h3>Odoo Customisation</h3>-->
+<!--                    <p>Tailored apps, forms, reports, and workflows for your specific needs.</p>-->
+<!--                </div>-->
+
+
+<!--                 <div class="service-card" role="listitem">-->
+<!--                    <div class="service-icon" aria-hidden="true">-->
+<!--                        <i class="fas fa-code"></i>-->
+<!--                    </div>-->
+<!--                    <h3>Odoo Development</h3>-->
+<!--                    <p>Custom modules aligned to your business logic with clean, maintainable code.</p>-->
+<!--                </div>-->
+
+<!--                 <div class="service-card" role="listitem">-->
+<!--                    <div class="service-icon" aria-hidden="true">-->
+<!--                        <i class="fas fa-plug"></i>-->
+<!--                    </div>-->
+<!--                    <h3>Odoo Integration</h3>-->
+<!--                    <p>Seamless sync with CRMs, eCommerce platforms, and third-party APIs.</p>-->
+<!--                </div>-->
+
+<!--                 <div class="service-card" role="listitem">-->
+<!--                    <div class="service-icon" aria-hidden="true">-->
+<!--                        <i class="fas fa-exchange-alt"></i>-->
+<!--                    </div>-->
+<!--                    <h3>Odoo Migration</h3>-->
+<!--                    <p>Smooth transition to newer Odoo versions with data integrity maintained.</p>-->
+<!--                </div>-->
+
+<!--                 <div class="service-card" role="listitem">-->
+<!--                    <div class="service-icon" aria-hidden="true">-->
+<!--                        <i class="fas fa-server"></i>-->
+<!--                    </div>-->
+<!--                    <h3>Odoo Installation</h3>-->
+<!--                    <p>Secure installations on cloud, on-premise, or hybrid server environments.</p>-->
+<!--                </div>-->
+
+
+<!--                <div class="service-card" role="listitem">-->
+<!--                    <div class="service-icon" aria-hidden="true">-->
+<!--                        <i class="fas fa-chalkboard-teacher"></i>-->
+<!--                    </div>-->
+<!--                    <h3>Odoo Training</h3>-->
+<!--                    <p>Comprehensive role-based training programs for users and administrators.</p>-->
+<!--                </div>-->
+
+<!--                 <div class="service-card" role="listitem">-->
+<!--                    <div class="service-icon" aria-hidden="true">-->
+<!--                        <i class="fas fa-life-ring"></i>-->
+<!--                    </div>-->
+<!--                    <h3>Odoo Support &amp; Maintenance</h3>-->
+<!--                    <p>24/7 monitoring, bug fixes, security patches, and performance tuning.</p>-->
+<!--                </div>-->
+
+                <a href="/services/odoo-consulting" class="service-link">
+    <div class="service-card" role="listitem">
+        <div class="service-icon" aria-hidden="true">
+            <i class="fas fa-user-tie"></i>
+        </div>
+        <h3>Odoo Consulting</h3>
+        <p>Strategic planning and workflow optimization for maximum ROI.</p>
+    </div>
+</a>
+
+<a href="/services/odoo-implementation" class="service-link">
+    <div class="service-card" role="listitem">
+        <div class="service-icon" aria-hidden="true">
+            <i class="fas fa-tools"></i>
+        </div>
+        <h3>Odoo Implementation</h3>
+        <p>End-to-end Odoo ERP setup, configuration, and user onboarding.</p>
+    </div>
+</a>
+
+<a href="/services/odoo-customisation" class="service-link">
+    <div class="service-card" role="listitem">
+        <div class="service-icon" aria-hidden="true">
+            <i class="fas fa-sliders-h"></i>
+        </div>
+        <h3>Odoo Customisation</h3>
+        <p>Tailored apps, forms, reports, and workflows for your specific needs.</p>
+    </div>
+</a>
+
+<a href="/services/odoo-development" class="service-link">
+    <div class="service-card" role="listitem">
+        <div class="service-icon" aria-hidden="true">
+            <i class="fas fa-code"></i>
+        </div>
+        <h3>Odoo Development</h3>
+        <p>Custom modules aligned to your business logic with clean, maintainable code.</p>
+    </div>
+</a>
+
+<a href="/services/odoo-integration" class="service-link">
+    <div class="service-card" role="listitem">
+        <div class="service-icon" aria-hidden="true">
+            <i class="fas fa-plug"></i>
+        </div>
+        <h3>Odoo Integration</h3>
+        <p>Seamless sync with CRMs, eCommerce platforms, and third-party APIs.</p>
+    </div>
+</a>
+
+<a href="/services/odoo-migration" class="service-link">
+    <div class="service-card" role="listitem">
+        <div class="service-icon" aria-hidden="true">
+            <i class="fas fa-exchange-alt"></i>
+        </div>
+        <h3>Odoo Migration</h3>
+        <p>Smooth transition to newer Odoo versions with data integrity maintained.</p>
+    </div>
+</a>
+
+<!--<a href="/services/odoo-installation" class="service-link">-->
+<!--    <div class="service-card" role="listitem">-->
+<!--        <div class="service-icon" aria-hidden="true">-->
+<!--            <i class="fas fa-server"></i>-->
+<!--        </div>-->
+<!--        <h3>Odoo Installation</h3>-->
+<!--        <p>Secure installations on cloud, on-premise, or hybrid server environments.</p>-->
+<!--    </div>-->
+<!--</a>-->
+
+<a href="/services/odoo-cloud-infrastructure" class="service-link">
+    <div class="service-card" role="listitem">
+        <div class="service-icon" aria-hidden="true">
+            <i class="fas fa-cloud"></i>
+        </div>
+        <h3>Odoo Cloud Management</h3>
+        <p>Secure hosting, performance tuning, and infrastructure maintenance for Odoo.</p>
+    </div>
+</a>
+
+
+<a href="/services/odoo-training" class="service-link">
+    <div class="service-card" role="listitem">
+        <div class="service-icon" aria-hidden="true">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <h3>Odoo Training</h3>
+        <p>Comprehensive role-based training programs for users and administrators.</p>
+    </div>
+</a>
+
+<a href="/services/odoo-support" class="service-link">
+    <div class="service-card" role="listitem">
+        <div class="service-icon" aria-hidden="true">
+            <i class="fas fa-life-ring"></i>
+        </div>
+        <h3>Odoo Support &amp; Maintenance</h3>
+        <p>24/7 monitoring, bug fixes, security patches, and performance tuning.</p>
+    </div>
+</a>
+
+
+
+            </div>
+        </section>
+
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const cards = document.querySelectorAll(".service-card");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate");
+        }
+      });
+    },
+    {
+      threshold: 0.1,
+      rootMargin: "0px 0px -100px 0px"
+    }
+  );
+  cards.forEach(card => observer.observe(card));
+});
+</script>
+
+    </template>
+
+<!--    <record id="cr_internal_website_theme.s4_000_scss" model="ir.asset">-->
+<!--        <field name="name">SECTION-4 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/section4/000.scss</field>-->
+<!--    </record>-->
+</odoo>

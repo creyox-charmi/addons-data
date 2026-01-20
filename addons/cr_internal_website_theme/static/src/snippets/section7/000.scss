@@ -1,0 +1,272 @@
+:root {
+    --primary-dark: #0a173b;
+    --gradient-start: #0a173b;
+    --gradient-end: #1e3a8a;
+    --highlight-color: #06b6d4;
+}
+
+
+.connect-section {
+    position: relative;
+    background:#0a173b;
+    overflow: hidden;
+    padding: 60px 20px;
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    bottom: 10px;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(100, 149, 237, 0.2);
+    border-radius: 50%;
+    animation: floatSmall 4s infinite ease-in-out;
+    opacity: 0.6;
+}
+
+.bubble:nth-child(1) {
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.bubble:nth-child(2) {
+    left: 30%;
+    width: 15px;
+    height: 15px;
+    animation-delay: 1s;
+}
+
+.bubble:nth-child(3) {
+    left: 50%;
+    width: 25px;
+    height: 25px;
+    animation-delay: 2s;
+}
+
+.bubble:nth-child(4) {
+    left: 70%;
+    width: 18px;
+    height: 18px;
+    animation-delay: 0.5s;
+}
+
+.bubble:nth-child(5) {
+    left: 90%;
+    width: 22px;
+    height: 22px;
+    animation-delay: 1.5s;
+}
+
+@keyframes floatSmall {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translateY(-30px) scale(1.2);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.5;
+    }
+}
+
+
+
+.connect-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 15px;
+}
+
+.connect-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.connect-row h2 {
+//     color: #0A173B;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+    flex: 1;
+    min-width: 250px;
+}
+
+.connect-row .highlight {
+    color: var(--highlight-color);
+}
+/* New class name for the button */
+.dark-cta-btn {
+  --gradient-start: #222; /* Darker start color */
+  --gradient-end: #444;   /* Darker end color */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #fff;
+background: linear-gradient(135deg, #f0f4ff, #e0ecff);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+
+  /* Responsive sizing */
+  padding: 12px 28px;
+  font-size: 15px;
+
+  /* Responsive media queries */
+  @media (min-width: 576px) {
+    padding: 13px 30px;
+    font-size: 15.5px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 14px 32px;
+    font-size: 16px;
+  }
+
+  @media (min-width: 992px) {
+    padding: 14px 34px;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 14px 36px;
+  }
+}
+
+.dark-cta-btn span {
+  z-index: 2;
+  position: relative;
+  color:#0a173b;
+}
+
+.dark-cta-btn i {
+  z-index: 2;
+  position: relative;
+  transition: transform 0.3s ease;
+  font-size: 16px;
+   color:#0a173b;
+  @media (min-width: 768px) {
+    font-size: 17px;
+  }
+}
+
+.dark-cta-btn:hover i {
+  transform: translateX(4px);
+}
+
+/* Animation effect for hover */
+.dark-cta-btn::before,
+.dark-cta-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: rgba(100, 149, 237, 0.12);
+  z-index: 1;
+  pointer-events: none;
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.dark-cta-btn::before {
+  left: 50%;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark-cta-btn::after {
+  right: 50%;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark-cta-btn:hover::before {
+  animation: moveLeft 1.5s infinite linear;
+}
+
+.dark-cta-btn:hover::after {
+  animation: moveRight 1.5s infinite linear;
+}
+
+/* No underline on hover or focus */
+.dark-cta-btn:hover,
+.dark-cta-btn:focus {
+  text-decoration: none;
+  color: #fff;
+}
+
+/* Animations for hover effects */
+@keyframes moveLeft {
+  0%   { transform: translateX(0); opacity: 0; }
+  50%  { transform: translateX(-40%); opacity: 1; }
+  100% { transform: translateX(0); opacity: 0; }
+}
+
+@keyframes moveRight {
+  0%   { transform: translateX(0); opacity: 0; }
+  50%  { transform: translateX(40%); opacity: 1; }
+  100% { transform: translateX(0); opacity: 0; }
+}
+
+/* -------------------
+   ✅ Responsive Design
+--------------------*/
+
+/* Large Screens (Desktop) */
+@media (min-width: 1200px) {
+    .connect-row h2 {
+        font-size: 1.4rem;
+    }
+    .cta-button {
+        font-size: 1.1rem;
+    }
+}
+
+/* Medium Screens (Tablet Landscape) */
+@media (max-width: 992px) {
+    .connect-row h2 {
+        font-size: 1.4rem;
+    }
+    .cta-button {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+}
+
+/* Small Screens (Tablet Portrait & Mobile) */
+@media (max-width: 768px) {
+    .connect-row {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    .connect-row h2 {
+        font-size: 1.4rem;
+    }
+    .cta-button {
+        margin-top: 1rem;
+        align-self: flex-start;
+    }
+}
+
+/* Extra Small Screens (Mobile <576px) */
+@media (max-width: 576px) {
+    .connect-row h2 {
+        font-size: 1.1rem;
+    }
+    .cta-button {
+        font-size: 0.95rem;
+        padding: 10px 18px;
+    }
+}

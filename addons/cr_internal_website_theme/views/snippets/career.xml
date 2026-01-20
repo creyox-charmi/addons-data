@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="career_page_professional" name="Professional Career Page">
+
+
+                <!-- Hero Section -->
+                <section class="career_hero_section cr_font">
+                    <div class="career_hero_overlay"></div>
+                    <div class="container text-center">
+                        <h1 class="hero_title">Join Our Odoo Experts Team</h1>
+                        <p class="hero_subtitle">Grow your career with us and be part of innovation that shapes businesses worldwide.</p>
+                        <a href="#open_positions" class="btn_explore_jobs dark-cta-btn"><span>Explore Openings</span> <i class="fa fa-arrow-down"></i></a>
+                    </div>
+
+                </section>
+
+                <!-- About / Culture Section -->
+                <section class="career_about_section cr_font">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <img src="/cr_internal_website_theme/static/src/img/career_team.png" alt="Our Team" class="career_image img-fluid rounded shadow" />
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="about_content">
+                                    <h2>Work with Passion, Build with Purpose</h2>
+                                    <p>We’re a team of Odoo enthusiasts building robust ERP solutions, creative websites, and innovative business apps.
+                                    At our company, your ideas matter — collaboration and creativity drive everything we do.</p>
+                                    <ul class="about_list">
+                                        <li><i class="fa fa-check-circle"></i> Flexible Work Environment</li>
+                                        <li><i class="fa fa-check-circle"></i> Continuous Learning</li>
+                                        <li><i class="fa fa-check-circle"></i> Global Client Exposure</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Open Positions Section -->
+                <section id="open_positions" class="career_positions_section cr_font">
+                    <div class="container">
+                        <div class="section_header text-center">
+                            <h2>Open Positions</h2>
+                            <p>We’re always looking for talented individuals to join our growing Odoo family.</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4" t-foreach="[
+                                {'title': 'Search Engine Optimization Specialist (SEO)', 'type': 'Full Time', 'location': 'Rajkot, India'},
+                                {'title': 'Fresher Functional Consultant', 'type': 'Full Time', 'location': 'Rajkot, India'},
+                                {'title': 'Python Intern', 'type': 'Full Time', 'location': 'Rajkot, India'},
+                            ]" t-as="job">
+                                <div class="job_card">
+                                    <h3 t-esc="job['title']"/>
+                                    <p><i class="fa fa-map-marker"></i> <span t-esc="job['location']"/></p>
+                                    <p><i class="fa fa-clock-o"></i> <span t-esc="job['type']"/></p>
+                                    <a href="#apply_now" class="cta-button btn_apply">Apply Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Benefits Section -->
+                <section class="career_benefits_section cr_font">
+                    <div class="container">
+                        <div class="section_header text-center">
+                            <h2>Benefits of Working With Us</h2>
+                            <p>We believe in rewarding talent and nurturing growth.</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-lg-3" t-foreach="[
+                                {'icon': 'fa-heart', 'title': 'Healthy Work Culture'},
+                                {'icon': 'fa-graduation-cap', 'title': 'Learning &amp; Growth'},
+                                {'icon': 'fa-laptop', 'title': 'Hybrid Work Model'},
+                                {'icon': 'fa-gift', 'title': 'Bonuses &amp; Perks'}
+                            ]" t-as="benefit">
+                                <div class="benefit_card text-center">
+                                    <i t-attf-class="fa #{benefit['icon']}"></i>
+                                    <h4 t-esc="benefit['title']"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Application Form Section -->
+                <section id="apply_now" class="career_form_section cr_font">
+                    <div class="container">
+                        <div class="section_header text-center">
+                            <h2>Apply Now</h2>
+                            <p>Ready to take the next step? Fill out the form and we’ll get in touch soon.</p>
+                        </div>
+
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <form class="career_application_form s_website_form" action="/website/form/" method="post"
+                                      data-model_name="hr.applicant" enctype="multipart/form-data">
+
+                                    <div class="form_group s_website_form_field" data-type="char">
+                                        <label>Full Name</label>
+                                        <input type="text" name="partner_name" class="form_input" placeholder="John Doe" required=""/>
+                                    </div>
+
+                                    <div class="form_group s_website_form_field" data-type="email">
+                                        <label>Email</label>
+                                        <input type="email" name="email_from" class="form_input" placeholder="john@example.com" required=""/>
+                                    </div>
+
+                                    <div class="form_group s_website_form_field" data-type="char">
+                                        <label>Position Applying For</label>
+                                        <input type="text" name="job_id" class="form_input" placeholder="e.g., Odoo Developer"/>
+                                    </div>
+
+                                    <div class="form_group s_website_form_field" data-type="binary">
+                                        <label>Upload Resume (PDF)</label>
+                                        <input type="file" name="attachment" class="form_input" accept=".pdf,.doc,.docx" required=""/>
+                                    </div>
+
+                                    <div class="form_group s_website_form_field" data-type="text">
+                                        <label>Message</label>
+                                        <textarea name="description" rows="5" class="form_input" placeholder="Tell us about yourself..."></textarea>
+                                    </div>
+
+                                    <div class="form_group text-center">
+                                        <button type="submit" class="btn_submit cta-btn"><span>Submit Application</span> <i class="fa fa-paper-plane"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+    </template>
+</odoo>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--    <template id="remove_user_dropdown_header" inherit_id="website.layout" name="Remove User Dropdown in Header">-->
+    <!--        <xpath expr="//t[@t-call='portal.user_dropdown']" position="replace">-->
+    <!--            &lt;!&ndash; Removed user dropdown &ndash;&gt;-->
+    <!--        </xpath>-->
+    <!--    </template>-->
+
+    <template id="navbar_nav_custom" inherit_id="website.navbar_nav" name="Navbar Nav - Add Custom Classes">
+        <xpath expr="//ul[@id='top_menu']" position="attributes">
+            <attribute name="class" add="main-nav nav-list"/>
+        </xpath>
+    </template>
+
+    <template id="custom_header_logo" inherit_id="website.option_header_brand_logo" name="Custom Header Logo">
+        <xpath expr="//span[@t-field='website.logo']" position="replace">
+            <img src="/cr_internal_website_theme/static/src/img/logo1.png"
+                 alt="Company Logo"
+                 style="height: 35px; width: 45;"
+                 class="img img-fluid"
+                 role="img"
+                 t-att-title="website.name"/>
+        </xpath>
+    </template>
+
+    <template id="website.submenu" name="Custom Submenu Template">
+        <t t-set="show_dropdown"
+           t-value="(submenu.is_mega_menu and submenu.is_visible) or submenu.child_id.filtered(lambda menu: menu.is_visible)"/>
+
+        <!-- No dropdown - standard menu item -->
+        <li t-if="submenu.is_visible and not (submenu.child_id or submenu.is_mega_menu)"
+            t-attf-class="#{item_class or ''}" role="presentation">
+            <a t-att-href="submenu.clean_url()"
+               t-attf-class="#{link_class or ''} #{'active' if submenu.clean_url() and unslug_url(request.httprequest.path) == unslug_url(submenu.clean_url()) else ''}"
+               role="menuitem"
+               t-ignore="true"
+               t-att-target="'_blank' if submenu.new_window else None">
+                <span t-field="submenu.name"/>
+            </a>
+        </li>
+
+        <!-- Default dropdown menu -->
+        <li t-elif="show_dropdown and submenu.name == 'Services'" t-attf-class="#{item_class or ''} dropdown #{
+            (submenu.clean_url() and submenu.clean_url() != '/' and any(request.httprequest.path == child.url for child in submenu.child_id if child.url) or
+             (submenu.clean_url() and request.httprequest.path == submenu.clean_url())) and 'active'
+            } #{submenu.is_mega_menu and 'position-static'}">
+            <a t-attf-class="#{link_class or ''} dropdown-toggle #{submenu.is_mega_menu and 'o_mega_menu_toggle'}"
+               data-bs-toggle="dropdown" href="#">
+                <span t-field="submenu.name"/>
+            </a>
+
+
+            <ul class="dropdown-menu mega-menu">
+                <li class="mega-column">
+                    <h4>Services</h4>
+                    <a href="/services/erp">
+                        <i class="fa fa-cogs menu-icon"></i>
+                        <span class="menu-text">ERP Solution</span>
+                    </a>
+                    <a href="/services/crm">
+                        <i class="fa fa-users menu-icon"></i>
+                        <span class="menu-text">CRM Solution</span>
+                    </a>
+                    <a href="/services/pos">
+                        <i class="fa fa-credit-card menu-icon"></i>
+                        <span class="menu-text">POS Solution</span>
+                    </a>
+                    <a href="/services/web">
+                        <i class="fa fa-code menu-icon"></i>
+                        <span class="menu-text">Web Development</span>
+                    </a>
+                </li>
+                <li class="mega-column">
+                    <h4>Odoo</h4>
+                    <a href="/services/odoo-development">
+                        <i class="fa fa-laptop menu-icon"></i>
+                        <span class="menu-text">Odoo Development</span>
+                    </a>
+                    <a href="/services/odoo-integration">
+                        <i class="fa fa-plug menu-icon"></i>
+                        <span class="menu-text">Odoo Integration</span>
+                    </a>
+                    <a href="/services/odoo-implementation">
+                        <i class="fa fa-rocket menu-icon"></i>
+                        <span class="menu-text">Odoo Implementation</span>
+                    </a>
+                    <a href="/services/odoo-customisation">
+                        <i class="fa fa-wrench menu-icon"></i>
+                        <span class="menu-text">Odoo Customisation</span>
+                    </a>
+                    <a href="/services/odoo-migration">
+                        <i class="fa fa-exchange menu-icon"></i>
+                        <span class="menu-text">Odoo Migration</span>
+                    </a>
+                    <a href="/services/odoo-support">
+                        <i class="fa fa-life-ring menu-icon"></i>
+                        <span class="menu-text">Odoo Support</span>
+                    </a>
+                    <a href="/services/odoo-consulting">
+                        <i class="fa fa-lightbulb-o menu-icon"></i>
+                        <span class="menu-text">Odoo Consulting</span>
+                    </a>
+                    <a href="/services/odoo-training">
+                        <i class="fa fa-graduation-cap menu-icon"></i>
+                        <span class="menu-text">Odoo Training</span>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+
+        <!-- Company dropdown menu -->
+        <li t-elif="show_dropdown and submenu.name == 'Company'" t-attf-class="#{item_class or ''} dropdown #{
+    (submenu.clean_url() and submenu.clean_url() != '/' and any(request.httprequest.path == child.url for child in submenu.child_id if child.url) or
+     (submenu.clean_url() and request.httprequest.path == submenu.clean_url())) and 'active'
+    } #{submenu.is_mega_menu and 'position-static'}">
+            <a t-attf-class="#{link_class or ''} dropdown-toggle #{submenu.is_mega_menu and 'o_mega_menu_toggle'}"
+               data-bs-toggle="dropdown" href="#">
+                <span t-field="submenu.name"/>
+            </a>
+
+            <ul class="dropdown-menu compact-menu">
+                <li>
+                    <a href="/aboutus">
+                        <i class="fa fa-info-circle menu-icon"></i>
+                        <span class="menu-text">About Us</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/blog">
+                        <i class="fa fa-pencil menu-icon"></i>
+                        <span class="menu-text">Blogs</span>
+                    </a>
+                </li>
+<!--                <li>-->
+<!--                    <a href="/case-study">-->
+<!--                        <i class="fa fa-briefcase menu-icon"></i>-->
+<!--                        <span class="menu-text">Case Study</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+            </ul>
+        </li>
+
+        <!-- Default dropdown menu -->
+        <li t-elif="show_dropdown" t-attf-class="#{item_class or ''} dropdown #{
+            (submenu.clean_url() and submenu.clean_url() != '/' and any(request.httprequest.path == child.url for child in submenu.child_id if child.url) or
+             (submenu.clean_url() and request.httprequest.path == submenu.clean_url())) and 'active'
+            } #{submenu.is_mega_menu and 'position-static'}">
+            <a t-attf-class="#{link_class or ''} dropdown-toggle #{submenu.is_mega_menu and 'o_mega_menu_toggle'}"
+               data-bs-toggle="dropdown" href="#">
+                <span t-field="submenu.name"/>
+            </a>
+            <div t-if="submenu.is_mega_menu"
+                 t-attf-class="dropdown-menu o_mega_menu #{submenu.mega_menu_classes}"
+                 data-name="Mega Menu"
+                 t-field="submenu.mega_menu_content"/>
+            <ul t-else="" class="dropdown-menu" role="menu">
+                <t t-foreach="submenu.child_id" t-as="submenu">
+                    <t t-call="website.submenu">
+                        <t t-set="item_class" t-value="None"/>
+                        <t t-set="link_class" t-valuef="dropdown-item"/>
+                    </t>
+                </t>
+            </ul>
+        </li>
+    </template>
+
+    <template id="cr_header_visibility_fixed" inherit_id="website.layout" name="Header Effect Fixed">
+        <xpath expr="//header" position="attributes">
+            <attribute name="t-attf-class" add="o_header_fixed" separator=" "/>
+        </xpath>
+    </template>
+
+
+</odoo>

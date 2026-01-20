@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_bigcommerce_webhook_tree" model="ir.ui.view">
+        <field name="name">bigcommerce.webhook.tree</field>
+        <field name="model">bigcommerce.webhook</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="webhook_id"/>
+                <field name="scope"/>
+                <field name="destination"/>
+                <field name="is_active"/>
+                <field name="created_at"/>
+                <field name="updated_at"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bigcommerce_webhook_form" model="ir.ui.view">
+        <field name="name">bigcommerce.webhook.form</field>
+        <field name="model">bigcommerce.webhook</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="bigcommerce_store_id"/>
+                        <field name="webhook_id"/>
+                        <field name="scope"/>
+                        <field name="destination"/>
+                        <field name="is_active"/>
+                        <field name="created_at"/>
+                        <field name="updated_at"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bigcommerce_webhook" model="ir.actions.act_window">
+        <field name="name">BigCommerce Webhooks</field>
+        <field name="res_model">bigcommerce.webhook</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+     <!-- Menu -->
+    <menuitem id="menu_bigcommerce_webhooks"
+              name="Webhooks"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+              action="action_bigcommerce_webhook"/>
+</odoo>

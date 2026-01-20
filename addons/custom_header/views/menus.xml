@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="custom_header.cr_services" name="Services">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'services'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+
+    <record id="cr_services_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_services"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <record id="services_menu" model="website.menu">
+        <field name="name">Services</field>
+        <field name="url">/services</field>
+        <field name="page_id" ref="custom_header.cr_services_page"/>
+        <!--        <field name="parent_id" ref="website.main_menu"/>-->
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- ERP Solution -->
+    <template id="custom_header.cr_erp_solution" name="ERP Solution">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'erp_solution'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_erp_solution_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/erp</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_erp_solution"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_erp_solution" model="website.menu">
+        <field name="name">ERP Solution</field>
+        <field name="url">/services/erp</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_erp_solution_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- CRM Solution -->
+    <template id="custom_header.cr_crm_solution" name="CRM Solution">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'crm_solution'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_crm_solution_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/crm</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_crm_solution"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_crm_solution" model="website.menu">
+        <field name="name">CRM Solution</field>
+        <field name="url">/services/crm</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_crm_solution_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- POS Solution -->
+    <template id="custom_header.cr_pos_solution" name="POS Solution">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'pos_solution'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_pos_solution_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/pos</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_pos_solution"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_pos_solution" model="website.menu">
+        <field name="name">POS Solution</field>
+        <field name="url">/services/pos</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_pos_solution_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- Web Development -->
+    <template id="custom_header.cr_web_development" name="Web Development">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'web_development'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_web_development_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/web</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_web_development"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_web_development" model="website.menu">
+        <field name="name">Web Development</field>
+        <field name="url">/services/web</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_web_development_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- ================= Odoo Services ================= -->
+
+    <!-- Odoo Development -->
+    <template id="custom_header.cr_odoo_development" name="Odoo Development">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'odoo_development'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+
+    <record id="cr_odoo_development_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/odoo_development</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_odoo_development"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <record id="menu_odoo_development" model="website.menu">
+        <field name="name">Odoo Development</field>
+        <field name="url">/services/odoo_development</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_odoo_development_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- Odoo Integration -->
+    <template id="custom_header.cr_odoo_integration" name="Odoo Integration">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'odoo_integration'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_odoo_integration_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/odoo-integration</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_odoo_integration"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_odoo_integration" model="website.menu">
+        <field name="name">Odoo Integration</field>
+        <field name="url">/services/odoo-integration</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_odoo_integration_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- Odoo Implementation -->
+    <template id="custom_header.cr_odoo_implementation" name="Odoo Implementation">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'odoo_implementation'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_odoo_implementation_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/odoo-implementation</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_odoo_implementation"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_odoo_implementation" model="website.menu">
+        <field name="name">Odoo Implementation</field>
+        <field name="url">/services/odoo-implementation</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_odoo_implementation_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- Odoo Customisation -->
+    <template id="custom_header.cr_odoo_customisation" name="Odoo Customisation">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'odoo_customisation'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_odoo_customisation_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/odoo-customisation</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_odoo_customisation"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_odoo_customisation" model="website.menu">
+        <field name="name">Odoo Customisation</field>
+        <field name="url">/services/odoo-customisation</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_odoo_customisation_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- Odoo Migration -->
+    <template id="custom_header.cr_odoo_migration" name="Odoo Migration">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'odoo_migration'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_odoo_migration_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/odoo-migration</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_odoo_migration"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_odoo_migration" model="website.menu">
+        <field name="name">Odoo Migration</field>
+        <field name="url">/services/odoo-migration</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_odoo_migration_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- Odoo Support -->
+    <template id="custom_header.cr_odoo_support" name="Odoo Support">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'odoo_support'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_odoo_support_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/odoo-support</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_odoo_support"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_odoo_support" model="website.menu">
+        <field name="name">Odoo Support</field>
+        <field name="url">/services/odoo-support</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_odoo_support_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- Odoo Consulting -->
+    <template id="custom_header.cr_odoo_consulting" name="Odoo Consulting">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'odoo_consulting'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_odoo_consulting_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/odoo-consulting</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_odoo_consulting"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_odoo_consulting" model="website.menu">
+        <field name="name">Odoo Consulting</field>
+        <field name="url">/services/odoo-consulting</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_odoo_consulting_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- Odoo Training -->
+    <template id="custom_header.cr_odoo_training" name="Odoo Training">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'odoo_training'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_odoo_training_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/odoo-training</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_odoo_training"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_odoo_training" model="website.menu">
+        <field name="name">Odoo Training</field>
+        <field name="url">/services/odoo-training</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_odoo_training_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+    <!-- ================= SAP ================= -->
+
+    <template id="custom_header.cr_sap_services" name="SAP Services">
+        <t t-call="website.layout">
+            <t t-set="pageName" t-value="'sap_services'"/>
+            <div id="wrap" class="oe_structure oe_empty"/>
+        </t>
+    </template>
+    <record id="cr_sap_services_page" model="website.page">
+        <field name="is_published">True</field>
+        <field name="url">/services/sap-services</field>
+        <field name="track">True</field>
+        <field name="view_id" ref="custom_header.cr_sap_services"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+    <record id="menu_sap_services" model="website.menu">
+        <field name="name">SAP Services</field>
+        <field name="url">/services/sap-services</field>
+        <field name="parent_id" ref="custom_header.services_menu"/>
+        <field name="page_id" ref="custom_header.cr_sap_services_page"/>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+
+
+</odoo>

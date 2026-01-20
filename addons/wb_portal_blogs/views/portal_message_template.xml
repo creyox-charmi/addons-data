@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Modify portal templates -->
+    <!--    <template id="portal_my_home_menu_blogs" name="Portal layout : Blogs menu entry"-->
+    <!--              inherit_id="portal.portal_breadcrumbs" priority="10">-->
+    <!--        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">-->
+    <!--            <li t-if="page_name == 'my_blogs'"-->
+    <!--                t-attf-class="breadcrumb-item #{'active' if not blog_posts else ''}">-->
+    <!--                &lt;!&ndash;                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Blogs</a>&ndash;&gt;-->
+    <!--                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Perfil Público</a>-->
+    <!--                &lt;!&ndash;                <t t-else="">Blogs</t>&ndash;&gt;-->
+    <!--                <t t-else="">Perfil Público</t>-->
+    <!--            </li>-->
+    <!--            <li t-if="page_name == 'blog_edit'"-->
+    <!--                t-attf-class="breadcrumb-item #{'active' if not blog_posts else ''}">-->
+    <!--                &lt;!&ndash;                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Blogs</a>&ndash;&gt;-->
+    <!--                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Perfil Público</a>-->
+    <!--                &lt;!&ndash;                <t t-else="">Blogs</t>&ndash;&gt;-->
+    <!--                <t t-else="">Perfil Público</t>-->
+    <!--            </li>-->
+    <!--            <li t-if="blog_entry" class="breadcrumb-item active">-->
+    <!--                &lt;!&ndash;                <span t-field="blog_posts.type_name"/>&ndash;&gt;-->
+    <!--                <t t-esc="blog_entry.name"/>-->
+    <!--            </li>-->
+    <!--        </xpath>-->
+    <!--    </template>-->
+
+    <template id="portal_my_messages_list_view" name="Mis Mensajes">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mensajes</t>
+            </t>
+            <t t-if="not message_ids">
+                <p>You don't have any message yet.</p>
+            </t>
+            <t t-if="message_ids" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Número de mensajes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="message_ids" t-as="item">
+                        <tr>
+                            <td>
+                                <!--                                <a t-attf-href="#{item['blog_id'].website_url}">-->
+                                <a t-attf-href="/my/messages/thread/partner/#{item['message_id'][0].author_id.id}/blog/#{item['blog_id'].id}">
+                                    <t t-esc="item['message_id'][0].author_id.name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="item['message_id'][0].author_id.email"/>
+                            </td>
+                            <td>
+                                <t t-esc="item['count_message']"/>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_messages_form_view" name="Mensajes">
+        <t t-call="portal.portal_layout">
+
+            <!-- Sección para comentarios o thread -->
+            <div class="container my-4">
+                <t t-if="true">
+                    <h2>💬 Comentarios de
+                        <t t-esc="partner.name"/>
+                        en esta entrada
+                    </h2>
+                    <!-- Reutilizamos el widget de Odoo -->
+                    <t t-call="portal.message_thread">
+                        <t t-set="object"
+                           t-value="blog_entry"/>
+<!--                           t-value="blog_entry.message_ids.filtered( lambda m: m.author_id.id in [partner.id] and m.message_type == 'comment' or not m.parent_id                 )"/>-->
+                    </t>
+                </t>
+            </div>
+
+        </t>
+    </template>
+
+    <!--    <template id="portal_my_account_inherit" inherit_id="portal.portal_layout">-->
+    <!--        <xpath expr="//div[contains(@class, 'row') and contains(@class, 'align-items-center') and contains(@class, 'bg-white') and contains(@class, 'g-0') and contains(@class, 'border') and contains(@class, 'rounded')]"-->
+    <!--               position="inside">-->
+    <!--            <div t-if="page_name == 'my_details'" class="col-2">-->
+    <!--                <a href="/my/blog/new/0" class="" title="Ver cómo otros usuarios ven tu perfil público">-->
+    <!--                    <i class="fa fa-user me-2"></i>-->
+    <!--                    Perfil Público-->
+    <!--                </a>-->
+    <!--            </div>-->
+    <!--        </xpath>-->
+    <!--    </template>-->
+"
+
+</odoo>

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service4_web_dev_solution" name="service4_web_dev_solution">
+
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_web_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Professional Web Development Solutions
+                    </h1>
+                    <p class="banner-tagline">
+                        Build fast, responsive, and scalable websites with our expert web development services.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">Web Development</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-web-solution-intro o_website_snippet cr_font" aria-labelledby="web-solution-heading">
+            <div class="cr-web-container">
+                <!-- Header Row -->
+                <div class="cr-web-header-row">
+                    <div class="cr-web-header-text">
+                        <h1 id="web-solution-heading">Web Development for Modern Businesses</h1>
+                        <p class="cr-web-subtext">
+                            Our web development services focus on creating responsive, secure, and scalable websites.
+                            From simple landing pages to complex web applications, we deliver high-performance digital
+                            solutions tailored to your needs.
+                        </p>
+                    </div>
+                    <div class="cr-web-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/web-development.png" alt="Web Development"/>
+                    </div>
+                </div>
+
+
+                <section class="web-usecases">
+                    <div class="web-usecases-container">
+                        <h2 class="web-usecases-title">Why Build Your Website with Odoo?</h2>
+                         <p>
+                    Unlike traditional CMS platforms, Odoo Website is deeply integrated with CRM,
+                    Sales, Inventory, and Marketing. Your website is not just an online presence,
+                    it’s a connected business tool.
+                </p>
+
+                        <div class="web-usecases-wrapper">
+
+
+                             <div class="web-usecases-image">
+                                <img src="/cr_internal_website_theme/static/src/img/web_use1.png" alt="Website Use Cases"/>
+                            </div>
+                            <div class="web-usecase-list">
+                                <div class="usecase">
+                                    <h4>Drag &amp; Drop Website Builder</h4>
+                                    <p> Easily design without coding.</p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Seamless eCommerce</h4>
+                                    <p>Built-in store with payment &amp; shipping.</p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Multi-Website</h4>
+                                    <p>Manage multiple websites in one Odoo DB.
+                                    </p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Content Tools</h4>
+                                    <p>Blogs, forums &amp; eLearning built right in.</p>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </section>
+
+        <section class="odoo-website-unique o_website_snippet">
+            <div class="container">
+                <h2>Unique Features of Odoo Website</h2>
+                <div class="row text-center">
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-box">
+                            <i class="fas fa-globe"></i>
+                            <h4>Multi-language &amp; Currency</h4>
+                            <p>Reach global customers with translations &amp; localized pricing.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-box">
+                            <i class="fas fa-bullhorn"></i>
+                            <h4>Marketing Integration</h4>
+                            <p>Run campaigns, track visitors, and optimize SEO in Odoo.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-box">
+                            <i class="fas fa-link"></i>
+                            <h4>App Integrations</h4>
+                            <p>Connect CRM, Events, Helpdesk, and more with your website.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+         <section class="web-usecases">
+                    <div class="web-usecases-container">
+                        <h2 class="web-usecases-title">Industry Use Cases</h2>
+
+                        <div class="web-usecases-wrapper">
+
+
+
+                            <div class="web-usecase-list">
+                                <div class="usecase">
+                                    <h4>Corporate Websites</h4>
+                                    <p>Showcase services, client portals, and contact forms.</p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Online Stores</h4>
+                                    <p>Sell with inventory sync, multi-warehouse, and checkout flow.</p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Education Portals</h4>
+                                    <p>Deliver courses with Odoo eLearning &amp; website integration.
+                                    </p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Event Websites</h4>
+                                    <p>Host events with registration, ticketing, and online payments.</p>
+                                </div>
+                            </div>
+
+                             <div class="web-usecases-image">
+                                <img src="/cr_internal_website_theme/static/src/img/web_use.png" alt="Website Use Cases"/>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Content Below -->
+                <div class="cr-web-content">
+                    <h2>Why Choose Our Web Development Services?</h2>
+                    <p>
+                        We deliver high-quality web solutions with cutting-edge technologies, ensuring your website is
+                        fast, responsive, and secure.
+                        Our developers follow best practices, use modern frameworks, and focus on creating a seamless
+                        user experience.
+                    </p>
+
+                    <ul class="web-features">
+                        <li>
+                            <strong>Responsive Design:</strong>
+                            Websites that look perfect on desktop, tablet, and mobile.
+                        </li>
+                        <li>
+                            <strong>Custom Web Applications:</strong>
+                            Tailored solutions for your business requirements.
+                        </li>
+                        <li>
+                            <strong>SEO Optimization:</strong>
+                            Enhance your website visibility and ranking on search engines.
+                        </li>
+                        <li>
+                            <strong>Secure &amp; Reliable:</strong>
+                            Follow best practices for website security and performance.
+                        </li>
+                        <li>
+                            <strong>CMS Integration:</strong>
+                            Easy-to-manage websites with WordPress, Odoo, or custom CMS.
+                        </li>
+                        <li>
+                            <strong>E-commerce Solutions:</strong>
+                            Online stores with smooth checkout and inventory integration.
+                        </li>
+                        <!-- Optional New Features -->
+                        <li>
+                            <strong>API Integrations:</strong>
+                            Connect your website with other business applications seamlessly.
+                        </li>
+                        <li>
+                            <strong>Performance Optimization:</strong>
+                            Fast loading pages with best frontend and backend optimization.
+                        </li>
+                        <li>
+                            <strong>Analytics &amp; Tracking:</strong>
+                            Gain insights into user behavior and website performance.
+                        </li>
+                        <li>
+                            <strong>Maintenance &amp; Support:</strong>
+                            Continuous monitoring and updates for long-term stability.
+                        </li>
+                    </ul>
+
+                    <h2>Our Implementation Approach</h2>
+                    <p>
+                        From initial design to deployment, we follow a structured approach ensuring your website meets
+                        business objectives.
+                        Our team provides guidance, testing, and post-launch support to guarantee optimal performance.
+                    </p>
+
+                    <section class="web-cta-section o_wfull" aria-labelledby="web-cta-heading">
+                        <!-- Floating bubbles -->
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+
+                        <div class="container web-cta-container">
+                            <div class="web-cta-row">
+                                <!-- Text -->
+                                <div class="web-cta-text">
+                                    <h2 id="web-cta-heading">
+                                        Ready to <span class="highlight">Upgrade Your Website Experience</span>?
+                                    </h2>
+                                </div>
+
+                                <!-- Button (same pattern as ERP CTA) -->
+                                <a href="/contactus" class="dark-cta-btn" title="Request Free Website Demo"
+                                   aria-label="Get Website Demo">
+                                    <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                                    <span>Request a Free Demo</span>
+                                </a>
+
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Do you provide responsive websites?</dt>
+                        <dd>Yes, all websites are fully responsive and mobile-friendly.</dd>
+                        <dt>Can you integrate e-commerce functionality?</dt>
+                        <dd>Absolutely, we provide fully integrated online store solutions.</dd>
+                        <dt>Do you provide ongoing support?</dt>
+                        <dd>Yes, our team provides maintenance, updates, and performance monitoring.</dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+<!--    <record id="cr_internal_website_theme.service4_web_dev_solution_000_scss" model="ir.asset">-->
+<!--        <field name="name">SERVICE-4 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/service4_web_dev_solution/000.scss</field>-->
+<!--    </record>-->
+</odoo>

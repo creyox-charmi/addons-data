@@ -1,0 +1,45 @@
+<odoo>
+    <data>
+
+        <!-- Tree View for Client -->
+        <record id="view_client_tree" model="ir.ui.view">
+            <field name="name">cr.client.tree</field>
+            <field name="model">cr.client</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for Client -->
+        <record id="view_client_form" model="ir.ui.view">
+            <field name="name">cr.client.form</field>
+            <field name="model">cr.client</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" string="Client Name"/>
+                            <field name="logo"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to open Client model views -->
+        <record id="action_client" model="ir.actions.act_window">
+            <field name="name">Clients</field>
+            <field name="res_model">cr.client</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+        </record>
+
+        <!-- Menu item for Clients -->
+        <menuitem id="menu_creyox" name="Creyox" sequence="10" parent="website.menu_website_configuration"/>
+        <menuitem id="menu_client" name="Client List" parent="cr_website_customization.menu_creyox" action="action_client" sequence="9999"/>
+
+    </data>
+</odoo>

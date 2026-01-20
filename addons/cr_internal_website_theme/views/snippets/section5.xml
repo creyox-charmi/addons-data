@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Section 5: Milestones & Achievements with Dynamic Counter -->
+    <template id="milestone_snippet_template" name="section-5">
+        <section class="milestone-light-section cr_font" aria-labelledby="milestones-heading">
+            <div class="milestone-wrapper">
+                <h2 id="milestones-heading" class="milestone-heading">Our Milestones &amp; Achievements</h2>
+                <div class="milestone-grid" role="list">
+                    <div class="milestone-card" style="--i:1" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <h3><span class="counter" data-count="1250">0</span>+</h3>
+                        <p>Satisfied Clients</p>
+                    </div>
+                    <div class="milestone-card" style="--i:2" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3><span class="counter" data-count="98">0</span>%</h3>
+                        <p>Client Retention Rate</p>
+                    </div>
+                    <div class="milestone-card" style="--i:3" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <h3><span class="counter" data-count="25">0</span>+</h3>
+                        <p>Industries Served</p>
+                    </div>
+                    <div class="milestone-card" style="--i:4" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3><span class="counter" data-count="200">0</span>+</h3>
+                        <p>Custom Apps</p>
+                    </div>
+                    <div class="milestone-card" style="--i:5" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3><span class="counter" data-count="40">0</span>+</h3>
+                        <p>Countries Served</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            const milestoneSection = document.querySelector(".milestone-light-section");
+            const counters = document.querySelectorAll(".counter");
+            let animated = false;
+
+            const animateCounter = (el, target) => {
+            let count = 0;
+            const speed = 10;
+            const increment = target / 40;
+            const update = () => {
+            count += increment;
+            if (count &lt; target) {
+            el.textContent = Math.floor(count);
+            requestAnimationFrame(update);
+            } else {
+            el.textContent = target;
+            }
+            };
+            update();
+            };
+
+            const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+            if (entry.isIntersecting &amp;&amp; !animated) {
+            animated = true;
+            counters.forEach(counter => {
+            animateCounter(counter, +counter.dataset.count);
+            });
+            }
+            });
+            }, { threshold: 0.4 });
+
+            observer.observe(milestoneSection);
+            });
+        </script>
+
+    </template>
+</odoo>

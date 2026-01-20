@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_bigcommerce_shipping_zone_tree" model="ir.ui.view">
+        <field name="name">bigcommerce.shipping.zone.tree</field>
+        <field name="model">bigcommerce.shipping.zone</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="bigcommerce_store_id"/>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="country_iso2"/>
+                <field name="enabled"/>
+                <field name="free_shipping_enabled"/>
+                <field name="free_shipping_minimum_sub_total"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bigcommerce_shipping_zone_form" model="ir.ui.view">
+        <field name="name">bigcommerce.shipping.zone.form</field>
+        <field name="model">bigcommerce.shipping.zone</field>
+        <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>
+        <field name="arch" type="xml">
+            <form string="Shipping Zone">
+                <header>
+                    <button name="update_zone_from_bigcommerce"
+                            type="object"
+                            string="Update from BigCommerce"
+                            class="btn-primary"
+                            attrs="{'invisible': [('zone_id', '=', False)]}"/>
+
+                    <button name="export_zone_to_bigcommerce"
+                            type="object"
+                            string="Update to BigCommerce"
+                            class="btn-primary"
+                            attrs="{'invisible': [('zone_id', '=', False)]}"/>
+
+                    <button name="delete_zone_from_bigcommerce"
+                            type="object"
+                            string="Delete from BigCommerce"
+                            class="btn-primary"
+                            attrs="{'invisible': [('zone_id', '=', False)]}"/>
+
+                </header>
+                <sheet>
+                    <group>
+                        <field name="bigcommerce_store_id"/>
+                        <field name="name"/>
+                        <field name="zone_id" readonly="1"/>
+                        <field name="type"/>
+                        <field name="enabled"/>
+                        <field name="location_id"/>
+                        <field name="country_iso2"/>
+                    </group>
+                    <group>
+                        <group string="Free Shipping">
+                            <field name="free_shipping_enabled"/>
+                            <field name="free_shipping_minimum_sub_total"/>
+                            <field name="exclude_fixed_shipping_products"/>
+                        </group>
+                        <group string="Handling Fees">
+                            <field name="display_separately"/>
+                            <field name="fixed_surcharge"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bigcommerce_shipping_zone" model="ir.actions.act_window">
+        <field name="name">Shipping Zones</field>
+        <field name="res_model">bigcommerce.shipping.zone</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_bigcommerce_shipping_zone" name="Shipping Zones"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+              action="action_bigcommerce_shipping_zone"/>
+
+    <record id="action_bulk_update_zone_from_bigcommerce" model="ir.actions.server">
+        <field name="name">Update Zone from BigCommerce</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_bigcommerce_shipping_zone"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_bigcommerce_shipping_zone"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_update_zone_from_bigcommerce()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+    <record id="action_bulk_export_zone_to_bigcommerce" model="ir.actions.server">
+        <field name="name">Update Zone to BigCommerce</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_bigcommerce_shipping_zone"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_bigcommerce_shipping_zone"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_export_zone_to_bigcommerce()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+
+</odoo>
