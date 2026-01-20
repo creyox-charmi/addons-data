@@ -1,0 +1,1755 @@
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/models/mrp_bom_line.py
+----------------------------------------------------------------------
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+
+
+class MrpBomLine(models.Model):
+    _inherit = 'mrp.bom.line'
+
+    cfe_quantity = fields.Char(
+        string='CFE Quantity',
+        help="Customer Furnished Equipment quantity - supplied by customer at zero cost"
+    )
+    lli = fields.Boolean(string='LLI', default=False)
+    approval_1 = fields.Boolean(string='Approval 1', default=False)
+    approval_2 = fields.Boolean(string='Approval 2', default=False)
+    po_created = fields.Boolean(string='PO Created', default=False)
+    mo_internal_ref = fields.Many2one(
+        comodel_name="product.supplierinfo",
+        string="Preferred Manufacturer",
+        domain="[('product_tmpl_id', '=', product_tmpl_id)]",
+        help="Select the manufacturer/vendor defined on the product card."
+    )
+    customer_po_created = fields.Boolean(string='Customer PO Created', default=False)
+    vendor_po_created = fields.Boolean(string='Vendor PO Created', default=False)
+    product_manufacturer_id = fields.Many2one(comodel_name="product.manufacturer.detail",string='')
+    can_edit_approval_2 = fields.Boolean(
+        string='Can Edit Approval 2',
+        compute='_compute_can_edit_approval_2',
+        help="Technical field to check if user can edit Approval 2"
+    )
+    product_default_code = fields.Char(
+        string='Internal Reference',
+        related='product_id.default_code',
+        readonly=True,
+        store=True
+    )
+
+    product_old_everest_pn = fields.Char(
+        string='Old Everest PN',
+        related='product_id.old_everest_pn',
+        readonly=True,
+        store=True
+    )
+
+    @api.depends_context('uid')
+    def _compute_can_edit_approval_2(self):
+        """Check if current user can edit Approval 2 (only Manufacture/Admin or Purchase/Admin)"""
+        user = self.env.user
+        can_edit = user.has_group('mrp.group_mrp_manager') or user.has_group('purchase.group_purchase_manager')
+        for line in self:
+            line.can_edit_approval_2 = can_edit
+
+    def set_product_manufacturer_id(self,data):
+        for line in self:
+            pmd = self.env['product.manufacturer.detail'].browse(data)
+            if pmd:
+                line.product_manufacturer_id = pmd.id
+
+
+
+    @api.depends('bom_id.is_evr')
+    def _compute_show_cfe_quantity(self):
+        """Compute whether CFE quantity and new fields should be shown"""
+        for line in self:
+            show = line.bom_id.is_evr
+            line.show_cfe_quantity = show
+            line.show_lli = show
+            line.show_approval_1 = show
+            line.show_approval_2 = show
+            line.show_mo_internal_ref = show
+
+    show_cfe_quantity = fields.Boolean(
+        string='Show CFE Quantity',
+        compute='_compute_show_cfe_quantity',
+        store=True,
+        help="Technical field to control CFE quantity visibility"
+    )
+    show_lli = fields.Boolean(compute='_compute_show_cfe_quantity', store=True)
+    show_approval_1 = fields.Boolean(compute='_compute_show_cfe_quantity', store=True)
+    show_approval_2 = fields.Boolean(compute='_compute_show_cfe_quantity', store=True)
+    show_mo_internal_ref = fields.Boolean(compute='_compute_show_cfe_quantity', store=True)
+
+    def validate_third_boolean(self):
+        """
+        Check rules before allowing the 3rd boolean to be ticked.
+        Now uses context data for validation and returns PO result.
+        """
+        root_bom_id = self.env.context.get('root_bom_id') or self.bom_id.id
+        results = []
+        qty = self.env.context.get('qty')
+
+        for line in self:
+            # Get context data for validation
+            # context_data = self.env['mrp.bom.context'].get_context_data(root_bom_id, line.id)
+
+            lli = line.lli
+            a1 = line.approval_1
+            a2 = line.approval_2
+            cfe_quantity = line.cfe_quantity
+
+
+            # Only if all three would become True
+            if lli and a1 and a2:
+
+                if not cfe_quantity or float(cfe_quantity or 0) <= 0:
+                    raise ValidationError("⚠️ CFE Quantity must be > 0 before enabling all 3 flags.")
+
+                # Get root BOM for project validation
+                root_bom = self.env['mrp.bom'].browse(root_bom_id)
+                if not root_bom.project_id or not root_bom.project_id.partner_id:
+                    raise ValidationError("⚠️ Project Partner must be set on root BOM before enabling all 3 flags.")
+
+                # Vendor check
+                diff = qty - int(cfe_quantity)
+                if diff >= 1:
+                    main_vendor = line.product_id.seller_ids.filtered(lambda s: s.main_vendor)
+                    vendor = main_vendor[0] if main_vendor else line.product_id._select_seller()
+
+                    if not vendor:
+                        raise ValidationError(
+                            f"⚠️ No vendor defined for {line.product_id.display_name}. Please configure at least one vendor."
+                        )
+
+                # If validation passes, create POs immediately
+                po_result = self._create_instant_pos_with_context(root_bom_id, line,qty)
+                results.append({
+                    "bom_line_id": line.id,
+                    **po_result
+                })
+            else:
+                print("⏩ Not all three flags are TRUE → no validation triggered")
+
+        return results if results else True
+
+
+    def _create_instant_pos_with_context(self, root_bom_id, bom_line, qty):
+        """Create instant POs respecting independent rules for customer/vendor with detailed messages."""
+        result = {
+            "customer_po": False,
+            "vendor_po": False,
+            "customer_po_id": False,
+            "vendor_po_id": False,
+            "customer_po_name": False,
+            "vendor_po_name": False,
+            "messages": [],  # detailed messages
+        }
+
+        cfe_qty = float(bom_line.cfe_quantity or 0)
+        required_qty = float(qty or 0)
+        remaining_qty = required_qty - cfe_qty
+
+        root_bom = self.env['mrp.bom'].browse(root_bom_id)
+        project_partner = root_bom.project_id.partner_id if root_bom.project_id else None
+        product_code = root_bom.product_id.default_code or root_bom.product_tmpl_id.default_code or ''
+        product_name = root_bom.product_id.name or root_bom.product_tmpl_id.name or ''
+        cfe_project_location_id = root_bom.cfe_project_location_id
+
+        # ----------------------------
+        # CUSTOMER PO (with bom_line_id)
+        # ----------------------------
+        create_customer_po = False
+        existing_customer_po_line = self.env['purchase.order.line'].search([
+            ('bom_id','=',root_bom_id),
+            ('product_id', '=', bom_line.product_id.id),
+            ('order_id.partner_id', '=', project_partner.id),
+            ('bom_line_ids', 'in', [bom_line.id]),
+            ("order_id.state", "=", "draft"),
+        ], order="id desc",limit=1)
+
+        existing_customer_po = existing_customer_po_line.order_id if existing_customer_po_line else False
+
+        if existing_customer_po:
+            if existing_customer_po_line.order_id.state == 'draft':
+                existing_customer_po.cfe_project_location_id = cfe_project_location_id.id
+
+
+        if not bom_line.customer_po_created:
+            create_customer_po = True
+        elif existing_customer_po and existing_customer_po.state != 'draft':
+            # ✅ if PO exists but not in draft, create new
+            create_customer_po = True
+        elif not existing_customer_po:
+            create_customer_po = True
+        else:
+            result['messages'].append(
+                f"Customer PO not created for {bom_line.product_id.display_name}: "
+                f"already exists ({existing_customer_po.name if existing_customer_po else 'N/A'}) "
+            )
+
+        if create_customer_po:
+            if not project_partner:
+                result['messages'].append(
+                    f"Customer PO not created for {bom_line.product_id.display_name}: Project partner missing."
+                )
+            elif cfe_qty <= 0:
+                result['messages'].append(
+                    f"Customer PO not created for {bom_line.product_id.display_name}: CFE Quantity <= 0."
+                )
+            else:
+                po_exist = self.env['purchase.order'].search([('bom_id','=',root_bom_id),('state','=','draft'),("partner_id", "=", project_partner.id),])
+
+                if po_exist:
+                    if po_exist:
+                        po_exist.cfe_project_location_id = cfe_project_location_id.id
+                        po_line = po_exist.order_line.filtered(lambda l: l.product_id.id == bom_line.product_id.id)
+                        if po_line:
+                            po_line.product_qty += cfe_qty
+                            if bom_line.id not in po_line.bom_line_ids.ids:
+                                po_line.bom_line_ids = [(4, bom_line.id)]
+
+                            result['messages'].append(
+                                f"🔄 Updated Customer PO {po_exist.name}: added {cfe_qty} to {bom_line.product_id.display_name}"
+                            )
+                        else:
+                            cpo_line_vals = {
+                                "order_id": po_exist.id,
+                                "product_id": bom_line.product_id.id,
+                                "product_qty": cfe_qty,
+                                "product_uom": bom_line.product_id.uom_po_id.id,
+                                "price_unit": 0.0,
+                                "date_planned": fields.Datetime.now(),
+                                "name": f"CFE - {bom_line.product_id.display_name}",
+                                "bom_line_ids": [(6, 0, [bom_line.id])],  # 🔹 updated
+                                'bom_id':root_bom_id,
+                            }
+                            print('bom_line.product_manufacturer_id : ',bom_line.product_manufacturer_id)
+                            if bom_line.product_manufacturer_id:
+                                cpo_line_vals["manufacturer_id"] = bom_line.product_manufacturer_id.id
+                            self.env["purchase.order.line"].create(cpo_line_vals)
+                            result['messages'].append(
+                                f"➕ Added {bom_line.product_id.display_name} ({cfe_qty}) to Customer PO {po_exist.name}"
+                            )
+
+                        bom_line.customer_po_created = True
+
+                else:
+                    customer_po_vals = {
+                        'partner_id': project_partner.id,
+                        'cfe_project_location_id': cfe_project_location_id.id if cfe_project_location_id else False,
+                        'origin': f"EVR-Manufacture - [{product_code}] {product_name}",
+                        'state': 'draft',
+                        'bom_id':root_bom_id,
+                        'order_line': [(0, 0, {
+                            'product_id': bom_line.product_id.id,
+                            'product_qty': cfe_qty,
+                            'product_uom': bom_line.product_id.uom_po_id.id,
+                            'price_unit': 0.0,
+                            'date_planned': fields.Datetime.now(),
+                            'name': f"CFE - {bom_line.product_id.display_name}",
+                            'manufacturer_id': bom_line.product_manufacturer_id.id if bom_line.product_manufacturer_id else False,
+                            'bom_line_ids': [(6, 0, [bom_line.id])],
+                            'bom_id':root_bom_id,
+                        })]
+                    }
+
+                    customer_po = self.env['purchase.order'].create(customer_po_vals)
+                    bom_line.customer_po_created = True
+                    result.update({
+                        'customer_po': True,
+                        'customer_po_id': customer_po.id,
+                        'customer_po_name': customer_po.name
+                    })
+                    result['messages'].append(f"✅ Customer PO created: {customer_po.name} ({cfe_qty})")
+
+        # ----------------------------
+        # VENDOR PO (Check draft first, then follow full flow)
+        # ----------------------------
+        if remaining_qty > 0:
+            vendor = (bom_line.product_id.seller_ids.filtered(lambda s: s.main_vendor)[:1]
+                      or bom_line.product_id._select_seller())
+
+            if not vendor or not vendor.partner_id:
+                result['messages'].append(
+                    f"⚠️ Vendor PO not created for {bom_line.product_id.display_name} ({remaining_qty}): Vendor not configured properly."
+                )
+                return result
+
+            price = vendor.price or bom_line.product_id.list_price
+            if not price:
+                result['messages'].append(
+                    f"⚠️ Vendor PO not created for {bom_line.product_id.display_name} ({remaining_qty}): No price found."
+                )
+                return result
+
+            manufacturer_id = bom_line.product_manufacturer_id.id if bom_line.product_manufacturer_id else False
+            mo_internal_ref = getattr(bom_line.bom_id, 'mo_internal_ref', False)
+            bom = bom_line.bom_id
+
+            # 1️⃣ Check if draft Vendor PO exists
+            draft_po_line = self.env["purchase.order.line"].search([
+                ("order_id.partner_id", "=", vendor.partner_id.id),
+                ("product_id", "=", bom_line.product_id.id),
+                ("bom_line_ids", "in", [bom_line.id]),
+                ("order_id.state", "=", "draft")
+            ], order="id desc",limit=1)
+
+            if draft_po_line:
+                draft_po_line.order_id.cfe_project_location_id = cfe_project_location_id.id
+                # Draft exists → do nothing
+                result['messages'].append(
+                    f"ℹ️ Vendor PO {draft_po_line.order_id.name} already exists in draft for {bom_line.product_id.display_name}, no action needed."
+                )
+                bom_line.vendor_po_created = True
+                result.update({
+                    "vendor_po": True,
+                    "vendor_po_id": draft_po_line.order_id.id,
+                    "vendor_po_name": draft_po_line.order_id.name
+                })
+                return result
+
+            # 2️⃣ No draft Vendor PO → check non-draft Vendor PO (log warning)
+            existing_vpo_line = self.env["purchase.order.line"].search([
+                ("order_id.partner_id", "=", vendor.partner_id.id),
+                ("product_id", "=", bom_line.product_id.id),
+                ("bom_line_ids", "in", [bom_line.id]),
+                ("order_id.state", "!=", "draft")
+            ],order="id desc", limit=1)
+
+            if existing_vpo_line:
+                existing_vpo_line.order_id.cfe_project_location_id = cfe_project_location_id.id
+                result['messages'].append(
+                    f"⚠️ Vendor PO {existing_vpo_line.order_id.name} exists but not in draft, creating new PO."
+                )
+
+            # 3️⃣ No Vendor PO exists → check draft Customer PO for this product
+            draft_cpo = self.env["purchase.order"].search([
+                ("partner_id", "=", vendor.partner_id.id),
+                ("state", "=", "draft")
+            ], order="id desc", limit=1)
+
+            if draft_cpo:
+                draft_cpo.cfe_project_location_id = cfe_project_location_id.id
+                cpo_line = draft_cpo.order_line.filtered(lambda l: l.product_id.id == bom_line.product_id.id)
+                if cpo_line:
+                    cpo_line.product_qty += remaining_qty
+                    # cpo_line.bom_line_id = bom_line.id
+                    if bom_line.id not in cpo_line.bom_line_ids.ids:
+                        cpo_line.bom_line_ids = [(4, bom_line.id)]
+                    cpo_line.manufacturer_id = manufacturer_id
+                    result['messages'].append(
+                        f"🔄 Updated Vendor PO {draft_cpo.name}: added {remaining_qty} to {bom_line.product_id.display_name}"
+                    )
+                else:
+                    po_line_vals = {
+                        "order_id": draft_cpo.id,
+                        "product_id": bom_line.product_id.id,
+                        "product_qty": remaining_qty,
+                        "product_uom": bom_line.product_id.uom_po_id.id,
+                        "price_unit": 0.0,
+                        "date_planned": fields.Datetime.now(),
+                        "name": f"CFE - {bom_line.product_id.display_name}",
+                        "bom_line_ids": [(6, 0, [bom_line.id])],  # 🔹 updated
+                    }
+                    if manufacturer_id:
+                        po_line_vals["manufacturer_id"] = manufacturer_id
+                    self.env["purchase.order.line"].create(po_line_vals)
+                    result['messages'].append(
+                        f"➕ Added {bom_line.product_id.display_name} ({remaining_qty}) to Vendor PO {draft_cpo.name}"
+                    )
+                bom_line.vendor_po_created = True
+                result.update({
+                    "vendor_po": True,
+                    "vendor_po_id": draft_cpo.id,
+                    "vendor_po_name": draft_cpo.name
+                })
+                return result
+
+            # 4️⃣ No draft Customer PO → create new Vendor PO
+            po_line_vals = {
+                "product_id": bom_line.product_id.id,
+                "product_qty": remaining_qty,
+                "product_uom": bom_line.product_id.uom_po_id.id,
+                "price_unit": price,
+                "date_planned": fields.Datetime.now(),
+                "name": f"Vendor - {bom_line.product_id.display_name}",
+                "bom_line_ids": [(6, 0, [bom_line.id])],  # 🔹 updated
+            }
+            if manufacturer_id:
+                po_line_vals["manufacturer_id"] = manufacturer_id
+
+            vendor_po_vals = {
+                "partner_id": vendor.partner_id.id,
+                "origin": f"BOM {bom.display_name}",
+                "order_line": [(0, 0, po_line_vals)],
+                'cfe_project_location_id':cfe_project_location_id.id
+            }
+            if bom.is_evr and cfe_project_location_id:
+                vendor_po_vals.update({"cfe_project_location_id": cfe_project_location_id.id})
+            if mo_internal_ref:
+                vendor_po_vals["mo_internal_ref"] = mo_internal_ref
+
+            vpo = self.env["purchase.order"].create(vendor_po_vals)
+            bom_line.vendor_po_created = True
+            result.update({
+                "vendor_po": True,
+                "vendor_po_id": vpo.id,
+                "vendor_po_name": vpo.name
+            })
+            result['messages'].append(
+                f"✅ Vendor PO {vpo.name} created for {bom_line.product_id.display_name} ({remaining_qty})"
+            )
+            return result
+
+        return result
+
+
+
+
+
+
+    
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/report/report_mrp_bom_structure.py
+-------------------------------------
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+from odoo import models
+import base64
+
+
+class ReportBomStructure(models.AbstractModel):
+    _inherit = 'report.mrp.report_bom_structure'
+
+    def _get_bom_data(self, bom, warehouse, product=False, line_qty=False, bom_line=False, level=0, parent_bom=False,
+                      parent_product=False, index=0, product_info=False, ignore_stock=False,
+                      simulated_leaves_per_workcenter=False):
+        print('> bom_line : ',bom_line)
+
+        data = super()._get_bom_data(
+            bom, warehouse, product, line_qty, bom_line, level,
+            parent_bom, parent_product, index, product_info, ignore_stock, simulated_leaves_per_workcenter
+        )
+
+        # Get root BOM from context or current BOM
+        root_bom_id = self.env.context.get("root_bom_id")
+        if not root_bom_id:
+            root_bom_id = bom.id if bom else (parent_bom.id if parent_bom else False)
+
+        root_bom = self.env['mrp.bom'].browse(root_bom_id) if root_bom_id else False
+
+        data['is_evr'] = bool(root_bom and root_bom.is_evr)
+        data['bom_id'] = bom.id if bom else False
+        data['root_bom_id'] = root_bom_id
+        data['root_is_evr'] = data['is_evr']
+        product = data['product']
+        data['default_code'] = product.default_code or ''
+        data['old_everest_pn'] = product.old_everest_pn or ''
+        print('data : ',data)
+        return data
+
+    def _get_component_data(self, parent_bom, parent_product, warehouse, bom_line,
+                            line_quantity, level, index, product_info, ignore_stock=False):
+        print('2>> bom_line : ',bom_line)
+
+        data = super()._get_component_data(
+            parent_bom, parent_product, warehouse, bom_line,
+            line_quantity, level, index, product_info, ignore_stock
+        )
+
+        root_bom_id = self.env.context.get("root_bom_id")
+        root_bom = self.env['mrp.bom'].browse(root_bom_id) if root_bom_id else False
+
+        # Debug image handling in _get_component_data method
+        if bom_line and bom_line.product_id:
+            data['product_id'] = bom_line.product_id.id
+            data['product_name'] = bom_line.product_id.display_name
+            data['default_code'] = bom_line.product_id.default_code or ''
+            data['old_everest_pn'] = bom_line.product_id.old_everest_pn or ''
+
+            # Debug image field
+            image_field = bom_line.product_id.image_128
+
+            if image_field:
+                try:
+                    # Method 1: Direct assignment (if it's already base64 string)
+                    if isinstance(image_field, str):
+                        data['product_image'] = image_field
+                    # Method 2: Binary to base64 conversion
+                    elif isinstance(image_field, bytes):
+                        data['product_image'] = base64.b64encode(image_field).decode('utf-8')
+                    else:
+                        # Method 3: For other field types
+                        data['product_image'] = str(image_field)
+                except Exception as e:
+                    data['product_image'] = False
+            else:
+                data['product_image'] = False
+
+        if bom_line and root_bom_id:
+            data['cfe_quantity'] = bom_line.cfe_quantity
+            data['has_cfe_quantity'] = bool(bom_line.cfe_quantity)
+            data['bom_line_id'] = bom_line.id
+            data['lli'] = bom_line.lli
+            data['approval_1'] = bom_line.approval_1
+            data['approval_2'] = bom_line.approval_2
+
+            child_bom = self.env['mrp.bom']._bom_find(bom_line.product_id, bom_type='normal')
+            data['cfe_editable'] = not bool(child_bom)
+            data['lli_editable'] = not bool(child_bom)
+            data['approval_1_editable'] = not bool(child_bom)
+            data['approval_2_editable'] = not bool(child_bom)
+            data['mo_internal_ref_editable'] = not bool(child_bom)
+
+            # Check user permissions for Approval 2
+            user = self.env.user
+            can_edit_approval_2 = user.has_group('mrp.group_mrp_manager') or user.has_group(
+                'purchase.group_purchase_manager')
+            data['can_edit_approval_2'] = can_edit_approval_2
+
+
+            # Available manufacturers from main vendor
+            main_vendor_line = bom_line.product_id.product_tmpl_id.seller_ids.filtered(lambda s: s.main_vendor)
+
+            available_manufacturers = []
+            for vendor in main_vendor_line:
+                for manufacturer in vendor.manufacturer_ids:
+                    available_manufacturers.append({
+                        'id': manufacturer.id,
+                        'ref': manufacturer.manufacture_internal_ref,  # or name if you want
+                        'name': manufacturer.manufacture_internal_ref,
+                    })
+
+            data['available_manufacturers'] = available_manufacturers
+
+            # Selected manufacturer
+            if bom_line.product_manufacturer_id:
+                data['product_manufacturer_id'] = bom_line.product_manufacturer_id.id
+            else:
+                data['product_manufacturer_id'] = False
+
+            # Editable flag
+            child_bom = self.env['mrp.bom']._bom_find(bom_line.product_id, bom_type='normal')
+            data['product_manufacturer_editable'] = not bool(child_bom)
+
+        else:
+            # Defaults
+            data.update({
+                'cfe_quantity': '',
+                'has_cfe_quantity': False,
+                'cfe_editable': False,
+                'bom_line_id': False,
+                'lli': False,
+                'approval_1': False,
+                'approval_2': False,
+                'lli_editable': False,
+                'approval_1_editable': False,
+                'approval_2_editable': False,
+                'available_vendors': [],
+                'mo_internal_ref': False,
+                'can_edit_approval_2': False,
+            })
+
+        data['is_evr'] = bool(root_bom and root_bom.is_evr)
+        data['root_bom_id'] = root_bom_id
+
+        return data
+
+
+    def _get_report_data(self, bom_id, searchQty=0, searchVariant=False):
+        # Set root BOM context for the entire report
+        self = self.with_context(root_bom_id=bom_id)
+        result = super()._get_report_data(bom_id, searchQty, searchVariant)
+        bom = self.env['mrp.bom'].browse(bom_id)
+        result['is_evr'] = bom.is_evr
+        return result
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview/mrp_bom_overview.js
+--------------------------------------------------------
+/** @odoo-module **/
+
+import { patch } from "@web/core/utils/patch";
+import { BomOverviewComponent } from "@mrp/components/bom_overview/mrp_bom_overview";
+
+patch(BomOverviewComponent.prototype, {
+    setup() {
+        super.setup();
+        this.state.showOptions.cfeQuantity = true;
+        this.state.showOptions.moInternalRef = true;
+        this.state.showOptions.lli = true;
+        this.state.showOptions.approval1 = true;
+        this.state.showOptions.approval2 = true;
+        this.state.showOptions.defaultCode = true;
+        this.state.showOptions.oldEverestPn = true;
+        this.state.showOptions.leadTimes = false;
+        this.state.showOptions.availabilities = false;
+        this.isEvr = false;
+    },
+    async initBomData() {
+        super.initBomData();
+        const bomData = await this.getBomData();
+        this.isEvr = bomData["is_evr"];
+    },
+     async getBomData() {
+        const bomData = await super.getBomData();
+        // Override to always set ecoAllowed to false
+        this.state.showOptions.ecoAllowed = false;
+        // Remove the eco_allowed flag from bomData if it exists
+        if (bomData && 'is_eco_applied' in bomData) {
+            bomData['is_eco_applied'] = false;
+        }
+        return bomData;
+    },
+});
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview/mrp_bom_overview.xml
+---------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="mrp.BomOverviewComponent" t-inherit="mrp.BomOverviewComponent" t-inherit-mode="extension">
+        <xpath expr="//BomOverviewControlPanel" position="attributes">
+            <attribute name="isEvr">isEvr</attribute>
+        </xpath>
+        
+    </t>
+
+</templates>
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview_control_panel/mrp_bom_overview_control_panel.js
+-----------------------------------------------------------------
+/** @odoo-module **/
+
+import { BomOverviewControlPanel } from "@mrp/components/bom_overview_control_panel/mrp_bom_overview_control_panel";
+import { patch } from "@web/core/utils/patch";
+import { useService } from "@web/core/utils/hooks";
+
+patch(BomOverviewControlPanel, {
+    props: {
+        ...BomOverviewControlPanel.props,
+        isEvr: { type: Boolean, optional: true },
+    },
+});
+
+patch(BomOverviewControlPanel.prototype, {
+    setup() {
+        super.setup();
+        this.orm = useService("orm");
+        this.notification = useService("notification");
+        this.action = useService("action");
+    },
+
+    async manufactureFromBoM() {
+
+    if (this.props.data.is_evr) {
+        try {
+            const result = await this.orm.call(
+                "mrp.production",
+                "action_validate_and_create_mo",
+                [this.props.data.bom_id]
+            );
+
+            // 🔹 Show messages from backend
+            if (result.messages) {
+                result.messages.forEach((m) => {
+                    this.notification.add(m.msg, {
+                        title: "PO Creation",
+                        type: m.type || "info",
+                    });
+                });
+            }
+
+            return this.action.doAction(result.action);
+        } catch (e) {
+            const msg = (e && e.data && e.data.message) || e.message || "Validation failed before Manufacture.";
+            this.notification.add(msg, {
+                title: "Purchase Order Validation",
+                type: "danger",
+                sticky: true,
+            });
+            return;
+        }
+    }
+
+    const action = {
+        res_model: "mrp.production",
+        name: "Manufacture Orders",
+        type: "ir.actions.act_window",
+        views: [[false, "form"]],
+        target: "current",
+        context: { default_bom_id: this.props.data.bom_id },
+    };
+    return this.action.doAction(action);
+},
+});
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview_control_panel/mrp_bom_overview_control_panel.xml
+------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="mrp.BomOverviewControlPanel" t-inherit="mrp.BomOverviewControlPanel" t-inherit-mode="extension">
+        <!-- Wrap the quantity section with conditional rendering -->
+        <xpath expr="//form" position="replace">
+            <form class="d-flex flex-grow-1 gap-3 flex-column flex-md-row">
+                <!-- Only show quantity input if is_evr is false -->
+                <t t-if="!props.isEvr">
+                    <label class="visually-hidden" for="bom_quantity">Quantity</label>
+                    <div t-attf-class="input-group align-items-center">
+                        <div class="col-4 col-md-auto pe-2 fw-bold">Quantity</div>
+                        <input id="bom_quantity" type="number" step="any" t-on-change="ev => this.updateQuantity(ev)" t-on-keypress="ev => this.onKeyPress(ev)" t-att-value="props.bomQuantity" min="1" class="o_input form-control rounded-0"/>
+                        <div t-if="props.showOptions.uom" t-out="props.uomName" class="d-flex align-items-center text-muted small lh-sm">Quantity</div>
+                    </div>
+                </t>
+                <!-- Variant selector (keep as is) -->
+                <t t-if="props.showVariants">
+                    <div class="input-group align-items-center">
+                        <div class="col-4 col-md-auto pe-2 fw-bold">Variant</div>
+                        <div class="col">
+                            <Many2XAutocomplete
+                                value="props.data.name"
+                                getDomain.bind="getDomain"
+                                resModel="'product.product'"
+                                fieldString="props.data.name"
+                                activeActions="{}"
+                                update.bind="(ev) => this.props.changeVariant(ev[0]?.id)"
+                            />
+                        </div>
+                    </div>
+                </t>
+            </form>
+        </xpath>
+    </t>
+
+</templates>
+
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview_display_filter/mrp_bom_overview_display_filter.js
+----------------------------------------
+/** @odoo-module **/
+
+import { _t } from "@web/core/l10n/translation";
+import { patch } from "@web/core/utils/patch";
+import { BomOverviewDisplayFilter } from "@mrp/components/bom_overview_display_filter/mrp_bom_overview_display_filter";
+
+patch(BomOverviewDisplayFilter.prototype, {
+    setup() {
+        super.setup();
+        this.displayOptions.cfeQuantity = _t('CFE Quantity');
+        this.displayOptions.moInternalRef = _t('MO ref');
+        this.displayOptions.lli = _t('LLI');
+        this.displayOptions.approval1 = _t('Approval 1');
+        this.displayOptions.approval2 = _t('Approval 2');
+        this.displayOptions.defaultCode = _t('Internal Reference');
+        this.displayOptions.oldEverestPn = _t('Old Everest PN');
+    },
+});
+
+patch(BomOverviewDisplayFilter, {
+    props: {
+        ...BomOverviewDisplayFilter.props,
+        showOptions: {
+            ...BomOverviewDisplayFilter.props.showOptions,
+            cfeQuantity: Boolean,
+            moInternalRef: Boolean,
+            lli: Boolean,
+            approval1: Boolean,
+            approval2: Boolean,
+            defaultCode: Boolean,
+            oldEverestPn: Boolean,
+        },
+    },
+});
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview_line/mrp_bom_overview_line.js
+------------------------------------------------------
+/** @odoo-module **/
+
+import { BomOverviewLine } from "@mrp/components/bom_overview_line/mrp_bom_overview_line";
+import { useService } from "@web/core/utils/hooks";
+import { patch } from "@web/core/utils/patch";
+
+
+
+patch(BomOverviewLine, {
+    props: {
+        ...BomOverviewLine.props,
+        showOptions: {
+            ...BomOverviewLine.props.showOptions,
+            cfeQuantity: Boolean,
+            moInternalRef: Boolean,
+            lli: Boolean,
+            approval1: Boolean,
+            approval2: Boolean,
+            defaultCode: Boolean,
+            oldEverestPn: Boolean,
+        },
+    },
+});
+
+
+patch(BomOverviewLine.prototype, {
+
+    setup() {
+        super.setup();
+        this.ormService = useService("orm");
+        this.notification = useService("notification");
+        this.cr_qty = this.data.quantity;
+        this.canEditApproval2 = this.props.data.can_edit_approval_2 || false;
+    },
+
+    async onCfeQuantityChange(event) {
+        const bomLineId = parseInt(event.target.getAttribute('data-bom-line-id'));
+        const newValue = event.target.value;
+
+        if (bomLineId) {
+            await this.ormService.write("mrp.bom.line", [bomLineId], {
+                cfe_quantity: newValue
+            });
+            // Update data immediately
+            this.props.data.cfe_quantity = newValue;
+            this.props.data.has_cfe_quantity = !!newValue;
+        }
+    },
+
+    async onLliChange(event) {
+        const bomLineId = parseInt(event.target.getAttribute('data-bom-line-id'));
+        const isChecked = event.target.checked;
+        await this._tryToggle(bomLineId, "lli", isChecked, event);
+    },
+
+    async onApproval1Change(event) {
+        const bomLineId = parseInt(event.target.getAttribute('data-bom-line-id'));
+        const isChecked = event.target.checked;
+        await this._tryToggle(bomLineId, "approval_1", isChecked, event);
+    },
+
+    async onApproval2Change(event) {
+    // Check permission first
+    if (!this.canEditApproval2) {
+        this.notification.add(
+            "You don't have permission to edit Approval 2. Only Manufacturing/Admin or Purchase/Admin can edit this field.",
+            { type: "warning" }
+        );
+        event.target.checked = !event.target.checked;
+        event.preventDefault();
+        return;
+    }
+
+    const bomLineId = parseInt(event.target.getAttribute('data-bom-line-id'));
+    const isChecked = event.target.checked;
+    await this._tryToggle(bomLineId, "approval_2", isChecked, event);
+},
+
+    _tryToggle: async function (bomLineId, field, newValue, event) {
+    const rootBomId = this.props.data.root_bom_id;
+    const productId = this.props.data.product_id;
+
+    const lli = this.props.data.lli;
+    const approval_1 = this.props.data.approval_1;
+    const approval_2 = this.props.data.approval_2;
+
+    await this.ormService.write("mrp.bom.line", [bomLineId], {
+        [field]: newValue
+    });
+    this.props.data[field] = newValue;
+
+    try {
+        if (lli && approval_1 && approval_2) {
+            const result = await this.ormService.call(
+                "mrp.bom.line", "validate_third_boolean",
+                [[bomLineId]],
+                { context: { root_bom_id: rootBomId, qty: this.cr_qty } }
+            );
+
+            const results = Array.isArray(result) ? result : [result];
+
+
+        for (const res of results) {
+    // ✅ show all backend messages one by one
+    if (res.messages && res.messages.length) {
+        for (const msg of res.messages) {
+            // decide type based on keywords in message
+            let type = "info";
+            if (msg.toLowerCase().includes("created")) {
+                type = "success";
+            } else if (msg.toLowerCase().includes("not created") || msg.toLowerCase().includes("no vendor")) {
+                type = "warning";
+            } else if (msg.toLowerCase().includes("error") || msg.toLowerCase().includes("failed")) {
+                type = "danger";
+            }
+            this.notification.add(msg, { type });
+        }
+    } else {
+        // fallback if backend returns no messages
+        this.notification.add("No PO operation message received.", { type: "info" });
+    }
+}
+
+
+
+        }
+    } catch (err) {
+        const msg = (err && err.data && err.data.message) || (err && err.message) || "Validation failed";
+        this.notification.add(msg, { type: "danger" });
+
+        await this.ormService.write("mrp.bom.line", [bomLineId], {
+            [field]: !newValue
+        });
+        this.props.data[field] = !newValue;
+        if (event && event.target) {
+            event.target.checked = !newValue;
+        }
+    }
+},
+
+async onProductManufacturerChange(event) {
+    const bomLineId = parseInt(event.target.getAttribute("data-bom-line-id"));
+    const selectedManufacturerId = parseInt(event.target.value);
+
+    if (bomLineId && selectedManufacturerId) {
+        try {
+            // Directly write product_manufacturer_id on bom.line
+            await this.ormService.write("mrp.bom.line", [bomLineId], {
+                product_manufacturer_id: selectedManufacturerId,
+            });
+
+            // Optional: also call your helper method if you want extra logic
+            await this.ormService.call(
+                "mrp.bom.line",
+                "set_product_manufacturer_id",
+                [[bomLineId], selectedManufacturerId]
+            );
+
+        }catch (err) {
+            const msg = (err?.data?.message) || (err?.message) || "Failed to save Vendor";
+            this.notification.add(msg, { type: "danger" });
+        }
+    }
+},
+
+async goToAction(id, model) {
+        if (model === "product.product" || model === "product.template") {
+            const mainBomIds = await this.ormService.call(
+                "mrp.bom",
+                "search",
+                [[
+                    ["product_tmpl_id", "=", model === "product.template" ? id : false],
+                ]],
+            );
+
+            if (mainBomIds && mainBomIds.length > 0) {
+            return this.actionService.doAction({
+                type: "ir.actions.act_window",
+                res_model: "mrp.bom",
+                res_id: mainBomIds[0],
+                views: [[false, "form"]],
+                target: "current",
+                context: {
+                    active_id: mainBomIds[0],
+                },
+            });
+        }
+
+        }
+
+        return super.goToAction(id, model);
+    },
+
+openImageModal(productId, productName) {
+    const safeProductName = productName || 'Product Image';
+    const modalHtml = `
+        <div class="modal fade" id="productImageModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">${safeProductName}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center p-4">
+                        <img src="/web/image/product.product/${productId}/image_1920"
+                             class="img-fluid"
+                             style="max-height: 70vh; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+                             alt="${safeProductName}"
+                             onerror="this.src='/web/static/img/placeholder.png'"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm close-modal-btn">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const existingModal = document.getElementById('productImageModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    const existingBackdrop = document.getElementById('productImageBackdrop');
+    if (existingBackdrop) {
+        existingBackdrop.remove();
+    }
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    const modalElement = document.getElementById('productImageModal');
+    modalElement.classList.add('show');
+    modalElement.style.display = 'block';
+    document.body.classList.add('modal-open');
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'modal-backdrop fade show';
+    backdrop.id = 'productImageBackdrop';
+    document.body.appendChild(backdrop);
+
+    const closeModal = () => {
+        modalElement.classList.remove('show');
+        modalElement.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        backdrop.remove();
+        modalElement.remove();
+    };
+
+    modalElement.querySelector('.btn-close').addEventListener('click', closeModal);
+    modalElement.querySelector('.close-modal-btn').addEventListener('click', closeModal);
+    backdrop.addEventListener('click', closeModal);
+}
+});
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview_line/mrp_bom_overview_line.xml
+---------------------------------------------------
+<?xml version="1.0" encoding="utf-8" ?>
+<templates xml:space="preserve">
+    <t t-inherit="mrp.BomOverviewLine" t-inherit-mode="extension" t-name="BomOverviewComponentsBlockCustom">
+         <xpath expr="//td[@name='td_mrp_bom']" position="before">
+             <td class="text-center" style="width: 50px;">
+                <t t-if="data.product_id">
+                     <img t-att-src="'/web/image/product.product/' + data.product_id + '/image_128'"
+                          style="max-height:32px; max-width:32px; border-radius: 4px; cursor: pointer;"
+                          t-att-alt="data.product_name"
+                          t-att-title="'Click to enlarge ' + data.product_name"
+                          t-on-click="() => this.openImageModal(data.product_id, data.name || data.product_name || data.display_name)"
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"/>
+
+                    <span class="text-muted" style="display:none;">No Img</span>
+                </t>
+                 <t t-else="">
+                    <span class="text-muted">No Img</span>
+                </t>
+            </td>
+
+             <td t-if="props.showOptions.defaultCode" class="text-center">
+        <span t-if="data.default_code" t-esc="data.default_code"/>
+                 <span t-else="" class="text-muted">-</span>
+    </td>
+             <td t-if="props.showOptions.oldEverestPn" class="text-center">
+        <span t-if="data.old_everest_pn" t-esc="data.old_everest_pn"/>
+                 <span t-else="" class="text-muted">-</span>
+    </td>
+         </xpath>
+
+        <xpath expr="//td[@name='td_mrp_bom']" position="after">
+                <td t-if="data.is_evr and props.showOptions.cfeQuantity" class="text-center">
+                    <input t-if="data.cfe_editable"
+                           type="text"
+                           class="form-control form-control-sm cfe-quantity-input"
+                           t-att-data-bom-line-id="data.bom_line_id"
+                           t-model="data.cfe_quantity"
+                           placeholder="CFE Qty"
+                           style="width: 80px; margin: 0 auto;"
+                           t-on-blur="onCfeQuantityChange"/>
+                    <span t-elif="data.has_cfe_quantity"
+                          class="badge badge-info bg-info text-white">
+                          CFE: <t t-esc="data.cfe_quantity"/>
+                    </span>
+                    <span t-else="" class="text-muted">-</span>
+                </td>
+
+
+
+        </xpath>
+
+        <xpath expr="//td[@t-if='showLeadTimes'][2]" position="after">
+              <td t-if="data.is_evr and props.showOptions.moInternalRef" class="text-center">
+
+                    <select t-if="data.product_manufacturer_editable"
+                            class="form-select form-select-sm"
+                            t-att-data-bom-line-id="data.bom_line_id"
+                            t-model="data.product_manufacturer_id"
+                            t-on-change="onProductManufacturerChange">
+
+                        <option value="">Select Manufacturer Ref</option>
+                        <t t-foreach="data.available_manufacturers" t-as="mref" t-key="mref.id">
+                            <option t-att-value="mref.id">
+                                <t t-esc="mref.ref"/>
+                            </option>
+                        </t>
+                    </select>
+                  <span t-else="" class="text-muted">-</span>
+                </td>
+
+            <td t-if="data.is_evr and props.showOptions.lli" class="text-center">
+                <input t-if="data.lli_editable"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.lli"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onLliChange"/>
+                <span t-elif="data.lli"
+                      class="badge badge-success bg-success text-white">
+                      ✓ LLI
+                </span>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+
+            <td t-if="data.is_evr and props.showOptions.approval1" class="text-center">
+                <input t-if="data.approval_1_editable"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.approval_1"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onApproval1Change"/>
+                <span t-elif="data.approval_1"
+                      class="badge badge-success bg-success text-white">
+                      ✓ App1
+                </span>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+
+            <td t-if="data.is_evr and props.showOptions.approval2" class="text-center">
+                <input t-if="data.approval_2_editable and data.can_edit_approval_2"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.approval_2"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onApproval2Change"/>
+                <input t-elif="data.approval_2_editable and !data.can_edit_approval_2"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.approval_2"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       disabled="1"
+                       title="Only Manufacturing/Admin or Purchase/Admin can edit this field"/>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+
+        </xpath>
+
+    </t>
+</templates>
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview_special_line/mrp_bom_overview_special_line.js
+----------------------------------------------------
+/** @odoo-module **/
+
+import { patch } from "@web/core/utils/patch";
+import { BomOverviewSpecialLine } from "@mrp/components/bom_overview_special_line/mrp_bom_overview_special_line";
+
+patch(BomOverviewSpecialLine.prototype, {
+    get showCfeQuantity() {
+        return this.props.showOptions.cfeQuantity;
+    },
+    get showMoInternalRef() {
+        return this.props.showOptions.moInternalRef;
+    },
+    get showLli() {
+        return this.props.showOptions.lli;
+    },
+    get showApproval1() {
+        return this.props.showOptions.approval1;
+    },
+    get showApproval2() {
+        return this.props.showOptions.approval2;
+    },
+    get showDefaultCode() {
+        return this.props.showOptions.defaultCode;
+    },
+    get showOldEverestPn() {
+        return this.props.showOptions.oldEverestPn;
+    }
+});
+
+patch(BomOverviewSpecialLine, {
+    props: {
+        ...BomOverviewSpecialLine.props,
+        showOptions: {
+            ...BomOverviewSpecialLine.props.showOptions,
+            cfeQuantity: Boolean,
+            moInternalRef: Boolean,
+            lli: Boolean,
+            approval1: Boolean,
+            approval2: Boolean,
+            defaultCode: Boolean,
+            oldEverestPn: Boolean,
+        },
+    },
+});
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview_special_line/mrp_bom_overview_special_line.xml
+-----------------------------------------------------
+<?xml version="1.0" encoding="utf-8" ?>
+<templates xml:space="preserve">
+    <t t-inherit="mrp.BomOverviewSpecialLine" t-inherit-mode="extension" t-name="BomOverviewSpecialLine">
+        <!-- Add CFE quantity cell at column 2 position -->
+        <xpath expr="//td[@name='td_mrp_bom']" position="before">
+            <td class="text-center">
+                <span class="text-muted">-</span>
+            </td>
+        </xpath>
+       <xpath expr="//td[@name='td_mrp_bom']" position="after">
+            <td t-if="data.is_evr" class="text-center">
+                <span class="text-muted">-</span>
+            </td>
+        </xpath>
+
+        <xpath expr="//td[@name='bom_cost']" position="before">
+             <td t-if="data.is_evr" class="text-center">
+                <span class="text-muted">-</span>
+            </td>
+
+            <!-- Approval 1 -->
+            <td t-if="data.is_evr" class="text-center">
+                <span class="text-muted">-</span>
+            </td>
+
+            <!-- Approval 2 -->
+            <td t-if="data.is_evr" class="text-center">
+                <span class="text-muted">-</span>
+            </td>
+        </xpath>
+
+
+
+    </t>
+</templates>
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview_table/mrp_bom_overview_table.js
+-----------------------------------------
+/** @odoo-module **/
+
+import { patch } from "@web/core/utils/patch";
+import { BomOverviewTable } from "@mrp/components/bom_overview_table/mrp_bom_overview_table";
+
+patch(BomOverviewTable.prototype, {
+    get showCfeQuantity() {
+        return this.props.showOptions.cfeQuantity;
+    },
+    get showMoInternalRef() {
+        return this.props.showOptions.moInternalRef;
+    },
+    get showLli() {
+        return this.props.showOptions.lli;
+    },
+    get showApproval1() {
+        return this.props.showOptions.approval1;
+    },
+    get showApproval2() {
+        return this.props.showOptions.approval2;
+    },
+    get showDefaultCode() {
+        return this.props.showOptions.defaultCode;
+    },
+    get showOldEverestPn() {
+        return this.props.showOptions.oldEverestPn;
+    }
+});
+
+patch(BomOverviewTable, {
+    props: {
+        ...BomOverviewTable.props,
+        showOptions: {
+            ...BomOverviewTable.props.showOptions,
+            cfeQuantity: Boolean,
+            moInternalRef: Boolean,
+            lli: Boolean,
+            approval1: Boolean,
+            approval2: Boolean,
+            defaultCode: Boolean,
+            oldEverestPn: Boolean,
+        },
+    },
+});
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_customisation/static/src/components/bom_overview_table/mrp_bom_overview_table.xml
+--------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mrp.BomOverviewTable" t-inherit-mode="extension" t-name="cr_mrp_bom_customisation.BomOverviewTableCustom">
+        <xpath expr="//h6[@t-if='data.bom_code']" position="after">
+            <div style="display: none !important;">
+                <h2>
+                    Is EVR:
+                    <i t-if="data.is_evr" class="fa fa-check-square text-success"/>
+                    <i t-if="!data.is_evr" class="fa fa-square-o text-muted"/>
+                </h2>
+            </div>
+        </xpath>
+        <xpath expr="//th[@name='th_mrp_bom_h']" position="before">
+            <th class="text-center" title="Image">Img</th>
+             <th t-if="showDefaultCode" class="text-center" title="Internal Reference">Internal Ref</th>
+            <th t-if="showOldEverestPn" class="text-center" title="Old Everest Part Number">Old Everest PN</th>
+
+        </xpath>
+        <xpath expr="//th[@name='th_mrp_bom_h']" position="after">
+            <th t-if="data.is_evr and showCfeQuantity" class="text-center cfe" title="Customer Furnished Equipment">CFE Quantity</th>
+        </xpath>
+        <xpath expr="//th[@t-if='showAvailabilities'][1]" position="before">
+            <th t-if="data.is_evr and showMoInternalRef" class="text-center" title="Mo Internal Ref">MO ref</th>
+             <th t-if="data.is_evr and showLli" class="text-center">LLI</th>
+            <th t-if="data.is_evr and showApproval1" class="text-center">Approval 1</th>
+            <th t-if="data.is_evr and showApproval2" class="text-center">Approval 2</th>
+
+        </xpath>
+
+    </t>
+
+
+</templates>
+
+see above is my cr_mrp_bom_customisation module code 
+
+I want the same customisation to display field in bom overview for  my another custom module do follow below steps to displayy fields based on above 
+
+and i already add cr_mrp_bom_customisation module in depends in my new cr_mrp_bom_evr_customisation module
+
+{
+    "name": "MRP BOM EVR Customisation",
+    "summary": "Custom enhancements for MRP BOM and EVR processes",
+    "version": "18.0.0.0",
+    "category": "Manufacturing",
+    "license": "LGPL-3",
+    "author": "Your Company",
+    "website": "https://yourcompany.com",
+
+    # Dependencies
+    "depends": [
+        'mrp', 'project', 'purchase', 'stock', 'purchase_stock', 'purchase_mrp', 'bizzup_product_customisation',
+        'mrp_plm',
+        "cr_mrp_bom_customisation",
+    ],
+
+    # Data files
+    "data": [
+        "security/ir.model.access.csv",
+        'views/mrp_bom_line_branch_views.xml',
+        "views/stock_location_views.xml",
+        "data/stock_location_data.xml",
+        "views/purchase_order_view.xml",
+
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'cr_mrp_bom_evr_customisation/static/src/**/*',
+        ],
+    },
+    'post_init_hook': 'assign_branches_after_install',
+    # Always load (optional)
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+}
+
+all things shold happen if is_evr is true in Bom
+1] Add a new field Approve to Manufacture (boolean field) only for BOM lines , clicking on Manufacture button will create an MO for that BOM line only if this field is set to true. If the field in the sub BOM line is not true then MO for that BOM should not be created.
+
+2]Add a new group named Purchase group. Selecting that group will display the columns (this group means not res.groups but in bom oberview in the display options add that 'Purchase group') and if it is tick then below field should display and this also same this field display only if Approval 1 and Approval 2 and LLI is display  : 
+
+                       a. To order
+                       b. To Order CFE
+                       c. Ordered
+                       d. Ordered CFE
+                       e. To transfer
+                       f.  To transfer CFE
+                       g. Transferred
+                       h. Transferred CFE
+                       i.   Used 
+
+          If we deselect the Purchase group all these columns should be hidden from the BOM overview.
+          
+          Also the columns (fields) will be empty until approval 1 and 2 is true. Once the fields Approval 1 and Approval 2 are set to true, the column(To order,To order CFE) value should be set to 0.
+
+          
+3]Add a new column Free to Use in bom line and it is avai;able to all 
+
+
+
+so all three points I need to add in my custom module cr_mrp_bom_evr_customisation so give me code which i have to add in my cr_mrp_bom_evr_customisation not the code which alreay exhist and plz don't give description \
+
+cr_mrp_bom_customisation code is only for you refrence , how to add fields in display filter in bom overview
+
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mrp.BomOverviewTable" t-inherit-mode="extension" t-name="cr_mrp_bom_customisation.BomOverviewTableCustom">
+        <xpath expr="//h6[@t-if='data.bom_code']" position="after">
+            <div style="display: none !important;">
+                <h2>
+                    Is EVR:
+                    <i t-if="data.is_evr" class="fa fa-check-square text-success"/>
+                    <i t-if="!data.is_evr" class="fa fa-square-o text-muted"/>
+                </h2>
+            </div>
+        </xpath>
+        <xpath expr="//th[@name='th_mrp_bom_h']" position="before">
+            <th class="text-center" title="Image">Img</th>
+             <th t-if="showDefaultCode" class="text-center" title="Internal Reference">Internal Ref</th>
+            <th t-if="showOldEverestPn" class="text-center" title="Old Everest Part Number">Old Everest PN</th>
+            <th t-if="data.is_evr and showMoInternalRef" class="text-center" title="Mo Internal Ref">MO ref</th>
+        </xpath>
+<!--        <xpath expr="//th[@name='th_mrp_bom_h']" position="after">-->
+<!--            <th t-if="data.is_evr and showCfeQuantity" class="text-center cfe" title="Customer Furnished Equipment">CFE Quantity</th>-->
+<!--        </xpath>-->
+        <xpath expr="//th[@t-if='showAvailabilities'][1]" position="before">
+                        <th t-if="data.is_evr and showCfeQuantity" class="text-center cfe" title="Customer Furnished Equipment">CFE Quantity</th>
+
+             <th t-if="data.is_evr and showLli" class="text-center">LLI</th>
+            <th t-if="data.is_evr and showApproval1" class="text-center">Approval 1</th>
+            <th t-if="data.is_evr and showApproval2" class="text-center approval2">Approval 2</th>
+
+        </xpath>
+
+    </t>
+
+
+</templates>
+
+
+
+
+<?xml version="1.0" encoding="utf-8" ?>
+<templates xml:space="preserve">
+    <t t-inherit="mrp.BomOverviewLine" t-inherit-mode="extension" t-name="BomOverviewComponentsBlockCustom">
+         <xpath expr="//td[@name='td_mrp_bom']" position="before">
+             <td class="text-center" style="width: 50px;">
+                <t t-if="data.product_id">
+                     <img t-att-src="'/web/image/product.product/' + data.product_id + '/image_128'"
+                          style="max-height:32px; max-width:32px; border-radius: 4px; cursor: pointer;"
+                          t-att-alt="data.product_name"
+                          t-att-title="'Click to enlarge ' + data.product_name"
+                          t-on-click="() => this.openImageModal(data.product_id, data.name || data.product_name || data.display_name)"
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"/>
+
+                    <span class="text-muted" style="display:none;">No Img</span>
+                </t>
+                 <t t-else="">
+                    <span class="text-muted">No Img</span>
+                </t>
+            </td>
+
+             <td t-if="props.showOptions.defaultCode" class="text-center">
+        <span t-if="data.default_code" t-esc="data.default_code"/>
+                 <span t-else="" class="text-muted">-</span>
+    </td>
+             <td t-if="props.showOptions.oldEverestPn" class="text-center">
+        <span t-if="data.old_everest_pn" t-esc="data.old_everest_pn"/>
+                 <span t-else="" class="text-muted">-</span>
+    </td>
+
+             <td t-if="data.is_evr and props.showOptions.moInternalRef" class="text-center">
+
+                    <select t-if="data.product_manufacturer_editable"
+                            class="form-select form-select-sm"
+                            t-att-data-bom-line-id="data.bom_line_id"
+                            t-model="data.product_manufacturer_id"
+                            t-on-change="onProductManufacturerChange">
+
+                        <option value="">Select Manufacturer Ref</option>
+                        <t t-foreach="data.available_manufacturers" t-as="mref" t-key="mref.id">
+                            <option t-att-value="mref.id">
+                                <t t-esc="mref.ref"/>
+                            </option>
+                        </t>
+                    </select>
+                 <span t-else="" class="text-muted">-</span>
+                </td>
+         </xpath>
+
+
+        <xpath expr="//td[@t-if='showAvailabilities'][1]" position="before">
+            <td t-if="data.is_evr and props.showOptions.cfeQuantity" class="text-center">
+                    <input t-if="data.cfe_editable"
+                           type="text"
+                           class="form-control form-control-sm cfe-quantity-input"
+                           t-att-data-bom-line-id="data.bom_line_id"
+                           t-model="data.cfe_quantity"
+                           placeholder="CFE Qty"
+                           style="width: 80px; margin: 0 auto;"
+                           t-on-blur="onCfeQuantityChange"/>
+                <span t-elif="data.has_cfe_quantity"
+                      class="badge badge-info bg-info text-white">
+                          CFE: <t t-esc="data.cfe_quantity"/>
+                    </span>
+                <span t-else="" class="text-muted">-</span>
+                </td>
+
+
+            <td t-if="data.is_evr and props.showOptions.lli" class="text-center">
+                <input t-if="data.lli_editable"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.lli"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onLliChange"/>
+                <span t-elif="data.lli"
+                      class="badge badge-success bg-success text-white">
+                      ✓ LLI
+                </span>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+
+            <td t-if="data.is_evr and props.showOptions.approval1" class="text-center">
+                <input t-if="data.approval_1_editable"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.approval_1"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onApproval1Change"/>
+                <span t-elif="data.approval_1"
+                      class="badge badge-success bg-success text-white">
+                      ✓ App1
+                </span>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+
+            <td t-if="data.is_evr and props.showOptions.approval2" class="text-center">
+                <input t-if="data.approval_2_editable and data.can_edit_approval_2"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.approval_2"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onApproval2Change"/>
+                <input t-elif="data.approval_2_editable and !data.can_edit_approval_2"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.approval_2"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       disabled="1"
+                       title="Only Manufacturing/Admin or Purchase/Admin can edit this field"/>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+
+        </xpath>
+
+    </t>
+</templates>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mrp.BomOverviewLine"
+       t-inherit-mode="extension"
+       t-name="cr_mrp_bom_customisation.BomOverviewLineBranch">
+
+
+                <xpath expr="//td[@name='td_mrp_bom']" position="after">
+                         <td t-if="data.is_evr and props.showOptions.approveToManufacture" class="text-center">
+                            <input t-if="data.approve_to_manufacture_editable"
+                                   type="checkbox"
+                                   class="form-check-input"
+                                   t-model="data.approve_to_manufacture"
+                                   t-att-data-bom-line-id="data.bom_line_id"
+                                   t-on-change="onApproveToManufactureChange"/>
+                            <span t-elif="data.approve_to_manufacture"
+                                  class="badge badge-success bg-success text-white">✓</span>
+                            <span t-else="" class="text-muted"></span>
+                        </td>
+                </xpath>
+
+        <xpath expr="//td[contains(@t-if, 'props.showOptions.cfeQuantity')]" position="after">
+            <td t-if="data.is_evr" class="text-center">
+                <t t-if="data.branch">
+                    <span t-esc="data.branch"/>
+                </t>
+                <t t-else="">
+                    <span class="text-muted"></span>
+                </t>
+            </td>
+        </xpath>
+
+        <xpath expr="//td[contains(@t-if, 'props.showOptions.approval2')]" position="after">
+<!--            <td t-if="data.is_evr and props.showOptions.approveToManufacture" class="text-center">-->
+<!--                <input t-if="data.approve_to_manufacture_editable"-->
+<!--                       type="checkbox"-->
+<!--                       class="form-check-input"-->
+<!--                       t-model="data.approve_to_manufacture"-->
+<!--                       t-att-data-bom-line-id="data.bom_line_id"-->
+<!--                       t-on-change="onApproveToManufactureChange"/>-->
+<!--                <span t-elif="data.approve_to_manufacture"-->
+<!--                      class="badge badge-success bg-success text-white">✓</span>-->
+<!--                <span t-else="" class="text-muted">-</span>-->
+<!--            </td>-->
+
+
+
+<!--           <td t-if="data.is_evr and props.showOptions.customerRef" class="text-center">-->
+<!--                <input t-if="data.customer_ref_editable"-->
+<!--                       type="text"-->
+<!--                       class="form-control form-control-sm"-->
+<!--                       t-att-data-bom-line-id="data.bom_line_id"-->
+<!--                       t-model="data.customer_ref"-->
+<!--                       placeholder="Customer Ref"-->
+<!--                       style="width: 120px; margin: 0 auto;"-->
+<!--                       t-on-blur="onCustomerRefChange"/>-->
+<!--                <span t-elif="data.customer_ref" t-esc="data.customer_ref"/>-->
+<!--                <span t-else="" class="text-muted">-</span>-->
+<!--            </td>-->
+
+<!--            <td t-if="data.is_evr and props.showOptions.poLineId" class="text-center">-->
+<!--                <span t-if="data.po_line_name" t-esc="data.po_line_name"/>-->
+<!--                <span t-else="" class="text-muted"></span>-->
+<!--            </td>-->
+
+
+            <t t-if="data.is_evr and props.showOptions.purchaseGroup">
+                <td class="text-center">
+                    <t t-if="data.purchase_group_editable">
+                        <span t-esc="data.to_order || '0.00'"/>
+                    </t>
+                    <t t-else="">
+
+                    </t>
+                </td>
+                <td class="text-center">
+                    <t t-if="data.purchase_group_editable">
+                       <span t-esc="data.to_order_cfe || '0.00'"/>
+                    </t>
+                    <t t-else="">
+
+                    </t>
+
+                </td>
+                <td class="text-center">
+                      <t t-if="data.purchase_group_editable">
+                       <span t-esc="data.ordered || '0.00'"/>
+                    </t>
+                    <t t-else="">
+
+                    </t>
+                </td>
+                <td class="text-center">
+                    <t t-if="data.purchase_group_editable">
+                       <span t-esc="data.ordered_cfe || '0.00'"/>
+                    </t>
+                    <t t-else="">
+
+                    </t>
+                </td>
+                <td class="text-center">
+                    <t t-if="data.purchase_group_editable">
+                       <span t-esc="data.to_transfer || '0.00'"/>
+                    </t>
+                    <t t-else="">
+
+                    </t>
+
+                </td>
+                <td class="text-center">
+                     <t t-if="data.purchase_group_editable">
+                       <span t-esc="data.to_transfer_cfe || '0.00'"/>
+                    </t>
+                    <t t-else="">
+
+                    </t>
+                </td>
+                <td class="text-center">
+                      <t t-if="data.purchase_group_editable">
+                    <span t-esc="data.transferred || '0.00'"/>
+                    </t>
+                    <t t-else="">
+
+                    </t>
+                </td>
+                <td class="text-center">
+                    <t t-if="data.purchase_group_editable">
+                    <span t-esc="data.transferred_cfe || '0.00'"/>
+                    </t>
+                    <t t-else="">
+
+                    </t>
+                </td>
+                <td class="text-center">
+                     <t t-if="data.purchase_group_editable">
+                    <span t-esc="data.used || '0.00'"/>
+                    </t>
+                    <t t-else="">
+
+                    </t>
+                </td>
+            </t>
+
+              <td t-if="data.is_evr and props.showOptions.freeToUse" class="text-center">
+                <span t-esc="data.free_to_use || '0.00'"/>
+            </td>
+
+
+        </xpath>
+
+
+                <!-- Display Cost Fields - Replace existing cost columns -->
+        <xpath expr="//td[@t-if='showCosts'][1]" position="replace">
+            <td t-if="props.showOptions.displayCost" t-attf-class="text-end {{ data.type == 'component' ? 'opacity-50' : '' }}" t-esc="formatMonetary(data.bom_cost)"/>
+        </xpath>
+
+        <xpath expr="//td[@t-if='showCosts'][1]" position="replace">
+            <td t-if="props.showOptions.displayCost" class="text-end">
+                <span t-if="data.hasOwnProperty('prod_cost')" t-esc="formatMonetary(data.prod_cost)"/>
+            </td>
+        </xpath>
+
+    </t>
+</templates>
+
+
+
+
+Now I want that 
+
+Main BOM
+1] Line -1 
+2] Line -2
+3] Line -3 (also itself BOM) [Branch - A]
+	- Component of Line -3 (name C1)  (also itself BOM) [Branch - B]
+		- component (name c11)(which is noraml mrp.bom.line and which not BOM ITSELF]
+		
+when MO of C1 is create then the Quantity of the C1 product from Branch B location should move to Line-3 product's Branch - A location if already in branch a's location quantity is exhist then add in that otherwise create new record and add quantity in stock.quant and assign the branch locaation A and when LIne-3's Mo is create then LIne-3 product's quantity should move to Main MO'S cfe_project_location_id 
+
+
+are you understand? and this should be true till any number of BOM components hirarchy
+		
+
+Insort suppose for main BOM mo is create after that when for C1 the MO is create then it's destination location should be Branch - A
+AFtert that for Line -3 MO is create then it's destination location should be Main BOM's cfe_project_location_id

@@ -1,0 +1,979 @@
+/odoo19/custom/addons/donation_habayta/controllers/__init__.py
+================================================================
+from . import main
+
+
+/odoo19/custom/addons/donation_habayta/controllers/main.py
+================================================================
+from odoo import http, models, fields, _
+from odoo.addons.portal.controllers.web import Home
+from odoo.fields import Command
+from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.http import request
+from odoo.addons.payment import utils as payment_utils
+from odoo.addons.payment.controllers import portal as payment_portal
+from odoo.tools.json import scriptsafe as json_safe
+from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
+import logging
+from odoo import http, _
+from odoo.exceptions import ValidationError
+from odoo.fields import Domain
+from odoo.http import request
+from odoo.tools.json import scriptsafe as json_safe
+from odoo.tools.translate import LazyTranslate
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound
+from odoo.addons.account_payment.controllers import portal as account_payment_portal
+from odoo.addons.payment import utils as payment_utils
+from odoo.addons.payment.controllers import portal as payment_portal
+_lt = LazyTranslate(__name__)
+
+_logger = logging.getLogger(__name__)
+class PaymentPortal(payment_portal.PaymentPortal):
+
+    # @http.route('/donation/pay', type='http', methods=['GET', 'POST'], auth='public', website=True, sitemap=False)
+    # def donation_pay(self, **kwargs):
+    #     kwargs['is_donation'] = True
+    #     # Store UTM values in session or pass through context
+    #     _logger.info("========================================================pay========================")
+    #     _logger.info('kwargs : ',kwargs)
+    #     _logger.info("kwargs.get('utm_campaign_id', '')")
+    #     _logger.info("kwargs.get('utm_source_id', '')")
+    #     _logger.info("kwargs.get('utm_medium_id', '')")
+    #     request.session['utm_campaign_id'] = kwargs.get('utm_campaign_id', '')
+    #     request.session['utm_source_id'] = kwargs.get('utm_source_id', '')
+    #     request.session['utm_medium_id'] = kwargs.get('utm_medium_id', '')
+    #
+    #     kwargs['currency_id'] = int(kwargs.get('currency_id', request.env.company.currency_id.id))
+    #     kwargs['amount'] = float(kwargs.get('amount', 25))
+    #     kwargs['donation_options'] = kwargs.get('donation_options', json_safe.dumps(dict(customAmount="freeAmount")))
+    #
+    #     if request.env.user._is_public():
+    #         kwargs['partner_id'] = request.env.user.partner_id.id
+    #         kwargs['access_token'] = payment_utils.generate_access_token(kwargs['partner_id'], kwargs['amount'],
+    #                                                                      kwargs['currency_id'])
+    #     return self.payment_pay(**kwargs)
+
+    @http.route('/donation/pay', type='http', methods=['GET', 'POST'], auth='public', website=True, sitemap=False,
+                list_as_website_content=_lt("Donation Payment"))
+    def donation_pay(self, **kwargs):
+        """ Behaves like PaymentPortal.payment_pay but for donation
+
+        :param dict kwargs: As the parameters of in payment_pay, with the additional:
+            - str donation_options: The options settled in the donation snippet
+            - str donation_descriptions: The descriptions for all prefilled amounts
+        :return: The rendered donation form
+        :rtype: str
+        :raise: werkzeug.exceptions.NotFound if the access token is invalid
+        """
+        _logger.info("======================>>>>>>>>>>>>>==================================pay========================")
+        _logger.info("kwargs: %s", kwargs)
+        _logger.info("utm_campaign_id: %s", kwargs.get('utm_campaign_id'))
+        _logger.info("utm_source_id: %s", kwargs.get('utm_source_id'))
+        _logger.info("utm_medium_id: %s", kwargs.get('utm_medium_id'))
+
+        kwargs['utm_campaign_id'] = kwargs.get('utm_campaign_id')
+        kwargs['utm_source_id'] = kwargs.get('utm_source_id')
+        kwargs['utm_medium_id'] = kwargs.get('utm_medium_id')
+
+        kwargs['is_donation'] = True
+        kwargs['currency_id'] = self._cast_as_int(kwargs.get('currency_id')) or request.env.company.currency_id.id
+        kwargs['amount'] = self._cast_as_float(kwargs.get('amount')) or 25.0
+        kwargs['donation_options'] = kwargs.get('donation_options', json_safe.dumps(dict(customAmount="freeAmount")))
+
+        if request.env.user._is_public():
+            kwargs['partner_id'] = request.env.user.partner_id.id
+            kwargs['access_token'] = payment_utils.generate_access_token(kwargs['partner_id'], kwargs['amount'],
+                                                                         kwargs['currency_id'])
+        _logger.info(">>kwargs: %s", kwargs)
+        return self.payment_pay(**kwargs)
+
+    @http.route('/payment/transaction', type='jsonrpc', auth='public')
+    def payment_transaction(self, amount, currency_id, partner_id, access_token, **kwargs):
+
+        """Override to capture and pass UTM values to transaction creation"""
+
+        _logger.info("=== PAYMENT TRANSACTION ROUTE ===")
+        _logger.info("All kwargs received: %s", kwargs)
+        _logger.info("Request params: %s", request.params)
+
+        # Extract UTM values from kwargs (they come from form submission)
+        utm_campaign_id = kwargs.get('utm_campaign_id', '')
+        utm_source_id = kwargs.get('utm_source_id', '')
+        utm_medium_id = kwargs.get('utm_medium_id', '')
+
+        _logger.info("UTM Campaign ID: %s", utm_campaign_id)
+        _logger.info("UTM Source ID: %s", utm_source_id)
+        _logger.info("UTM Medium ID: %s", utm_medium_id)
+
+        # Ensure UTM values are in kwargs for _create_transaction
+        kwargs.update({
+            'utm_campaign_id': utm_campaign_id,
+            'utm_source_id': utm_source_id,
+            'utm_medium_id': utm_medium_id,
+        })
+
+        # Call parent method with updated kwargs
+        return super().payment_transaction(amount, currency_id, partner_id, access_token, **kwargs)
+
+
+    # def _create_transaction(
+    #     self, provider_id, payment_method_id, token_id, amount, currency_id, partner_id, flow,
+    #     tokenization_requested, landing_route, reference_prefix=None, is_validation=False,
+    #     custom_create_values=None, **kwargs
+    # ):
+    #     """ Create a draft transaction based on the payment context and return it.
+    #
+    #     :param int provider_id: The provider of the provider payment method or token, as a
+    #                             `payment.provider` id.
+    #     :param int|None payment_method_id: The payment method, if any, as a `payment.method` id.
+    #     :param int|None token_id: The token, if any, as a `payment.token` id.
+    #     :param float|None amount: The amount to pay, or `None` if in a validation operation.
+    #     :param int|None currency_id: The currency of the amount, as a `res.currency` id, or `None`
+    #                                  if in a validation operation.
+    #     :param int partner_id: The partner making the payment, as a `res.partner` id.
+    #     :param str flow: The online payment flow of the transaction: 'redirect', 'direct' or 'token'.
+    #     :param bool tokenization_requested: Whether the user requested that a token is created.
+    #     :param str landing_route: The route the user is redirected to after the transaction.
+    #     :param str reference_prefix: The custom prefix to compute the full reference.
+    #     :param bool is_validation: Whether the operation is a validation.
+    #     :param dict custom_create_values: Additional create values overwriting the default ones.
+    #     :param dict kwargs: Locally unused data passed to `_is_tokenization_required` and
+    #                         `_compute_reference`.
+    #     :return: The sudoed transaction that was created.
+    #     :rtype: payment.transaction
+    #     """
+    #     # Prepare the create values.
+    #     provider_sudo = request.env['payment.provider'].sudo().browse(provider_id)
+    #     tokenize = False
+    #     if flow in ['redirect', 'direct']:  # Direct payment or payment with redirection
+    #         payment_method_sudo = request.env['payment.method'].sudo().browse(payment_method_id)
+    #         token_id = None
+    #         tokenize = bool(
+    #             # Don't tokenize if the user tried to force it through the browser's developer tools
+    #             provider_sudo.allow_tokenization
+    #             and payment_method_sudo.support_tokenization
+    #             # Token is only created if required by the flow or requested by the user
+    #             and (provider_sudo._is_tokenization_required(**kwargs) or tokenization_requested)
+    #         )
+    #     elif flow == 'token':  # Payment by token
+    #         token_sudo = request.env['payment.token'].sudo().browse(token_id)
+    #
+    #         # Prevent from paying with a token that doesn't belong to the current partner (either
+    #         # the current user's partner if logged in, or the partner on behalf of whom the payment
+    #         # is being made).
+    #         partner_sudo = request.env['res.partner'].sudo().browse(partner_id)
+    #         if partner_sudo.commercial_partner_id != token_sudo.partner_id.commercial_partner_id:
+    #             raise AccessError(_("You do not have access to this payment token."))
+    #
+    #         payment_method_id = token_sudo.payment_method_id.id
+    #
+    #     reference = request.env['payment.transaction']._compute_reference(
+    #         provider_sudo.code,
+    #         prefix=reference_prefix,
+    #         **(custom_create_values or {}),
+    #         **kwargs
+    #     )
+    #     if is_validation:  # Providers determine the amount and currency in validation operations
+    #         amount = provider_sudo._get_validation_amount()
+    #         payment_method = request.env['payment.method'].browse(payment_method_id)
+    #         currency_id = provider_sudo.with_context(
+    #             validation_pm=payment_method  # Will be converted to a kwarg in master.
+    #         )._get_validation_currency().id
+    #
+    #
+    #     _logger.info("utm_campaign_id: %s", kwargs.get('utm_campaign_id'))
+    #     _logger.info("utm_source_id: %s", kwargs.get('utm_source_id'))
+    #     _logger.info("utm_medium_id: %s", kwargs.get('utm_medium_id'))
+    #
+    #     # Create the transaction
+    #     tx_sudo = request.env['payment.transaction'].sudo().create({
+    #         'provider_id': provider_sudo.id,
+    #         'payment_method_id': payment_method_id,
+    #         'reference': reference,
+    #         'amount': amount,
+    #         'currency_id': currency_id,
+    #         'partner_id': partner_id,
+    #         'token_id': token_id,
+    #         'operation': f'online_{flow}' if not is_validation else 'validation',
+    #         'tokenize': tokenize,
+    #         'landing_route': landing_route,
+    #         'utm_campaign_id': kwargs.get('utm_campaign_id'),
+    #         'utm_source_id': kwargs.get('utm_source_id'),
+    #         'utm_medium_id': kwargs.get('utm_medium_id'),
+    #         **(custom_create_values or {}),
+    #     })  # In sudo mode to allow writing on callback fields
+    #
+    #     if flow != 'token':
+    #         tx_sudo._log_sent_message()  # Direct/Redirect payments go through the payment form.
+    #     elif not request.env.context.get('delay_token_charge'):
+    #         tx_sudo._charge_with_token()  # Token payments are charged immediately.
+    #
+    #     # Monitor the transaction to make it available in the portal.
+    #     PaymentPostProcessing.monitor_transaction(tx_sudo)
+    #
+    #     return tx_sudo
+
+    def _create_transaction(
+            self, provider_id, payment_method_id, token_id, amount, currency_id, partner_id, flow,
+            tokenization_requested, landing_route, reference_prefix=None, is_validation=False,
+            custom_create_values=None, **kwargs
+    ):
+        """Override to convert UTM string values to IDs"""
+
+        # Get UTM values from kwargs
+        utm_campaign_name = kwargs.get('utm_campaign_id', '')
+        utm_source_name = kwargs.get('utm_source_id', '')
+        utm_medium_name = kwargs.get('utm_medium_id', '')
+
+        _logger.info("=== UTM VALUES RECEIVED ===")
+        _logger.info("UTM Campaign Name: %s", utm_campaign_name)
+        _logger.info("UTM Source Name: %s", utm_source_name)
+        _logger.info("UTM Medium Name: %s", utm_medium_name)
+
+        # Convert string names to IDs (or create if they don't exist)
+        utm_campaign_id = None
+        utm_source_id = None
+        utm_medium_id = None
+
+        if utm_campaign_name:
+            campaign = request.env['utm.campaign'].sudo().search([
+                ('name', '=', utm_campaign_name)
+            ], limit=1)
+            if not campaign:
+                campaign = request.env['utm.campaign'].sudo().create({
+                    'name': utm_campaign_name
+                })
+            utm_campaign_id = campaign.id
+            _logger.info("UTM Campaign ID: %s", utm_campaign_id)
+
+        if utm_source_name:
+            source = request.env['utm.source'].sudo().search([
+                ('name', '=', utm_source_name)
+            ], limit=1)
+            if not source:
+                source = request.env['utm.source'].sudo().create({
+                    'name': utm_source_name
+                })
+            utm_source_id = source.id
+            _logger.info("UTM Source ID: %s", utm_source_id)
+
+        if utm_medium_name:
+            medium = request.env['utm.medium'].sudo().search([
+                ('name', '=', utm_medium_name)
+            ], limit=1)
+            if not medium:
+                medium = request.env['utm.medium'].sudo().create({
+                    'name': utm_medium_name
+                })
+            utm_medium_id = medium.id
+            _logger.info("UTM Medium ID: %s", utm_medium_id)
+
+        # Rest of your existing code...
+        provider_sudo = request.env['payment.provider'].sudo().browse(provider_id)
+        tokenize = False
+        if flow in ['redirect', 'direct']:
+            payment_method_sudo = request.env['payment.method'].sudo().browse(payment_method_id)
+            token_id = None
+            tokenize = bool(
+                provider_sudo.allow_tokenization
+                and payment_method_sudo.support_tokenization
+                and (provider_sudo._is_tokenization_required(**kwargs) or tokenization_requested)
+            )
+        elif flow == 'token':
+            token_sudo = request.env['payment.token'].sudo().browse(token_id)
+            partner_sudo = request.env['res.partner'].sudo().browse(partner_id)
+            if partner_sudo.commercial_partner_id != token_sudo.partner_id.commercial_partner_id:
+                raise AccessError(_("You do not have access to this payment token."))
+            payment_method_id = token_sudo.payment_method_id.id
+
+        reference = request.env['payment.transaction']._compute_reference(
+            provider_sudo.code,
+            prefix=reference_prefix,
+            **(custom_create_values or {}),
+            **kwargs
+        )
+
+        if is_validation:
+            amount = provider_sudo._get_validation_amount()
+            payment_method = request.env['payment.method'].browse(payment_method_id)
+            currency_id = provider_sudo.with_context(
+                validation_pm=payment_method
+            )._get_validation_currency().id
+
+        # Create the transaction with INTEGER IDs instead of string names
+        tx_sudo = request.env['payment.transaction'].sudo().create({
+            'provider_id': provider_sudo.id,
+            'payment_method_id': payment_method_id,
+            'reference': reference,
+            'amount': amount,
+            'currency_id': currency_id,
+            'partner_id': partner_id,
+            'token_id': token_id,
+            'operation': f'online_{flow}' if not is_validation else 'validation',
+            'tokenize': tokenize,
+            'landing_route': landing_route,
+            'utm_campaign_id': utm_campaign_id,  # Now it's an integer ID
+            'utm_source_id': utm_source_id,  # Now it's an integer ID
+            'utm_medium_id': utm_medium_id,  # Now it's an integer ID
+            **(custom_create_values or {}),
+        })
+
+        _logger.info("=== TRANSACTION CREATED ===")
+        _logger.info("Transaction ID: %s", tx_sudo.id)
+        _logger.info("Saved UTM Campaign: %s (ID: %s)", tx_sudo.utm_campaign_id.name, tx_sudo.utm_campaign_id.id)
+        _logger.info("Saved UTM Source: %s (ID: %s)", tx_sudo.utm_source_id.name, tx_sudo.utm_source_id.id)
+        _logger.info("Saved UTM Medium: %s (ID: %s)", tx_sudo.utm_medium_id.name, tx_sudo.utm_medium_id.id)
+
+        if flow != 'token':
+            tx_sudo._log_sent_message()
+        elif not request.env.context.get('delay_token_charge'):
+            tx_sudo._charge_with_token()
+
+        PaymentPostProcessing.monitor_transaction(tx_sudo)
+
+        return tx_sudo
+
+
+    def _get_custom_rendering_context_values(self, donation_options=None, donation_descriptions=None, is_donation=False,
+                                             **kwargs):
+        rendering_context = super()._get_custom_rendering_context_values(**kwargs)
+        if is_donation:
+            user_sudo = request.env.user
+            logged_in = not user_sudo._is_public()
+            partner_sudo = user_sudo.partner_id
+            partner_details = {}
+            countries = request.env['res.country']
+            if logged_in:
+                partner_details = {
+                    'name': partner_sudo.name,
+                    'email': partner_sudo.email,
+                    'country_id': partner_sudo.country_id.id,
+                }
+
+            countries = request.env['res.country'].sudo().search([])
+            descriptions = request.httprequest.form.getlist('donation_descriptions')
+
+            donation_options = json_safe.loads(donation_options) if donation_options else {}
+            donation_amounts = json_safe.loads(donation_options.get('donationAmounts', '[]'))
+
+            rendering_context.update({
+                'is_donation': True,
+                'partner': partner_sudo,
+                'transaction_route': '/donation/transaction/%s' % donation_options.get('minimumAmount', 0),
+                'partner_details': partner_details,
+                'error': {},
+                'countries': countries,
+                'donation_options': donation_options,
+                'donation_amounts': donation_amounts,
+                'donation_descriptions': descriptions,
+                'utm_campaign_id': request.session.get('utm_campaign_id', ''),
+                'utm_source_id': request.session.get('utm_source_id', ''),
+                'utm_medium_id': request.session.get('utm_medium_id', ''),
+            })
+        return rendering_context
+
+    def _get_payment_page_template_xmlid(self, **kwargs):
+        _logger.info('>>_get_payment_page_template_xmlid')
+        _logger.info("grt kwargs: %s", kwargs)
+
+        if kwargs.get('is_donation'):
+            return 'website_payment.donation_pay'
+        return super()._get_payment_page_template_xmlid(**kwargs)
+
+    def _get_extra_payment_form_values(
+            self,
+            donation_options=None,
+            donation_descriptions=None,
+            is_donation=False,
+            utm_campaign_id=None,  # Add your custom parameters here
+            utm_source_id=None,  # Add your custom parameters here
+            utm_medium_id=None,  # Add your custom parameters here
+            **kwargs
+    ):
+        """Override to add UTM tracking values to the payment form context"""
+        _logger.info('>>_get_extra_payment_form_values in custom module')
+        _logger.info("utm_campaign_id: %s", utm_campaign_id)
+        _logger.info("utm_source_id: %s", utm_source_id)
+        _logger.info("utm_medium_id: %s", utm_medium_id)
+
+        # Call parent method
+        rendering_context = super()._get_extra_payment_form_values(
+            donation_options=donation_options,
+            donation_descriptions=donation_descriptions,
+            is_donation=is_donation,
+            utm_campaign_id=utm_campaign_id,
+            utm_source_id=utm_source_id,
+            utm_medium_id=utm_medium_id,
+            **kwargs,
+        )
+
+        # Add UTM values to rendering context if this is a donation
+        if is_donation:
+            _logger.info("Adding UTM values to rendering context")
+            rendering_context.update({
+                'utm_campaign_id': utm_campaign_id or '',
+                'utm_source_id': utm_source_id or '',
+                'utm_medium_id': utm_medium_id or '',
+            })
+            _logger.info("Updated rendering_context with UTM values: %s", rendering_context)
+
+        return rendering_context
+
+    # @http.route('/payment/transaction', type='jsonrpc', auth='public')
+    # def payment_transaction(
+    #         self, provider_id, payment_method_id, token_id, amount, flow, tokenization_requested,
+    #         landing_route, access_token, csrf_token=None, **kwargs
+    # ):
+    #     """Override to capture UTM values from form submission"""
+    #
+    #     # Extract UTM values from the form data (they come from hidden inputs)
+    #     utm_campaign_id = kwargs.get('utm_campaign_id') or request.params.get('utm_campaign_id')
+    #     utm_source_id = kwargs.get('utm_source_id') or request.params.get('utm_source_id')
+    #     utm_medium_id = kwargs.get('utm_medium_id') or request.params.get('utm_medium_id')
+    #
+    #     _logger.info("Transaction route - UTM Campaign: %s", utm_campaign_id)
+    #     _logger.info("Transaction route - UTM Source: %s", utm_source_id)
+    #     _logger.info("Transaction route - UTM Medium: %s", utm_medium_id)
+    #
+    #     # Add UTM values to kwargs so they get passed to _create_transaction
+    #     kwargs.update({
+    #         'utm_campaign_id': utm_campaign_id,
+    #         'utm_source_id': utm_source_id,
+    #         'utm_medium_id': utm_medium_id,
+    #     })
+    #
+    #     # Call parent method with updated kwargs
+    #     return super().payment_transaction(
+    #         provider_id=provider_id,
+    #         payment_method_id=payment_method_id,
+    #         token_id=token_id,
+    #         amount=amount,
+    #         flow=flow,
+    #         tokenization_requested=tokenization_requested,
+    #         landing_route=landing_route,
+    #         access_token=access_token,
+    #         csrf_token=csrf_token,
+    #         **kwargs
+    #     )
+
+    @http.route('/payment/confirmation', type='http', methods=['GET'], auth='public', website=True)
+    def payment_confirm(self, tx_id, access_token, **kwargs):
+        """ Display the payment confirmation page to the user.
+
+        :param str tx_id: The transaction to confirm, as a `payment.transaction` id
+        :param str access_token: The access token used to verify the user
+        :param dict kwargs: Optional data. This parameter is not used here
+        :raise NotFound: If the access token is invalid.
+        """
+        _logger.info("/payment/confirmation kwargs: %s", kwargs)
+        tx_id = self._cast_as_int(tx_id)
+        if tx_id:
+            tx_sudo = request.env['payment.transaction'].sudo().browse(tx_id)
+
+            # Raise an HTTP 404 if the access token is invalid
+            if not payment_utils.check_access_token(
+                    access_token, tx_sudo.partner_id.id, tx_sudo.amount, tx_sudo.currency_id.id
+            ):
+                raise NotFound()  # Don't leak information about ids.
+
+            # Display the payment confirmation page to the user
+            return request.render('payment.confirm', qcontext={'tx': tx_sudo})
+        else:
+            # Display the portal homepage to the user
+            return request.redirect('/my/home')
+
+    @http.route('/payment/status', type='http', auth='public', website=True, sitemap=False,
+                list_as_website_content=_lt("Payment Status"))
+    def display_status(self, **kwargs):
+        """ Fetch the transaction and display it on the payment status page.
+
+        :param dict kwargs: Optional data. This parameter is not used here
+        :return: The rendered status page
+        :rtype: str
+        """
+        monitored_tx = self._get_monitored_transaction()
+        # The session might have expired, or the transaction never existed.
+        _logger.info("kwargs: %s", kwargs)
+
+        values = {'tx': monitored_tx} if monitored_tx else {'payment_not_found': True}
+        return request.render('payment.payment_status', values)
+
+
+
+
+
+
+
+/odoo19/custom/addons/donation_habayta/models/__init__.py
+================================================================
+#############################################################################
+# Copyright (C) 2021 Yves Goldberg - Ygol InternetWork - All Rights Reserved
+# Unauthorized copying of this file, via any medium is strictly prohibited
+# Proprietary and confidential
+##############################################################################
+from . import receipt
+from . import account_payment
+from . import utm_campaign
+
+
+/odoo19/custom/addons/donation_habayta/models/account_payment.py
+================================================================
+##############################################################################
+
+from odoo import fields, models,api,_
+
+class PaymentTranscation(models.Model):
+    _inherit = 'payment.transaction'
+
+    # ====Link Tracker=====#
+    utm_source_id = fields.Many2one('utm.source', ondelete='cascade', string="Source")
+    utm_campaign_id = fields.Many2one('utm.campaign', string='UTM Campaign')
+    utm_medium_id = fields.Many2one('utm.medium', string="Medium")
+
+
+class AccountPayment(models.Model):
+    _inherit = 'account.payment'
+
+    # ====Link Tracker=====#
+    utm_source_id = fields.Many2one(related='payment_transaction_id.utm_source_id')
+    utm_campaign_id = fields.Many2one(related='payment_transaction_id.utm_campaign_id')
+    utm_medium_id = fields.Many2one(related='payment_transaction_id.utm_medium_id')
+
+
+    def create_receipt(self, payments):
+        # Function used to create receipt
+        payments._compute_stat_buttons_from_reconciliation()
+        res = self.get_reconcile_ids(payments)
+        invoice_id = self.env['account.move'].browse(
+            res[0].get('invoice_ids', [])) if res else False
+        name = ''
+        if not self.company_id._fields.get('is_tranzila_document',
+                                           False) or not self.company_id._fields.get(
+                'is_greeninvoice_document',
+                False) or not self.company_id._fields.get('is_i4u_document',
+                                                          False):
+            name = ''
+        rec_vals = {
+            'name': name,
+            'receipt_user_id': False,
+            'partner_id': payments[0].partner_id.id,
+            'company_id': payments[0].company_id.id,
+            'date': payments[0].date,
+            'subject': "תשלום מקוון" if payments[
+                0].payment_transaction_id else "",
+            'is_donation': payments[0].is_donation,
+            'utm_source_id': payments[0].utm_source_id and payments[0].utm_source_id.id or False,
+            'utm_campaign_id': payments[0].utm_campaign_id and payments[0].utm_campaign_id.id or False,
+            'utm_medium_id': payments[0].utm_medium_id and payments[0].utm_medium_id.id or False,
+            'receipt_line_ids': [
+                (0, 0, {'journal_id': payment.journal_id.id,
+                        'type': 'invoice' if invoice_id else 'generic',
+                        'invoice_id': invoice_id.id if invoice_id else None,
+                        'invoice_amount': payment.reconciled_invoice_ids[
+                            0].amount_residual if payment.reconciled_invoice_ids else 0.0,
+                        'amount': payment.amount,
+                        'means_of_payment': '3'}) for payment
+                in payments]
+        }
+        receipt_id = self.env['lyg.account.receipt'].with_context(
+            wizard_payment=True).create(rec_vals)
+        if receipt_id.is_donation:
+            receipt_id.name = self.env['ir.sequence'].next_by_code(
+                'lyg.donation.receipt') or _('New')
+        else:
+            receipt_id.name = self.env['ir.sequence'].next_by_code(
+                'lyg.account.receipt') or _('New')
+        payments.write({'receipt_id': receipt_id.id, 'means_of_payment': '3'})
+        receipt_id.write({'state': 'post'})
+        return receipt_id
+
+
+
+
+/odoo19/custom/addons/donation_habayta/models/receipt.py
+================================================================
+# Copyright (C) 2021 Yves Goldberg - Ygol InternetWork - All Rights Reserved
+# Unauthorized copying of this file, via any medium is strictly prohibited
+# Proprietary and confidential
+##############################################################################
+
+from odoo import fields, models
+
+
+class AccountReceipt(models.Model):
+    _inherit = 'lyg.account.receipt'
+
+    # ====Link Tracker=====#
+    utm_source_id = fields.Many2one('utm.source', ondelete='cascade', string="Source")
+    utm_campaign_id = fields.Many2one('utm.campaign', string='UTM Campaign')
+    utm_medium_id = fields.Many2one('utm.medium', string="Medium")
+
+    # ===========link with community===========
+    bu_community_id = fields.Many2one('bu_community',string="Community")
+
+
+/odoo19/custom/addons/donation_habayta/models/utm_campaign.py
+================================================================
+from odoo import fields, models,api,_
+from odoo.exceptions import ValidationError
+allowed_characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+                      's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+                      'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2',
+                      '3', '4', '5', '6', '7', '8', '9', '0', ' ']
+
+class UtmCampaign(models.Model):
+    _inherit = 'utm.campaign'
+
+    receipt_amount = fields.Integer(default=0, compute="_compute_sale_receipt_amount", string="Revenues generated by the campaign")
+    bu_community_id = fields.Many2one('bu_community',string="Community")
+
+    @api.constrains('name')
+    def _check_name(self):
+        if any(name not in allowed_characters for name in self.name):
+            raise ValidationError(_('Please enter valid name.not special character or other Language'))
+
+    def _compute_sale_receipt_amount(self):
+        for rec in self:
+            rec.receipt_amount = 0
+            receipts = receipt = self.env['lyg.account.receipt'].search([('utm_campaign_id', '=', self.id),('state', '=','post')]) 
+            receipts_total = sum([receipt.total_pay_amount for receipt in receipts])
+            rec.receipt_amount = receipts_total
+
+    def action_redirect_to_receipt(self):
+        action = self.env["ir.actions.actions"]._for_xml_id("lyg_receipt.action_account_receipt_form")
+        receipt = self.env['lyg.account.receipt'].search([('utm_campaign_id', '=', self.id)])
+        action['context'] = {
+            'create': False,
+            'edit': False,
+            'view_no_maturity': True
+        }
+        action['domain'] = [
+            ('id', 'in', receipt.ids),
+            ('state', '=','post')
+        ]
+        return action
+        
+/odoo19/custom/addons/donation_habayta/static/src/js/donationnow_click.js
+================================================================
+/** @odoo-module **/
+
+import { DonationSnippet } from '@website_payment/snippets/s_donation/donation_snippet';
+import { patch } from "@web/core/utils/patch";
+import { _t } from "@web/core/l10n/translation";
+import { formatCurrency } from "@web/core/currency";
+
+patch(DonationSnippet.prototype, {
+
+    setup() {
+        super.setup();
+        // Parse URL parameters and store them
+        console.log('window.location.search : ',window.location.search)
+        const urlParams = new URLSearchParams(window.location.search);
+        this.utmCampaign = urlParams.get('utm_campaign') || '';
+        this.utmSource = urlParams.get('utm_source') || '';
+        this.utmMedium = urlParams.get('utm_medium') || '';
+        console.log('utmCampaign : ',this.utmCampaign)
+        console.log('utmSource : ',this.utmSource)
+        console.log('utmMedium : ',this.utmMedium)
+
+        // Set hidden input values if they exist
+        const input1 = this.el.querySelector('input#test_input1');
+        const input2 = this.el.querySelector('input#test_input2');
+        const input3 = this.el.querySelector('input#test_input3');
+
+        if (input1) input1.value = this.utmCampaign;
+        if (input2) input2.value = this.utmSource;
+        if (input3) input3.value = this.utmMedium;
+    },
+
+        onDonateClick(ev, currentTargetEl) {
+        this.el.querySelector(".alert-danger")?.remove();
+        const donationButtonEls = this.el.querySelectorAll(".s_donation_btn");
+        let amount = this.activeButtonEl ? parseFloat(this.activeButtonEl.dataset.donationValue) : 0;
+        if (this.el.dataset.displayOptions && !amount) {
+            if (this.rangeSliderEl) {
+                amount = parseFloat(this.rangeSliderEl.value);
+            } else if (donationButtonEls.length) {
+                amount = parseFloat(this.el.querySelector("#s_donation_amount_input")?.value);
+                let errorMessage = "";
+                const minAmount = parseFloat(this.el.dataset.minimumAmount);
+                if (!amount) {
+                    errorMessage = _t("Please select or enter an amount");
+                } else if (amount < minAmount) {
+                    errorMessage = _t(
+                        "The minimum donation amount is %(amount)s",
+                        {
+                            amount: formatCurrency(minAmount, this.currency.id),
+                        }
+                    );
+                }
+                if (errorMessage) {
+                    const pEl = document.createElement("p");
+                    pEl.classList.add("alert", "alert-danger", "o_donation_custom_btn_warning");
+                    pEl.innerText = errorMessage;
+                    this.insert(pEl, currentTargetEl, "beforebegin");
+                    return;
+                }
+            }
+        }
+        if (!amount) {
+            amount = this.defaultAmount;
+        }
+        const formEl = this.el.querySelector(".s_donation_form");
+
+        const inputsParams = [
+            ["amount", amount],
+            ["currency_id", this.currency.id],
+            ["csrf_token", odoo.csrf_token],
+            ["donation_options", JSON.stringify(this.el.dataset)],
+            ["utm_campaign_id", this.utmCampaign],
+            ["utm_source_id", this.utmSource],
+            ["utm_medium_id", this.utmMedium],
+        ];
+        console.log('inputsParams : ',inputsParams)
+
+        for (const inputParams of inputsParams) {
+            const inputEl = document.createElement("input");
+            inputEl.setAttribute("type", "hidden");
+            inputEl.setAttribute("name", inputParams[0]);
+            inputEl.setAttribute("value", inputParams[1]);
+            inputEl.setAttribute("utm_campaign_id", inputParams[4]);
+            inputEl.setAttribute("utm_source_id", inputParams[5]);
+            inputEl.setAttribute("utm_medium_id", inputParams[6]);
+            this.insert(inputEl, formEl);
+        }
+        console.log('formEl : ',formEl)
+        formEl.submit();
+    }
+
+
+});
+
+
+/odoo19/custom/addons/donation_habayta/static/src/js/website_payment_form.js
+================================================================
+/** @odoo-module **/
+
+import { PaymentForm } from "@payment/interactions/payment_form";
+import { patch } from "@web/core/utils/patch";
+
+patch(PaymentForm.prototype, {
+
+    _prepareTransactionRouteParams() {
+        const params = super._prepareTransactionRouteParams();
+
+        if (!document.querySelector('.o_donation_payment_form')) {
+            return params;
+        }
+        console.log('PAYMENT ')
+        console.log('>> ',document.querySelector('#utm_source_id')?.value)
+
+        return {
+            ...params,
+
+            // ✅ ONLY safe extension point
+            partner_details: {
+                ...(params.partner_details || {}),
+
+                name: document.querySelector('input[name="name"]')?.value || '',
+                email: document.querySelector('input[name="email"]')?.value || '',
+                country_id: parseInt(
+                    document.querySelector('select[name="country_id"]')?.value
+                ) || null,
+
+                // ⬇ migrated UTMs
+                utm_source_id: document.querySelector('#utm_source_id')?.value,
+                utm_campaign_id: document.querySelector('#utm_campaign_id')?.value,
+                utm_medium_id: document.querySelector('#utm_medium_id')?.value,
+
+                donation_comment:
+                    document.querySelector('#donation_comment')?.value || '',
+                donation_recipient_email:
+                    document.querySelector('input[name="donation_recipient_email"]')?.value || '',
+            },
+        };
+    },
+});
+
+
+
+
+/odoo19/custom/addons/donation_habayta/views/snippets/donation.xml
+================================================================
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add hidden inputs to the donation snippet form -->
+    <template id="s_donation_button_donation" inherit_id="website_payment.s_donation_button">
+        <xpath expr="//form" position="inside">
+            <input id="test_input1" value=""/>
+            <input id="test_input2" value=""/>
+            <input id="test_input3" value=""/>
+        </xpath>
+    </template>
+
+    <!-- Add hidden inputs to the payment checkout page -->
+    <template id="payment_checkout_donation" inherit_id="website_payment.donation_information">
+        <xpath expr="//div[@class='row']" position="after">
+            <h1>start</h1>
+            <t t-out="utm_campaign_id"/>
+            <t t-out="utm_source_id"/>
+            <t t-out="utm_medium_id"/>
+            <h1>End</h1>
+            <input name="utm_campaign_id" t-att-value="utm_campaign_id if utm_campaign_id else ''"
+                   id="utm_campaign_id"/>
+            <input name="utm_source_id" t-att-value="utm_source_id if utm_source_id else ''" id="utm_source_id"/>
+            <input name="utm_medium_id" t-att-value="utm_medium_id if utm_medium_id else ''" id="utm_medium_id"/>
+            <t t-if="utm_campaign_id">
+                YES
+            </t>
+
+
+        </xpath>
+    </template>
+</odoo>
+
+/odoo19/custom/addons/donation_habayta/views/receipt_views.xml
+================================================================
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="receipt_register_payment_account_invoice" model="ir.ui.view">
+            <field name="name">lyg.account.receipt</field>
+            <field name="model">lyg.account.receipt</field>
+            <field name="inherit_id" ref="lyg_receipt.view_account_receipt_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="link_tracker_information" string="Link Tracker Information">
+                        <group colspan="4">
+                            <group>
+                                <field name="utm_source_id"/>
+                                <field name="utm_campaign_id"/>
+                                <field name="utm_medium_id" />
+                                <field name="bu_community_id" options="{'no_create': True}"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+
+/odoo19/custom/addons/donation_habayta/views/utm_campaign_views.xml
+================================================================
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="utm_campaign_view_form_receipts" model="ir.ui.view">
+            <field name="name">utm.campaign.receipt</field>
+            <field name="model">utm.campaign</field>
+            <field name="inherit_id" ref="utm.utm_campaign_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name="bu_community_id"/>
+                </xpath>
+               <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                    <button name="action_redirect_to_receipt" type="object" class="oe_stat_button receipt-1" icon="fa-usd">
+                        <field name="receipt_amount" widget="statinfo" string="Receipt Revenues"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+
+/odoo19/custom/addons/donation_habayta/__init__.py
+================================================================
+#############################################################################
+# Copyright (C) 2021 Yves Goldberg - Ygol InternetWork - All Rights Reserved
+# Unauthorized copying of this file, via any medium is strictly prohibited
+# Proprietary and confidential
+##############################################################################
+from . import controllers
+from . import models
+
+/odoo19/custom/addons/donation_habayta/__manifest__.py
+================================================================
+{
+    'name': 'Donation link',
+    'version': '19.0.0.1',
+    'category': 'Localization',
+    'summary': """This is the latest basic Israelian localisation necessary to run Odoo in Israel""",
+    'description': """
+This is the latest basic Israelian localisation necessary to run Odoo in Israel:
+================================================================================
+
+This module consists of:
+ - Generic Israelian chart of accounts
+ - Israelian taxes and tax report
+ - Fiscal positions for retention / Palestina
+ """,
+    "license": "Other proprietary",
+    "author": "Yves Goldberg (Ygol InternetWork)",
+    "website": "http://www.ygol.com",
+    'depends': ["website_links",'website_payment','lyg_receipt','bu_aha_communities','payment'],
+    'data': [
+        'views/snippets/donation.xml',
+        'views/receipt_views.xml',
+        'views/utm_campaign_views.xml',
+    ],
+    'assets': {
+        'web.assets_frontend': [
+            'donation_habayta/static/src/js/donationnow_click.js',
+            'donation_habayta/static/src/js/website_payment_form.js',
+        ],
+    },
+    'auto_install': False,
+}
+
+
+
+
+
+see above is my whole custom module code but still it not pass in below paths
+
+
+https://creyox-general-habayta-staging-27293400.dev.odoo.com/donation/pay -  in this all three value pass
+after that route is as per below , but in that two route value is not pass
+https://creyox-general-habayta-staging-27293400.dev.odoo.com/payment/status
+https://creyox-general-habayta-staging-27293400.dev.odoo.com/payment/confirmation?tx_id=48&access_token=a77618e88595cf092a528a3281d3a7654b8ecd241df6fa64e64b3f402b183a9f
+
+
+
+
+
+see logs
+
+
+2026-01-19 05:00:43,103 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: ======================>>>>>>>>>>>>>==================================pay========================
+2026-01-19 05:00:43,103 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: kwargs: {'donation_descriptions': 'A year of cultural awakening.', 'utm_campaign_id': 'demo', 'utm_source_id': 'Monster', 'utm_medium_id': 'LinkedIn', 'amount': '100', 'currency_id': '20', 'donation_options': '{"name":"Donation Button","donationEmail":"info@yourcompany.example.com","customAmount":"freeAmount","prefilledOptions":"true","descriptions":"true","donationAmounts":"[\\"10\\", \\"25\\", \\"50\\", \\"100\\"]","minimumAmount":"5","maximumAmount":"100","sliderStep":"5","defaultAmount":"25","snippet":"s_donation_button","displayOptions":"true"}'}
+2026-01-19 05:00:43,103 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: utm_campaign_id: demo
+2026-01-19 05:00:43,103 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: utm_source_id: Monster
+2026-01-19 05:00:43,103 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: utm_medium_id: LinkedIn
+2026-01-19 05:00:43,104 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: >>kwargs: {'donation_descriptions': 'A year of cultural awakening.', 'utm_campaign_id': 'demo', 'utm_source_id': 'Monster', 'utm_medium_id': 'LinkedIn', 'amount': 100.0, 'currency_id': 20, 'donation_options': '{"name":"Donation Button","donationEmail":"info@yourcompany.example.com","customAmount":"freeAmount","prefilledOptions":"true","descriptions":"true","donationAmounts":"[\\"10\\", \\"25\\", \\"50\\", \\"100\\"]","minimumAmount":"5","maximumAmount":"100","sliderStep":"5","defaultAmount":"25","snippet":"s_donation_button","displayOptions":"true"}', 'is_donation': True, 'partner_id': 4, 'access_token': 'a77618e88595cf092a528a3281d3a7654b8ecd241df6fa64e64b3f402b183a9f'}
+2026-01-19 05:00:43,130 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: >>_get_extra_payment_form_values in custom module
+2026-01-19 05:00:43,130 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: utm_campaign_id: demo
+2026-01-19 05:00:43,130 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: utm_source_id: Monster
+2026-01-19 05:00:43,130 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: utm_medium_id: LinkedIn
+2026-01-19 05:00:43,139 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: Adding UTM values to rendering context
+2026-01-19 05:00:43,139 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: Updated rendering_context with UTM values: {'is_donation': True, 'partner': res.partner(4,), 'submit_button_label': 'Donate', 'transaction_route': '/donation/transaction/5', 'partner_details': {}, 'error': {}, 'countries': res.country(3, 6, 62, 11, 1, 8, 5, 9, 4, 10, 7, 14, 13, 12, 16, 32, 23, 19, 18, 36, 20, 37, 25, 27, 33, 29, 30, 17, 35, 34, 31, 105, 28, 22, 21, 24, 116, 47, 38, 52, 123, 40, 214, 46, 48, 54, 39, 49, 118, 41, 42, 45, 50, 97, 51, 53, 55, 56, 44, 59, 58, 60, 61, 63, 65, 209, 87, 67, 64, 212, 69, 72, 74, 71, 70, 75, 79, 174, 215, 76, 84, 78, 57, 80, 81, 88, 83, 77, 86, 91, 90, 82, 85, 92, 93, 98, 95, 236, 96, 94, 99, 108, 104, 100, 107, 106, 101, 103, 102, 109, 111, 113, 110, 112, 124, 114, 117, 251, 122, 115, 125, 134, 126, 131, 130, 135, 128, 132, 133, 147, 141, 155, 157, 154, 144, 152, 142, 149, 150, 153, 246, 156, 73, 138, 137, 146, 139, 151, 136, 158, 145, 159, 168, 167, 165, 160, 170, 164, 161, 163, 169, 162, 120, 143, 250, 148, 166, 171, 177, 184, 172, 175, 185, 173, 176, 180, 178, 183, 181, 186, 188, 190, 191, 187, 26, 198, 119, 127, 140, 179, 237, 244, 203, 192, 204, 189, 194, 202, 197, 210, 201, 199, 193, 205, 247, 89, 121, 207, 68, 129, 182, 195, 206, 200, 196, 43, 211, 208, 227, 218, 228, 217, 223, 216, 219, 222, 225, 221, 220, 213, 226, 224, 232, 230, 229, 2, 231, 233, 234, 235, 242, 238, 241, 239, 240, 243, 66, 245, 248, 249, 15), 'donation_options': {'name': 'Donation Button', 'donationEmail': 'info@yourcompany.example.com', 'customAmount': 'freeAmount', 'prefilledOptions': 'true', 'descriptions': 'true', 'donationAmounts': '["10", "25", "50", "100"]', 'minimumAmount': '5', 'maximumAmount': '100', 'sliderStep': '5', 'defaultAmount': '25', 'snippet': 's_donation_button', 'displayOptions': 'true'}, 'donation_amounts': ['10', '25', '50', '100'], 'donation_descriptions': ['A year of cultural awakening.', 'Caring for a baby for 1 month.', 'One year in elementary school.', 'One year in high school.'], 'utm_campaign_id': 'demo', 'utm_source_id': 'Monster', 'utm_medium_id': 'LinkedIn'}
+2026-01-19 05:00:43,139 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: >>_get_payment_page_template_xmlid
+2026-01-19 05:00:43,139 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: grt kwargs: {'website_id': 1, 'donation_descriptions': 'A year of cultural awakening.', 'utm_campaign_id': 'demo', 'utm_source_id': 'Monster', 'utm_medium_id': 'LinkedIn', 'donation_options': '{"name":"Donation Button","donationEmail":"info@yourcompany.example.com","customAmount":"freeAmount","prefilledOptions":"true","descriptions":"true","donationAmounts":"[\\"10\\", \\"25\\", \\"50\\", \\"100\\"]","minimumAmount":"5","maximumAmount":"100","sliderStep":"5","defaultAmount":"25","snippet":"s_donation_button","displayOptions":"true"}', 'is_donation': True}
+2026-01-19 05:00:43,326 90 INFO creyox-general-habayta-staging-27293400 werkzeug: 103.178.154.67 - - [19/Jan/2026 05:00:43] "POST /donation/pay HTTP/1.0" 200 - 48 0.075 0.151
+2026-01-19 05:00:44,151 90 INFO creyox-general-habayta-staging-27293400 werkzeug: 103.178.154.67 - - [19/Jan/2026 05:00:44] "GET /website/translations?hash=56994d179a56befab6a57d60a3754dc7657d7878&lang=en_US HTTP/1.0" 200 - 1 0.001 0.002
+2026-01-19 05:00:45,253 90 INFO creyox-general-habayta-staging-27293400 werkzeug: 103.178.154.67 - - [19/Jan/2026 05:00:45] "GET /web/image/payment.method/216/image_payment_form/Demo?unique=6583f7e HTTP/1.0" 200 - 5 0.002 0.004
+2026-01-19 05:00:45,740 90 INFO creyox-general-habayta-staging-27293400 werkzeug: 103.178.154.67 - - [19/Jan/2026 05:00:45] "GET /web/image/payment.method/214/image_payment_form/Wire%20Transfer?unique=f312d72 HTTP/1.0" 200 - 4 0.001 0.004
+2026-01-19 05:01:05,690 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: === UTM VALUES RECEIVED ===
+2026-01-19 05:01:05,690 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: UTM Campaign Name:
+2026-01-19 05:01:05,690 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: UTM Source Name:
+2026-01-19 05:01:05,690 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: UTM Medium Name:
+2026-01-19 05:01:05,699 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: === TRANSACTION CREATED ===
+2026-01-19 05:01:05,699 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: Transaction ID: 53
+2026-01-19 05:01:05,699 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: Saved UTM Campaign: False (ID: False)
+2026-01-19 05:01:05,699 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: Saved UTM Source: False (ID: False)
+2026-01-19 05:01:05,700 90 INFO creyox-general-habayta-staging-27293400 odoo.addons.donation_habayta.controllers.main: Saved UTM Medium: False (ID: False)
+
+and plz don't give whole code again only give  the part of code which i need to change or add , not give whole code again plz 
+

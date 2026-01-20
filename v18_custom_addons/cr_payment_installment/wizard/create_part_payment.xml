@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="cr_sub_part_payment_confirm_form_view" model="ir.ui.view" >
+            <field name="name">cr.sub.part.payment.wizard.form</field>
+            <field name="model">cr.sub.part.payment.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Create Partial Payment">
+                    <group>
+                        <field name="pay_part_amount"/>
+                    </group>
+                    <footer>
+                        <button name="btn_pay_part_payment" string="Confirm" type="object" class="btn-primary"/>
+                        <button class="btn-secondary" string="Cancel" special="cancel"/>
+                    </footer>
+                </form>            
+            </field>
+        </record>
+    </data>
+</odoo>

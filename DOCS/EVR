@@ -1,0 +1,332 @@
+>>cr_mrp_bom_evr_customisation
+point - 1
+1] add one selection field name('Location Category') in the stock.location and their option is 1]Free Location 2]Project Location
+2] through he data file create one location name 'GOAL Location' in the stock.location , it's parent location is wh/stock , type is internal location
+3]If in a sub location the category is not set, then it will take the category of the parent location for the sub location.
+
+point -2
+1]Add a boolean field named CFE in PO created for the products in the BOM ( if it is true then the receipt and all other process after PO confirmation is handled by the vendor of that PO)
+2]In the assign owner field - the vendor of the PO should be set automatically.
+
+point - 3
+1]For every BOM line for a specific product there should be a relation with its PO. For example if a PO is created for a specific vendor, and if there is a product in BOM line whose vendor is same with an existing PO, then that BOM line (product) will be added to the existing PO.
+
+point -4
+1] add new Field name 'branch' in mrp.bom.line
+2]All the BOM lines should have branch name set starting from A, B, C, D….Z, then A1, A2, ………A9, B1, B2,......B9 , then AA, AB, AC………….., BA, BB,..........BZ, upto ZZ
+Should be automatically by the system
+
+suppose one bom have a 3 mrp.bom.line
+
+Bom 
+-> bomline-1 = branch name should be 'A'
+	->SubBomLine-1 = branch name should be 'B'
+		->SubSubBomLine-1 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-2 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-3 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-2 = branch name should be 'C'
+		->SubSubBomLine-1 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-2 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-3 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-4 = branch name should be 'D'
+			->SubSubSubBomLine-1 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+			->SubSubSubBomLine-2 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+			->SubSubSubBomLine-3 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-5 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-6 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-3 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-4 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-5 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-2 = branch name should be 'E'
+	->SubBomLine-1  = branch name should be 'F'
+		->SubSubBomLine-1 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-2 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-3 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-2  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-3  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-4  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-5  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-6  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-7  = branch name should be 'G'
+		->SubSubBomLine-1 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-2 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-3 = branch name 'H'
+			->SubSubSubBomLine-1 = branch name should be 'I'
+				->SubSubSubBomLine-1 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-4 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-5 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-6 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-8  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-9  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-3 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-4 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-5 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-6 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-7 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-8 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-9 = branch name should be 'J'
+	->SubBomLine-1 = branch name should be 'K'
+		->SubSubBomLine-1 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-2 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-3 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+
+
+
+
+
+
+
+
+
+Manage Different Stock Owners
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+for this point can we manage branch name based on Main Bom
+
+Bom 
+-> bomline-1 = branch name should be 'A'
+	->SubBomLine-1 = branch name should be 'B'
+		->SubSubBomLine-1 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-2 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-3 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-2 = branch name should be 'C'
+		->SubSubBomLine-1 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-2 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-3 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-4 = branch name should be 'D'
+			->SubSubSubBomLine-1 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+			->SubSubSubBomLine-2 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+			->SubSubSubBomLine-3 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-5 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-6 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-3 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-4 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-5 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-2 = branch name should be 'E'
+	->SubBomLine-1  = branch name should be 'F'
+		->SubSubBomLine-1 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-2 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-3 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-2  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-3  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-4  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-5  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-6  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-7  = branch name should be 'G'
+		->SubSubBomLine-1 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-2 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-3 = branch name 'H'
+			->SubSubSubBomLine-1 = branch name should be 'I'
+				->SubSubSubBomLine-1 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-4 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-5 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-6 = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-8  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+	->SubBomLine-9  = branch name should be should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-3 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-4 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-5 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-6 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-7 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-8 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+-> bomline-9 = branch name should be 'J'
+	->SubBomLine-1 = branch name should be 'K'
+		->SubSubBomLine-1 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-2 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+		->SubSubBomLine-3 = branch name should be NO NAME BCOZ THEY DON'T HAVE SUB BOM
+
+
+
+bcoz what happen see here 
+
+bomline-1 have  SubBomLine-1 and SubBomLine-2 which is also BOM
+so for what happen I mean at the time of Main BOM method is run then branch name is ok and in this case SubBomLine-1 and SubBomLine-2 is Bom's component but when method run for SubBomLine-1 which is BOM at that time branch name is override so conflict is happen so what we can do for that??
+
+You are assigning branch names using a single global sequence generator, so:
+
+When Main BOM assigns branches (A, B, C, …), it is correct.
+
+But then Odoo recursively calls the same method for each sub-BOM.
+
+When processing SubBomLine-1 (which itself is a BOM), your algorithm starts assigning new branches again, overriding existing ones.
+
+Therefore branch names get overwritten, causing conflicts.
+
+
+
+
+BUT see in this case it is ok
+
+Line 1 → A
+ → SubBOM-1 → B
+  → SubSubLines → ''
+ → SubBOM-2 → C
+  → SubSubLines → ''
+  → SubBOM (inside) → D
+
+Line 2 → E
+ → SubBOM-1 → F
+  → SubSubLines → ''
+ → SubBOM-7 → G
+  → SubSubBomLine-3 → H
+   → SubSubSubBomLine-1 → I
+
+Line 9 → J
+ → SubBOM-1 → K
+
+
+
+but for the BOm Line 2 it call then below is wrong 
+Line 2 → E
+ → SubBOM-1 → F
+  → SubSubLines → ''
+ → SubBOM-7 → G
+  → SubSubBomLine-3 → H
+   → SubSubSubBomLine-1 → I
+   
+it should come like this
+
+Line 2 → 
+ → SubBOM-1 → A
+  → SubSubLines → ''
+ → SubBOM-7 → B
+  → SubSubBomLine-3 → C
+   → SubSubSubBomLine-1 → D
+   
+   
+so how to manage this things bcoz 
+when the method cakk for BOm then also that line's id is same and method call for BOM Line2 then also that line's id is same
+
+
+❌ The same BOM line record gets processed twice:
+
+Once when processing Main BOM
+
+Again when processing its own BOM (if it's a Sub BOM)s
+
+
+
+
+
+
+
+
+
+
+
+
+currently see your code what gives mevwhich is totaly wrong 
+currently your code output
+what I wat is
+Main BOM
+ ├─ Line 1 (has sub-BOM) → ''
+ │    ├─ SubLine 1 → B
+ │    ├─ SubLine 2 (has sub-BOM)  → ''
+ |    |	├─ SubSubLine 1 → D
+ │    |	├─ SubSubLine 2 (has sub-BOM)  →''
+ │    |	└─ SubLine 3 → F
+ │    └─ SubLine 3 → G
+ ├─ Line 2 (has sub-BOM) → ''
+ │    ├─ SubLine 1 → I
+ │    ├─ SubLine 2 (has sub-BOM)  → ''
+ |    |	├─ SubSubLine 1 → K
+ │    |	├─ SubSubLine 2 (has sub-BOM)  → ''
+ │    |	└─ SubSubLine 3 → L
+ │    └─ SubLine 3 → M
+ └─ Line 3 → N
+ 
+ 
+what I wat is
+Main BOM
+ ├─ Line 1 (has sub-BOM) → A
+ │    ├─ SubLine 1 → ''
+ │    ├─ SubLine 2 (has sub-BOM)  → B
+ |    |	├─ SubSubLine 1 → ''
+ │    |	├─ SubSubLine 2 (has sub-BOM)  →C
+ │    |	└─ SubLine 3 → ''
+ │    └─ SubLine 3 → ''
+ ├─ Line 2 (has sub-BOM) →D
+ │    ├─ SubLine 1 → ''
+ │    ├─ SubLine 2 (has sub-BOM)  → E
+ |    |	├─ SubSubLine 1 → ''
+ │    |	├─ SubSubLine 2 (has sub-BOM)  →F
+ │    |	└─ SubSubLine 3 → ''
+ │    └─ SubLine 3 → ''
+ └─ Line 3 (leaf) → no name
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 2025-11-20 10:42:00,012 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Processing BOM 3 - EVR 
+2025-11-20 10:42:00,013 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Creating mapping for BOM 3 line 24 -> A 
+2025-11-20 10:42:00,025 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Created branch location EVR - A (parent Stock) 
+2025-11-20 10:42:00,026 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Creating mapping for BOM 3 line 15 -> B 
+2025-11-20 10:42:00,036 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Created branch location EVR - B (parent Stock) 
+2025-11-20 10:42:00,037 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Creating mapping for BOM 3 line 20 -> C 
+2025-11-20 10:42:00,045 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Created branch location EVR - C (parent Stock) 
+2025-11-20 10:42:00,046 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Creating mapping for BOM 3 line 19 -> D 
+2025-11-20 10:42:00,060 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Created branch location EVR - D (parent Stock) 
+2025-11-20 10:42:00,062 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Creating mapping for BOM 3 line 25 -> E 
+2025-11-20 10:42:00,077 26290 INFO EVR odoo.addons.cr_mrp_bom_evr_customisation: Created branch location EVR - E (parent Stock) 
+
+
+suppose I create BOM - 1
+BOM - 1
+-> Line - 1
+-> Line - 2
+
+It is work ok from now we have code bcoz till now BOM - 1 is not use in any BOM
+
+but what when we create BOM - 2 bcoz IN that we add BOM - 1 as it's component so it a 
+
+BOM - 2
+->BOM - 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+1]Add one new field Approve to Manufacture (boolean field) in mrp.bom.line
+
+
+
+
+update:
+>>cr_mrp_bom_evr_customisation
+- complete point
+- All the BOM lines should have branch name set starting from A, B, C, D….Z, then A1, A2, ………A9, B1, B2,......B9 , then AA, AB, AC………….., BA, BB,..........BZ, upto ZZ
+Should be automatically by the system
+- Did R & D for how to assign different branch name for one bom line in Different BOM
+- explore how to manage this point
+- try different - different ways to get the exact output
+- understand the other points , and ask the all doubts till point 10
+

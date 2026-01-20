@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="cr_mrp_workorder_production_form_inherit" model="ir.ui.view">
+        <field name="name">cr.mrp.workorder.mrp.production.form.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='d-flex flex-row align-items-start']" position="after">
+                <field name="supervisor_id"/>
+                <field name="total_expected_duration" widget="float_time"/>
+                <field name="total_real_duration" widget="float_time"/>
+                <field name="fluctuation_reason"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

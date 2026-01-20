@@ -1,0 +1,160 @@
+
+/*  Section Background Styling */
+.client_reviews {
+    margin-top: 100px;
+    margin-left:0px;
+    margin-right:0px;
+    padding: 0px 15px;
+}
+
+/* Section Title Styling */
+.client_reviews .section-title {
+    font-size: 34px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+    padding-bottom: 12px;
+    color: #333;
+}
+
+/* Border Under Title */
+.client_reviews .section-title::after {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 4px;
+    background: #007bff;
+    margin: 12px auto 0;
+    border-radius: 6px;
+}
+.client_reviews .section-title:hover::after {
+    width: 140px; /* Expands on hover */
+}
+/* Review Card Enhancements */
+.client_reviews .review-section {
+    padding: 30px;
+    position: relative;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.client_reviews .review-section:hover {
+    transform: translateY(-12px); /* Perfect Zoom Effect */
+    background: #f0f8ff; /* Light blue background */
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Quote Icon */
+.client_reviews .review-section .quote-icon {
+    margin-left: 5px;
+    position: absolute;
+    font-size: 30px;
+    color: #808080;
+}
+
+/* Review Content Styling */
+.client_reviews .review-content {
+    margin-top: 30px;
+    margin-left: 50px;
+    margin-right:30px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Author Name Styling */
+.client_reviews .review-author {
+    font-weight: bold;
+    margin-top: 2px;
+    font-size: 20px;
+    color: #222;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.client_reviews .review-author::before {
+    content: "★";
+    color: #808080;
+    margin-right: 5px;
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+.client_reviews {
+        padding: 40px 15px !important;
+
+.section-title {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+    padding-bottom: 10px;
+    color: #333;
+}
+
+/* Border Under Title */
+.section-title::after {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 4px;
+    background: #007bff;
+    margin: 12px auto 0;
+    border-radius: 6px;
+}
+ .section-title:hover::after {
+    width: 140px; /* Expands on hover */
+}
+/* Review Card Enhancements */
+.review-section {
+    padding: 10px;
+    position: relative;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.review-section:hover {
+    transform: translateY(-12px); /* Perfect Zoom Effect */
+    background: #f0f8ff; /* Light blue background */
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Quote Icon */
+.review-section .quote-icon {
+    margin-left:2px;
+    position: absolute;
+    font-size: 5px;
+    color: #808080;
+}
+
+/* Review Content Styling */
+.review-content {
+    padding-top: 0px;
+    margin-left: 12px;
+    font-size: 9px;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Author Name Styling */
+.review-author {
+    font-weight: bold;
+    margin-top: 15px;
+    font-size: 10px;
+    color: #222;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.review-author::before {
+    content: "★";
+    color: #808080;
+    margin-right: 5px;
+    font-size: 18px;
+}
+    }
+}

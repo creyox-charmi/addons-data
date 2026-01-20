@@ -1,0 +1,109 @@
+/* General Styles for the Form */
+.form_wrap {
+  padding: 40px;
+  border-radius: 10px;
+  background-color: #f7f9fc; /* Light background */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05); /* Soft shadow */
+  max-width: 900px;
+  margin: auto;
+}
+
+.form-title {
+  font-weight: bold;
+  color: #193EEC; /* Primary color for the title */
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Input Box Styles */
+.input_box {
+  height: 50px;
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+  margin-bottom: 20px; /* Space between input fields */
+}
+
+.input_box:focus {
+  border-color: #193EEC; /* Primary blue border on focus */
+  box-shadow: 0 4px 10px rgba(25, 62, 236, 0.2); /* Soft blue shadow */
+  outline: none;
+  background-color: #fff;
+}
+
+.input_box::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.input_box:hover {
+  border-color: #193EEC;
+  background-color: #eef6fc;
+}
+
+/* Textarea Box */
+.textarea-box {
+  height: 150px;
+}
+
+/* Submit Button Styles (Using Primary Color) */
+.submit-btn {
+  background: linear-gradient(45deg, #193EEC, #1E90FF); /* Gradient using primary color */
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  width: 200px;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(45deg, #1E90FF, #193EEC); /* Reverse gradient */
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  color: white;
+}
+
+.submit-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: width 0.4s ease, height 0.4s ease;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.submit-btn:hover::before {
+  width: 0;
+  height: 0;
+}
+
+.submit-btn:active::before {
+  width: 1000%;
+  height: 1000%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: 0s;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+  }
+}

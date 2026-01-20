@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="cron_recompute_no_recent_delivery" model="ir.cron">
+        <field name="name">Recompute No Recent Delivery</field>
+        <field name="model_id" ref="model_stock_move_line"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_recompute_no_recent_delivery()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+    </record>
+</odoo>

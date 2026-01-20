@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="project_task_timer_app.PTTimer" owl="1">
+        <span t-if="checkRunning" style="color: red;font-weight:500;font-size: 14px;"  t-esc="durationFormatted"/>
+    </t>
+</templates>

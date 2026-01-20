@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="cr_employee_training_record_view_search" model="ir.ui.view">
+        <field name="name">cr.EmployeeTrainingRecord.view.search</field>
+        <field name="model">cr.employee.training.record</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Completed" name="status" domain="[('status', '=','Completed')]" />
+                <filter string="In Progress" name="status" domain="[('status', '=','In Progress')]" />
+                <filter string="Not Started" name="status" domain="[('status', '=','Not Started')]" />
+            </search>
+        </field>
+    </record>
+    <record id="cr_employee_training_record_view_form" model="ir.ui.view">
+        <field name="name">cr.EmployeeTrainingRecord.view.form</field>
+        <field name="model">cr.employee.training.record</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="status"/>
+                            <field name="training_id"/>
+                            <field name="feedback"/>
+
+                        </group>
+                        <group>
+                            <field name="employee_name"/>
+                            <field name="employee_company"/>
+                            <field name="training_name"/>
+                            <field name="training_date"/>
+                            <field name="training_trainer"/>
+                        </group>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="cr_employee_training_record_view_tree" model="ir.ui.view">
+        <field name="name">cr.EmployeeTrainingRecord.view.tree</field>
+        <field name="model">cr.employee.training.record</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="training_id"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="cr_employee_training_record_action" model="ir.actions.act_window">
+        <field name="name">Employee Training Record</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cr.employee.training.record</field>
+        <field name="view_mode">search,tree,form</field>
+    </record>
+
+    <menuitem id="cr_employee_training_menu"
+              name="Creyox Employee Training"
+              sequence="999"/>
+
+    <menuitem id="cr_employee_training_record_menu"
+              name="Employee Training Record"
+              parent="cr_employee_training_menu"
+              action="cr_employee_training_record_action"
+              sequence="1"/>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cr_res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.website.sale</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="website_sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='website_shop_checkout']" position="before">
+                <block title="Website Searchbar" id="website_searchbar_settings_block">
+                     <setting id="website_searchbar_settings" string="Fields searches widget" help="Select how much importance each field should have in your searches.">
+                        <div class="content-group">
+                            <div class="row">
+                                <label class="col-lg-4" string="Name" for="cr_name"/>
+                                <field name="cr_name"/>
+                            </div>
+                            <div class="row">
+                                <label class="col-lg-4" for="internal_reference"/>
+                                <field name="internal_reference"/>
+                            </div>
+                        </div>
+                     </setting>
+                    <setting id="website_searchbar_settings2">
+                        <div class="content-group">
+                             <div class="row">
+                                <label class="col-lg-4" for="description"/>
+                                <field name="description"/>
+                            </div>
+                            <div class="row">
+                                <label class="col-lg-4" for="website_description"/>
+                                <field name="website_description"/>
+                            </div>
+                            <div class="row">
+                                <label class="col-lg-4" for="tags"/>
+                                <field name="tags"/>
+                            </div>
+                            <div class="row">
+                                <label class="col-lg-4" for="attributes"/>
+                                <field name="attributes"/>
+                            </div>
+                        </div>
+                     </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

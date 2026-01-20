@@ -1,0 +1,215 @@
+from odoo import Command, _, api, fields, models
+import requests
+from odoo.exceptions import UserError
+import logging
+
+_logger = logging.getLogger(__name__)
+
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    cr_template_ref = fields.Char(string="Template Reference from Gelato")
+    cr_product_uid = fields.Char(
+        string="Product UID of Gelato",
+        compute='_compute_gelato_product_uid',
+        inverse='_inverse_gelato_product_uid',
+        readonly=True,
+    )
+    cr_image_ids = fields.One2many(
+        string="Print Images",
+        comodel_name='product.document',
+        inverse_name='res_id',
+        domain=[('is_gelato', '=', True)],
+        readonly=True,
+    )
+    cr_missing_images = fields.Boolean(string="Missing Print Images")
+
+    @api.depends('product_variant_ids.cr_product_uid')
+    def _compute_gelato_product_uid(self):
+        self._compute_template_field_from_variant_field('cr_product_uid')
+
+    def _inverse_gelato_product_uid(self):
+        self._set_product_variant_field('cr_product_uid')
+
+    def action_sync_gelato_template_info(self):
+        try:
+            endpoint = f'templates/{self.cr_template_ref}'
+            _logger.info(f"key >>>>>> {self.env.company.sudo().api_key_for_gelato} ")
+            key = self.env.company.sudo().api_key_for_gelato
+            template_data = self.gelato_api_request(endpoint, 'ecommerce', key, 'v1', 'GET')
+            _logger.info(f"==========================================")
+            _logger.info(f"template_data >>>>>> {template_data} ")
+            _logger.info(f"==========================================")
+        except UserError as e:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'type': 'danger',
+                    'title': _("Could not synchronize with Gelato"),
+                    'message': str(e),
+                    'sticky': True,
+                }
+            }
+
+        self._create_attributes_for_product(template_data)
+        self._create_print_images_for_product(template_data)
+
+        # Display a toaster notification to the user if all went well.
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'type': 'success',
+                'title': _("Successfully synchronized with Gelato"),
+                'message': _("Missing product variants and images have been successfully created."),
+                'sticky': False,
+                'next': {
+                    'type': 'ir.actions.client',
+                    'tag': 'soft_reload'
+                }
+            }
+        }
+
+    def gelato_api_request(self, endpoint, subdomain, api_key, version, payload=None, method='GET'):
+        headers = {
+            'X-API-KEY': api_key,
+            'Content-Type': 'application/json'
+        }
+
+        try:
+            _logger.info(f"Sending {method} request to {endpoint}")
+
+            url = f'https://{subdomain}.gelatoapis.com/{version}/{endpoint}'
+            headers = {
+                'X-API-KEY': api_key or None
+            }
+            if method == 'GET':
+                _logger.info(f">>>>>>> IN GET")
+                response = requests.get(url=url, params=payload, headers=headers, timeout=10)
+            else:
+                _logger.info(f">>>>>>> IN POST")
+                response = requests.post(url=url, json=payload, headers=headers, timeout=10)
+            response_content = response.json()
+
+            _logger.info(f"Response Status: {response.status_code} and response : {response_content}")
+            response.raise_for_status()  # Raise exception for HTTP errors
+
+            return response.json()
+
+        except requests.exceptions.HTTPError as http_err:
+            _logger.error(f"HTTP error occurred: {http_err}")
+        except requests.exceptions.RequestException as req_err:
+            _logger.error(f"Request error occurred: {req_err}")
+        except Exception as err:
+            _logger.error(f"Unexpected error occurred: {err}")
+
+        return None
+
+    def _create_attributes_for_product(self, template_data):
+        no_of_variants = len(template_data['variants'])
+        if no_of_variants == 1:
+            _logger.info(f"================================")
+            _logger.info(f"No of variants: {no_of_variants}")
+            _logger.info(f"================================")
+            self.cr_product_uid = template_data['variants'][0]['productUid']
+        if no_of_variants > 1:
+            _logger.info(f"================================")
+            _logger.info(f"No of variants: {no_of_variants}")
+            _logger.info(f"================================")
+            for variants in template_data['variants']:
+                exhisting_product_attribute_values = self.check_attribute_values(variants)
+                _logger.info(f"================================")
+                _logger.info(f"exhisting_product_attribute_values: {exhisting_product_attribute_values}")
+                _logger.info(f"================================")
+                for variant in self.product_variant_ids:
+                    current_product_temp_attr_values = variant.product_template_attribute_value_ids.product_attribute_value_id
+                    # corresponding_ptavs = variant.product_template_attribute_value_ids
+                    # corresponding_pavs = corresponding_ptavs.product_attribute_value_id
+                    if current_product_temp_attr_values == exhisting_product_attribute_values:
+                        variant.cr_product_uid = variants['productUid']
+                        break
+
+            variants_having_no_gelato_product_id = self.env['product.product'].search([
+                ('product_tmpl_id', '=', self.id),
+                ('cr_product_uid', '=', False)
+            ])
+            variants_having_no_gelato_product_id.unlink()
+
+    def check_attribute_values(self, variants):
+        exhisting_product_attribute_values = self.env['product.attribute.value']
+        # Loop through each attribute option in the variant of the variants of gelato product
+        for attribute_info in variants['variantOptions']:
+            # Search for an existing product attribute
+            attribute = self.env['product.attribute'].search(
+                [
+                    ('name', '=', attribute_info['name']),
+                    ('create_variant', '=', 'always')
+                ],
+                limit=1,
+            )
+            # If the attribute doesn't exist, create it
+            if not attribute:
+                attribute = self.env['product.attribute'].create({
+                    'name': attribute_info['name']
+                })
+            _logger.info(f"================================")
+            _logger.info(f"attribute: {attribute}")
+            _logger.info(f"================================")
+            # Search for an existing product attribute value
+            attribute_value = self.env['product.attribute.value'].search([
+                ('name', '=', attribute_info['value']),
+                ('attribute_id', '=', attribute.id),
+            ], limit=1)
+
+            # If the attribute value doesn't exist, create it
+            if not attribute_value:
+                attribute_value = self.env['product.attribute.value'].create({
+                    'name': attribute_info['value'],
+                    'attribute_id': attribute.id
+                })
+            _logger.info(f"================================")
+            _logger.info(f"exhisting_product_attribute_values: {exhisting_product_attribute_values}")
+            _logger.info(f"================================")
+            exhisting_product_attribute_values += attribute_value
+
+            # Search for an existing product template attribute line value
+            product_temp_attr_line = self.env['product.template.attribute.line'].search(
+                [
+                    ('product_tmpl_id', '=', self.id),
+                    ('attribute_id', '=', attribute.id)
+                ],
+                limit=1,
+            )
+            # If the product template attribute line value doesn't exist, create it
+            if not product_temp_attr_line:
+                self.env['product.template.attribute.line'].create({
+                    'product_tmpl_id': self.id,
+                    'attribute_id': attribute.id,
+                    'value_ids': [Command.link(attribute_value.id)]
+                })
+            else:
+                product_temp_attr_line.value_ids = [Command.link(attribute_value.id)]
+
+        return exhisting_product_attribute_values
+
+    def _create_print_images_for_product(self, template_data):
+        image_info = template_data['variants'][0]['imagePlaceholders']
+        for image_data in image_info:
+            if image_data['printArea'].lower() in ('1', 'front'):
+                image_data['printArea'] = 'default'
+
+            is_image_found = bool(self.env['product.document'].search_count([
+                ('name', 'ilike', image_data['printArea']),
+                ('res_id', '=', self.id),
+                ('res_model', '=', 'product.template'),
+                ('is_gelato', '=', True),
+            ]))
+            if not is_image_found:
+                self.gelato_image_ids = [Command.create({
+                    'name': image_data['printArea'].lower(),
+                    'res_id': self.id,
+                    'res_model': 'product.template',
+                    'is_gelato': True,
+                })]

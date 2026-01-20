@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cr_product,access_cr_product,model_cr_inventory_product,,1,1,1,1
+access_cr_category,access_cr_category,model_cr_inventory_category,,1,1,1,1
+access_cr_supplier,access_cr_supplier,model_cr_inventory_supplier,,1,1,1,1
+access_cr_productWizard,access_cr_productWizard,model_cr_product_wizard,,1,1,1,1

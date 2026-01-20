@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="cr_inventory_category_view_form" model="ir.ui.view">
+        <field name="name">cr.inventory.category.view.form</field>
+        <field name="model">cr.inventory.category</field>
+        <field name="arch" type="xml">
+            <form string="Category">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="info"/>
+                        <field name="product_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="cr_inventory_category_view_tree" model="ir.ui.view">
+        <field name="name">cr.inventory.category.view.tree</field>
+        <field name="model">cr.inventory.category</field>
+        <field name="arch" type="xml">
+            <tree string="Category">
+                <field name="name"/>
+                <field name="info"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="cr_inventory_category_action" model="ir.actions.act_window">
+        <field name="name">Category</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cr.inventory.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="cr_inventory_management_menu"
+              name="Inventory Management"
+              sequence="999"/>
+
+    <menuitem id="cr_inventory_category_menu"
+              name="Category"
+              parent="cr_inventory_management_menu"
+              action="cr_inventory_category_action"
+              sequence="1"/>
+</odoo>

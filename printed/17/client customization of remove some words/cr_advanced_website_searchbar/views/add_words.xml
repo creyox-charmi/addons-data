@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_cr_add_words_tree" model="ir.ui.view">
+        <field name="name">cr.add.words.tree</field>
+        <field name="model">cr.add.words</field>
+        <field name="arch" type="xml">
+            <tree string="Add Words">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_cr_add_words_form" model="ir.ui.view">
+        <field name="name">cr.add.words.form</field>
+        <field name="model">cr.add.words</field>
+        <field name="arch" type="xml">
+            <form string="Add Words">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cr_add_words" model="ir.actions.act_window">
+        <field name="name">Add Words</field>
+        <field name="res_model">cr.add.words</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_cr_add_words_root" name="Custom Records"/>
+    <menuitem id="menu_cr_add_words" name="Add Words" parent="website_sale.menu_catalog" action="action_cr_add_words"/>
+</odoo>

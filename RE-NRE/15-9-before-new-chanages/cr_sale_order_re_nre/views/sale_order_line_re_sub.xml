@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_re_sub_line_tree" model="ir.ui.view">
+        <field name="name">sale.order.line.re.sub.tree</field>
+        <field name="model">sale.order.line.re.sub</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="false" edit="true">
+                <field name="everest_pn"/>
+                <field name="remaining_qty_to_deliver"/>
+                <field name="delivery_note_number"/>
+                <field name="updated_delivery_date"/>
+                <field name="required_delivery_date"/>
+                <field name="quantity"/>
+                <field name="sub_line_code"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Form View -->
+    <record id="view_re_sub_line_form" model="ir.ui.view">
+        <field name="name">sale.order.line.re.sub.form</field>
+        <field name="model">sale.order.line.re.sub</field>
+        <field name="arch" type="xml">
+            <form string="RE Sub Line">
+                <sheet>
+                    <group>
+                        <field name="everest_pn"/>
+                        <field name="remaining_qty_to_deliver"/>
+                    </group>
+                    <group>
+                        <field name="delivery_note_number"/>
+                        <field name="sub_line_code"/>
+                    </group>
+                    <group>
+                        <field name="quantity"/>
+                    </group>
+                    <group>
+                        <field name="required_delivery_date"/>
+                        <field name="updated_delivery_date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

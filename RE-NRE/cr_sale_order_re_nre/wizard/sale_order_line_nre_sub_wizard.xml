@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+<record id="view_nre_sub_line_wizard_form" model="ir.ui.view">
+    <field name="name">sale.order.line.nre.sub.wizard.form</field>
+    <field name="model">sale.order.line.nre.sub.wizard</field>
+    <field name="arch" type="xml">
+        <form string="NRE Sub Lines Wizard">
+            <sheet>
+                <group>
+                    <field name="sale_line_id" invisible="1"/>
+                </group>
+                <field name="line_ids">
+                    <tree editable="bottom">
+                        <field name="everest_pn"/>
+                        <field name="product_id"/>
+                        <field name="billing_percentage"/>
+                        <field name="sub_line_description"/>
+                        <field name="sub_line_code"/>
+                        <field name="required_delivery_date"/>
+                        <field name="updated_delivery_date"/>
+                    </tree>
+                </field>
+            </sheet>
+            <footer>
+                <button string="Confirm" type="object" name="action_confirm" class="btn-primary"/>
+                <button string="Cancel" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+</odoo>

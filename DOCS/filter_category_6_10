@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_blogs_with_category_filter"
+              inherit_id="website_blog.blog_post_short">
+        <xpath expr="//t[@t-call='website_blog.blogs_nav']" position="after">
+            <t t-if="is_community_blog">
+                <div class="container mt-3 o_wslides_home_nav position-relative">
+                    <nav class="navbar navbar-expand-md navbar-light shadow-sm ps-0">
+
+                        <!-- Clear filtering button (mobile) -->
+                        <div class="text-nowrap ms-auto d-md-none" t-if="search_categories or search_tags">
+                            <a t-att-href="blog_query_url(category='', tag='')()" class="btn btn-info me-2" role="button" title="Clear filters">
+                                <i class="fa fa-eraser"/> Clear filters
+                            </a>
+                        </div>
+
+                        <!-- Toggle button for mobile -->
+                        <button class="navbar-toggler px-1" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#navbarFilters"
+                                aria-controls="navbarFilters" aria-expanded="false"
+                                aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon small"/>
+                        </button>
+
+                        <!-- Collapsible filters menu -->
+                        <div class="collapse navbar-collapse" id="navbarFilters">
+                            <ul class="navbar-nav flex-grow-1">
+
+                                <!-- Categories Dropdown -->
+                                <li class="nav-item dropdown ml16">
+                                    <a t-att-class="'nav-link dropdown-toggle %s' % ('active' if search_categories else '')"
+                                       href="#"
+                                       id="navCategories"
+                                       role="button"
+                                       data-bs-toggle="dropdown"
+                                       aria-haspopup="true"
+                                       aria-expanded="false">
+                                        Categories
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navCategories">
+                                        <t t-foreach="tag_categories" t-as="category">
+                                            <a rel="nofollow"
+                                               t-att-class="'dropdown-item post_link %s' % ('active' if category in search_categories else '')"
+                                               t-att-href="blog_query_url(category=slugify_categories(search_categories.ids, toggle_category_id=category.id), tag=slugify_tags_for_categories(search_tags.ids, search_categories.ids, category.id))()"
+                                               t-esc="category.name"/>
+                                        </t>
+                                    </div>
+                                </li>
+
+                                <!-- Tags Dropdown -->
+                                <li class="nav-item dropdown ml16">
+                                    <a t-att-class="'nav-link dropdown-toggle %s' % ('active' if search_tags else '')"
+                                       href="#"
+                                       id="navTags"
+                                       role="button"
+                                       data-bs-toggle="dropdown"
+                                       aria-haspopup="true"
+                                       aria-expanded="false"
+                                       t-att-disabled="not search_categories or None">
+                                        Tags
+                                        <t t-if="not search_categories"> (Select category first)</t>
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navTags">
+                                        <t t-if="not search_categories">
+                                            <span class="dropdown-item-text text-muted">Please select a category first</span>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-foreach="available_tags" t-as="tag">
+                                                <a rel="nofollow"
+                                                   t-att-class="'dropdown-item post_link %s' % ('active' if tag in search_tags else '')"
+                                                   t-att-href="blog_query_url(category=slugify_categories(search_categories.ids), tag=slugify_tags(search_tags.ids, toggle_tag_id=tag.id))()"
+                                                   t-esc="tag.name"/>
+                                            </t>
+                                        </t>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <!-- Clear filtering button (desktop) -->
+                            <div class="ms-auto d-none d-md-flex" t-if="search_categories or search_tags">
+                                <a t-att-href="blog_query_url(category='', tag='')()"
+                                   class="btn btn-info text-nowrap me-2"
+                                   role="button" title="Clear filters">
+                                    <i class="fa fa-eraser"/> Clear filters
+                                </a>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <!-- Display selected filters as badges -->
+                    <div class="mt-3" t-if="search_categories or search_tags">
+                        <!-- Category badges -->
+                        <t t-if="search_categories">
+                            <t t-foreach="search_categories" t-as="category">
+                                <span class="align-items-baseline border d-inline-flex ps-2 rounded mb-2 me-2 bg-primary text-white">
+                                    <i class="fa fa-folder me-2"/>
+                                    <t t-esc="category.name"/>
+                                    <a t-att-href="blog_query_url(category=slugify_categories(search_categories.ids, toggle_category_id=category.id), tag=slugify_tags_for_categories(search_tags.ids, search_categories.ids, category.id))()"
+                                       class="btn border-0 py-1 post_link text-white"
+                                       rel="nofollow">&#215;</a>
+                                </span>
+                            </t>
+                        </t>
+
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>
+
+
+-------------------------------
+#
+# from odoo import http
+# from odoo.http import request
+# from odoo.addons.website_blog.controllers.main import WebsiteBlog
+# from odoo.addons.http_routing.models.ir_http import slug, unslug
+# from odoo.addons.website.controllers.main import QueryURL
+# import werkzeug
+#
+# from odoo import http, fields, tools, models
+# from odoo.addons.http_routing.models.ir_http import slug, unslug
+# from odoo.addons.website.controllers.main import QueryURL
+# from odoo.http import request
+# from odoo.tools import html2plaintext
+# from odoo.tools.misc import get_lang
+# from odoo.tools import sql
+#
+# class PortalBlogCategoryFilter(WebsiteBlog):
+#     _items_per_page = 10
+#
+#     def _slugify_tags(self, tag_ids, toggle_tag_id=None):
+#         """Prepares comma separated slugified tags for URLs"""
+#         tag_ids = list(tag_ids) if tag_ids else []
+#
+#         if toggle_tag_id:
+#             if toggle_tag_id in tag_ids:
+#                 tag_ids.remove(toggle_tag_id)
+#             else:
+#                 tag_ids.append(toggle_tag_id)
+#
+#         if not tag_ids:
+#             return ''
+#
+#         return ','.join(slug(tag) for tag in request.env['blog.tag'].sudo().browse(tag_ids))
+#
+#
+#
+#     def _parse_tag_slugs(self, slug_tags):
+#         """Parse comma-separated tag slugs and return tag recordset
+#
+#         :param slug_tags: string like "technology-1,marketing-2"
+#         :return: blog.tag recordset
+#         """
+#         BlogTag = request.env['blog.tag']
+#         if not slug_tags:
+#             return BlogTag
+#
+#         try:
+#             tag_ids = []
+#             for tag_slug in slug_tags.split(','):
+#                 tag_id = unslug(tag_slug)[1]
+#                 if tag_id:
+#                     tag_ids.append(tag_id)
+#             return BlogTag.sudo().search([('id', 'in', tag_ids)]) if tag_ids else BlogTag
+#         except Exception:
+#             return BlogTag
+#
+#     def _get_community_id(self):
+#         BlogPost = request.env['blog.post'].sudo()
+#         return BlogPost.blog_id.search([('name', 'ilike', 'comunidad')], limit=1)
+#
+#
+#     @http.route([
+#         '/blog',
+#         '/blog/page/<int:page>',
+#         '/blog/tag/<string:tag>',
+#         '/blog/tag/<string:tag>/page/<int:page>',
+#         '''/blog/<model("blog.blog"):blog>''',
+#         '''/blog/<model("blog.blog"):blog>/page/<int:page>''',
+#         '''/blog/<model("blog.blog"):blog>/tag/<string:tag>''',
+#         '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
+#     ], type='http', auth="public", website=True, sitemap=True)
+#     def blog(self, blog=None, tag=None, page=1, search=None, **opt):
+#         Blog = request.env['blog.blog']
+#         blogs = tools.lazy(lambda: Blog.search(request.website.website_domain(), order="create_date asc, id asc"))
+#
+#         if not blog and len(blogs) == 1:
+#             url = QueryURL('/blog/%s' % slug(blogs[0]), search=search, **opt)()
+#             return request.redirect(url, code=302)
+#
+#         date_begin, date_end = opt.get('date_begin'), opt.get('date_end')
+#
+#         # Check if this is the Comunidad blog FIRST
+#         community_blog = request.env['blog.blog'].sudo().search([('name', 'ilike', 'comunidad')], limit=1)
+#         is_community_blog = blog and community_blog and blog.id == community_blog.id
+#
+#         if not is_community_blog:
+#             return super(PortalBlogCategoryFilter, self).blog(blog=blog, tag=tag, page=page, search=search, **opt)
+#
+#         # Custom logic ONLY for Comunidad blog
+#         print('yeyyy')
+#         values = self._prepare_blog_values(blogs=blogs, blog=blog, tags=tag, page=page, search=search, **opt)
+#
+#         if isinstance(values, werkzeug.wrappers.Response):
+#             return values
+#
+#         if blog:
+#             values['main_object'] = blog
+#
+#         # Parse selected tags (custom behavior)
+#         search_tags = self._parse_tag_slugs(tag)
+#
+#         # Get all tag categories
+#         tag_categories = request.env['blog.tag.category'].sudo().search([])
+#
+#         # Build blog_query_url properly
+#         blog_url_base = '/blog/%s' % slug(blog)
+#
+#         values.update({
+#             'blog_url': QueryURL(blog_url_base, ['tag'], blog=blog, tag=tag, date_begin=date_begin, date_end=date_end,
+#                                  search=search),
+#             'is_community_blog': True,
+#             'tag_categories': tag_categories,
+#             'search_tags': search_tags,
+#             'slugify_tags': self._slugify_tags,
+#             'blog_query_url': lambda **kw: QueryURL(blog_url_base, ['tag'], **kw),
+#         })
+#
+#         return request.render("website_blog.blog_post_short", values)
+#
+
+
+from odoo import http
+from odoo.http import request
+from odoo.addons.website_blog.controllers.main import WebsiteBlog
+from odoo.addons.http_routing.models.ir_http import slug, unslug
+from odoo.addons.website.controllers.main import QueryURL
+import werkzeug
+from odoo import tools
+
+
+class PortalBlogCategoryFilter(WebsiteBlog):
+
+    def _slugify_categories(self, category_ids, toggle_category_id=None):
+        """Prepares comma separated slugified categories for URLs"""
+        category_ids = list(category_ids) if category_ids else []
+
+        if toggle_category_id:
+            if toggle_category_id in category_ids:
+                category_ids.remove(toggle_category_id)
+            else:
+                category_ids.append(toggle_category_id)
+
+        if not category_ids:
+            return ''
+
+        return ','.join(slug(cat) for cat in request.env['blog.tag.category'].sudo().browse(category_ids))
+
+    def _slugify_tags(self, tag_ids, toggle_tag_id=None):
+        """Prepares comma separated slugified tags for URLs"""
+        tag_ids = list(tag_ids) if tag_ids else []
+
+        if toggle_tag_id:
+            if toggle_tag_id in tag_ids:
+                tag_ids.remove(toggle_tag_id)
+            else:
+                tag_ids.append(toggle_tag_id)
+
+        if not tag_ids:
+            return ''
+
+        return ','.join(slug(tag) for tag in request.env['blog.tag'].sudo().browse(tag_ids))
+
+    def _slugify_tags_for_categories(self, tag_ids, category_ids, toggle_category_id):
+        """Remove tags when their category is unselected"""
+        if toggle_category_id not in category_ids:
+            return self._slugify_tags(tag_ids)
+
+        # Category being removed - remove its tags
+        category = request.env['blog.tag.category'].sudo().browse(toggle_category_id)
+        category_tag_ids = category.tag_ids.ids
+
+        remaining_tag_ids = [tid for tid in tag_ids if tid not in category_tag_ids]
+        return self._slugify_tags(remaining_tag_ids)
+
+    def _parse_category_slugs(self, slug_categories):
+        """Parse comma-separated category slugs"""
+        CategoryModel = request.env['blog.tag.category']
+        if not slug_categories:
+            return CategoryModel
+
+        try:
+            category_ids = []
+            for cat_slug in slug_categories.split(','):
+                cat_id = unslug(cat_slug)[1]
+                if cat_id:
+                    category_ids.append(cat_id)
+            return CategoryModel.sudo().search([('id', 'in', category_ids)]) if category_ids else CategoryModel
+        except Exception:
+            return CategoryModel
+
+    def _parse_tag_slugs(self, slug_tags):
+        """Parse comma-separated tag slugs"""
+        BlogTag = request.env['blog.tag']
+        if not slug_tags:
+            return BlogTag
+
+        try:
+            tag_ids = []
+            for tag_slug in slug_tags.split(','):
+                tag_id = unslug(tag_slug)[1]
+                if tag_id:
+                    tag_ids.append(tag_id)
+            return BlogTag.sudo().search([('id', 'in', tag_ids)]) if tag_ids else BlogTag
+        except Exception:
+            return BlogTag
+
+    # Updated controller - Add category route
+
+    @http.route([
+        '/blog',
+        '/blog/page/<int:page>',
+        '/blog/tag/<string:tag>',
+        '/blog/tag/<string:tag>/page/<int:page>',
+        '/blog/category/<string:category>',
+        '/blog/category/<string:category>/page/<int:page>',
+        '/blog/category/<string:category>/tag/<string:tag>',
+        '/blog/category/<string:category>/tag/<string:tag>/page/<int:page>',
+        '''/blog/<model("blog.blog"):blog>''',
+        '''/blog/<model("blog.blog"):blog>/page/<int:page>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
+        '''/blog/<model("blog.blog"):blog>/category/<string:category>''',
+        '''/blog/<model("blog.blog"):blog>/category/<string:category>/page/<int:page>''',
+        '''/blog/<model("blog.blog"):blog>/category/<string:category>/tag/<string:tag>''',
+        '''/blog/<model("blog.blog"):blog>/category/<string:category>/tag/<string:tag>/page/<int:page>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/category/<string:category>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/category/<string:category>/page/<int:page>''',
+    ], type='http', auth="public", website=True, sitemap=True)
+    def blog(self, blog=None, tag=None, page=1, search=None, category=None, **opt):
+        Blog = request.env['blog.blog']
+        blogs = tools.lazy(lambda: Blog.search(request.website.website_domain(), order="create_date asc, id asc"))
+
+        if not blog and len(blogs) == 1:
+            url = QueryURL('/blog/%s' % slug(blogs[0]), search=search, **opt)()
+            return request.redirect(url, code=302)
+
+        date_begin, date_end, state = opt.get('date_begin'), opt.get('date_end'), opt.get('state')
+
+        community_blog = request.env['blog.blog'].sudo().search([('name', 'ilike', 'comunidad')], limit=1)
+        is_community_blog = blog and community_blog and blog.id == community_blog.id
+
+        if not is_community_blog:
+            return super(PortalBlogCategoryFilter, self).blog(blog=blog, tag=tag, page=page, search=search, **opt)
+
+        values = self._prepare_blog_values(blogs=blogs, blog=blog, date_begin=date_begin, date_end=date_end, tags=tag, state=state, page=page, search=search)
+
+        if isinstance(values, werkzeug.wrappers.Response):
+            return values
+
+        if blog:
+            values['main_object'] = blog
+
+        search_categories = self._parse_category_slugs(category)
+        search_tags = self._parse_tag_slugs(tag)
+
+        if search_categories:
+            available_tags = request.env['blog.tag'].sudo().search([
+                ('category_id', 'in', search_categories.ids)
+            ])
+        else:
+            available_tags = request.env['blog.tag']
+
+        tag_categories = request.env['blog.tag.category'].sudo().search([])
+
+        blog_url_base = '/blog/%s' % slug(blog)
+
+        values.update({
+            'blog_url': QueryURL(blog_url_base, ['tag', 'category'], blog=blog, tag=tag, category=category,
+                                 date_begin=date_begin, date_end=date_end, search=search),
+            'is_community_blog': True,
+            'tag_categories': tag_categories,
+            'search_categories': search_categories,
+            'search_tags': search_tags,
+            'available_tags': available_tags,
+            'slugify_categories': self._slugify_categories,
+            'slugify_tags': self._slugify_tags,
+            'slugify_tags_for_categories': self._slugify_tags_for_categories,
+            'blog_query_url': lambda **kw: QueryURL(blog_url_base, ['tag', 'category'], **kw),
+        })
+
+        return request.render("website_blog.blog_post_short", values)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+-----------------------------------------
+currently i develop the module for messaging in website in that what happen 
+- in base suppose i have a one blog and their author is admin so , when other user comment on that blog then in msg in sender that user come and in Recipients admin is come 
+- and suppose there are 5 user who have comment on the admin user blog then same process is done , in the sender that user is come and in the Recipients admin is come
+- but in the base when admin wants to send the ,sg to particular user from their blog then that functionalityt is not avialble so that's why i develop this module to that the author is send the msg to the particular user see below code i provide you 
+- but i want some functonality in that , i want that suppose test user is send msg to admin user then admin user get the unread msg count until , it not show the msg then that count should be as it is 
+- and also we have to add bell icon and from there also we can identify that which user msg admin got and that is unread 
+- currently i develop the module but in that what happen suppose there are 5 user in my system and all are comment in admin author's blog , and admin user is reply to particular one user then that user is not shown msg yet then that unread count also have to add in that

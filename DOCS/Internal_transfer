@@ -1,0 +1,986 @@
+I want to develop one cstom module in odoo18 which technical nameshould be cr_custom_internal_transfer
+I give you the requriments
+1] This functionality is only for Internal transfer not for Delivery and Receipt
+2] In Internal Transfer only one product should include ,no more then one product can select , if select more then one product then give validation
+3] After choose the product in source location choose the location in which product stock is available , if one location is available then select that and if more then one location is available then select first one based on product_uom_qty available in stock
+4]And in the location_id only display location in which stock is available based on product_uom_qty and product 
+5] If in any location stock is  not available then give validation according to that 
+6] when qty increase then also check if product_uom_qty stock not available in any location then give validation according to that 
+note : insort in location_id select location in which of product stock available based on product_uom_qty and also only display loctaions in which stocks avaiilable based on product_uom_qty , and check in available_quantity bcoz it is the on hand qty which hase not been resereved on a transfer
+
+
+so if you have any doubt then ask me first after give me code , first tell me you have any doubt or not if you don't have any doubt then give answer no and if you have any doubt then ask me which is doubt and after i tell you give me code 
+
+
+1]Stock Location Selection Logic: When you say "select first one based on product_uom_qty available in stock" - do you mean:
+Select the location with the highest available quantity?
+Or select the first location (ordered by some criteria like location name/sequence) that has sufficient stock?
+Ans : Select the location with the highest available quantity
+
+2]Quantity Validation: When the user enters a quantity in the internal transfer line:
+Should the system automatically select a location that has at least that quantity available?
+Or should it select any location with stock and then validate if the entered quantity exceeds available stock?
+Ans :  If in any location the qty is not available of the user enter quantity then user can't able to enter that qty , user only enter max qty which is available in max stock
+
+3]Location Domain Filter: For the location_id field, should the dropdown:
+Show only locations with any stock (available_quantity > 0)?
+Or show only locations with stock greater than or equal to the quantity being transferred?
+Ans : show only locations with stock greater than or equal to the quantity being transferred
+
+4]Multiple Locations Scenario: If the requested quantity is 10, but Location A has 5 units and Location B has 8 units:
+Should the system select Location B (highest stock)?
+Should it show a validation error saying no single location has enough stock?
+Or should it allow splitting across locations (though this seems against your "one location" intent)?
+Ans : Should the system select Location B (highest stock)
+
+5]Stock Model: You mentioned checking available_quantity - should I use the stock.quant model to check stock levels, correct?
+Ans : Yes
+
+6]Operation Type: Should this restriction apply to a specific internal transfer operation type, or all operation types where code='internal'?
+Ans :  all operation types where code='internal'
+
+
+and in stock.quant see available_quantity not store in db , so see how it compute
+
+
+
+class StockQuant(models.Model):
+    _name = 'stock.quant'
+    _description = 'Quants'
+    _rec_name = 'product_id'
+    _rec_names_search = ['location_id', 'lot_id', 'package_id', 'owner_id']
+
+    def _domain_location_id(self):
+        if self.env.user.has_group('stock.group_stock_user'):
+            return "[('usage', 'in', ['internal', 'transit'])] if context.get('inventory_mode') else []"
+        return "[]"
+
+    def _domain_lot_id(self):
+        if self.env.user.has_group('stock.group_stock_user'):
+            return ("[] if not context.get('inventory_mode') else"
+                " [('product_id', '=', context.get('active_id', False))] if context.get('active_model') == 'product.product' else"
+                " [('product_id.product_tmpl_id', '=', context.get('active_id', False))] if context.get('active_model') == 'product.template' else"
+                " [('product_id', '=', product_id)]")
+        return "[]"
+
+    def _domain_product_id(self):
+        if self.env.user.has_group('stock.group_stock_user'):
+            return ("[] if not context.get('inventory_mode') else"
+                " [('is_storable', '=', True), ('product_tmpl_id', 'in', context.get('product_tmpl_ids', []) + [context.get('product_tmpl_id', 0)])] if context.get('product_tmpl_ids') or context.get('product_tmpl_id') else"
+                " [('is_storable', '=', True)]")
+        return "[]"
+
+    product_id = fields.Many2one(
+        'product.product', 'Product',
+        domain=lambda self: self._domain_product_id(),
+        ondelete='restrict', required=True, index=True, check_company=True)
+    product_tmpl_id = fields.Many2one(
+        'product.template', string='Product Template',
+        related='product_id.product_tmpl_id')
+    product_uom_id = fields.Many2one(
+        'uom.uom', 'Unit of Measure',
+        readonly=True, related='product_id.uom_id')
+    is_favorite = fields.Boolean(related='product_tmpl_id.is_favorite')
+    company_id = fields.Many2one(related='location_id.company_id', string='Company', store=True, readonly=True)
+    location_id = fields.Many2one(
+        'stock.location', 'Location',
+        domain=lambda self: self._domain_location_id(),
+        auto_join=True, ondelete='restrict', required=True, index=True)
+    warehouse_id = fields.Many2one('stock.warehouse', related='location_id.warehouse_id')
+    storage_category_id = fields.Many2one(related='location_id.storage_category_id', store=True)
+    cyclic_inventory_frequency = fields.Integer(related='location_id.cyclic_inventory_frequency')
+    lot_id = fields.Many2one(
+        'stock.lot', 'Lot/Serial Number', index=True,
+        ondelete='restrict', check_company=True,
+        domain=lambda self: self._domain_lot_id())
+    lot_properties = fields.Properties(related='lot_id.lot_properties', definition='product_id.lot_properties_definition', readonly=True)
+    sn_duplicated = fields.Boolean(string="Duplicated Serial Number", compute='_compute_sn_duplicated', help="If the same SN is in another Quant")
+    package_id = fields.Many2one(
+        'stock.quant.package', 'Package',
+        domain="['|', ('location_id', '=', location_id), '&', ('location_id', '=', False), '&', ('package_use', '=', 'reusable'), ('quant_ids', '=', False)]",
+        help='The package containing this quant', ondelete='restrict', check_company=True, index=True)
+    owner_id = fields.Many2one(
+        'res.partner', 'Owner',
+        help='This is the owner of the quant', check_company=True,
+        index='btree_not_null')
+    quantity = fields.Float(
+        'Quantity',
+        help='Quantity of products in this quant, in the default unit of measure of the product',
+        readonly=True, digits='Product Unit of Measure')
+    reserved_quantity = fields.Float(
+        'Reserved Quantity',
+        default=0.0,
+        help='Quantity of reserved products in this quant, in the default unit of measure of the product',
+        readonly=True, required=True, digits='Product Unit of Measure')
+    available_quantity = fields.Float(
+        'Available Quantity',
+        help="On hand quantity which hasn't been reserved on a transfer, in the default unit of measure of the product",
+        compute='_compute_available_quantity', digits='Product Unit of Measure')
+    in_date = fields.Datetime('Incoming Date', readonly=True, required=True, default=fields.Datetime.now)
+    tracking = fields.Selection(related='product_id.tracking', readonly=True)
+    on_hand = fields.Boolean('On Hand', store=False, search='_search_on_hand')
+    product_categ_id = fields.Many2one(related='product_tmpl_id.categ_id')
+
+    # Inventory Fields
+    inventory_quantity = fields.Float(
+        'Counted Quantity', digits='Product Unit of Measure',
+        help="The product's counted quantity.")
+    inventory_quantity_auto_apply = fields.Float(
+        'Inventoried Quantity', digits='Product Unit of Measure',
+        compute='_compute_inventory_quantity_auto_apply',
+        inverse='_set_inventory_quantity', groups='stock.group_stock_manager'
+    )
+    inventory_diff_quantity = fields.Float(
+        'Difference', compute='_compute_inventory_diff_quantity', store=True,
+        help="Indicates the gap between the product's theoretical quantity and its counted quantity.",
+        readonly=True, digits='Product Unit of Measure')
+    inventory_date = fields.Date(
+        'Scheduled Date', compute='_compute_inventory_date', store=True, readonly=False,
+        help="Next date the On Hand Quantity should be counted.")
+    last_count_date = fields.Date(compute='_compute_last_count_date', help='Last time the Quantity was Updated')
+    inventory_quantity_set = fields.Boolean(store=True, compute='_compute_inventory_quantity_set', readonly=False, default=False)
+    is_outdated = fields.Boolean('Quantity has been moved since last count', compute='_compute_is_outdated', search='_search_is_outdated')
+    user_id = fields.Many2one(
+        'res.users', 'Assigned To', help="User assigned to do product count.",
+        domain=lambda self: [('groups_id', 'in', self.env.ref('stock.group_stock_user').id)])
+
+    @api.depends('quantity', 'reserved_quantity')
+    def _compute_available_quantity(self):
+        for quant in self:
+            quant.available_quantity = quant.quantity - quant.reserved_quantity
+            
+            
+            
+            
+            
+            
+
+1. Dynamic Location Update:
+When the user changes the quantity in the transfer line, should the system:
+
+Automatically update/re-select the location_id to the one with highest stock that meets the new quantity?
+Or keep the currently selected location and just show validation if it doesn't have enough stock?
+
+Ans : Automatically update
+
+2. Product Change Behavior:
+When the user changes the product in the line, should the location_id:
+
+Automatically be set to the location with highest available stock?
+Or be cleared and wait for user selection?
+
+Ans : Automatically be set to the location with highest available stock
+
+
+3. Validation Timing:
+Should validations trigger:
+
+On save/confirm of the transfer?
+Immediately (onchange) when user enters quantity or selects product?
+Both?
+
+Ans : BOth
+
+4. Error Message Details:
+When showing "stock not available" validation, should it show:
+
+Just a generic "insufficient stock" message?
+Or detailed info like "Maximum available quantity is X in location Y"?
+
+Ans : detailed info like "Maximum available quantity is X in location Y"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+below is my custom modle code based on my above requriments but i got some error i am telling you
+
+1] when product change in stock.move and location_id already set in the related stock.picking's location_id then that location_id should change based on available stock location , currently it through the error which is not ok see 
+
+Insufficient stock in location "WH05/Input". Available: 0.00, Required: 8.00.
+Maximum available quantity is 1410.00 in location "WH05/Stock".
+
+
+
+
+
+my current code:
+
+
+
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
+import logging
+
+_logger = logging.getLogger(__name__)
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    @api.depends('picking_type_id', 'partner_id', 'move_ids_without_package', 'move_ids_without_package.location_id')
+    def _compute_location_id(self):
+        """Override to set location from move for internal transfers"""
+        for picking in self:
+            # For internal transfers with moves, use the move's location
+            if picking.picking_type_id.code == 'internal' and picking.move_ids_without_package:
+                first_move = picking.move_ids_without_package[0]
+                if first_move.location_id:
+                    picking.location_id = first_move.location_id
+                    continue
+
+            # Call super for other cases
+            if picking.state in ('cancel', 'done') or picking.return_id:
+                continue
+            picking = picking.with_company(picking.company_id)
+            if picking.picking_type_id:
+                location_src = picking.picking_type_id.default_location_src_id
+                if location_src.usage == 'supplier' and picking.partner_id:
+                    location_src = picking.partner_id.property_stock_supplier
+                location_dest = picking.picking_type_id.default_location_dest_id
+                if location_dest.usage == 'customer' and picking.partner_id:
+                    location_dest = picking.partner_id.property_stock_customer
+                picking.location_id = location_src.id
+                picking.location_dest_id = location_dest.id
+
+    @api.constrains('move_ids_without_package')
+    def _check_single_product_internal_transfer(self):
+        """Constraint to ensure only one product in internal transfers"""
+        for picking in self:
+            if picking.picking_type_id.code == 'internal':
+                if len(picking.move_ids_without_package) > 1:
+                    raise ValidationError(_(
+                        'Internal transfers can only contain one product. '
+                        'Please create separate transfers for multiple products.'
+                    ))
+
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    # @api.onchange('product_id')
+    # def _onchange_product_id_custom(self):
+    #     """Auto-select location with highest stock when product changes"""
+    #     _logger.info("=== ONCHANGE PRODUCT TRIGGERED ===")
+    #     _logger.info(f"Product: {self.product_id.name if self.product_id else 'None'}")
+    #     _logger.info(f"Picking Type Code: {self.picking_id.picking_type_id.code if self.picking_id else 'None'}")
+    #
+    #     if self.picking_id.picking_type_id.code == 'internal' and self.product_id:
+    #         # Get location with highest available stock
+    #         location = self._get_location_with_highest_stock(self.product_id, self.product_uom_qty or 0)
+    #         _logger.info(f"Found location: {location.complete_name if location else 'None'}")
+    #
+    #         if location:
+    #             self.location_id = location
+    #             # Trigger picking location_id recomputation
+    #             self.picking_id._compute_location_id()
+    #         else:
+    #             # Check if any stock exists at all
+    #             max_qty, max_location = self._get_max_available_quantity(self.product_id)
+    #             if max_qty <= 0:
+    #                 # No stock available - clear product and show error
+    #                 product_name = self.product_id.name
+    #                 self.product_id = False
+    #                 return {
+    #                     'warning': {
+    #                         'title': _('No Stock Available'),
+    #                         'message': _(
+    #                             'Product "%s" has no stock available in any internal location. '
+    #                             'Please select a product with available stock.'
+    #                         ) % product_name
+    #                     }
+    #                 }
+
+    @api.onchange('product_id')
+    def _onchange_product_id_custom(self):
+        """Auto-select location with highest stock when product changes"""
+        _logger.info("=== ONCHANGE PRODUCT TRIGGERED ===")
+        _logger.info(f"Product: {self.product_id.name if self.product_id else 'None'}")
+        _logger.info(f"Picking Type Code: {self.picking_id.picking_type_id.code if self.picking_id else 'None'}")
+
+        if self.picking_id.picking_type_id.code == 'internal' and self.product_id:
+            # Always get location with highest stock when product changes
+            # Use quantity if already entered, otherwise 0
+            required_qty = self.product_uom_qty if self.product_uom_qty else 0
+            location = self._get_location_with_highest_stock(self.product_id, required_qty)
+            _logger.info(f"Found location: {location.complete_name if location else 'None'}")
+
+            if location:
+                # Update both move and picking location
+                self.location_id = location
+                self.picking_id._compute_location_id()
+            else:
+                # Check if any stock exists at all (even less than required qty)
+                max_qty, max_location = self._get_max_available_quantity(self.product_id)
+                if max_qty > 0:
+                    # Set location with max stock even if qty is insufficient
+                    self.location_id = max_location
+                    self.picking_id._compute_location_id()
+                    # Show warning about insufficient quantity
+                    return {
+                        'warning': {
+                            'title': _('Insufficient Stock'),
+                            'message': _(
+                                'Maximum available quantity is %.2f in location "%s". '
+                                'Location has been set to the one with maximum stock.'
+                            ) % (max_qty, max_location.complete_name)
+                        }
+                    }
+                else:
+                    # No stock available at all - clear product
+                    product_name = self.product_id.name
+                    self.product_id = False
+                    return {
+                        'warning': {
+                            'title': _('No Stock Available'),
+                            'message': _(
+                                'Product "%s" has no stock available in any internal location. '
+                                'Please select a product with available stock.'
+                            ) % product_name
+                        }
+                    }
+
+    @api.onchange('product_uom_qty')
+    def _onchange_product_uom_qty_custom(self):
+        """Auto-update location when quantity changes"""
+        _logger.info("=== ONCHANGE QTY TRIGGERED ===")
+        _logger.info(f"Product: {self.product_id.name if self.product_id else 'None'}")
+        _logger.info(f"Qty: {self.product_uom_qty}")
+
+        if self.picking_id.picking_type_id.code == 'internal' and self.product_id and self.product_uom_qty:
+            # Get location with highest stock for new quantity
+            location = self._get_location_with_highest_stock(self.product_id, self.product_uom_qty)
+            _logger.info(f"Found location: {location.complete_name if location else 'None'}")
+
+            if location:
+                self.location_id = location
+                # Trigger picking location_id recomputation
+                self.picking_id._compute_location_id()
+            else:
+                # Get max available quantity across all locations
+                max_qty, max_location = self._get_max_available_quantity(self.product_id)
+                if max_qty > 0:
+                    return {
+                        'warning': {
+                            'title': _('Insufficient Stock'),
+                            'message': _(
+                                'Maximum available quantity is %.2f in location "%s". '
+                                'Please reduce the quantity.'
+                            ) % (max_qty, max_location.complete_name if max_location else 'N/A')
+                        }
+                    }
+                else:
+                    return {
+                        'warning': {
+                            'title': _('No Stock Available'),
+                            'message': _(
+                                'No stock available for product "%s" in any location.'
+                            ) % self.product_id.display_name
+                        }
+                    }
+
+    @api.constrains('product_uom_qty', 'location_id', 'product_id')
+    def _check_stock_availability_internal(self):
+        """Validate stock availability on save"""
+        for move in self:
+            if move.picking_id.picking_type_id.code == 'internal' and move.product_id and move.product_uom_qty > 0:
+                if not move.location_id:
+                    max_qty, max_location = move._get_max_available_quantity(move.product_id)
+                    if max_qty > 0:
+                        raise ValidationError(_(
+                            'Maximum available quantity is %.2f in location "%s". '
+                            'Please select a valid location or reduce the quantity.'
+                        ) % (max_qty, max_location.complete_name))
+                    else:
+                        raise ValidationError(_(
+                            'No stock available for product "%s" in any location.'
+                        ) % move.product_id.display_name)
+
+                # Check if selected location has sufficient stock
+                available_qty = move._get_available_quantity_in_location(
+                    move.product_id, move.location_id
+                )
+                if available_qty < move.product_uom_qty:
+                    max_qty, max_location = move._get_max_available_quantity(move.product_id)
+                    raise ValidationError(_(
+                        'Insufficient stock in location "%s". Available: %.2f, Required: %.2f.\n'
+                        'Maximum available quantity is %.2f in location "%s".'
+                    ) % (
+                                              move.location_id.complete_name,
+                                              available_qty,
+                                              move.product_uom_qty,
+                                              max_qty,
+                                              max_location.complete_name if max_location else 'N/A'
+                                          ))
+
+    def _get_location_with_highest_stock(self, product, required_qty):
+        """Get location with highest available stock that meets required quantity"""
+        if not product:
+            return False
+
+        # Search for quants with available quantity >= required quantity
+        quants = self.env['stock.quant'].search([
+            ('product_id', '=', product.id),
+            ('location_id.usage', '=', 'internal'),
+        ])
+
+        _logger.info(f"Found {len(quants)} quants for product {product.name}")
+
+        # Filter and find location with highest available quantity
+        location_stock = {}
+        for quant in quants:
+            available = quant.available_quantity
+            _logger.info(
+                f"Location: {quant.location_id.complete_name}, Available: {available}, Required: {required_qty}")
+
+            if available >= required_qty:
+                location = quant.location_id
+                if location not in location_stock:
+                    location_stock[location] = 0
+                location_stock[location] += available
+
+        if location_stock:
+            # Return location with highest stock
+            best_location = max(location_stock, key=location_stock.get)
+            _logger.info(f"Best location: {best_location.complete_name} with qty {location_stock[best_location]}")
+            return best_location
+
+        _logger.info("No suitable location found")
+        return False
+
+    def _get_max_available_quantity(self, product):
+        """Get maximum available quantity and its location for a product"""
+        if not product:
+            return 0, False
+
+        quants = self.env['stock.quant'].search([
+            ('product_id', '=', product.id),
+            ('location_id.usage', '=', 'internal'),
+        ])
+
+        location_stock = {}
+        for quant in quants:
+            available = quant.available_quantity
+            if available > 0:
+                location = quant.location_id
+                if location not in location_stock:
+                    location_stock[location] = 0
+                location_stock[location] += available
+
+        if location_stock:
+            max_location = max(location_stock, key=location_stock.get)
+            return location_stock[max_location], max_location
+
+        return 0, False
+
+    def _get_available_quantity_in_location(self, product, location):
+        """Get available quantity for product in specific location"""
+        if not product or not location:
+            return 0
+
+        quants = self.env['stock.quant'].search([
+            ('product_id', '=', product.id),
+            ('location_id', '=', location.id),
+        ])
+
+        total_available = sum(quant.available_quantity for quant in quants)
+        return total_available
+
+    @api.onchange('product_id', 'product_uom_qty')
+    def _onchange_location_domain(self):
+        """Set domain for location_id to show only locations with sufficient stock"""
+        res = {}
+        if self.picking_id.picking_type_id.code == 'internal' and self.product_id:
+            required_qty = self.product_uom_qty or 0
+
+            # Get all quants for the product
+            quants = self.env['stock.quant'].search([
+                ('product_id', '=', self.product_id.id),
+                ('location_id.usage', '=', 'internal'),
+            ])
+
+            # Calculate available quantity per location
+            location_stock = {}
+            for quant in quants:
+                available = quant.available_quantity
+                location = quant.location_id
+                if location not in location_stock:
+                    location_stock[location] = 0
+                location_stock[location] += available
+
+            # Filter locations with sufficient stock
+            valid_location_ids = [
+                loc.id for loc, qty in location_stock.items()
+                if qty >= required_qty
+            ]
+
+            _logger.info(f"Valid locations for qty {required_qty}: {valid_location_ids}")
+
+            if valid_location_ids:
+                res['domain'] = {'location_id': [('id', 'in', valid_location_ids)]}
+            else:
+                res['domain'] = {'location_id': [('id', '=', False)]}
+
+        return res
+
+
+class StockMoveLine(models.Model):
+    _inherit = 'stock.move.line'
+
+    @api.constrains('quantity', 'location_id', 'product_id')
+    def _check_stock_availability_move_line(self):
+        """Validate stock availability on move lines"""
+        for line in self:
+            if line.picking_id.picking_type_id.code == 'internal' and line.product_id and line.quantity > 0:
+                # Check available quantity in location
+                quants = self.env['stock.quant'].search([
+                    ('product_id', '=', line.product_id.id),
+                    ('location_id', '=', line.location_id.id),
+                ])
+
+                total_available = sum(quant.available_quantity for quant in quants)
+
+                if total_available < line.quantity:
+                    # Get max available across all locations
+                    all_quants = self.env['stock.quant'].search([
+                        ('product_id', '=', line.product_id.id),
+                        ('location_id.usage', '=', 'internal'),
+                    ])
+
+                    location_stock = {}
+                    for quant in all_quants:
+                        available = quant.available_quantity
+                        if available > 0:
+                            location = quant.location_id
+                            if location not in location_stock:
+                                location_stock[location] = 0
+                            location_stock[location] += available
+
+                    if location_stock:
+                        max_location = max(location_stock, key=location_stock.get)
+                        max_qty = location_stock[max_location]
+                        raise ValidationError(_(
+                            'Insufficient stock for product "%s" in location "%s".\n'
+                            'Available: %.2f, Required: %.2f.\n'
+                            'Maximum available quantity is %.2f in location "%s".'
+                        ) % (
+                                                  line.product_id.display_name,
+                                                  line.location_id.complete_name,
+                                                  total_available,
+                                                  line.quantity,
+                                                  max_qty,
+                                                  max_location.complete_name
+                                              ))
+                    else:
+                        raise ValidationError(_(
+                            'No stock available for product "%s" in any location.'
+                        ) % line.product_id.display_name)
+                        
+                        
+                        
+                        
+                        
+                        
+ONLY GIVE THE PART OF CODE WHICH I NEED TO CHANGE NOT GIVE WHOLE CODE AGAIN PLZ AND ALSO NOT GIVE ANAY DESCRIPTION ONLY GIVE THE PART OF CODE WHICH I NEED TO CHANGE NOT GIVE WHOLE CODE AGAIN AND ALSO NOT GIVE ANY DESCRIPTION , ONLY GIVE ME THE CODE IN WHICH I NEED TO CHANE OR NEED TO ADD
+
+
+
+
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
+import logging
+
+_logger = logging.getLogger(__name__)
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    @api.depends('picking_type_id', 'partner_id', 'move_ids_without_package', 'move_ids_without_package.location_id','move_ids_without_package.product_id', 'move_ids_without_package.product_uom_qty')
+    def _compute_location_id(self):
+        """Override to set location from move for internal transfers"""
+        for picking in self:
+            # For internal transfers with moves, use the move's location
+            if picking.picking_type_id.code == 'internal' and picking.move_ids_without_package:
+                first_move = picking.move_ids_without_package[0]
+                if first_move.location_id:
+                    picking.location_id = first_move.location_id
+                    continue
+
+            # Call super for other cases
+            if picking.state in ('cancel', 'done') or picking.return_id:
+                continue
+            picking = picking.with_company(picking.company_id)
+            if picking.picking_type_id:
+                location_src = picking.picking_type_id.default_location_src_id
+                if location_src.usage == 'supplier' and picking.partner_id:
+                    location_src = picking.partner_id.property_stock_supplier
+                location_dest = picking.picking_type_id.default_location_dest_id
+                if location_dest.usage == 'customer' and picking.partner_id:
+                    location_dest = picking.partner_id.property_stock_customer
+                picking.location_id = location_src.id
+                picking.location_dest_id = location_dest.id
+
+
+    @api.constrains('move_ids_without_package')
+    def _check_single_product_internal_transfer(self):
+        """Constraint to ensure only one product in internal transfers"""
+        for picking in self:
+            if picking.picking_type_id.code == 'internal':
+                if len(picking.move_ids_without_package) > 1:
+                    raise ValidationError(_(
+                        'Internal transfers can only contain one product. '
+                        'Please create separate transfers for multiple products.'
+                    ))
+
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    @api.onchange('product_id')
+    def _onchange_product_id_custom(self):
+        """Auto-select location with highest stock when product changes"""
+        _logger.info("=== ONCHANGE PRODUCT TRIGGERED ===")
+        _logger.info(f"Product: {self.product_id.name if self.product_id else 'None'}")
+        _logger.info(f"Picking Type Code: {self.picking_id.picking_type_id.code if self.picking_id else 'None'}")
+
+        if self.picking_id.picking_type_id.code == 'internal' and self.product_id:
+            required_qty = self.product_uom_qty if self.product_uom_qty else 0
+
+            # Get max available quantity first
+            max_qty, max_location = self._get_max_available_quantity(self.product_id)
+
+            if max_qty > 0:
+                # Set location to the one with max stock
+                self.location_id = max_location
+                self.picking_id.location_id = max_location
+
+                # If required qty is more than available, show warning
+                if required_qty > max_qty:
+                    return {
+                        'warning': {
+                            'title': _('Insufficient Stock'),
+                            'message': _(
+                                'Maximum available quantity is %.2f in location "%s". '
+                                'Location has been set to the one with maximum stock.'
+                            ) % (max_qty, max_location.complete_name)
+                        }
+                    }
+            else:
+                # No stock available at all
+                product_name = self.product_id.name
+                self.product_id = False
+                return {
+                    'warning': {
+                        'title': _('No Stock Available'),
+                        'message': _(
+                            'Product "%s" has no stock available in any internal location. '
+                            'Please select a product with available stock.'
+                        ) % product_name
+                    }
+                }
+
+    @api.onchange('product_uom_qty')
+    def _onchange_product_uom_qty_custom(self):
+        """Auto-update location when quantity changes"""
+        _logger.info("=== ONCHANGE QTY TRIGGERED ===")
+        _logger.info(f"Product: {self.product_id.name if self.product_id else 'None'}")
+        _logger.info(f"Qty: {self.product_uom_qty}")
+
+        if self.picking_id.picking_type_id.code == 'internal' and self.product_id and self.product_uom_qty:
+            # Get max available quantity
+            max_qty, max_location = self._get_max_available_quantity(self.product_id)
+
+            if max_qty > 0:
+                # Always set location to the one with max stock
+                self.location_id = max_location
+                self.picking_id.location_id = max_location
+
+                # If required qty is more than available, show warning
+                if self.product_uom_qty > max_qty:
+                    return {
+                        'warning': {
+                            'title': _('Insufficient Stock'),
+                            'message': _(
+                                'Maximum available quantity is %.2f in location "%s". '
+                                'Please reduce the quantity.'
+                            ) % (max_qty, max_location.complete_name)
+                        }
+                    }
+            else:
+                return {
+                    'warning': {
+                        'title': _('No Stock Available'),
+                        'message': _(
+                            'No stock available for product "%s" in any location.'
+                        ) % self.product_id.display_name
+                    }
+                }
+
+    @api.constrains('product_uom_qty', 'location_id', 'product_id')
+    def _check_stock_availability_internal(self):
+        """Validate stock availability on save"""
+        for move in self:
+            if move.picking_id.picking_type_id.code == 'internal' and move.product_id and move.product_uom_qty > 0:
+                if not move.location_id:
+                    max_qty, max_location = move._get_max_available_quantity(move.product_id)
+                    if max_qty > 0:
+                        raise ValidationError(_(
+                            'Maximum available quantity is %.2f in location "%s". '
+                            'Please select a valid location or reduce the quantity.'
+                        ) % (max_qty, max_location.complete_name))
+                    else:
+                        raise ValidationError(_(
+                            'No stock available for product "%s" in any location.'
+                        ) % move.product_id.display_name)
+
+                # Check if selected location has sufficient stock
+                available_qty = move._get_available_quantity_in_location(
+                    move.product_id, move.location_id
+                )
+                if available_qty < move.product_uom_qty:
+                    max_qty, max_location = move._get_max_available_quantity(move.product_id)
+                    raise ValidationError(_(
+                        'Insufficient stock in location "%s". Available: %.2f, Required: %.2f.\n'
+                        'Maximum available quantity is %.2f in location "%s".'
+                    ) % (
+                                              move.location_id.complete_name,
+                                              available_qty,
+                                              move.product_uom_qty,
+                                              max_qty,
+                                              max_location.complete_name if max_location else 'N/A'
+                                          ))
+
+    def _get_location_with_highest_stock(self, product, required_qty):
+        """Get location with highest available stock that meets required quantity"""
+        if not product:
+            return False
+
+        # Search for quants with available quantity >= required quantity
+        quants = self.env['stock.quant'].search([
+            ('product_id', '=', product.id),
+            ('location_id.usage', '=', 'internal'),
+        ])
+
+        _logger.info(f"Found {len(quants)} quants for product {product.name}")
+
+        # Filter and find location with highest available quantity
+        location_stock = {}
+        for quant in quants:
+            available = quant.available_quantity
+            _logger.info(
+                f"Location: {quant.location_id.complete_name}, Available: {available}, Required: {required_qty}")
+
+            if available >= required_qty:
+                location = quant.location_id
+                if location not in location_stock:
+                    location_stock[location] = 0
+                location_stock[location] += available
+
+        if location_stock:
+            # Return location with highest stock
+            best_location = max(location_stock, key=location_stock.get)
+            _logger.info(f"Best location: {best_location.complete_name} with qty {location_stock[best_location]}")
+            return best_location
+
+        _logger.info("No suitable location found")
+        return False
+
+    def _get_max_available_quantity(self, product):
+        """Get maximum available quantity and its location for a product"""
+        if not product:
+            return 0, False
+
+        quants = self.env['stock.quant'].search([
+            ('product_id', '=', product.id),
+            ('location_id.usage', '=', 'internal'),
+        ])
+
+        location_stock = {}
+        for quant in quants:
+            available = quant.available_quantity
+            if available > 0:
+                location = quant.location_id
+                if location not in location_stock:
+                    location_stock[location] = 0
+                location_stock[location] += available
+
+        if location_stock:
+            max_location = max(location_stock, key=location_stock.get)
+            return location_stock[max_location], max_location
+
+        return 0, False
+
+    def _get_available_quantity_in_location(self, product, location):
+        """Get available quantity for product in specific location"""
+        if not product or not location:
+            return 0
+
+        quants = self.env['stock.quant'].search([
+            ('product_id', '=', product.id),
+            ('location_id', '=', location.id),
+        ])
+
+        total_available = sum(quant.available_quantity for quant in quants)
+        return total_available
+
+
+    @api.onchange('product_id', 'product_uom_qty')
+    def _onchange_location_domain(self):
+        """Set domain for location_id to show only locations with sufficient stock"""
+        res = {}
+        if self.picking_id.picking_type_id.code == 'internal' and self.product_id:
+            required_qty = self.product_uom_qty or 0
+
+            # Get all quants for the product
+            quants = self.env['stock.quant'].search([
+                ('product_id', '=', self.product_id.id),
+                ('location_id.usage', '=', 'internal'),
+            ])
+
+            # Calculate available quantity per location
+            location_stock = {}
+            for quant in quants:
+                available = quant.available_quantity
+                location = quant.location_id
+                if location not in location_stock:
+                    location_stock[location] = 0
+                location_stock[location] += available
+
+            # Filter locations with sufficient stock
+            valid_location_ids = [
+                loc.id for loc, qty in location_stock.items()
+                if qty >= required_qty
+            ]
+
+            _logger.info(f"Valid locations for qty {required_qty}: {valid_location_ids}")
+
+            if valid_location_ids:
+                res['domain'] = {'location_id': [('id', 'in', valid_location_ids)]}
+            else:
+                res['domain'] = {'location_id': [('id', '=', False)]}
+
+        return res
+
+
+class StockMoveLine(models.Model):
+    _inherit = 'stock.move.line'
+
+    @api.constrains('quantity', 'location_id', 'product_id')
+    def _check_stock_availability_move_line(self):
+        """Validate stock availability on move lines"""
+        for line in self:
+            if line.picking_id.picking_type_id.code == 'internal' and line.product_id and line.quantity > 0:
+                # Check available quantity in location
+                quants = self.env['stock.quant'].search([
+                    ('product_id', '=', line.product_id.id),
+                    ('location_id', '=', line.location_id.id),
+                ])
+
+                total_available = sum(quant.available_quantity for quant in quants)
+
+                if total_available < line.quantity:
+                    # Get max available across all locations
+                    all_quants = self.env['stock.quant'].search([
+                        ('product_id', '=', line.product_id.id),
+                        ('location_id.usage', '=', 'internal'),
+                    ])
+
+                    location_stock = {}
+                    for quant in all_quants:
+                        available = quant.available_quantity
+                        if available > 0:
+                            location = quant.location_id
+                            if location not in location_stock:
+                                location_stock[location] = 0
+                            location_stock[location] += available
+
+                    if location_stock:
+                        max_location = max(location_stock, key=location_stock.get)
+                        max_qty = location_stock[max_location]
+                        raise ValidationError(_(
+                            'Insufficient stock for product "%s" in location "%s".\n'
+                            'Available: %.2f, Required: %.2f.\n'
+                            'Maximum available quantity is %.2f in location "%s".'
+                        ) % (
+                                                  line.product_id.display_name,
+                                                  line.location_id.complete_name,
+                                                  total_available,
+                                                  line.quantity,
+                                                  max_qty,
+                                                  max_location.complete_name
+                                              ))
+                    else:
+                        raise ValidationError(_(
+                            'No stock available for product "%s" in any location.'
+                        ) % line.product_id.display_name)
+
+
+class StockLocation(models.Model):
+    _inherit = 'stock.location'
+
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        """Override name_search to filter locations based on stock availability for internal transfers"""
+
+        if args is None:
+            args = []
+
+        # Check if we're in internal transfer context
+        if self.env.context.get('restricted_picking_type_code') == 'internal':
+            res_id = self.env.context.get('params', {}).get('resId')
+
+            if res_id:
+                picking = self.env['stock.picking'].browse(res_id)
+
+                if picking.exists() and picking.move_ids_without_package:
+                    move = picking.move_ids_without_package[0]
+
+                    if move.product_id:
+                        required_qty = move.product_uom_qty or 0
+
+                        # Get all quants for the product
+                        quants = self.env['stock.quant'].search([
+                            ('product_id', '=', move.product_id.id),
+                            ('location_id.usage', '=', 'internal'),
+                        ])
+
+                        # Calculate available quantity per location
+                        location_stock = {}
+                        for quant in quants:
+                            available = quant.available_quantity
+                            location = quant.location_id
+                            if location not in location_stock:
+                                location_stock[location] = 0
+                            location_stock[location] += available
+
+                        # Filter locations with sufficient stock
+                        valid_location_ids = [
+                            loc.id for loc, qty in location_stock.items()
+                            if qty >= required_qty
+                        ]
+
+                        if valid_location_ids:
+                            args = args + [('id', 'in', valid_location_ids)]
+                        else:
+                            args = args + [('id', '=', False)]
+
+        return super().name_search(name=name, args=args, operator=operator, limit=limit)
+
+
+
+

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="cr_multi_user_task_timer_app.PTTimer" owl="1">
+        <span t-if="isRunning" style="color: grey;font-weight:500;font-size:16px;margin-top:50px;" t-esc="formattedDuration"/>
+    </t>
+</templates>

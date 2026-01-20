@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cr_developer_assignees,cr_developer_assignees,model_cr_developer_assignees,,1,1,1,1
+access_cr_merge_bill,cr_merge_bill,model_cr_merge_bill,,1,1,1,1
+access_cr_merge_invoice,cr_merge_invoice,model_cr_merge_invoice,,1,1,1,1
+project.access_project_task,project.task,model_project_task,project.group_project_user,1,1,0,0
+access_project_task_admin_user,access_project_task_admin_user,model_project_task,base.group_system,1,1,1,1

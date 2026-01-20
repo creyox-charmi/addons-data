@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mrp.BomOverviewTable" t-inherit-mode="extension" t-name="BomOverviewTableCustom">
+    <xpath expr="//h6[@t-if='data.bom_code']" position="after">
+        <div>
+            <h2>
+                Is EVR:
+                <i t-if="data.is_evr" class="fa fa-check-square text-success"/>
+                <i t-if="!data.is_evr" class="fa fa-square-o text-muted"/>
+            </h2>
+        </div>
+    </xpath>
+        <xpath expr="//th[@name='th_mrp_bom_h']" position="after">
+                <th t-if="data.is_evr" class="text-center" title="Customer Furnished Equipment">CFE Quantity</th>
+    </xpath>
+        <xpath expr="//th[@t-if='showAvailabilities'][1]" position="before">
+                <th t-if="data.is_evr" class="text-center" title="Customer Furnished Equipment">mo_internal_ref</th>
+    </xpath>
+    <xpath expr="//thead/tr/th[normalize-space(text())='Route']" position="after">
+        <th t-if="data.is_evr" class="text-center">LLI</th>
+        <th t-if="data.is_evr" class="text-center">Approval 1</th>
+        <th t-if="data.is_evr" class="text-center">Approval 2</th>
+    </xpath>
+    </t>
+</templates>

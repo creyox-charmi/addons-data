@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_cr_terms_and_condition_account_move_form" model="ir.ui.view">
+        <field name="name">cr.terms.and.condition.account.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@id='header_right_group']" position="inside">
+                <field name="cr_account_move_terms_and_condition_id" domain="[('cr_model_reference', '=', 'invoice')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="cr_account_move_terms_and_condition_action" model="ir.actions.act_window">
+        <field name="name">Terms and Conditions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cr.terms.and.condition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="cr_account_move_terms_and_condition_menu"
+              name="Terms and Conditions"
+              parent="account.menu_finance_configuration"
+              action="cr_account_move_terms_and_condition_action"
+              sequence="9999"/>
+</odoo>

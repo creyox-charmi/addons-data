@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="default_terms_condition" model="terms.condition">
+            <field name="name">Publishing Terms and Conditions</field>
+            <field name="sequence">10</field>
+            <field name="active" eval="True"/>
+            <field name="is_default" eval="True"/>
+            <field name="description"><![CDATA[
+                <h4>Terms and Conditions for Publishing Your Content</h4>
+                <p>By publishing your blog content, you agree to the following terms:</p>
+                <ul>
+                    <li><strong>Content Responsibility:</strong> You are solely responsible for the content you publish, including its accuracy and legality.</li>
+                    <li><strong>Privacy:</strong> Once published, your content will be publicly visible to all users.</li>
+                    <li><strong>Confidentiality:</strong> Please ensure you are not publishing confidential or sensitive information.</li>
+                    <li><strong>Copyright:</strong> You confirm that you have the right to publish all content including images, text, and multimedia.</li>
+                    <li><strong>Community Guidelines:</strong> Your content must comply with our community guidelines and not contain offensive material.</li>
+                    <li><strong>Data Processing:</strong> We will process your published data according to our privacy policy.</li>
+                </ul>
+                <p><strong>Important:</strong> Are you sure you want to publish your confidential data?</p>
+            ]]></field>
+        </record>
+    </data>
+</odoo>

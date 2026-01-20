@@ -1,0 +1,23 @@
+{
+    "name": "Cr Payroll Customization",
+    "author": "Creyox Technologies",
+    "version": "16.0.0.0",
+    "summary": "",
+    "sequence": 10,
+    "description": """""",
+    "category": "",
+    "website": "",
+    "depends": ["base", "bi_hr_payroll", "account", "bi_hr_payroll_account", "cr_time_off_customization"],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/hr_payslip_run.xml",
+        "views/hr_payslip.xml",
+        "views/config_setting.xml",
+        "views/employee_wizard.xml",
+        "wizard/hr_payslip_employees.xml",
+    ],
+    "demo": [],
+    "installable": True,
+    "application": True,
+    "license": "LGPL-3",
+}

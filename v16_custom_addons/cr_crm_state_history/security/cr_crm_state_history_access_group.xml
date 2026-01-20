@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <record id="cr_group_access" model="res.groups">
+        <field name="name">Enable CRM stage Change History</field>
+    </record>
+</odoo>

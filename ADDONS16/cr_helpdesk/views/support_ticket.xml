@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="support_ticket_portal" name="Support Ticket Portal">
+        <t t-call="website.layout">
+            <form id="support_ticket_form" action="/helpdesk" method="post">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div class="container form_wrap">
+                    <div class="row" style="padding-top: 20px;">
+                        <h2 class="form-title">Submit a Ticket</h2>
+                    </div>
+                    <div class="row" style="padding-top: 20px;">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Contact Name</label>
+                            <input type="text" class="form-control input_box" id="name" name="name" required="1"
+                                   placeholder="Contact Name" t-att-value="form_data.get('name', '')"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control input_box" id="email" name="email" required="1"
+                                   placeholder="Email" t-att-value="form_data.get('email', '')"/>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-top: 20px;">
+                        <div class="col-md-6">
+                            <label for="ticket_type" class="form-label">Ticket Type</label>
+                            <select id="ticket_type" name="ticket_type" class="input_box form-control" required="1">
+                                <option value="">Select Ticket Type</option>
+                                <t t-foreach="ticket_types" t-as="type">
+                                    <option t-att-value="type[0]"
+                                            t-att-selected="form_data.get('ticket_type') == type[0]">
+                                        <t t-esc="type[1]"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="so_number" class="form-label">Order Number</label>
+                            <input type="text" class="form-control input_box" id="so_number" name="so_number"
+                                   placeholder="Order Number" t-att-value="form_data.get('so_number', '')"/>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-top: 20px;">
+                        <div class="col-md-6">
+                            <label for="module_tech_name" class="form-label">Module Technical Name</label>
+                            <select id="module_tech_name" name="module_tech_name"
+                                    t-attf-class="input_box form-control module_search" placeholder="Select Module Name">
+                                <option>Select Module Name</option>
+                                <t t-foreach="request.env['cr.odoo.apps'].sudo().search([])" t-as="module_name">
+                                    <option t-att-value="module_name.id"
+                                            t-esc="module_name.tech_name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="version" class="form-label">Version</label>
+                            <select id="version" name="version" class="input_box form-control">
+                                <option>Select Version</option>
+                                <t t-foreach="request.env['cr.versions.odoo'].sudo().search([])" t-as="version">
+                                    <option t-att-value="version.id"
+                                            t-att-selected="form_data.get('version') == str(version.id)">
+                                        <t t-esc="version.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-top: 20px;">
+                        <div class="col-md-6">
+                            <label for="edition" class="form-label">Odoo Edition</label>
+                            <select id="edition" name="edition" class="input_box form-control">
+                                <option>Select Edition</option>
+                                <t t-foreach="editions" t-as="edition">
+                                    <option t-att-value="edition[0]"
+                                            t-att-selected="form_data.get('edition') == edition[0]">
+                                        <t t-esc="edition[1]"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="odoo_platform" class="form-label">Odoo Platform</label>
+                            <select id="odoo_platform" name="odoo_platform" class="input_box form-control">
+                                <option>Select Platform</option>
+                                <option t-att-selected="form_data.get('odoo_platform') == 'Odoo Sh'">Odoo Sh</option>
+                                <option t-att-selected="form_data.get('odoo_platform') == 'Odoo Online'">Odoo Online
+                                </option>
+                                <option t-att-selected="form_data.get('odoo_platform') == 'Self-Hosted'">Self-Hosted
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-top: 20px;">
+                        <div class=" col-md-6">
+                            <label for="skype" class="form-label">Skype</label>
+                            <input type="text" class="form-control input_box" id="skype" name="skype"
+                                   placeholder="Skype ID" t-att-value="form_data.get('skype', '')"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="mobile" class="form-label">Contact Number</label>
+                            <input type="text" class="form-control input_box" id="mobile" name="mobile"
+                                   placeholder="Contact Number" t-att-value="form_data.get('mobile', '')"/>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-top: 20px; padding-bottom: 20px;">
+                        <div class="col-md-12">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control input_box textarea-box" id="message" name="message"
+                                      placeholder="Message" required="1"
+                            >
+                                <t t-esc="form_data.get('message', '')"/>
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <!-- Add Google reCAPTCHA -->
+                    <div class="row" style="padding-bottom: 16px;">
+                        <div class="g-recaptcha" data-sitekey="6Ld9qIsqAAAAAEtplT7QjcQ1lUC7HgrXrOp8gx0J"/>
+                    </div>
+                    <t t-if="error_message">
+                        <div class="alert alert-danger mt-3" role="alert">
+                            <t t-esc="error_message"/>
+                        </div>
+                    </t>
+                    <center>
+                        <button type="submit" class="form-control btn btn-primary" id="submit_button">Submit</button>
+                    </center>
+                </div>
+            </form>
+
+            <t t-jquery="head" t-operation="append">
+                <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+                <style>
+                    /* Custom CSS to set the height of the Select2 container */
+                    .select2-container--default .select2-selection--single {
+                    height: 50px;
+                    line-height: 50px;
+                    border: 2px solid #ddd;
+                    border-radius: 8px;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                    background-color: #f9f9f9;
+                    }
+                    .select2-container--default .select2-selection--single .select2-selection__rendered {
+                    line-height: 50px;
+                    }
+                    .select2-container--default .select2-selection--single .select2-selection__arrow {
+                    height: 50px;
+                    }
+                </style>
+            </t>
+
+            <t t-jquery=".input_box.form-control" t-operation="replace">
+                <script>
+                    $(document).ready(function() {
+                    $('#module_tech_name').select2();
+                    });
+                </script>
+            </t>
+        </t>
+    </template>
+</odoo>

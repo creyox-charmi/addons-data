@@ -1,0 +1,214 @@
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies
+import random
+from odoo import api, fields, models
+from odoo.tools import escape_psql
+from odoo.osv import expression
+from odoo.osv.expression import OR
+import logging
+
+_logger = logging.getLogger(__name__)
+class WebsiteSearchableMixin(models.AbstractModel):
+    _inherit = 'website.searchable.mixin'
+
+    @api.model
+    def _search_fetch(self, search_detail, search, limit, order):
+        model = self.sudo() if search_detail.get('requires_sudo') else self
+        fields = search_detail['search_fields']
+        base_domain = search_detail['base_domain']
+
+        if isinstance(search, set):
+            search_lower_set = {s.lower() for s in search}
+            domain_clauses = []
+
+            for s in search_lower_set:
+                single_clause = []
+                for field in fields:
+                    single_clause.append((field, 'ilike', s))
+                domain_clauses.append(['|'] * (len(single_clause) - 1) + single_clause)
+
+            # Combine all clauses using OR safely
+            combined_domain = base_domain
+            for clause in domain_clauses:
+                combined_domain = OR([combined_domain, clause])
+
+            results = model.search(combined_domain, limit=limit, order=order)
+            return results, len(results)
+
+        # For normal string searches — use super and additional filter
+        ref = super()._search_fetch(search_detail, search, limit, order)
+
+        if search and ref[1] != 0:
+            model = self.sudo() if search_detail.get("requires_sudo") else self
+            fields = search_detail["search_fields"]
+            search_lower = search.lower()
+            records = model.browse(ref[0].ids)
+
+            final_ordered_data = []
+            added_ids = set()
+
+            for field in fields:
+                for record in records:
+                    if record.id in added_ids:
+                        continue  # Already added from a higher-priority field
+
+                    if '.' in field:
+                        rel_field, sub_field = field.split('.')
+                        rel_values = getattr(record, rel_field, False)
+                        if rel_values:
+                            for rel in rel_values:
+                                val = getattr(rel, sub_field, '')
+                                if val and search_lower in val.lower():
+                                    final_ordered_data.append(record)
+                                    added_ids.add(record.id)
+                                    break
+                    else:
+                        val = getattr(record, field, '')
+                        if val and search_lower in str(val).lower():
+                            final_ordered_data.append(record)
+                            added_ids.add(record.id)
+                            break
+
+            return model.browse([rec.id for rec in final_ordered_data]), len(final_ordered_data)
+
+        return ref
+
+    # @api.model
+    # def _search_fetch(self, search_detail, search, limit, order):
+    #     _logger.info("==== _search_fetch START ====")
+    #     _logger.info("Search Term: '%s'", search)
+    #     _logger.info("Limit: %s | Order: %s", limit, order)
+    #
+    #     fields = search_detail['search_fields']
+    #     _logger.info("Weighted (Ordered) Search Fields: %s", fields)
+    #
+    #     result, count = super()._search_fetch(
+    #         search_detail, search, limit, order
+    #     )
+    #     _logger.info("Initial result count from super: %s", count)
+    #
+    #     if search and isinstance(search, str) and result:
+    #         _logger.info("Starting custom matching logic...")
+    #         search_lower = search.lower()
+    #         final_data = self.browse()
+    #         ids = result.ids
+    #
+    #         for field in fields:
+    #             _logger.info("Searching in field: %s", field)
+    #
+    #             for rec_id in ids:
+    #                 record = self.browse(rec_id)
+    #
+    #                 try:
+    #                     if field == "product_tag_ids.name":
+    #                         tags = record.product_tag_ids
+    #                         for tag in tags:
+    #                             if search_lower in tag.name.lower():
+    #                                 if record not in final_data:
+    #                                     final_data |= record
+    #                                     _logger.info("Matched tag '%s' in record %s", tag.name, rec_id)
+    #                     else:
+    #                         value = record
+    #                         for part in field.split("."):
+    #                             value = getattr(value, part, None)
+    #                             if value is None:
+    #                                 break
+    #
+    #                         if value:
+    #                             if isinstance(value, models.Model):
+    #                                 value = ", ".join(value.mapped("name"))
+    #
+    #                             val_str = str(value).lower()
+    #                             if search_lower in val_str:
+    #                                 if record not in final_data:
+    #                                     final_data |= record
+    #                                     _logger.info("Matched value '%s' in field '%s' (record ID %s)", value, field,
+    #                                                  rec_id)
+    #
+    #                 except Exception as e:
+    #                     _logger.warning("Error while matching field '%s' on record ID %s: %s", field, rec_id, str(e))
+    #
+    #                 if len(final_data) >= limit:
+    #                     _logger.info("Reached limit of %s, stopping...", limit)
+    #                     break
+    #             if len(final_data) >= limit:
+    #                 break
+    #
+    #         result = final_data
+    #         count = len(final_data)
+    #         _logger.info("Final matched record count: %s", count)
+    #
+    #     _logger.info("==== _search_fetch END ====")
+    #     return result, count
+
+    # @api.model
+    # def _search_fetch(self, search_detail, search, limit, order):
+    #     _logger.info("Starting _search_fetch")
+    #     model = self.sudo() if search_detail.get("requires_sudo") else self
+    #     _logger.info("Using model: %s", model)
+    # 
+    #     fields = search_detail.get("search_fields", [])
+    #     _logger.info("Search fields with priority: %s", fields)
+    # 
+    #     ref = search_detail.get("ref_func", lambda *_: (model.browse(), 0))(model, search)
+    #     _logger.info("Initial ref (records, count): %s", ref)
+    # 
+    #     if search and ref[1] != 0:
+    #         ids = ref[0].ids
+    #         _logger.info("Ref returned %s ids to process", len(ids))
+    # 
+    #         final_data = model.browse()
+    #         for field in fields:
+    #             _logger.info("Searching in field: %s", field)
+    #             for id in ids:
+    #                 data = model.browse(id)
+    #                 _logger.info("Checking record ID: %s", id)
+    # 
+    #                 if field == "product_tag_ids.name":
+    #                     tags = data.product_tag_ids
+    #                     for tag in tags:
+    #                         _logger.info("Checking tag: %s", tag.name)
+    #                         if search.lower() in tag.name.lower():
+    #                             if data not in final_data:
+    #                                 final_data |= data
+    #                                 _logger.info("Added record %s by tag match", data.id)
+    #                 else:
+    #                     value = getattr(data, field, None)
+    #                     if value and isinstance(value, str) and search.lower() in value.lower():
+    #                         if data not in final_data:
+    #                             final_data |= data
+    #                             _logger.info("Added record %s by field %s match", data.id, field)
+    # 
+    #         count = len(final_data)
+    #         ref = (final_data, count)
+    #         _logger.info("Final matching records: %s", count)
+    # 
+    #     else:
+    #         _logger.info("No search or zero records returned in ref")
+    # 
+    #     return ref
+
+    def _search_build_domain(self, domain_list, search, fields, extra=None):
+        """
+        Builds a search domain by combining a base domain with partial matches
+        of each term in the search expression against given fields.
+
+        If search is a set, it is ignored and only the base domain is returned.
+        """
+        domains = domain_list.copy()
+
+        # Skip if search is a set
+        if search and not isinstance(search, set):
+            search_terms = search.split()
+            for search_term in search_terms:
+                subdomains = [[(field, 'ilike', escape_psql(search_term))] for field in fields]
+                if extra:
+                    extra_domain = extra(self.env, search_term)
+                    if extra_domain:
+                        subdomains.append(extra_domain)
+                domains.append(expression.OR(subdomains))
+
+        return expression.AND(domains)
+
+
+

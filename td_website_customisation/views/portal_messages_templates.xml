@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Update portal home counter -->
+    <template id="portal_my_home_inherit_messages" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="message_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Mensajes</t>
+                <t t-set="url" t-value="'/my/messages'"/>
+                <t t-set="placeholder_count" t-value="'message_count'"/>
+                <t t-set="text">
+                    <t t-if="unread_count and unread_count > 0">
+                        <t t-esc="message_count"/>
+                        total
+                        (
+                        <span class="text-danger fw-bold" t-esc="unread_count"/>
+                        no leídos)
+                    </t>
+                    <t t-else="">
+                        <t t-esc="message_count"/>
+                    </t>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_messages_list_view_extended" name="My Messages List Extended">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mensajes</t>
+            </t>
+
+            <t t-if="not message_ids">
+                <div class="alert alert-info">
+                    <p>No tienes conversaciones aún.</p>
+                </div>
+            </t>
+
+            <t t-if="message_ids" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Correo</th>
+                        <th>Total</th>
+                        <th>No leídos</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="message_ids" t-as="item">
+                        <tr>
+                            <td>
+                                <a t-attf-href="/my/messages/thread/#{item['partner'].id}">
+                                    <t t-esc="item['partner'].name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="item['partner'].email or 'N/A'"/>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">
+                                    <t t-esc="item['message_count']"/>
+                                </span>
+                            </td>
+                            <td>
+                                <span t-attf-class="badge #{('bg-danger' if item['unread_count'] > 0 else 'bg-success')}">
+                                    <t t-esc="item['unread_count']"/>
+                                </span>
+                            </td>
+                            <td>
+                                <a t-attf-href="/my/messages/thread/#{item['partner'].id}"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="fa fa-eye me-1"/>Ver
+                                </a>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_messages_thread_view" name="Messages Thread View">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-comments me-2"/>
+                                    Conversación con
+                                    <t t-esc="other_partner.name"/>
+                                </h4>
+                            </div>
+                            <div class="card-body p-4 message-container" id="messageContainer">
+                                <t t-if="not messages">
+                                    <p class="text-muted text-center">No hay mensajes en esta conversación.</p>
+                                </t>
+                                <t t-else="">
+                                    <t t-foreach="messages" t-as="msg">
+                                        <t t-set="is_mine" t-value="msg.author_id.id == current_partner.id"/>
+                                        <t t-set="replied_to"
+                                           t-value="msg.parent_id if msg.is_portal_reply else False"/>
+
+                                        <div t-attf-class="message-item mb-3 d-flex #{('justify-content-end' if is_mine else 'justify-content-start')}"
+                                             t-att-data-message-id="msg.id">
+                                            <div t-attf-class="message-bubble p-3 rounded #{('bg-primary text-white ms-auto' if is_mine else 'bg-light me-auto')}"
+                                                 style="max-width: 70%;">
+
+                                                <t t-if="replied_to">
+                                                    <div t-attf-class="reply-reference p-2 mb-2 rounded #{('bg-white bg-opacity-25' if is_mine else 'bg-secondary bg-opacity-10')}">
+                                                        <small class="d-block mb-1">
+                                                            <i class="fa fa-reply me-1"/>
+                                                            Respondiendo a
+                                                            <strong t-esc="replied_to.author_id.name"/>
+                                                        </small>
+                                                        <div class="small reply-body-text"
+                                                             t-out="msg.portal_reply_body if msg.portal_reply_body else replied_to.body"/>
+                                                    </div>
+                                                </t>
+
+                                                <div>
+                                                    <strong>
+                                                        <t t-esc="msg.author_id.name"/>
+                                                    </strong>
+                                                    <div class="mt-2 message-body" t-att-data-message-id="msg.id"
+                                                         t-field="msg.body"/>
+                                                    <small t-attf-class="d-block mt-2 #{('text-white-50' if is_mine else 'text-muted')}">
+                                                        <t t-esc="msg.date" t-options="{'widget': 'datetime'}"/>
+                                                    </small>
+                                                </div>
+
+                                                <t t-if="not is_mine">
+                                                    <button class="btn btn-sm btn-outline-secondary mt-2 reply-btn"
+                                                            t-att-data-message-id="msg.id"
+                                                            t-att-data-blog-id="msg.res_id"
+                                                            t-att-data-author-name="msg.author_id.name">
+                                                        <i class="fa fa-reply me-1"/>
+                                                        Responder
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="alert alert-info mb-3 d-none" id="replyIndicator">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div style="flex: 1;">
+                                            <i class="fa fa-reply me-2"/>
+                                            <strong>Respondiendo a:
+                                                <span id="replyToName"></span>
+                                            </strong>
+                                            <div class="small mt-1 text-muted reply-preview" id="replyToPreview"
+                                                 style="max-height: 60px; overflow: hidden; word-break: break-word;"></div>
+                                        </div>
+                                        <button type="button" class="btn-close" id="cancelReply"
+                                                aria-label="Close"></button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Escribe un mensaje:</label>
+                                    <textarea class="form-control" id="messageText" rows="3"
+                                              placeholder="Escribe tu mensaje aquí..."></textarea>
+                                </div>
+                                <button class="btn btn-primary" id="sendMessage">
+                                    <i class="fa fa-send me-1"></i>
+                                    Enviar Mensaje
+                                </button>
+
+                                <input type="hidden" id="parentMessageId" value=""/>
+                                <input type="hidden" id="replyBlogId" value=""/>
+                                <input type="hidden" id="myBlogPostId"
+                                       t-att-value="my_blog_post.id if my_blog_post else ''"/>
+                                <input type="hidden" id="otherBlogPostId"
+                                       t-att-value="other_blog_post.id if other_blog_post else ''"/>
+                                <input type="hidden" id="otherPartnerId" t-att-value="other_partner.id"/>
+                                <input type="hidden" id="currentPartnerId" t-att-value="current_partner.id"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+    <template id="portal_layout_unread_bell" inherit_id="portal.frontend_layout" name="Portal Layout Unread Bell">
+        <xpath expr="//t[@t-call='portal.placeholder_user_sign_in']" position="after">
+            <li class="nav-item dropdown" id="unread-messages-dropdown">
+                <a class="nav-link position-relative dropdown-toggle"
+                   href="#"
+                   id="unreadDropdown"
+                   role="button"
+                   data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    <i class="fa fa-bell"/>
+                    <t t-set="total_unread" t-value="request.env.user.partner_id.get_total_unread_count()"/>
+                    <span t-if="total_unread &gt; 0"
+                          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger unread-bell-badge">
+                        <t t-esc="total_unread"/>
+                    </span>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end unread-messages-menu" aria-labelledby="unreadDropdown">
+                    <li>
+                        <h6 class="dropdown-header">Mensajes no leídos</h6>
+                    </li>
+                    <t t-set="unread_by_user" t-value="request.env.user.partner_id.get_unread_messages_by_user()"/>
+                    <t t-if="not unread_by_user">
+                        <li>
+                            <span class="dropdown-item-text text-muted">No hay mensajes nuevos</span>
+                        </li>
+                    </t>
+                    <t t-foreach="unread_by_user[:5]" t-as="item">
+                        <li>
+                            <a class="dropdown-item"
+                               t-attf-href="/my/messages/thread/#{item['partner'].id}">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-1">
+                                        <strong t-esc="item['partner'].name"/>
+                                        <br/>
+                                        <small class="text-muted" t-esc="item['partner'].email or 'N/A'"/>
+                                    </div>
+                                    <span class="badge bg-primary" t-esc="item['unread_count']"/>
+                                </div>
+                            </a>
+                        </li>
+                    </t>
+                    <t t-if="len(unread_by_user) &gt; 5">
+                        <li>
+                            <hr class="dropdown-divider"/>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-center" href="/my/messages">Ver todos los mensajes</a>
+                        </li>
+                    </t>
+                </ul>
+            </li>
+        </xpath>
+    </template>
+</odoo>

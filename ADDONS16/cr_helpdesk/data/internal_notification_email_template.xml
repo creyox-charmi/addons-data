@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!-- Define the email template -->
+        <record id="internal_notification_email_template" model="mail.template">
+            <field name="name">Ticket Internal Notification Email Template</field>
+            <field name="model_id" ref="cr_helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">You Have a new Support Ticket - {{object.name}}</field>
+            <field name="email_from">{{object.email_from}}</field>
+            <field name="email_to">support@creyox.com</field>
+            <field name="body_html" type="html">
+                <div style="background-color:#4A628A; padding:50px 0; font-family:Arial,sans-serif;">
+                    <div style="background-color:#ffffff; width: 500px; margin: 0 auto; text-align:center; padding:30px; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.1);">
+                        <h3 style="font-size:32px; color:#333; margin-bottom:20px;">You Have a new Support Ticket
+                        </h3>
+                        <div style="text-align: start;">
+                            <p style="color:#555; font-size:14px; line-height:1.5;">
+                                <b>Ticket Number:</b>
+                                <t t-out="object.name"/>
+                                <br/>
+                            </p>
+                            <p style="color:#555; font-size:14px; line-height:1.5;">
+                                <b>Customer Name:</b>
+                                <t t-out="object.contact_name"/>
+                                <br/>
+                            </p>
+                            <p style="color:#555; font-size:14px; line-height:1.5;">
+                                <b>Ticket Type:</b>
+                                <t t-esc="dict(object._fields['ticket_type'].selection).get(object.ticket_type, 'Unknown')"/>
+                                <br/>
+                            </p>
+                            <p style="color:#555; font-size:14px; line-height:1.5;">
+                                <b>Module Technical Name:</b>
+                                <t t-out="object.module_tech_name.tech_name"/>
+                                <br/>
+                            </p>
+                            <p style="color:#555; font-size:14px; line-height:1.5;">
+                                <b>Order Number:</b>
+                                <t t-out="object.so_number"/>
+                                <br/>
+                            </p>
+                            <p style="color:#555; font-size:14px; line-height:1.5;">
+                                <b>Version:</b>
+                                <t t-out="object.version.name"/>
+                                <br/>
+                            </p>
+                            <p style="color:#555; font-size:14px; line-height:1.5;">
+                                <b>Edition:</b>
+                                <t t-esc="dict(object._fields['edition'].selection).get(object.edition, 'Unknown')"/>
+                                <br/>
+                            </p>
+                            <p style="color:#555; font-size:14px; line-height:1.5;">
+                                <b>Odoo Platform:</b>
+                                <t t-out="object.odoo_platform"/>
+                                <br/>
+                            </p>
+                            <p style="color:#555; font-size:14px; line-height:1.5;">
+                                <b>Description:</b>
+                                <t t-out="object.message" style="font-size: 24px;color:#555;"/>
+                                <br/>
+                            </p>
+                        </div>
+                        <a t-att-href="'/web#model=helpdesk.ticket&amp;id=' + str(object.id)"
+                           style="display:inline-block; background-color:#FF007F; color:white; text-decoration:none;
+   padding:10px 20px; border-radius:30px; font-size:16px;">
+                            View Ticket
+                        </a>
+                    </div>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="cr_inh_view_order_form" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook//page[last()]" position="after">
+                <page string="Installments" name="installments" groups="cr_payment_installment.group_enable_installments">
+                    <group>
+                        <group>
+                            <field name="tenure_amount"/>
+                            <field name="down_payment_amount" readonly="state != 'draft'"/>
+                            <field name="total_payable_amount" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="months_tenure" readonly="state != 'draft'"/>
+                            <field name="installment_payment_date" required="0" readonly="state != 'draft'"/>
+                            <field name="installment_amount" force_save="1" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <field name="installment_line_ids" readonly="invoice_status == 'invoiced'">
+                        <list editable="bottom" string="Installments" create="0">
+                            <field name="index"/>
+                            <field name="description"/>
+                            <field name="payment_date"/>
+                            <field name="amount" sum="Total Amount"/>
+                            <field name="state" readonly="1"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

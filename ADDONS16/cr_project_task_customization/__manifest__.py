@@ -1,0 +1,30 @@
+{
+    "name": "Project Task Customization",
+    "author": "Creyox Technologies",
+    "version": "16.0.0.1",
+    "summary": "This module contains customization related to the project task.",
+    "sequence": 10,
+    "description": """This module contains customization related to the project task.""",
+    "category": "Project",
+    "website": "www.creyox.com",
+    "depends": ["base", "project", "account", "contacts"],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/project.xml",
+        "views/project_task.xml",
+        "views/product_template.xml",
+        "views/res_users.xml",
+        "views/account_move.xml",
+        "wizard/merge_invoice.xml",
+        "wizard/merge_bill.xml",
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'cr_project_task_customization/static/src/js/notification.js',
+        ],
+    },
+    "demo": [],
+    "installable": True,
+    "application": True,
+    "license": "LGPL-3",
+}

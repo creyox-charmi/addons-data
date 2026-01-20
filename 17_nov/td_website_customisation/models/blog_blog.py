@@ -1,0 +1,20 @@
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies
+from odoo import models, fields, api
+
+class BlogBlog(models.Model):
+    _inherit = 'blog.blog'
+
+    # def _compute_tag_categories(self):
+    #     for post in self:
+    #         categories = post.tag_ids.mapped('category_id')
+    #         post.tag_category_ids = categories
+
+    tag_category_ids = fields.Many2many(
+        'blog.tag.category',
+        # compute='_compute_tag_categories',
+        string='Tag Categories',
+        store=False
+    )
+    # available_category_ids = fields.Many2many('blog.available.category', string='Available Categories')
+

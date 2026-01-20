@@ -1,0 +1,894 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    <template id="categories" name="Parts Picker Categories">-->
+    <!--        <t t-call="website.layout">-->
+    <!--            <div class="container mt-5">-->
+    <!--                <h2>Parts Picker - Selected Components</h2>-->
+
+    <!--                <table class="table table-bordered align-middle">-->
+    <!--                    <thead class="table-dark">-->
+    <!--                        <tr>-->
+    <!--                            <th>Component</th>-->
+    <!--                            <th>Selection</th>-->
+    <!--                            <th>Base</th>-->
+    <!--                            <th>Promo</th>-->
+    <!--                            <th>Shipping</th>-->
+    <!--                            <th>Tax</th>-->
+    <!--                            <th>Availability</th>-->
+    <!--                            <th>Price</th>-->
+    <!--                            <th>Where</th>-->
+    <!--                            <th>Action</th>-->
+    <!--                        </tr>-->
+    <!--                    </thead>-->
+    <!--                    <tbody>-->
+    <!--                        <t t-foreach="categories" t-as="category">-->
+    <!--                            <t t-set="selected_data" t-value="selected_products_by_category.get(category.id)"/>-->
+    <!--                            <t t-set="products"-->
+    <!--                               t-value="selected_data and selected_data['products'] and selected_data['products'][0] or None"/>-->
+
+    <!--                            &lt;!&ndash;                            <t t-set="products" t-value="selected_products_by_category.get(category, [])"/>&ndash;&gt;-->
+    <!--                            <t t-set="product" t-value="products and products[0] or None"/>-->
+    <!--                                <tr t-attf-class="category-block" t-att-data-allow-multiple="category.allow_multiple_products">-->
+
+    <!--                                <td>-->
+    <!--                                    <t t-esc="category.name"/>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-if="product">-->
+    <!--                                        <img t-att-src="'/web/image/product.template/' + str(product.id) + '/image_1920'"-->
+    <!--                                             style="height:40px;margin-right:8px;"/>-->
+    <!--                                        <t t-esc="product.name"/>-->
+    <!--                                    </t>-->
+    <!--                                    <t t-else="">-->
+    <!--                                        <a t-att-href="'/parts-picker/category/' + str(category.id)"-->
+    <!--                                           class="btn btn-secondary btn-sm">Choose <t t-esc="category.name"/>-->
+    <!--                                        </a>-->
+    <!--                                    </t>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-if="product">-->
+    <!--                                        <t t-esc="product.list_price"/>-->
+    <!--                                    </t>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-if="product">-</t>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-if="product">Free</t>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-if="product">-</t>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-if="product">In Stock</t>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-if="product">-->
+    <!--                                        <t t-esc="product.list_price"/>-->
+    <!--                                        €-->
+    <!--                                    </t>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-if="product">Odoo</t>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-if="product">-->
+    <!--                                        <a t-att-href="'/parts-picker/remove/' + str(product.id)"-->
+    <!--                                           class="btn btn-danger btn-sm">Remove-->
+    <!--                                        </a>-->
+    <!--                                    </t>-->
+    <!--                                </td>-->
+    <!--                            </tr>-->
+    <!--                        </t>-->
+    <!--                    </tbody>-->
+    <!--                </table>-->
+
+
+    <!--                <div class="mt-3">-->
+    <!--                    <a href="/shop/cart" class="btn btn-success">Add All Selected Products to Cart</a>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </t>-->
+
+
+    <!--    </template>-->
+
+    <!--    <template id="categories" name="Parts Picker Categories">-->
+    <!--        <t t-call="website.layout">-->
+    <!--            <div class="container mt-5">-->
+    <!--                <h2>Parts Picker - Selected Components</h2>-->
+
+    <!--                <table class="table table-bordered align-middle">-->
+    <!--                    <thead class="table-dark">-->
+    <!--                        <tr>-->
+    <!--                            <th>Component</th>-->
+    <!--                            <th>Selection</th>-->
+    <!--                            <th>Base</th>-->
+    <!--                            <th>Promo</th>-->
+    <!--                            <th>Shipping</th>-->
+    <!--                            <th>Tax</th>-->
+    <!--                            <th>Availability</th>-->
+    <!--                            <th>Price</th>-->
+    <!--                            <th>Where</th>-->
+    <!--                            <th>Action</th>-->
+    <!--                        </tr>-->
+    <!--                    </thead>-->
+    <!--                    <tbody>-->
+    <!--                        <t t-foreach="categories" t-as="category">-->
+    <!--                            <t t-set="selected_data" t-value="selected_products_by_category.get(category.id)"/>-->
+    <!--                            <t t-set="products" t-value="selected_data and selected_data['products'] or []"/>-->
+    <!--                            <t t-set="allow_multiple" t-value="category.allow_multiple_products"/>-->
+
+    <!--                            &lt;!&ndash; No product selected &ndash;&gt;-->
+    <!--                            <t t-if="not products">-->
+    <!--                                <tr class="category-block" t-att-data-allow-multiple="allow_multiple">-->
+    <!--                                    <td>-->
+    <!--                                        <t t-esc="category.name"/>-->
+    <!--                                    </td>-->
+    <!--                                    <td colspan="9">-->
+    <!--                                        <a t-att-href="'/parts-picker/category/' + str(category.id)"-->
+    <!--                                           class="btn btn-secondary btn-sm">-->
+    <!--                                            Add-->
+    <!--                                            <t t-esc="category.name"/>-->
+    <!--                                        </a>-->
+    <!--                                    </td>-->
+    <!--                                </tr>-->
+    <!--                            </t>-->
+
+    <!--                            &lt;!&ndash; Products selected &ndash;&gt;-->
+    <!--                            <t t-else="">-->
+    <!--                                <t t-foreach="products" t-as="product">-->
+    <!--                                    <tr class="category-block" t-att-data-allow-multiple="allow_multiple">-->
+    <!--                                        <td>-->
+    <!--                                            <t t-esc="category.name"/>-->
+    <!--                                        </td>-->
+    <!--                                        <td>-->
+    <!--                                            <img t-att-src="'/web/image/product.template/' + str(product.id) + '/image_1920'"-->
+    <!--                                                 style="height:40px;margin-right:8px;"/>-->
+    <!--                                            <t t-esc="product.name"/>-->
+    <!--                                        </td>-->
+    <!--                                        <td>-->
+    <!--                                            <t t-esc="product.list_price"/>-->
+    <!--                                        </td>-->
+    <!--                                        <td>-</td>-->
+    <!--                                        <td>Free</td>-->
+    <!--                                        <td>-</td>-->
+    <!--                                        <td>In Stock</td>-->
+    <!--                                        <td>-->
+    <!--                                            <t t-esc="product.list_price"/>-->
+    <!--                                            €-->
+    <!--                                        </td>-->
+    <!--                                        <td>Odoo</td>-->
+    <!--                                        <td>-->
+    <!--                                            <a t-att-href="'/parts-picker/remove/' + str(product.id)"-->
+    <!--                                               class="btn btn-danger btn-sm remove-product"-->
+    <!--                                               t-att-data-product-id="product.id">-->
+    <!--                                                Remove-->
+    <!--                                            </a>-->
+    <!--                                        </td>-->
+    <!--                                    </tr>-->
+    <!--                                </t>-->
+
+    <!--                                &lt;!&ndash; Show add/change only if allowed &ndash;&gt;-->
+    <!--                                <t t-if="allow_multiple">-->
+    <!--                                    <tr>-->
+    <!--                                        <td></td> &lt;!&ndash; Empty cell for alignment &ndash;&gt;-->
+    <!--                                        <td colspan="9">-->
+    <!--                                            <a t-att-href="'/parts-picker/category/' + str(category.id)"-->
+    <!--                                               class="btn btn-secondary btn-sm">-->
+    <!--                                                Add-->
+    <!--                                                <t t-esc="category.name"/>-->
+    <!--                                            </a>-->
+    <!--                                        </td>-->
+    <!--                                    </tr>-->
+    <!--                                </t>-->
+    <!--                                <t t-if="not allow_multiple">-->
+    <!--                                    <tr>-->
+    <!--                                        <td></td>-->
+    <!--                                        <td colspan="9">-->
+    <!--                                            <a t-att-href="'/parts-picker/category/' + str(category.id)"-->
+    <!--                                               class="btn btn-warning btn-sm">-->
+    <!--                                                Change-->
+    <!--                                                <t t-esc="category.name"/>-->
+    <!--                                            </a>-->
+    <!--                                        </td>-->
+    <!--                                    </tr>-->
+    <!--                                </t>-->
+    <!--                            </t>-->
+    <!--                        </t>-->
+    <!--                    </tbody>-->
+
+
+    <!--                </table>-->
+
+    <!--                <div class="mt-3">-->
+    <!--  <form action="/parts-picker/add-all-to-cart" method="post">-->
+    <!--    <button type="submit" class="btn btn-success">Add All Selected Products to Cart</button>-->
+    <!--  </form>-->
+    <!--</div>-->
+    <!--            </div>-->
+    <!--        </t>-->
+    <!--    </template>-->
+
+
+    <template id="categories" name="Parts Picker Categories">
+        <t t-call="website.layout">
+            <div class="container mt-5 Picker">
+                <h2 class="mb-4 text-primary">Parts Picker - Selected Components</h2>
+
+                <table class="table parts-picker table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Component</th>
+                            <th scope="col">Selection</th>
+                            <th scope="col">Base</th>
+                            <th scope="col">Promo</th>
+                            <th scope="col">Shipping</th>
+                            <th scope="col">Tax</th>
+                            <th scope="col">Availability</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Where</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="categories" t-as="category">
+                            <t t-set="selected_data" t-value="selected_products_by_category.get(category.id)"/>
+                            <t t-set="products" t-value="selected_data and selected_data['products'] or []"/>
+                            <t t-set="allow_multiple" t-value="category.allow_multiple_products"/>
+
+                            <!-- No product selected -->
+                            <t t-if="not products">
+                                <tr class="category-block" t-att-data-allow-multiple="allow_multiple">
+                                    <td>
+                                        <t t-esc="category.name"/>
+                                    </td>
+                                    <td colspan="9">
+                                        <a t-att-href="'/parts-picker/category/' + str(category.id)"
+                                           class="btn btn-outline-secondary btn-sm px-4">
+                                            Add
+                                            <t t-esc="category.name"/>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <!-- Products selected -->
+                            <t t-else="">
+                                <t t-foreach="products" t-as="product">
+                                    <tr class="category-block" t-att-data-allow-multiple="allow_multiple">
+                                        <td class="fw-semibold text-primary">
+                                            <t t-esc="category.name"/>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-start">
+                                                <img t-att-src="'/web/image/product.product/' + str(product.id) + '/image_1920'"
+                                                     class="product-thumb me-2"/>
+                                                <div class="product-name-wrapper">
+                                                    <span class="product-name">
+                                                        <t t-esc="product.name"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <t t-esc="product.list_price"/>
+                                        </td>
+                                        <td>-</td>
+                                        <td>Free</td>
+                                        <td>-</td>
+                                        <td class="text-success fw-bold">In Stock</td>
+                                        <td class="fw-bold">
+                                            <t t-esc="product.list_price"/>
+                                            €
+                                        </td>
+                                        <td>Odoo</td>
+                                        <td>
+                                            <a t-att-href="'/parts-picker/remove/' + str(product.id)"
+                                               class="btn btn-outline-danger btn-sm remove-product"
+                                               t-att-data-product-id="product.id">
+                                                Remove
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <!-- Show add/change only if allowed -->
+                                <t t-if="allow_multiple">
+                                    <tr>
+                                        <td></td> <!-- Empty cell for alignment -->
+                                        <td colspan="9">
+                                            <a t-att-href="'/parts-picker/category/' + str(category.id)"
+                                               class="btn btn-outline-primary btn-sm px-4">
+                                                Add
+                                                <t t-esc="category.name"/>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="not allow_multiple">
+                                    <tr>
+                                        <td></td>
+                                        <td colspan="9">
+                                            <a t-att-href="'/parts-picker/category/' + str(category.id)"
+                                               class="btn btn-outline-warning btn-sm px-4">
+                                                Change
+                                                <t t-esc="category.name"/>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+
+                <div class="mt-4 summary-box p-4 bg-light border rounded text-end">
+                    <!--                    <h5 class="text-dark">Summary</h5>-->
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Base Total:</span>
+                        <span class="fw-bold">
+                            <t t-esc="base_total"/>
+                            €
+                        </span>
+                    </div>
+<!--                    <div class="d-flex justify-content-between mb-2">-->
+<!--                        <span>Shipping:</span>-->
+<!--                        <span class="fw-bold">-->
+<!--                            <t t-esc="shipping_cost"/>-->
+<!--                            €-->
+<!--                        </span>-->
+<!--                    </div>-->
+                    <hr/>
+                    <div class="d-flex justify-content-between">
+                        <span>Total:</span>
+                        <span class="fw-bold text-success fs-5">
+                            <t t-esc="grand_total"/>
+                            €
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="mt-4 text-end">
+                    <form action="/parts-picker/add-all-to-cart" method="post" class="d-inline-block">
+                        <button type="submit" class="btn btn-success add-all-btn">
+                            Add To Cart
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+
+    <!--    <template id="child_categories_tree" name="Child Categories Tree">-->
+    <!--        <t t-call="website.layout">-->
+    <!--            <div class="container mt-4">-->
+    <!--                <h3 t-esc="parent_category.name"/>-->
+    <!--                → Subcategories-->
+    <!--                <ul class="list-group">-->
+    <!--                    <t t-call="cr_parts_picker.render_category_tree">-->
+    <!--                        <t t-set="categories" t-value="child_categories"/>-->
+    <!--                    </t>-->
+    <!--                </ul>-->
+    <!--            </div>-->
+    <!--        </t>-->
+    <!--    </template>-->
+
+    <template id="child_categories_tree" name="Child Categories Tree">
+        <t t-call="website.layout">
+            <div class="container mt-4 child_categories">
+                <h3 class="mb-3">
+                    <t t-esc="parent_category.name"/>
+                    → Subcategories
+                </h3>
+
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Component</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="child_categories" t-as="category">
+                            <tr>
+                                <td>
+                                    <t t-esc="category.name"/>
+                                </td>
+                                <td class="text-center">
+                                    <a t-att-href="'/parts-picker/category/' + str(category.id)"
+                                       class="btn btn-primary btn-sm">
+                                        Add
+                                        <t t-esc="category.name"/>
+                                    </a>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <div class="mt-3">
+                    <a href="/parts-picker" class="btn btn-outline-secondary">← Back</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+    <template id="render_category_tree">
+        <t t-foreach="categories" t-as="category">
+            <li class="list-group-item">
+                <a t-att-href="'/parts-picker/category/' + str(category.id)">
+                    <t t-esc="category.name"/>
+                </a>
+
+                <t t-if="category.child_id">
+                    <ul class="list-group ms-4 mt-2">
+                        <t t-call="cr_parts_picker.render_category_tree">
+                            <t t-set="categories" t-value="category.child_id"/>
+                        </t>
+                    </ul>
+                </t>
+            </li>
+        </t>
+    </template>
+
+    <!--    <template id="products" name="Parts Picker Product List">-->
+    <!--        <t t-call="website.layout">-->
+    <!--            <div class="container mt-5">-->
+    <!--                <h2>Products in-->
+    <!--                    <t t-esc="category.name"/>-->
+    <!--                </h2>-->
+    <!--                <table class="table table-striped table-bordered">-->
+    <!--                    <thead>-->
+    <!--                        <tr>-->
+    <!--                            <th>Selection</th>-->
+    <!--                            <th>Base</th>-->
+    <!--                            <th>Promo</th>-->
+    <!--                            <th>Shipping</th>-->
+    <!--                            <th>Tax</th>-->
+    <!--                            <th>Availability</th>-->
+    <!--                            <th>Price</th>-->
+    <!--                            <th>Where</th>-->
+    <!--                            <th></th>-->
+    <!--                        </tr>-->
+    <!--                    </thead>-->
+    <!--                    <tbody>-->
+    <!--                        <t t-foreach="products" t-as="product">-->
+    <!--                            <tr>-->
+    <!--                                <td>-->
+    <!--                                    <t t-esc="product.name"/>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-esc="product.list_price"/>-->
+    <!--                                    €-->
+    <!--                                </td>-->
+    <!--                                <td>-</td>-->
+    <!--                                <td>-</td>-->
+    <!--                                <td>-</td>-->
+    <!--                                <td>In Stock</td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-esc="product.list_price"/>-->
+    <!--                                    €-->
+    <!--                                </td>-->
+    <!--                                <td>Odoo</td>-->
+    <!--                                <td>-->
+    <!--                                    <a t-att-href="'/parts-picker/add/' + str(product.id)"-->
+    <!--                                       class="btn btn-primary btn-sm">Add-->
+    <!--                                    </a>-->
+    <!--                                </td>-->
+    <!--                            </tr>-->
+    <!--                        </t>-->
+    <!--                    </tbody>-->
+    <!--                </table>-->
+    <!--            </div>-->
+    <!--        </t>-->
+    <!--    </template>-->
+
+    <!--    <template id="products" name="Parts Picker Product List">-->
+    <!--        <t t-call="website.layout">-->
+    <!--            <div class="container mt-5 cr_product">-->
+    <!--                <h2 class="mb-4">-->
+    <!--                    Products in-->
+    <!--                    <t t-esc="category.name"/>-->
+    <!--                </h2>-->
+
+    <!--                <table class="table table-striped table-hover align-middle parts-picker-products">-->
+    <!--                    <thead class="table-dark">-->
+    <!--                        <tr>-->
+    <!--                            <th>Product</th>-->
+    <!--                            <th>Base</th>-->
+    <!--                            <th>Promo</th>-->
+    <!--                            <th>Shipping</th>-->
+    <!--                            <th>Tax</th>-->
+    <!--                            <th>Availability</th>-->
+    <!--                            <th>Price</th>-->
+    <!--                            <th>Where</th>-->
+    <!--                            <th class="text-center">Action</th>-->
+    <!--                        </tr>-->
+    <!--                    </thead>-->
+    <!--                    <tbody>-->
+    <!--                        <t t-foreach="products" t-as="product">-->
+    <!--                            <tr>-->
+    <!--                               <td class="d-flex align-items-center">-->
+    <!--                                    <a t-att-href="product.website_url" class="d-flex align-items-center text-decoration-none text-dark">-->
+    <!--                                        <img t-att-src="'/web/image/product.template/' + str(product.id) + '/image_1920'"-->
+    <!--                                             alt="Product Image" class="product-thumb me-3"/>-->
+    <!--                                        <span class="product-name text-truncate">-->
+    <!--                                            <t t-esc="product.name"/>-->
+    <!--                                        </span>-->
+    <!--                                    </a>-->
+    <!--                                </td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-esc="product.list_price"/>-->
+    <!--                                    €-->
+    <!--                                </td>-->
+    <!--                                <td>-</td>-->
+    <!--                                <td>Free</td>-->
+    <!--                                <td>-</td>-->
+    <!--                                <td>In Stock</td>-->
+    <!--                                <td>-->
+    <!--                                    <t t-esc="product.list_price"/>-->
+    <!--                                    €-->
+    <!--                                </td>-->
+    <!--                                <td>Odoo</td>-->
+    <!--                                <td class="text-center">-->
+    <!--                                    <a t-att-href="'/parts-picker/add/' + str(product.id)"-->
+    <!--                                       class="btn btn-sm btn-success">Add-->
+    <!--                                    </a>-->
+    <!--                                </td>-->
+    <!--                            </tr>-->
+    <!--                        </t>-->
+    <!--                    </tbody>-->
+    <!--                </table>-->
+
+    <!--                <div class="mt-3">-->
+    <!--                    <a href="/parts-picker" class="btn btn-outline-secondary">← Back </a>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </t>-->
+    <!--    </template>-->
+
+<!--    <template id="products" name="Parts Picker Product List">-->
+<!--        <t t-call="website.layout">-->
+<!--            <div class="container mt-5 cr_product">-->
+<!--                <div class="row">-->
+<!--                    &lt;!&ndash; Sidebar for filters &ndash;&gt;-->
+<!--                    <aside class="col-md-3">-->
+<!--                        <h5 class="mb-3">Filter by Attributes</h5>-->
+<!--                        <form method="get" id="filter_form">-->
+<!--                            <t t-foreach="attrib_values" t-as="attr">-->
+<!--                                <div class="mb-3">-->
+<!--                                    <strong>-->
+<!--                                        <t t-esc="attr['attribute'].name"/>-->
+<!--                                    </strong>-->
+<!--                                    <t t-foreach="attr['values'].values()" t-as="val">-->
+<!--                                        <div class="form-check">-->
+<!--                                            <input type="checkbox"-->
+<!--                                                   class="form-check-input filter-input"-->
+<!--                                                   name="attrib"-->
+<!--                                                   t-att-value="str(attr['attribute'].id) + '-' + str(val['value'].id)"-->
+<!--                                                   t-att-checked="'%s-%s' % (attr['attribute'].id, val['value'].id) in selected_attribs"/>-->
+<!--                                            <label class="form-check-label">-->
+<!--                                                <t t-esc="val['value'].name"/>-->
+<!--                                            </label>-->
+<!--                                        </div>-->
+<!--                                    </t>-->
+<!--                                </div>-->
+<!--                            </t>-->
+<!--                        </form>-->
+
+<!--                    </aside>-->
+
+<!--                    &lt;!&ndash; Main Product Table &ndash;&gt;-->
+<!--                    <div class="col-md-9">-->
+
+<!--                        <table class="table table-striped table-hover align-middle parts-picker-products">-->
+<!--                            <thead class="table-dark">-->
+<!--                                <tr>-->
+<!--                                    <th>Product</th>-->
+<!--                                    <th>Base</th>-->
+<!--                                    <th>Promo</th>-->
+<!--&lt;!&ndash;                                    <th>Shipping</th>&ndash;&gt;-->
+<!--                                    <th>Tax</th>-->
+<!--                                    <th>Availability</th>-->
+<!--                                    <th>Price</th>-->
+<!--                                    <th>Where</th>-->
+<!--                                    <th class="text-center">Action</th>-->
+<!--                                </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                                <t t-foreach="products" t-as="product">-->
+<!--                                    <tr class="product-row" style="cursor: pointer;"-->
+<!--                                        t-att-data-href="product.website_url">-->
+<!--                                        <td class="d-flex align-items-center">-->
+<!--                                            <a t-att-href="product.website_url"-->
+<!--                                               class="d-flex align-items-center text-decoration-none text-dark">-->
+<!--                                                <img t-att-src="'/web/image/product.template/' + str(product.id) + '/image_1920'"-->
+<!--                                                     alt="Product Image" class="product-thumb me-3"/>-->
+<!--                                                <span class="product-name text-truncate">-->
+<!--                                                    <t t-esc="product.name"/>-->
+<!--                                                </span>-->
+<!--                                            </a>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <t t-esc="product.list_price"/>-->
+<!--                                            €-->
+<!--                                        </td>-->
+<!--                                        <td>-</td>-->
+<!--&lt;!&ndash;                                        <td>Free</td>&ndash;&gt;-->
+<!--                                        <td>-</td>-->
+<!--                                        <td>In Stock</td>-->
+<!--                                        <td>-->
+<!--                                            <t t-esc="product.list_price"/>-->
+<!--                                            €-->
+<!--                                        </td>-->
+<!--                                        <td>Odoo</td>-->
+<!--                                        <td class="text-center">-->
+<!--                                            <a t-att-href="'/parts-picker/add/' + str(product.id)"-->
+<!--                                               class="btn btn-sm btn-success">Add-->
+<!--                                            </a>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                </t>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+
+<!--                        <div class="mt-3">-->
+<!--                            <a href="/parts-picker" class="btn btn-outline-secondary">← Back</a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </t>-->
+<!--    </template>-->
+
+<template id="products" name="Parts Picker Product List">
+    <t t-call="website.layout">
+        <div class="container mt-5 cr_product">
+            <div class="row">
+                <!-- Sidebar for filters -->
+                <aside class="col-md-3">
+                    <h5 class="mb-3">Filter by Attributes</h5>
+                    <form method="get" id="filter_form">
+                        <t t-foreach="attrib_values" t-as="attr">
+                            <div class="mb-3">
+                                <strong>
+                                    <t t-esc="attr['attribute'].name"/>
+                                </strong>
+                                <t t-foreach="attr['values'].values()" t-as="val">
+                                    <div class="form-check">
+                                        <input type="checkbox"
+                                               class="form-check-input filter-input"
+                                               name="attrib"
+                                               t-att-value="str(attr['attribute'].id) + '-' + str(val['value'].id)"
+                                               t-att-checked="'%s-%s' % (attr['attribute'].id, val['value'].id) in selected_attribs"/>
+                                        <label class="form-check-label">
+                                            <t t-esc="val['value'].name"/>
+                                        </label>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                    </form>
+                </aside>
+
+                <!-- Main Product Table -->
+                <div class="col-md-9">
+                    <table class="table table-striped table-hover align-middle parts-picker-products">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Product</th>
+                                <th>Base</th>
+                                <th>Promo</th>
+                                <th>Tax</th>
+                                <th>Availability</th>
+                                <th>Price</th>
+                                <th>Where</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="variants" t-as="variant">
+                                <t t-set="product" t-value="variant.product_tmpl_id"/>
+                                <tr class="product-row" style="cursor: pointer;" t-att-data-href="product.website_url">
+                                    <td class="d-flex align-items-center">
+                                        <a t-att-href="product.website_url"
+                                           class="d-flex align-items-center text-decoration-none text-dark">
+                                            <img t-att-src="'/web/image/product.product/' + str(variant.id) + '/image_128'"
+                                                 alt="Product Image" class="product-thumb me-3"/>
+                                            <span class="product-name text-truncate">
+                                                <t t-esc="variant.display_name"/>
+                                            </span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <t t-esc="variant.list_price"/>
+                                        €
+                                    </td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>In Stock</td>
+                                    <td>
+                                        <t t-esc="variant.list_price"/>
+                                        €
+                                    </td>
+                                    <td>Odoo</td>
+                                    <td class="text-center">
+                                        <a t-att-href="'/parts-picker/add/' + str(variant.id)"
+                                           class="btn btn-sm btn-success">Add
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <div class="mt-3">
+                        <a href="/parts-picker" class="btn btn-outline-secondary">← Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</template>
+
+
+
+    <template id="categories" name="Parts Picker Categories">
+        <t t-call="website.layout">
+            <div class="container mt-5 Picker">
+                <h2 class="mb-4 text-primary">Parts Picker - Selected Components</h2>
+
+                <table class="table parts-picker table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Component</th>
+                            <th scope="col">Selection</th>
+                            <th scope="col">Base</th>
+                            <th scope="col">Promo</th>
+                            <th scope="col">Shipping</th>
+                            <th scope="col">Tax</th>
+                            <th scope="col">Availability</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Where</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="categories" t-as="category">
+                            <t t-set="selected_data" t-value="selected_products_by_category.get(category.id)"/>
+                            <t t-set="products" t-value="selected_data and selected_data['products'] or []"/>
+                            <t t-set="allow_multiple" t-value="category.allow_multiple_products"/>
+
+                            <!-- No product selected -->
+                            <t t-if="not products">
+                                <tr class="category-block" t-att-data-allow-multiple="allow_multiple">
+                                    <td>
+                                        <t t-esc="category.name"/>
+                                    </td>
+                                    <td colspan="9">
+                                        <a t-att-href="'/parts-picker/category/' + str(category.id)"
+                                           class="btn btn-outline-secondary btn-sm px-4">
+                                            Add
+                                            <t t-esc="category.name"/>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <!-- Products selected -->
+                            <t t-else="">
+                                <t t-foreach="products" t-as="product">
+                                    <tr class="category-block" t-att-data-allow-multiple="allow_multiple">
+                                        <td class="fw-semibold text-primary">
+                                            <t t-esc="category.name"/>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-start">
+                                                <img t-att-src="'/web/image/product.template/' + str(product.id) + '/image_1920'"
+                                                     class="product-thumb me-2"/>
+                                                <div class="product-name-wrapper">
+                                                    <span class="product-name">
+                                                        <t t-esc="product.name"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <t t-esc="product.list_price"/>
+                                        </td>
+                                        <td>-</td>
+                                        <td>Free</td>
+                                        <td>-</td>
+                                        <td class="text-success fw-bold">In Stock</td>
+                                        <td class="fw-bold">
+                                            <t t-esc="product.list_price"/>
+                                            €
+                                        </td>
+                                        <td>Odoo</td>
+                                        <td>
+                                            <a t-att-href="'/parts-picker/remove/' + str(product.id)"
+                                               class="btn btn-outline-danger btn-sm remove-product"
+                                               t-att-data-product-id="product.id">
+                                                Remove
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <!-- Show add/change only if allowed -->
+                                <t t-if="allow_multiple">
+                                    <tr>
+                                        <td></td> <!-- Empty cell for alignment -->
+                                        <td colspan="9">
+                                            <a t-att-href="'/parts-picker/category/' + str(category.id)"
+                                               class="btn btn-outline-primary btn-sm px-4">
+                                                Add
+                                                <t t-esc="category.name"/>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="not allow_multiple">
+                                    <tr>
+                                        <td></td>
+                                        <td colspan="9">
+                                            <a t-att-href="'/parts-picker/category/' + str(category.id)"
+                                               class="btn btn-outline-warning btn-sm px-4">
+                                                Change
+                                                <t t-esc="category.name"/>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+
+                <div class="mt-4 summary-box p-4 bg-light border rounded text-end">
+                    <!--                    <h5 class="text-dark">Summary</h5>-->
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Base Total:</span>
+                        <span class="fw-bold">
+                            <t t-esc="base_total"/>
+                            €
+                        </span>
+                    </div>
+<!--                    <div class="d-flex justify-content-between mb-2">-->
+<!--                        <span>Shipping:</span>-->
+<!--                        <span class="fw-bold">-->
+<!--                            <t t-esc="shipping_cost"/>-->
+<!--                            €-->
+<!--                        </span>-->
+<!--                    </div>-->
+                    <hr/>
+                    <div class="d-flex justify-content-between">
+                        <span>Total:</span>
+                        <span class="fw-bold text-success fs-5">
+                            <t t-esc="grand_total"/>
+                            €
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="mt-4 text-end">
+                    <form action="/parts-picker/add-all-to-cart" method="post" class="d-inline-block">
+                        <button type="submit" class="btn btn-success add-all-btn">
+                            Add To Cart
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+</odoo>

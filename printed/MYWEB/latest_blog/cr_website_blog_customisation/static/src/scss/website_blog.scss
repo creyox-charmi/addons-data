@@ -1,0 +1,87 @@
+.website_blog {
+    .cr_blocks{
+        box-shadow: 0 5px 32px 0 rgba(0, 0, 0, .15);
+        border-radius: 2px;
+        background-color: white;
+        }
+    #cr_cover_background {
+        width: 100%;
+        height: 240px;
+        overflow: hidden;
+        display: flex; /* Enable Flexbox */
+        justify-content: center; /* Horizontally center the content */
+        align-items: center; /* Vertically center the content */
+        text-align: center; /* Center text inside h3 */
+    }
+    #cr_cover_background h3{
+        width: 100%;
+        height: 180px;
+        padding:30px;
+        margin:0;
+        word-break: break;
+    }
+    .post_info_without_stats b{
+        padding-left:30px;
+    }
+    .cr-section-header{
+         display: flex;
+         flex-wrap: nowrap;
+    }
+    .cr-section-header-link-div{
+        width:854px;
+    }
+    .cr-section-header {
+        padding: 10px 0 10px 0;
+        border-bottom: solid 1px rgba(0, 0, 0, .12);
+        margin-top: 30px;
+        margin-bottom: 30px;
+
+    }
+    .cr-section-header h2 {
+        width: 75%;
+        display: inline-block;
+        font-size: 24px;
+        color: rgba(0, 0, 0, .56);
+        margin: 0;
+        text-transform: capitalize;
+        display: block;
+        font-size: 1.5em;
+    }
+
+    .cr-section-header-link a {
+        font-size: 24px;
+        color: rgba(0, 0, 0, .56);
+        transition: .2s cubic-bezier(.4,0,.2,1);
+    }
+
+    .cr-section-header .cr-section-link {
+        width: 25%;
+        display: inline-block;
+        vertical-align: bottom;
+        text-align: right;
+    }
+
+    .card-footer{
+        width: 100%;
+        height: 100px;
+        background-color:green;
+    }
+
+    #blog_author_name #author_name{
+        font-size: 1.2rem;
+        font-weight: normal;
+        margin-left:10px;
+        }
+
+
+    .main_header{
+        margin-top: 40px;
+        }
+
+    #cr_searchbar{
+        margin: 20px 433px 0px 433px;
+        }
+
+
+
+}

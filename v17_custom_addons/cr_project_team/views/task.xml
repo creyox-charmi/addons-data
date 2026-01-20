@@ -1,0 +1,66 @@
+<odoo>
+    <record id="project_task_view_search" model="ir.ui.view">
+        <field name="name">project.task.search</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+             <search>
+                <field name="project_id"/>
+                <field name="due_date"/>
+                <field name="assigned_to_ids"/>
+
+                 <filter string="Sales Task" name="filter_project" domain="[('project_id', '=', 'Sales')]"/>
+                 <filter string="Invoicing Task" name="filter_project" domain="[('project_id', '=', 'Invoicing')]"/>
+                 <filter string="Email Marketing Task" name="filter_project" domain="[('project_id', '=', 'Email Marketing')]"/>
+                 <filter string="Inventory" name="filter_project" domain="[('project_id', '=', 'Inventory')]"/>
+                 <filter string="CRM" name="filter_project" domain="[('project_id', '=', 'CRM')]"/>
+                 <filter string="Point of sale" name="filter_project" domain="[('project_id', '=', 'Point of sale')]"/>
+            </search>
+        </field>
+    </record>
+    <record id="project_task_view_form" model="ir.ui.view">
+        <field name="name">project.task.form</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <form string="Project Task">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                        <field name="due_date"/>
+                        <field name="project_id"/>
+                        <field name="assigned_to_ids"   />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="project_task_view_tree" model="ir.ui.view">
+        <field name="name">project.task.tree</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <tree string="Project Task">
+                <field name="name"/>
+                <field name="due_date"/>
+                <field name="project_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_project_task" model="ir.actions.act_window">
+        <field name="name">Tasks</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">search,tree,form</field>
+    </record>
+
+
+    <menuitem id="project_team_main_menu"
+              name="Project Team Management"
+              sequence="999" />
+
+    <menuitem id="project_task_menu"
+              name="Tasks"
+              parent="project_team_main_menu"
+              action="action_project_task"/>
+</odoo>

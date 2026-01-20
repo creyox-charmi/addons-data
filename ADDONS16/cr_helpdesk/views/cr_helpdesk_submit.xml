@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="helpdesk_submit_template" name="Thank You Page">
+        <t t-call="website.layout">
+            <div class="oe_structure">
+                <div class="container text-center" style="padding-top: 50px; padding-bottom: 50px;">
+                    <div style="font-size: 80px; color: #333;">
+                        <i class="fa fa-thumbs-up"/>
+                    </div>
+                    <h2>Thank You!</h2>
+                    <hr style="width: 50px; margin: 10px auto; border: 1px solid #333;"/>
+                    <p>
+                        <strong>Your Support Request with
+                            <br/>
+                            Ticket Number:
+                            <t t-esc="ticket"/>
+                            has been recorded successfully
+                        </strong>
+                    </p>
+                    <p>We will get back to you shortly.</p>
+                    <button type="button" class="btn btn-primary"
+                            onclick="window.open('https://apps.odoo.com/apps/modules/browse?search=creyox', '_blank');">
+                        Explore Our More Apps
+                    </button>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="blog_post_short_without_top" name="Blog Posts without Top Section" inherit_id="website_blog.blog_post_short">
+        <xpath expr="//div[@id='o_wblog_blog_top']" position="attributes">
+            <attribute name="style">display: none;</attribute>
+        </xpath>
+        <xpath expr="//t[@t-call='website.pager']" position="attributes">
+            <attribute name="t-if">is_pager</attribute>
+        </xpath>
+    </template>
+</odoo>

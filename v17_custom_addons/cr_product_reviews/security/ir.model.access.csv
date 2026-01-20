@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cr_product,access_cr_product,model_product,,1,1,1,1
+access_cr_product_review,access_cr_product_review,model_product_review,,1,1,1,1
+access_cr_product_wizard,access_cr_product_wizard,model_product_wizard,,1,1,1,1

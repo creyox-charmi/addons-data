@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <!-- wizard for merge permission -->
+    <record id="merge_wizard_server_action_invoice" model="ir.ui.view">
+        <field name="name">merge.wizard.form</field>
+        <field name="model">cr.merge.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Partner">
+                <sheet>
+                    <group>
+                        <field name = 'cr_count_tasks'/>
+                        <field name="cr_merge" string='Merge'></field>
+                    </group> 
+                </sheet>
+                <footer>
+                    <button string="Process" type="object" name="check_merge" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

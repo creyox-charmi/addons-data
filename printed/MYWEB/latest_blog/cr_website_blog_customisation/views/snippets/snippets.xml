@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="snippet_options" inherit_id="website_blog.snippet_options" name="Blog snippet options">
+        <xpath expr="div[@data-selector='main:has(#o_wblog_index_content)']" position="inside">
+<!--            <we-colorpicker string="Background Color of block"-->
+<!--                            data-name="blog_background_color"-->
+<!--                            data-color-change=""-->
+<!--                            data-attribute-name="backgroundColor"/>-->
+<!--            <div data-selector=".cr_cover_background">-->
+<!--                <we-colorpicker string="Color"-->
+<!--                    data-select-style="true"-->
+<!--                    data-css-property="background-color"-->
+<!--                    data-color-prefix="bg-"/>-->
+<!--            </div>-->
+
+<!--            <we-row string="Colors" class="o_we_sublevel_1">-->
+<!--                <we-colorpicker-->
+<!--                    data-select-style="true"-->
+<!--                    data-css-property="background-color"-->
+<!--                    data-color-prefix="bg-"-->
+<!--                    data-apply-to=".cover_background[data-post-id='#{blog_post.id}']"/>-->
+<!--            </we-row>-->
+
+<!--            <we-row string="Colors" class="o_we_sublevel_1">-->
+<!--                <we-colorpicker-->
+<!--                    data-select-style="true"-->
+<!--                    data-css-property="background-color"-->
+<!--                    data-color-prefix="bg-"-->
+<!--                    data-apply-to=".cover_background[data-post-id=1]"/>-->
+<!--            </we-row>-->
+
+<!--            <we-row string="Background">-->
+<!--                <t t-call="web_editor.snippet_options_background_color_widget">-->
+<!--                    <t t-set="with_color_combinations" t-value="True"/>-->
+<!--                    <t t-set="with_gradients" t-value="True"/>-->
+<!--                </t>-->
+<!--            </we-row>-->
+
+        </xpath>
+
+
+<!--        <xpath expr="." position="inside">-->
+<!--            <div data-js="CustomColor" data-selector="#cr_cover_background" data-target="#cr_cover_background" data-no-check="true" string="Blogs Cover Background" data-page-options="true">-->
+<!--                <we-colorpicker string="Custom"-->
+<!--                            data-name="blog_background_color"-->
+<!--                            data-color-change=""-->
+<!--                            data-attribute-name="backgroundColor"/>-->
+
+<!--                <we-row string="Colors" class="o_we_sublevel_1">-->
+<!--                    <we-colorpicker-->
+<!--                        data-select-style="true"-->
+<!--                        data-css-property="background-color"-->
+<!--                        data-color-prefix="bg-"-->
+<!--                        data-apply-to=".cover_background[data-post-id='#{blog_post.id}']"/>-->
+<!--                </we-row>-->
+<!--            </div>-->
+<!--        </xpath>-->
+
+
+
+    </template>
+
+</odoo>

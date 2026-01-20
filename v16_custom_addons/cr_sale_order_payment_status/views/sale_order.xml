@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_sale_order_form" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_order_template_id']" position="after">
+                <field name="payment_state" widget="badge"/>
+                <field name="total_amount" invisible="1"/>
+                <field name="amount_due"/>
+                <field name="invoice_payments_widget" widget="payment"/>
+            </xpath>
+
+            <xpath expr="//header" position="inside">
+                <button name="action_register_payment" id="account_invoice_payment_btn"
+                        type="object" class="oe_highlight"
+                        attrs="{'invisible': [('payment_state', 'not in', ('not_paid', 'partially_paid','overdue'))]}"
+                        string="Register Payment"
+                        groups="account.group_account_invoice"/>
+            </xpath>
+
+            <xpath expr="//div[@class='oe_button_box']" position="before">
+                <widget name="web_ribbon"
+                        title="No Bill"
+                        bg_color="bg-danger"
+                        attrs="{'invisible': [('payment_state', '!=', 'no_invoice')]}"/>
+                <widget name="web_ribbon"
+                        title="Not Paid"
+                        bg_color="bg-info"
+                        attrs="{'invisible': [('payment_state', '!=', 'not_paid')]}"/>
+                <widget name="web_ribbon"
+                        title="Partially Paid"
+                        bg_color="bg-warning"
+                        attrs="{'invisible': [('payment_state', '!=', 'partially_paid')]}"/>
+                <widget name="web_ribbon"
+                        title="Fully Paid"
+                        bg_color="bg-success"
+                        attrs="{'invisible': [('payment_state', '!=', 'fully_paid')]}"/>
+                <widget name="web_ribbon"
+                        text="Overdue"
+                        bg_color="bg-warning"
+                        attrs="{'invisible': [('payment_state', '!=', 'overdue')]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_sale_order_filter_payment_state" model="ir.ui.view">
+        <field name="name">sale.order.search.payment.state</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.sale_order_view_search_inherit_sale"/>
+        <field name="arch" type="xml">
+            <filter name="order_date" position="after">
+                <filter name="payment_state_no_invoice"
+                        string="No Bill"
+                        domain="[('payment_state', '=', 'no_invoice')]"/>
+                <filter name="payment_state_not_paid"
+                        string="Not Paid"
+                        domain="[('payment_state', '=', 'not_paid')]"/>
+                <filter name="payment_state_partially_paid"
+                        string="Partially Paid"
+                        domain="[('payment_state', '=', 'partially_paid')]"/>
+                <filter name="payment_state_fully_paid"
+                        string="Fully Paid"
+                        domain="[('payment_state', '=', 'fully_paid')]"/>
+                <filter name="payment_state_overdue"
+                        string="Overdue"
+                        domain="[('payment_state', '=', 'overdue')]"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_sale_order_tree_inherit" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="payment_state" widget="badge"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

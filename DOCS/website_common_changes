@@ -1,0 +1,652 @@
+.cr-erp-solution-intro {
+    background: white;
+    padding: 80px 20px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+   	 margin-bottom: 50px;
+}
+
+.cr-erp-subtext {
+    	font-size: 1.05rem;
+    color: #444;
+    line-height: 1.7;
+    text-align: justify;
+}
+
+.cr-web-content h2 {
+    color: #002855;
+    font-size: 2rem;
+    font-weight: 700;
+	    margin-top: 70px;
+	    margin-bottom: 50px;
+	    text-align: center;
+
+}
+
+
+
+
+
+/* Content Below */
+.cr-erp-content h2 {
+    color: #002855;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 70px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.cr-erp-content p {
+    font-size: 1.05rem;
+    color: #333;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+/* Large Tablets / Small Desktops (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .cr-erp-content p {
+        font-size: 1.1rem;
+    }
+}
+
+/* Tablets / Mobile Large (max-width: 768px) */
+@media (max-width: 768px) {
+    .cr-erp-content p {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+}
+
+/* Mobile Medium (max-width: 480px) */
+@media (max-width: 480px) {
+    .cr-erp-content p {
+        font-size: 0.95rem;
+    }
+}
+
+/* Mobile Small / Extra Small (max-width: 375px) */
+@media (max-width: 375px) {
+    .cr-erp-content p {
+        font-size: 0.9rem;
+    }
+}
+
+
+
+
+.web-features {
+    display: grid;
+	    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    list-style: none;
+    padding: 0;
+    margin: 50px 0;
+}
+
+.web-features li {
+    background: linear-gradient(135deg, #f0f4ff, #ffffff);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0;
+    padding: 30px 20px 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+
+@media (max-width: 1024px) {
+    .odoo-features {
+        grid-template-columns: repeat(3, 1fr); /* 2 columns */
+        gap: 18px;
+    }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+    .odoo-features {
+        grid-template-columns: repeat(2, 1fr); /* still 2 columns */
+        gap: 16px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .odoo-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 14px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 375px) {
+    .odoo-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 12px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 320px) {
+    .odoo-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 10px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 1024px) {
+    .cr-web-header-text h1 { font-size: 2.4rem; }
+    .cr-web-subtext { font-size: 1.05rem; }
+    .cr-web-content h2 { font-size: 1.8rem; }
+    .cr-odoo-content p {
+        font-size: 1.05rem;
+    }
+}
+
+
+@media (max-width: 480px) { .cr-web-header-text h1 { font-size: 1.75rem; } .cr-web-subtext { font-size: 0.95rem; } .cr-web-content h2 { font-size: 1.5rem; } .cr-odoo-content p {font-size: 0.95rem;} }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service6_odoo_integration_solution" name="service6_odoo_integration_solution">
+
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_odoo_integration_banner" class="service-intro-banner hero-section-wave">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Seamless Odoo Integration Solutions
+                    </h1>
+                    <p class="banner-tagline">
+                        Connect Odoo with your existing systems, third-party applications, and business tools to build a unified ecosystem that drives efficiency and growth.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">Odoo Integration</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-odoo-integration-intro o_website_snippet" aria-labelledby="odoo-integration-heading">
+            <div class="cr-odoo-container">
+                <!-- Header Row -->
+                <div class="cr-odoo-header-row">
+                    <div class="cr-odoo-header-text">
+                        <h1 id="odoo-integration-heading">Odoo Integration for Unified Business Operations</h1>
+                        <p class="cr-odoo-subtext">
+                            We specialize in integrating Odoo ERP with multiple third-party platforms, APIs, and business systems to provide a seamless digital experience.
+                            From payment gateways and e-commerce stores to CRM, HRMS, logistics, and cloud applications — our integration services enable a centralized ecosystem for better data visibility,
+                            efficiency, and business agility. With our robust integration approach, you can eliminate data silos, reduce manual errors, and accelerate business growth.
+                        </p>
+                    </div>
+                    <div class="cr-odoo-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/odoo-integration.png" alt="Odoo Integration"/>
+                    </div>
+                </div>
+
+                <!-- Content Below -->
+                <div class="cr-odoo-content">
+                    <h2>Why Choose Our Odoo Integration Services?</h2>
+                    <p>
+                        Our certified Odoo integration experts ensure your business systems work together seamlessly.
+                        Whether it’s connecting with external APIs, integrating e-commerce platforms, or syncing with financial, logistics, and marketing applications,
+                        we provide secure, scalable, and customized integration solutions. With automation and real-time synchronization, we help you enhance efficiency, reduce costs,
+                        and improve overall productivity across departments.
+                    </p>
+
+                    <ul class="odoo-integration-features">
+                        <li>
+                            <strong>API Integrations:</strong>
+                            Secure integration with REST, SOAP, and GraphQL APIs.
+                        </li>
+                        <li>
+                            <strong>E-commerce Integration:</strong>
+                            Sync Odoo with Shopify, Magento, WooCommerce, and more.
+                        </li>
+                        <li>
+                            <strong>Payment Gateway Integration:</strong>
+                            Integrate PayPal, Stripe, Razorpay, and other gateways.
+                        </li>
+                        <li>
+                            <strong>CRM &amp; Marketing:</strong>
+                            Connect with Salesforce, HubSpot, Mailchimp, and others.
+                        </li>
+                        <li>
+                            <strong>Accounting &amp; Finance:</strong>
+                            Integrate with QuickBooks, Xero, or other financial apps.
+                        </li>
+                        <li>
+                            <strong>Logistics &amp; Shipping:</strong>
+                            Integration with FedEx, DHL, UPS, and real-time tracking.
+                        </li>
+                        <li>
+                            <strong>Cloud &amp; Storage:</strong>
+                            Connect Odoo with AWS, Google Drive, or Dropbox.
+                        </li>
+                        <li>
+                            <strong>Legacy Systems:</strong>
+                            Bridge Odoo with your existing ERP/CRM tools.
+                        </li>
+                        <li>
+                            <strong>Custom Connectors:</strong>
+                            Build tailor-made connectors for unique integrations.
+                        </li>
+                        <li>
+                            <strong>Real-time Sync:</strong>
+                            Ensure instant updates across all connected platforms.
+                        </li>
+                    </ul>
+
+                    <h2>Our Integration Approach</h2>
+                    <p>
+                        We follow a systematic methodology to ensure smooth and reliable Odoo integrations.
+                        Starting with business analysis and mapping integration requirements, we design scalable architecture and implement secure data flows.
+                        Our agile approach ensures faster deployment, reduced downtime, and minimal business disruption.
+                        Post-deployment, we provide continuous monitoring, performance tuning, and support to ensure your integrations remain stable and up-to-date.
+                    </p>
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Can you integrate Odoo with my e-commerce store?</dt>
+                        <dd>Yes, we integrate Odoo with Shopify, WooCommerce, Magento, and other platforms for seamless sales and inventory management.</dd>
+                        <dt>Is payment gateway integration possible?</dt>
+                        <dd>Absolutely! We integrate Odoo with leading gateways like PayPal, Stripe, Razorpay, and more.</dd>
+                        <dt>Do you build custom connectors?</dt>
+                        <dd>Yes, we design and implement custom connectors to meet your unique integration requirements.</dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+    <record id="cr_internal_website_theme.service6_odoo_integration_solution_000_scss" model="ir.asset">
+        <field name="name">SERVICE-6 000 SCSS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_internal_website_theme/static/src/snippets/service6_odoo_integration_solution/000.scss</field>
+    </record>
+</odoo>
+
+
+/* =========================
+   Odoo Integration Section
+========================= */
+.cr-odoo-integration-intro {
+    background: white;
+    padding: 80px 20px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    margin-bottom: 50px;
+}
+
+.cr-odoo-container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.cr-odoo-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.cr-odoo-header-text {
+    flex: 0 0 50%;
+    max-width: 50%;
+    color: #001f54;
+}
+
+.cr-odoo-header-text h1 {
+    color: #002855;
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 20px;
+}
+
+.cr-odoo-subtext {
+    font-size: 1.05rem;
+    color: #333;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.cr-odoo-header-img {
+    flex: 0 0 50%;
+    max-width: 50%;
+    text-align: right;
+}
+
+.cr-odoo-header-img img {
+    max-width: 100%;
+    height: auto;
+}
+
+.cr-odoo-content h2 {
+    color: #002855;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 70px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.cr-odoo-content p {
+    font-size: 1.05rem;
+    color: #333;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+
+/* ================================
+   Odoo Integration Features Style
+=================================*/
+.odoo-integration-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    list-style: none;
+    padding: 0;
+    margin: 50px 0;
+}
+
+.odoo-integration-features li {
+    background: linear-gradient(135deg, #f0f4ff, #ffffff);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+    padding: 30px 20px 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.odoo-integration-features li:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.18);
+    border-color: #1e3a8a;
+}
+
+.odoo-integration-features li::before {
+    content: '';
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: #fff;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a173b, #1e3a8a);
+    margin-bottom: 16px;
+    transition: background 0.3s ease;
+}
+
+.odoo-integration-features li:hover::before {
+    background: linear-gradient(135deg, #1e3a8a, #0ea5e9);
+}
+
+/* Assign icons */
+.cr-odoo-content ul.odoo-integration-features li:nth-child(1)::before { content: "\f1c9"; } /* fa-project-diagram */
+.cr-odoo-content ul.odoo-integration-features li:nth-child(2)::before { content: "\f07a"; } /* fa-shopping-cart */
+.cr-odoo-content ul.odoo-integration-features li:nth-child(3)::before { content: "\f09d"; } /* fa-credit-card */
+.cr-odoo-content ul.odoo-integration-features li:nth-child(4)::before { content: "\f0c0"; } /* fa-users */
+.cr-odoo-content ul.odoo-integration-features li:nth-child(5)::before { content: "\f19c"; } /* fa-calculator */
+.cr-odoo-content ul.odoo-integration-features li:nth-child(6)::before { content: "\f0d1"; } /* fa-truck */
+.cr-odoo-content ul.odoo-integration-features li:nth-child(7)::before { content: "\f382"; } /* fa-cloud */
+.cr-odoo-content ul.odoo-integration-features li:nth-child(8)::before { content: "\f542"; } /* fa-network-wired */
+.cr-odoo-content ul.odoo-integration-features li:nth-child(9)::before { content: "\f126"; } /* fa-code-branch */
+.cr-odoo-content ul.odoo-integration-features li:nth-child(10)::before { content: "\f017"; } /* fa-clock */
+
+/* Titles and Descriptions */
+.odoo-integration-features li strong {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+.odoo-integration-features li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #334155;
+}
+
+@media (max-width: 1024px) {
+    .odoo-integration-features {
+        grid-template-columns: repeat(3, 1fr); /* 2 columns */
+        gap: 18px;
+    }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+    .odoo-integration-features {
+        grid-template-columns: repeat(2, 1fr); /* still 2 columns */
+        gap: 16px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .odoo-integration-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 14px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 375px) {
+    .odoo-integration-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 12px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 320px) {
+    .odoo-integration-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 10px;
+    }
+}
+
+// /* FAQ Styling */
+// .cr-odoo-content dl {
+//     margin: 40px 0;
+//     border-top: 2px solid #e0e6f0;
+//     border-bottom: 2px solid #e0e6f0;
+//     padding: 20px 0;
+//     background: #ffffff;
+//     border-radius: 10px;
+// }
+//
+// .cr-odoo-content dt {
+//     font-weight: 700;
+//     color: #002855;
+//     margin-top: 20px;
+//     padding: 15px 20px 15px 45px;
+//     background: #e6f0ff;
+//     border-radius: 8px;
+//     position: relative;
+//     text-align: left;
+// }
+//
+// .cr-odoo-content dt::before {
+//     content: "\f128"; /* question-circle */
+//     font-family: "Font Awesome 5 Free";
+//     font-weight: 900;
+//     position: absolute;
+//     left: 15px;
+//     top: 50%;
+//     transform: translateY(-50%);
+//     color: #007bff;
+//     font-size: 1.2rem;
+// }
+//
+// .cr-odoo-content dd {
+//     margin: 10px 0 20px 20px;
+//     color: #333;
+//     line-height: 1.6;
+//     text-align: justify;
+//     padding-left: 10px;
+//     border-left: 3px solid #007bff;
+//     background: #f5f7fb;
+//     border-radius: 5px;
+//     padding: 10px 15px;
+//     font-size: 1rem;
+// }
+//
+// .cr-odoo-content dt + dd {
+//     margin-top: 10px;
+// }
+//
+// .cr-odoo-content dt:hover {
+//     background: #d0e4ff;
+//     cursor: default;
+// }
+//
+// /* =========================
+//    Responsive Media Queries
+// ========================= */
+// @media (max-width: 1024px) {
+//     .cr-odoo-header-text h1 { font-size: 2.4rem; }
+//     .cr-odoo-subtext { font-size: 1.05rem; }
+//     .cr-odoo-content h2 { font-size: 1.8rem; }
+//     .cr-odoo-content p {
+//         font-size: 1.05rem;
+//     }
+// }
+@media (max-width: 768px) {
+    .cr-odoo-header-row { flex-direction: column; gap: 30px; }
+    .cr-odoo-header-text, .cr-odoo-header-img { flex: 1 1 100%; max-width: 100%; }
+    .cr-odoo-header-text h1 { font-size: 2rem; }
+    .cr-odoo-subtext { font-size: 1rem; }
+    .cr-odoo-content ul.odoo-integration-features { gap: 15px; }
+    .cr-odoo-content ul.odoo-integration-features li { flex: 1 1 100%; max-width: 100%; }
+}
+// @media (max-width: 480px) {
+//     .cr-odoo-header-text h1 { font-size: 1.75rem; }
+//     .cr-odoo-subtext { font-size: 0.95rem; }
+//     .cr-odoo-content h2 { font-size: 1.5rem; }
+//     .cr-odoo-content p {font-size: 0.95rem;}
+// }
+@media (max-width: 375px) {
+    .cr-odoo-header-text h1 { font-size: 1.5rem; }
+    .cr-odoo-subtext { font-size: 0.9rem; }
+    .cr-odoo-content h2 { font-size: 1.3rem; }
+    .cr-odoo-content ul.odoo-integration-features li { padding: 20px 15px 25px; }
+}
+// @media (max-width: 320px) {
+//     .cr-odoo-header-text h1 { font-size: 1.35rem; }
+//     .cr-odoo-subtext { font-size: 0.85rem; }
+//     .cr-odoo-content h2 { font-size: 1.2rem; }
+// }
+
+
+
+this is my snipet in this i want to add more sections so can you provide me what i can add in this ?
+
+
+
+
+give me sections code and css for below section
+
+2. Pre-Built Integrations Showcase Section
+3. Integration Flow Diagram Section
+4. Use Cases / Real-World Scenarios Section
+15. Industry-Specific Solutions Section
+20. Post-Integration Support Section
+22. Integration Roadmap / Future Capabilities Section
+
+
+
+

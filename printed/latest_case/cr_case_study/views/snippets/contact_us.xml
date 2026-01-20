@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="contact_us" name="Contact Us">
+
+        <section class="contact_us">
+            <div class="container-fluid">
+                <section id="cr_contact_us_button" class="cr_contact_us_button">
+                    <div class="container">
+                        <div class="cr_call_action_contact_us1">
+                            <div>Need guidance or have a brilliant suggestion? We’d love to hear from you!
+                                <br/>
+                                We value your input! Contact us for questions, suggestions, or collaborations.
+                            </div>
+                        </div>
+                        <div class="cr_call_action_contact_us">
+                            <a t-att-href="cta_btn_href" class="btn btn-primary mb-2">
+                                <t t-esc="cta_btn_text">Contact us</t>
+                            </a>
+
+                        </div>
+                    </div>
+
+                </section>
+                <section class="cr_review">
+
+                </section>
+            </div>
+        </section>
+
+    </template>
+
+    <!-- To be used in JS for snippet options -->
+    <template id="contact_us_options" inherit_id="website.snippet_options">
+        <xpath expr="." position="inside">
+
+        </xpath>
+    </template>
+
+
+<!--    <record id="cr_case_study.contact_us_000_scss" model="ir.asset">-->
+<!--        <field name="name">Contact Us 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_case_study/static/src/snippets/contact_us/000.scss</field>-->
+<!--    </record>-->
+
+    <!--    <record id="cr_case_study.contact_us_000_js" model="ir.asset">-->
+    <!--        <field name="name">Contact Us 000 JS</field>-->
+    <!--        <field name="bundle">web.assets_frontend</field>-->
+    <!--        <field name="path">cr_case_study/static/src/snippets/contact_us/000.js</field>-->
+    <!--    </record>-->
+
+
+</odoo>
+
+

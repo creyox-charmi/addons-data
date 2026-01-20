@@ -1,0 +1,10 @@
+<odoo>
+     <record id="action_split" model="ir.actions.server">
+            <field name="name">Split</field>
+            <field name="model_id" ref="cr_department_management.model_sale_order"/>
+            <field name="binding_model_id" ref="cr_department_management.model_sale_order"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_open_wizard()</field>
+     </record>
+</odoo>

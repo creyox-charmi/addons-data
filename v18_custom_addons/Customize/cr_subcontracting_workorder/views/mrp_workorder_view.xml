@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="inh_mrp_production_workorder_tree_editable_view" model="ir.ui.view">
+        <field name="name">mrp.production.work.order.tree</field>
+        <field name="model">mrp.workorder</field>
+        <field name="priority" eval="40"/>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position='after'>
+                <field name='is_subcontract_wo' column_invisible="True"/>
+            </xpath>
+            <xpath expr="//field[@name='is_produced']" position="attributes">
+                <attribute name="invisible">is_subcontract_wo == True</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_pending']" position="attributes">
+                <attribute name="invisible">working_state == 'blocked' or state in ['done', 'pending', 'ready', 'cancel'] or is_user_working == False or is_subcontract_wo == True</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='button_start']" position="attributes">
+                <attribute name="invisible">working_state == 'blocked' or is_user_working ==  True or state in ['done', 'pending', 'cancel'] or is_subcontract_wo == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='workcenter_id']" position="after">
+                <field name='bom_id' readonly='True' invisible="is_subcontract_wo == False"/>
+            </xpath>
+            <xpath expr="//button[@name='button_finish']" position="attributes">
+                <attribute name="invisible">production_state in  ['draft', 'done', 'cancel'] or working_state == 'blocked' or is_user_working == False or is_subcontract_wo == True</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_finish']" position="after">
+                <button name="button_start_subcontract" type="object" string="Subcontract Order" invisible="working_state == 'blocked' or state != 'pending' or is_subcontract_wo == False"/>
+                <button name="button_start_subcontract" type="object" string="Subcontract Order" invisible="working_state == 'blocked' or state != 'ready' or is_subcontract_wo == False" class="btn-success"/>
+                <field name="is_return_subcontracted_product" column_invisible="1"/>
+                <button name="button_done_subcontract" type="object" string="Done" class="btn-success" invisible="is_return_subcontracted_product == False or state != 'progress' or is_subcontract_wo == False"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inh_mrp_production_workorder_form_view_inherit" model="ir.ui.view">
+        <field name="name">mrp.production.work.order.form</field>
+        <field name="model">mrp.workorder</field>
+        <field name="priority" eval="40"/>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='workcenter_id']" position="after">
+                <field name="is_subcontract_wo" invisible="1"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position='inside'>
+                <button class="oe_stat_button" name="view_subcontract_purchase" type="object" icon="fa-credit-card" invisible="is_subcontract_wo == False or state not in ['progress', 'done']">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value"><field name="purchase_count"/></span>
+                        <span class="o_stat_text">Purchase</span>
+                    </div>
+                </button>
+                <button class="oe_stat_button" name="view_subcontract_delivery" type="object" icon="fa-credit-card" invisible="is_subcontract_wo == False or state not in ['progress', 'done']">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value"><field name="delivery_count"/></span>
+                        <span class="o_stat_text">Delivery</span>
+                    </div>
+                </button>
+                <button class="oe_stat_button" name="view_subcontract_receipt" type="object" icon="fa-credit-card" invisible="is_subcontract_wo == False or state not in ['progress', 'done']">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value"><field name="receipt_count"/></span>
+                        <span class="o_stat_text">Receipt</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//notebook//page[@name='time_tracking']" position="attributes">
+                <attribute name="invisible">is_subcontract_wo == True</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

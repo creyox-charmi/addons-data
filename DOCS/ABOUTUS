@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="about_us_snippet_section1" name="AboutUS Section-1">
+
+ <section class="our-journey-section">
+        <div class="journey-container">
+            <div class="journey-grid">
+                <!-- Image Section -->
+                <div class="journey-image-wrapper">
+                    <canvas id="journeyCanvas" class="journey-image" width="600" height="700"></canvas>
+                </div>
+
+                <!-- Content Section -->
+                <div class="journey-content">
+                    <h2 class="journey-title">Our Journey</h2>
+
+                    <p class="journey-text">
+                        Founded with a vision to bridge the gap between complex business operations and intelligent technology, we embarked on a mission to transform how businesses leverage Odoo ERP.
+                    </p>
+
+                    <p class="journey-text">
+                        What started as a small team of passionate developers has grown into a specialized Odoo consulting firm, serving diverse industries across the globe. Our journey has been defined by one constant: an unwavering commitment to delivering solutions that don't just work—they transform.
+                    </p>
+
+                    <p class="journey-text">
+                        Today, we stand as trusted Odoo partners, having successfully implemented 200+ projects, customized 500+ modules, and empowered businesses to achieve operational excellence through intelligent automation.
+                    </p>
+
+                    <div class="journey-highlight">
+                        Every client challenge we solve, every custom module we build, and every business we help scale reinforces our belief: the right ERP solution, tailored perfectly, can be a game-changer.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Generate professional illustration
+        const canvas = document.getElementById('journeyCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas background
+        const gradient = ctx.createLinearGradient(0, 0, 600, 700);
+        gradient.addColorStop(0, '#f8fafc');
+        gradient.addColorStop(1, '#e0f2fe');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 600, 700);
+
+        // Draw abstract growth path
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 4;
+        ctx.setLineDash([10, 5]);
+        ctx.beginPath();
+        ctx.moveTo(100, 600);
+        ctx.quadraticCurveTo(200, 500, 250, 400);
+        ctx.quadraticCurveTo(300, 300, 400, 250);
+        ctx.quadraticCurveTo(450, 200, 500, 150);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Draw milestone circles
+        const milestones = [
+            {x: 100, y: 600, label: 'Start'},
+            {x: 250, y: 400, label: 'Growth'},
+            {x: 400, y: 250, label: 'Scale'},
+            {x: 500, y: 150, label: 'Leader'}
+        ];
+
+        milestones.forEach((milestone, index) => {
+            // Circle shadow
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.beginPath();
+            ctx.arc(milestone.x + 3, milestone.y + 3, 30, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Circle
+            const circleGradient = ctx.createRadialGradient(milestone.x, milestone.y, 0, milestone.x, milestone.y, 30);
+            circleGradient.addColorStop(0, '#60a5fa');
+            circleGradient.addColorStop(1, '#3b82f6');
+            ctx.fillStyle = circleGradient;
+            ctx.beginPath();
+            ctx.arc(milestone.x, milestone.y, 30, 0, Math.PI * 2);
+            ctx.fill();
+
+            // White center
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(milestone.x, milestone.y, 20, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Label
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(milestone.label, milestone.x, milestone.y + 60);
+        });
+
+        // Draw team illustration (simplified people icons)
+        const drawPerson = (x, y, color) => {
+            // Head
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, 15, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Body
+            ctx.fillRect(x - 12, y + 15, 24, 30);
+
+            // Arms
+            ctx.fillRect(x - 20, y + 20, 8, 20);
+            ctx.fillRect(x + 12, y + 20, 8, 20);
+        };
+
+        // Team group
+        drawPerson(150, 120, '#3b82f6');
+        drawPerson(190, 120, '#60a5fa');
+        drawPerson(230, 120, '#3b82f6');
+        drawPerson(270, 120, '#60a5fa');
+
+        // Add decorative elements
+        ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
+        ctx.beginPath();
+        ctx.arc(450, 450, 80, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = 'rgba(96, 165, 250, 0.1)';
+        ctx.beginPath();
+        ctx.arc(150, 300, 60, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Add tech icons (simplified)
+        const drawIcon = (x, y, type) => {
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+
+            if (type === 'code') {
+                ctx.beginPath();
+                ctx.moveTo(x - 15, y);
+                ctx.lineTo(x - 5, y - 10);
+                ctx.lineTo(x - 5, y + 10);
+                ctx.closePath();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(x + 15, y);
+                ctx.lineTo(x + 5, y - 10);
+                ctx.lineTo(x + 5, y + 10);
+                ctx.closePath();
+                ctx.stroke();
+            } else if (type === 'chart') {
+                ctx.strokeRect(x - 15, y - 15, 30, 30);
+                ctx.beginPath();
+                ctx.moveTo(x - 10, y + 5);
+                ctx.lineTo(x - 5, y - 5);
+                ctx.lineTo(x, y);
+                ctx.lineTo(x + 5, y - 10);
+                ctx.lineTo(x + 10, y - 5);
+                ctx.stroke();
+            }
+        };
+
+        drawIcon(470, 350, 'code');
+        drawIcon(130, 500, 'chart');
+
+        // Add title text
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold 28px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Transforming Businesses', 300, 50);
+        ctx.font = '18px Arial';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Through Innovation &amp; Excellence', 300, 80);
+    </script>
+
+
+    </template>
+
+
+<!--    <record id="cr_internal_website_theme.about_us_s1_000_scss" model="ir.asset">-->
+<!--        <field name="name">AboutUS SECTION-1 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/about_us_section1/000.scss</field>-->
+<!--    </record>-->
+</odoo>
+
+
+.our-journey-section {
+            width: 100%;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 50%, #f5f8ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative background elements */
+        .our-journey-section::before {
+            content: "";
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+            z-index: 0;
+        }
+
+        .our-journey-section::after {
+            content: "";
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -80px;
+            right: -80px;
+            z-index: 0;
+        }
+
+        .journey-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .journey-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        /* ====== IMAGE SECTION ====== */
+        .journey-image-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .journey-image-wrapper::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(96, 165, 250, 0.15));
+            border-radius: 20px;
+            top: 20px;
+            left: 20px;
+            z-index: -1;
+            transition: all 0.4s ease;
+        }
+
+        .journey-image-wrapper:hover::before {
+            top: 25px;
+            left: 25px;
+        }
+
+        .journey-image {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            transition: transform 0.4s ease;
+            display: block;
+        }
+
+        .journey-image:hover {
+            transform: translateY(-5px);
+        }
+
+        /* ====== CONTENT SECTION ====== */
+        .journey-content {
+            padding: 20px 0;
+        }
+
+        .journey-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .journey-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            border-radius: 3px;
+        }
+
+        .journey-text {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: #475569;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .journey-text:last-child {
+            margin-bottom: 0;
+        }
+
+        .journey-highlight {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+            border-left: 4px solid #3b82f6;
+            padding: 20px 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-style: italic;
+            color: #1e293b;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+        }
+
+        /* ====== RESPONSIVE DESIGN ====== */
+
+        /* Large Tablets and below (≤ 1024px) */
+        @media (max-width: 1024px) {
+            .our-journey-section {
+                padding: 60px 20px;
+            }
+
+            .journey-grid {
+                gap: 50px;
+            }
+
+            .journey-title {
+                font-size: 2.5rem;
+            }
+
+            .journey-text {
+                font-size: 1.05rem;
+            }
+        }
+
+        /* Tablets (≤ 768px) */
+        @media (max-width: 768px) {
+            .our-journey-section {
+                padding: 50px 20px;
+            }
+
+            .journey-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .journey-title {
+                font-size: 2.2rem;
+                margin-bottom: 25px;
+            }
+
+            .journey-text {
+                font-size: 1rem;
+                margin-bottom: 20px;
+            }
+
+            .journey-highlight {
+                padding: 18px 20px;
+                margin-top: 25px;
+            }
+
+            .our-journey-section::before {
+                width: 300px;
+                height: 300px;
+            }
+
+            .our-journey-section::after {
+                width: 250px;
+                height: 250px;
+            }
+        }
+
+        /* Mobile Large (≤ 480px) */
+        @media (max-width: 480px) {
+            .our-journey-section {
+                padding: 40px 15px;
+            }
+
+            .journey-grid {
+                gap: 30px;
+            }
+
+            .journey-title {
+                font-size: 1.9rem;
+                margin-bottom: 20px;
+            }
+
+            .journey-title::after {
+                width: 60px;
+                height: 4px;
+            }
+
+            .journey-text {
+                font-size: 0.95rem;
+                line-height: 1.7;
+                margin-bottom: 18px;
+            }
+
+            .journey-highlight {
+                padding: 15px 18px;
+                margin-top: 20px;
+                font-size: 0.95rem;
+            }
+
+            .journey-image-wrapper::before {
+                top: 15px;
+                left: 15px;
+            }
+
+            .our-journey-section::before {
+                width: 220px;
+                height: 220px;
+            }
+
+            .our-journey-section::after {
+                width: 180px;
+                height: 180px;
+            }
+        }
+
+        /* Mobile Medium (≤ 375px) */
+        @media (max-width: 375px) {
+            .our-journey-section {
+                padding: 35px 12px;
+            }
+
+            .journey-title {
+                font-size: 1.7rem;
+            }
+
+            .journey-text {
+                font-size: 0.9rem;
+                line-height: 1.65;
+            }
+
+            .journey-highlight {
+                padding: 14px 16px;
+                font-size: 0.9rem;
+            }
+
+            .our-journey-section::before {
+                width: 180px;
+                height: 180px;
+            }
+
+            .our-journey-section::after {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        /* Mobile Small (≤ 320px) */
+        @media (max-width: 320px) {
+            .our-journey-section {
+                padding: 30px 10px;
+            }
+
+            .journey-title {
+                font-size: 1.5rem;
+                margin-bottom: 18px;
+            }
+
+            .journey-title::after {
+                width: 50px;
+                height: 3px;
+            }
+
+            .journey-text {
+                font-size: 0.85rem;
+                line-height: 1.6;
+                margin-bottom: 15px;
+            }
+
+            .journey-highlight {
+                padding: 12px 14px;
+                margin-top: 18px;
+                font-size: 0.85rem;
+            }
+
+            .journey-image-wrapper::before {
+                top: 12px;
+                left: 12px;
+            }
+
+            .our-journey-section::before {
+                width: 150px;
+                height: 150px;
+            }
+
+            .our-journey-section::after {
+                width: 120px;
+                height: 120px;
+            }
+        }
+
+        /* Landscape Mode Adjustments */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .our-journey-section {
+                padding: 40px 20px;
+            }
+
+            .journey-grid {
+                gap: 30px;
+            }
+
+            .journey-title {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .journey-text {
+                font-size: 0.95rem;
+                margin-bottom: 15px;
+            }
+
+            .journey-highlight {
+                padding: 15px;
+                margin-top: 20px;
+            }
+        }

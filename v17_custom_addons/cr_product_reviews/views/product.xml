@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="product_view_form" model="ir.ui.view">
+        <field name="name">product.view.form</field>
+        <field name="model">product</field>
+        <field name="arch" type="xml">
+            <form string="Product">
+                <header>
+                        <button string="Reviews"
+                                class="oe_stat_button"
+                                type="object"
+                                name="action_get_record" />
+
+                </header>
+                <sheet>
+                     <div name="button_box" position="inside">
+                        <button class="oe_stat_button"
+                                 type="object"
+                                 icon="fa-user"
+                                 name="action_get_review_record" >
+                            <field string="Review" name="no_of_review" widget="statinfo" />
+                        </button>
+                     </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="price"/>
+                        <field name="review_id"/>
+                        <field name="no_of_review" invisible="True"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_view_tree" model="ir.ui.view">
+        <field name="name">product.view.tree</field>
+        <field name="model">product</field>
+        <field name="arch" type="xml">
+            <tree string="Product">
+                <field name="name"/>
+                <field name="price"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_action" model="ir.actions.act_window">
+        <field name="name">Product</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="product_review_main_menu"
+              name="Product Review Module"
+              sequence="999"/>
+
+    <menuitem id="product_menu"
+              name="Product"
+              parent="product_review_main_menu"
+              action="product_action"
+              sequence="1"/>
+</odoo>

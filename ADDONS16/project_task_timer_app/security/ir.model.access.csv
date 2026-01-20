@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_project_calculate_duration,access_project_calculate_duration,model_project_calculate_duration,base.group_user,1,1,1,1
+access_wiz_stop_task,access_wiz_stop_task,model_wiz_stop_task,base.group_user,1,1,1,0
+access_task_start_wiz,access_task_start_wiz,model_task_start_wiz,base.group_user,1,1,1,0
+analytic.access_account_analytic_account,access_account_analytic_account,analytic.model_account_analytic_account,analytic.group_analytic_accounting,1,0,0,0
+hr_timesheet.access_account_analytic_user,analytic.account.analytic.timesheet.user,analytic.model_account_analytic_account,hr_timesheet.group_hr_timesheet_user,1,0,0,0
+

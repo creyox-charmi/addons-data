@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cr_smartsheet_config,access_cr_smartsheet_config,model_cr_smartsheet_config,,1,1,1,1
+access_cr_processing_log,cr.processing.log,model_cr_processing_log,,1,1,1,1

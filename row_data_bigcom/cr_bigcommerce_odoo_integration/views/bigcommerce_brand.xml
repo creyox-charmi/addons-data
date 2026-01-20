@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_bigcommerce_brand_tree" model="ir.ui.view">
+        <field name="name">bigcommerce.brand.tree</field>
+        <field name="model">bigcommerce.brand</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="brand_id"/>
+                <field name="store_id"/>
+                <field name="custom_url"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_bigcommerce_brand_form" model="ir.ui.view">
+        <field name="name">bigcommerce.brand.form</field>
+        <field name="model">bigcommerce.brand</field>
+        <field name="arch" type="xml">
+            <form string="BigCommerce Brand">
+                <header>
+                    <button name="action_update_brand_on_bigcommerce"
+                            string="Update on BigCommerce"
+                            type="object"
+                            icon="fa-refresh"
+                            class="btn-primary"
+                            invisible="not brand_id"/>
+                    <button name="action_delete_brand_from_bigcommerce"
+                            string="Delete from BigCommerce"
+                            type="object"
+                            class="btn-danger"
+                            invisible="not brand_id"/>
+
+
+                </header>
+                <sheet>
+                    <group name="general_info" string="General Information" colspan="2">
+                        <field name="name"/>
+                        <field name="brand_id"/>
+                        <field name="store_id"/>
+                        <field name="image_url"/>
+                    </group>
+
+                    <group name="seo_info" string="SEO Information" colspan="2">
+                        <field name="page_title"/>
+                        <field name="custom_url"/>
+                        <field name="is_customized_url"/>
+                    </group>
+
+                    <group name="meta_info" string="Metadata" colspan="2">
+                        <field name="meta_keywords"/>
+                        <field name="meta_description"/>
+                        <field name="search_keywords"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_bigcommerce_brand" model="ir.actions.act_window">
+        <field name="name">BigCommerce Brands</field>
+        <field name="res_model">bigcommerce.brand</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>View and manage brands imported from BigCommerce.</p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_bigcommerce_brand"
+              name="Brands"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_product_info"
+              action="action_bigcommerce_brand"/>
+
+    <record id="action_bulk_update_brand_on_bigcommerce" model="ir.actions.server">
+        <field name="name">Update Brand on BigCommerce</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_bigcommerce_brand"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_bigcommerce_brand"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_update_brand_on_bigcommerce()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+
+</odoo>

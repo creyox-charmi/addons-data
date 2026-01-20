@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Reds -->
+    <record id="color_indian_red" model="color.management">
+        <field name="name">IndianRed</field>
+        <field name="color_code">#CD5C5C</field>
+    </record>
+    <record id="color_light_coral" model="color.management">
+        <field name="name">LightCoral</field>
+        <field name="color_code">#F08080</field>
+    </record>
+    <record id="color_salmon" model="color.management">
+        <field name="name">Salmon</field>
+        <field name="color_code">#FA8072</field>
+    </record>
+    <record id="color_dark_salmon" model="color.management">
+        <field name="name">DarkSalmon</field>
+        <field name="color_code">#E9967A</field>
+    </record>
+    <record id="color_light_salmom" model="color.management">
+        <field name="name">LightSalmon</field>
+        <field name="color_code">#FFA07A</field>
+    </record>
+    <record id="color_crimson" model="color.management">
+        <field name="name">Crimson</field>
+        <field name="color_code">#DC143C</field>
+    </record>
+    <record id="color_red" model="color.management">
+        <field name="name">Red</field>
+        <field name="color_code">#FF0000</field>
+    </record>
+    <record id="color_firebrick" model="color.management">
+        <field name="name">FireBrick</field>
+        <field name="color_code">#B22222</field>
+    </record>
+    <record id="color_dark_red" model="color.management">
+        <field name="name">DarkRed</field>
+        <field name="color_code">#8B0000</field>
+    </record>
+
+    <!-- Pinks -->
+    <record id="color_pink" model="color.management">
+        <field name="name">Pink</field>
+        <field name="color_code">#FFC0CB</field>
+    </record>
+    <record id="color_light_pink" model="color.management">
+        <field name="name">LightPink</field>
+        <field name="color_code">#FFB6C1</field>
+    </record>
+    <record id="color_hot_pink" model="color.management">
+        <field name="name">HotPink</field>
+        <field name="color_code">#FF69B4</field>
+    </record>
+    <record id="color_deep_pink" model="color.management">
+        <field name="name">DeepPink</field>
+        <field name="color_code">#FF1493</field>
+    </record>
+    <record id="color_medium_violet_red" model="color.management">
+        <field name="name">MediumVioletRed</field>
+        <field name="color_code">#C71585</field>
+    </record>
+    <record id="color_pale_violet_red" model="color.management">
+        <field name="name">PaleVioletRed</field>
+        <field name="color_code">#DB7093</field>
+    </record>
+
+    <!-- Oranges -->
+    <record id="color_coral" model="color.management">
+        <field name="name">Coral</field>
+        <field name="color_code">#FF7F50</field>
+    </record>
+    <record id="color_tomato" model="color.management">
+        <field name="name">Tomato</field>
+        <field name="color_code">#FF6347</field>
+    </record>
+    <record id="color_orange_red" model="color.management">
+        <field name="name">OrangeRed</field>
+        <field name="color_code">#FF4500</field>
+    </record>
+    <record id="color_dark_orange" model="color.management">
+        <field name="name">DarkOrange</field>
+        <field name="color_code">#FF8C00</field>
+    </record>
+    <record id="color_orange" model="color.management">
+        <field name="name">Orange</field>
+        <field name="color_code">#FFA500</field>
+    </record>
+
+    <!-- Yellows -->
+    <record id="color_gold" model="color.management">
+        <field name="name">Gold</field>
+        <field name="color_code">#FFD700</field>
+    </record>
+    <record id="color_yellow" model="color.management">
+        <field name="name">Yellow</field>
+        <field name="color_code">#FFFF00</field>
+    </record>
+    <record id="color_light_yellow" model="color.management">
+        <field name="name">LightYellow</field>
+        <field name="color_code">#FFFFE0</field>
+    </record>
+    <record id="color_lemon_chiffon" model="color.management">
+        <field name="name">LemonChiffon</field>
+        <field name="color_code">#FFFACD</field>
+    </record>
+    <record id="color_light_goldenrod_yellow" model="color.management">
+        <field name="name">LightGoldenrodYellow</field>
+        <field name="color_code">#FAFAD2</field>
+    </record>
+    <record id="color_papaya_whip" model="color.management">
+        <field name="name">PapayaWhip</field>
+        <field name="color_code">#FFEFD5</field>
+    </record>
+    <record id="color_moccasin" model="color.management">
+        <field name="name">Moccasin</field>
+        <field name="color_code">#FFE4B5</field>
+    </record>
+    <record id="color_peach_puff" model="color.management">
+        <field name="name">PeachPuff</field>
+        <field name="color_code">#FFDAB9</field>
+    </record>
+    <record id="color_pale_goldenrod" model="color.management">
+        <field name="name">PaleGoldenrod</field>
+        <field name="color_code">#EEE8AA</field>
+    </record>
+    <record id="color_khaki" model="color.management">
+        <field name="name">Khaki</field>
+        <field name="color_code">#F0E68C</field>
+    </record>
+    <record id="color_dark_khaki" model="color.management">
+        <field name="name">DarkKhaki</field>
+        <field name="color_code">#BDB76B</field>
+    </record>
+
+    <!-- Purples -->
+    <record id="color_lavender" model="color.management">
+        <field name="name">Lavender</field>
+        <field name="color_code">#E6E6FA</field>
+    </record>
+    <record id="color_thistle" model="color.management">
+        <field name="name">Thistle</field>
+        <field name="color_code">#D8BFD8</field>
+    </record>
+    <record id="color_plum" model="color.management">
+        <field name="name">Plum</field>
+        <field name="color_code">#DDA0DD</field>
+    </record>
+    <record id="color_violet" model="color.management">
+        <field name="name">Violet</field>
+        <field name="color_code">#EE82EE</field>
+    </record>
+    <record id="color_orchid" model="color.management">
+        <field name="name">Orchid</field>
+        <field name="color_code">#DA70D6</field>
+    </record>
+    <record id="color_fuchsia" model="color.management">
+        <field name="name">Fuchsia</field>
+        <field name="color_code">#FF00FF</field>
+    </record>
+    <record id="color_magenta" model="color.management">
+        <field name="name">Magenta</field>
+        <field name="color_code">#FF00FF</field>
+    </record>
+    <record id="color_medium_orchid" model="color.management">
+        <field name="name">MediumOrchid</field>
+        <field name="color_code">#BA55D3</field>
+    </record>
+    <record id="color_medium_purple" model="color.management">
+        <field name="name">MediumPurple</field>
+        <field name="color_code">#9370DB</field>
+    </record>
+    <record id="color_blue_violet" model="color.management">
+        <field name="name">BlueViolet</field>
+        <field name="color_code">#8A2BE2</field>
+    </record>
+    <record id="color_dark_violet" model="color.management">
+        <field name="name">DarkViolet</field>
+        <field name="color_code">#9400D3</field>
+    </record>
+    <record id="color_dark_orchid" model="color.management">
+        <field name="name">DarkOrchid</field>
+        <field name="color_code">#9932CC</field>
+    </record>
+    <record id="color_dark_magenta" model="color.management">
+        <field name="name">DarkMagenta</field>
+        <field name="color_code">#8B008B</field>
+    </record>
+    <record id="color_purple" model="color.management">
+        <field name="name">Purple</field>
+        <field name="color_code">#800080</field>
+    </record>
+    <record id="color_rebecca_purple" model="color.management">
+        <field name="name">RebeccaPurple</field>
+        <field name="color_code">#663399</field>
+    </record>
+    <record id="color_indigo" model="color.management">
+        <field name="name">Indigo</field>
+        <field name="color_code">#4B0082</field>
+    </record>
+    <record id="color_medium_slate_blue" model="color.management">
+        <field name="name">MediumSlateBlue</field>
+        <field name="color_code">#7B68EE</field>
+    </record>
+    <record id="color_slate_blue" model="color.management">
+        <field name="name">SlateBlue</field>
+        <field name="color_code">#6A5ACD</field>
+    </record>
+    <record id="color_dark_slate_blue" model="color.management">
+        <field name="name">DarkSlateBlue</field>
+        <field name="color_code">#483D8B</field>
+    </record>
+
+    <!-- Greens -->
+    <record id="color_green_yellow" model="color.management">
+        <field name="name">GreenYellow</field>
+        <field name="color_code">#ADFF2F</field>
+    </record>
+    <record id="color_chartreuse" model="color.management">
+        <field name="name">Chartreuse</field>
+        <field name="color_code">#7FFF00</field>
+    </record>
+    <record id="color_lawn_green" model="color.management">
+        <field name="name">LawnGreen</field>
+        <field name="color_code">#7CFC00</field>
+    </record>
+    <record id="color_lime" model="color.management">
+        <field name="name">Lime</field>
+        <field name="color_code">#00FF00</field>
+    </record>
+    <record id="color_lime_green" model="color.management">
+        <field name="name">LimeGreen</field>
+        <field name="color_code">#32CD32</field>
+    </record>
+    <record id="color_pale_green" model="color.management">
+        <field name="name">PaleGreen</field>
+        <field name="color_code">#98FB98</field>
+    </record>
+    <record id="color_light_green" model="color.management">
+        <field name="name">LightGreen</field>
+        <field name="color_code">#90EE90</field>
+    </record>
+    <record id="color_medium_spring_green" model="color.management">
+        <field name="name">MediumSpringGreen</field>
+        <field name="color_code">#00FA9A</field>
+    </record>
+    <record id="color_spring_green" model="color.management">
+        <field name="name">SpringGreen</field>
+        <field name="color_code">#00FF7F</field>
+    </record>
+    <record id="color_medium_sea_green" model="color.management">
+        <field name="name">MediumSeaGreen</field>
+        <field name="color_code">#3CB371</field>
+    </record>
+    <record id="color_sea_green" model="color.management">
+        <field name="name">SeaGreen</field>
+        <field name="color_code">#2E8B57</field>
+    </record>
+    <record id="color_forest_green" model="color.management">
+        <field name="name">ForestGreen</field>
+        <field name="color_code">#228B22</field>
+    </record>
+    <record id="color_dark_green" model="color.management">
+        <field name="name">DarkGreen</field>
+        <field name="color_code">#006400</field>
+    </record>
+    <record id="color_yellow_green" model="color.management">
+        <field name="name">YellowGreen</field>
+        <field name="color_code">#9ACD32</field>
+    </record>
+    <record id="color_olive_drab" model="color.management">
+        <field name="name">OliveDrab</field>
+        <field name="color_code">#6B8E23</field>
+    </record>
+
+    <!-- Blues/Cyans -->
+    <record id="color_aqua" model="color.management">
+        <field name="name">Aqua</field>
+        <field name="color_code">#00FFFF</field>
+    </record>
+    <record id="color_cyan" model="color.management">
+        <field name="name">Cyan</field>
+        <field name="color_code">#00FFFF</field>
+    </record>
+    <record id="color_light_cyan" model="color.management">
+        <field name="name">LightCyan</field>
+        <field name="color_code">#E0FFFF</field>
+    </record>
+    <record id="color_pale_turquoise" model="color.management">
+        <field name="name">PaleTurquoise</field>
+        <field name="color_code">#AFEEEE</field>
+    </record>
+    <record id="color_aquamarine" model="color.management">
+        <field name="name">Aquamarine</field>
+        <field name="color_code">#7FFFD4</field>
+    </record>
+    <record id="color_turquoise" model="color.management">
+        <field name="name">Turquoise</field>
+        <field name="color_code">#40E0D0</field>
+    </record>
+    <record id="color_medium_turquoise" model="color.management">
+        <field name="name">MediumTurquoise</field>
+        <field name="color_code">#48D1CC</field>
+    </record>
+    <record id="color_dark_turquoise" model="color.management">
+        <field name="name">DarkTurquoise</field>
+        <field name="color_code">#00CED1</field>
+    </record>
+    <record id="color_cadet_blue" model="color.management">
+        <field name="name">CadetBlue</field>
+        <field name="color_code">#5F9EA0</field>
+    </record>
+    <record id="color_steel_blue" model="color.management">
+        <field name="name">SteelBlue</field>
+        <field name="color_code">#4682B4</field>
+    </record>
+    <record id="color_light_steel_blue" model="color.management">
+        <field name="name">LightSteelBlue</field>
+        <field name="color_code">#B0C4DE</field>
+    </record>
+    <record id="color_powder_blue" model="color.management">
+        <field name="name">PowderBlue</field>
+        <field name="color_code">#B0E0E6</field>
+    </record>
+    <record id="color_light_blue" model="color.management">
+        <field name="name">LightBlue</field>
+        <field name="color_code">#ADD8E6</field>
+    </record>
+    <record id="color_sky_blue" model="color.management">
+        <field name="name">SkyBlue</field>
+        <field name="color_code">#87CEEB</field>
+    </record>
+    <record id="color_light_sky_blue" model="color.management">
+        <field name="name">LightSkyBlue</field>
+        <field name="color_code">#87CEFA</field>
+    </record>
+    <record id="color_deep_sky_blue" model="color.management">
+        <field name="name">DeepSkyBlue</field>
+        <field name="color_code">#00BFFF</field>
+    </record>
+    <record id="color_dodger_blue" model="color.management">
+        <field name="name">DodgerBlue</field>
+        <field name="color_code">#1E90FF</field>
+    </record>
+    <record id="color_cornflower_blue" model="color.management">
+        <field name="name">CornflowerBlue</field>
+        <field name="color_code">#6495ED</field>
+    </record>
+    <record id="color_royal_blue" model="color.management">
+        <field name="name">RoyalBlue</field>
+        <field name="color_code">#4169E1</field>
+    </record>
+    <record id="color_blue" model="color.management">
+        <field name="name">Blue</field>
+        <field name="color_code">#0000FF</field>
+    </record>
+    <record id="color_medium_blue" model="color.management">
+        <field name="name">MediumBlue</field>
+        <field name="color_code">#0000CD</field>
+    </record>
+    <record id="color_dark_blue" model="color.management">
+        <field name="name">DarkBlue</field>
+        <field name="color_code">#00008B</field>
+    </record>
+    <record id="color_navy" model="color.management">
+        <field name="name">Navy</field>
+        <field name="color_code">#000080</field>
+    </record>
+    <record id="color_midnight_blue" model="color.management">
+        <field name="name">MidnightBlue</field>
+        <field name="color_code">#191970</field>
+    </record>
+
+    <!-- Browns -->
+    <record id="color_cornsilk" model="color.management">
+        <field name="name">Cornsilk</field>
+        <field name="color_code">#FFF8DC</field>
+    </record>
+    <record id="color_blanched_almond" model="color.management">
+        <field name="name">BlanchedAlmond</field>
+        <field name="color_code">#FFEBCD</field>
+    </record>
+    <record id="color_bisque" model="color.management">
+        <field name="name">Bisque</field>
+        <field name="color_code">#FFE4C4</field>
+    </record>
+    <record id="color_navajo_white" model="color.management">
+        <field name="name">NavajoWhite</field>
+        <field name="color_code">#FFDEAD</field>
+    </record>
+    <record id="color_wheat" model="color.management">
+        <field name="name">Wheat</field>
+        <field name="color_code">#F5DEB3</field>
+    </record>
+    <record id="color_burly_wood" model="color.management">
+        <field name="name">BurlyWood</field>
+        <field name="color_code">#DEB887</field>
+    </record>
+    <record id="color_tan" model="color.management">
+        <field name="name">Tan</field>
+        <field name="color_code">#D2B48C</field>
+    </record>
+    <record id="color_rosy_brown" model="color.management">
+        <field name="name">RosyBrown</field>
+        <field name="color_code">#BC8F8F</field>
+    </record>
+    <record id="color_sandy_brown" model="color.management">
+        <field name="name">SandyBrown</field>
+        <field name="color_code">#F4A460</field>
+    </record>
+    <record id="color_goldenrod" model="color.management">
+        <field name="name">Goldenrod</field>
+        <field name="color_code">#DAA520</field>
+    </record>
+    <record id="color_dark_goldenrod" model="color.management">
+        <field name="name">DarkGoldenrod</field>
+        <field name="color_code">#B8860B</field>
+    </record>
+    <record id="color_peru" model="color.management">
+        <field name="name">Peru</field>
+        <field name="color_code">#CD853F</field>
+    </record>
+    <record id="color_chocolate" model="color.management">
+        <field name="name">Chocolate</field>
+        <field name="color_code">#D2691E</field>
+    </record>
+    <record id="color_saddle_brown" model="color.management">
+        <field name="name">SaddleBrown</field>
+        <field name="color_code">#8B4513</field>
+    </record>
+    <record id="color_sienna" model="color.management">
+        <field name="name">Sienna</field>
+        <field name="color_code">#A0522D</field>
+    </record>
+    <record id="color_brown" model="color.management">
+        <field name="name">Brown</field>
+        <field name="color_code">#A52A2A</field>
+    </record>
+    <record id="color_maroon" model="color.management">
+        <field name="name">Maroon</field>
+        <field name="color_code">#800000</field>
+    </record>
+
+
+    <!-- Whites -->
+    <record id="color_white" model="color.management">
+        <field name="name">White</field>
+        <field name="color_code">#FFFFFF</field>
+    </record>
+    <record id="color_snow" model="color.management">
+        <field name="name">Snow</field>
+        <field name="color_code">#FFFAFA</field>
+    </record>
+    <record id="color_honeydew" model="color.management">
+        <field name="name">Honeydew</field>
+        <field name="color_code">#F0FFF0</field>
+    </record>
+    <record id="color_mintcream" model="color.management">
+        <field name="name">MintCream</field>
+        <field name="color_code">#F5FFFA</field>
+    </record>
+    <record id="color_azure" model="color.management">
+        <field name="name">Azure</field>
+        <field name="color_code">#F0FFFF</field>
+    </record>
+    <record id="color_aliceblue" model="color.management">
+        <field name="name">AliceBlue</field>
+        <field name="color_code">#F0F8FF</field>
+    </record>
+    <record id="color_ghostwhite" model="color.management">
+        <field name="name">GhostWhite</field>
+        <field name="color_code">#F8F8FF</field>
+    </record>
+    <record id="color_whitesmoke" model="color.management">
+        <field name="name">WhiteSmoke</field>
+        <field name="color_code">#F5F5F5</field>
+    </record>
+    <record id="color_seashell" model="color.management">
+        <field name="name">Seashell</field>
+        <field name="color_code">#FFF5EE</field>
+    </record>
+    <record id="color_beige" model="color.management">
+        <field name="name">Beige</field>
+        <field name="color_code">#F5F5DC</field>
+    </record>
+    <record id="color_oldlace" model="color.management">
+        <field name="name">OldLace</field>
+        <field name="color_code">#FDF5E6</field>
+    </record>
+    <record id="color_floralwhite" model="color.management">
+        <field name="name">FloralWhite</field>
+        <field name="color_code">#FFFAF0</field>
+    </record>
+    <record id="color_ivory" model="color.management">
+        <field name="name">Ivory</field>
+        <field name="color_code">#FFFFF0</field>
+    </record>
+    <record id="color_antiqueswhite" model="color.management">
+        <field name="name">AntiqueWhite</field>
+        <field name="color_code">#FAEBD7</field>
+    </record>
+    <record id="color_linen" model="color.management">
+        <field name="name">Linen</field>
+        <field name="color_code">#FAF0E6</field>
+    </record>
+    <record id="color_lavenderblush" model="color.management">
+        <field name="name">LavenderBlush</field>
+        <field name="color_code">#FFF0F5</field>
+    </record>
+    <record id="color_mistyrose" model="color.management">
+        <field name="name">MistyRose</field>
+        <field name="color_code">#FFE4E1</field>
+    </record>
+
+    <!-- Greys -->
+    <record id="color_gainsboro" model="color.management">
+        <field name="name">Gainsboro</field>
+        <field name="color_code">#DCDCDC</field>
+    </record>
+    <record id="color_lightgray" model="color.management">
+        <field name="name">LightGray</field>
+        <field name="color_code">#D3D3D3</field>
+    </record>
+    <record id="color_lightgrey" model="color.management">
+        <field name="name">LightGrey</field>
+        <field name="color_code">#D3D3D3</field>
+    </record>
+    <record id="color_silver" model="color.management">
+        <field name="name">Silver</field>
+        <field name="color_code">#C0C0C0</field>
+    </record>
+    <record id="color_darkgray" model="color.management">
+        <field name="name">DarkGray</field>
+        <field name="color_code">#A9A9A9</field>
+    </record>
+    <record id="color_darkgrey" model="color.management">
+        <field name="name">DarkGrey</field>
+        <field name="color_code">#A9A9A9</field>
+    </record>
+    <record id="color_gray" model="color.management">
+        <field name="name">Gray</field>
+        <field name="color_code">#808080</field>
+    </record>
+    <record id="color_grey" model="color.management">
+        <field name="name">Grey</field>
+        <field name="color_code">#808080</field>
+    </record>
+    <record id="color_dimgray" model="color.management">
+        <field name="name">DimGray</field>
+        <field name="color_code">#696969</field>
+    </record>
+    <record id="color_dimgrey" model="color.management">
+        <field name="name">DimGrey</field>
+        <field name="color_code">#696969</field>
+    </record>
+    <record id="color_lightslategray" model="color.management">
+        <field name="name">LightSlateGray</field>
+        <field name="color_code">#778899</field>
+    </record>
+    <record id="color_lightslategrey" model="color.management">
+        <field name="name">LightSlateGrey</field>
+        <field name="color_code">#778899</field>
+    </record>
+    <record id="color_slategray" model="color.management">
+        <field name="name">SlateGray</field>
+        <field name="color_code">#708090</field>
+    </record>
+    <record id="color_slategrey" model="color.management">
+        <field name="name">SlateGrey</field>
+        <field name="color_code">#708090</field>
+    </record>
+    <record id="color_darkslategray" model="color.management">
+        <field name="name">DarkSlateGray</field>
+        <field name="color_code">#2F4F4F</field>
+    </record>
+    <record id="color_darkslategrey" model="color.management">
+        <field name="name">DarkSlateGrey</field>
+        <field name="color_code">#2F4F4F</field>
+    </record>
+    <record id="color_black" model="color.management">
+        <field name="name">Black</field>
+        <field name="color_code">#000000</field>
+    </record>
+
+</odoo>
+

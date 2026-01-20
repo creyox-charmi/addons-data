@@ -1,0 +1,215 @@
+Changes of evrest
+======================================
+
+1 - 
+2 - 
+3 - y
+4 -
+5 -
+6 -
+7 -
+8 - y
+9 - y
+10- y
+11- y
+12-
+
+
+1]in sale order line only create option should come (3)
+
+module :cr_sale_re_nre
+file : /home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_sale_order_re_nre/views/sale_order_views.xml
+
+<record id="view_order_form_inherit_product_create_only" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.product.create.only</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='product_template_id']" position="attributes">
+            <attribute name="domain">[('id', '=', False)]</attribute>
+            <attribute name="context">{'create': True}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='order_line']/list//field[@name='product_id']" position="attributes">
+            <attribute name="domain">[('id', '=', False)]</attribute>
+            <attribute name="context">{'create': True}</attribute>
+        </xpath>
+    </field>
+</record>
+
+2] In sale.order.line disable drag and drop(10)
+
+module :cr_sale_re_nre
+file : /home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_sale_order_re_nre/views/sale_order_views.xml
+
+
+        <record id="view_order_form_inherit_product_create_only" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.product.create.only</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_template_id']" position="attributes">
+                    <attribute name="domain">[('id', '=', False)]</attribute>
+                    <attribute name="context">{'create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/list//field[@name='product_id']" position="attributes">
+                    <attribute name="domain">[('id', '=', False)]</attribute>
+                    <attribute name="context">{'create': True}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']//list//field[@name='sequence']" position="attributes">
+                    <attribute name="widget"></attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+
+3] IN catalog only product wthout evr should come (8)
+
+module :cr_sale_re_nre
+file : /home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_sale_order_re_nre/models/sale_order.py
+
+
+    def action_add_from_catalog(self):
+        res = super(SaleOrder, self).action_add_from_catalog()
+        # Get existing domain or create new one
+        existing_domain = res.get('domain', [])
+
+        # Add filter to exclude products starting with 'evr' (case insensitive)
+        new_domain = existing_domain + [
+            '|',
+            ('default_code', '=', False),
+            ('default_code', 'not ilike', 'evr%')
+        ]
+
+        res['domain'] = new_domain
+        return res
+
+
+4] the product which default_code start with evr it's category automatic set to evr (9)
+5] when product have category evr then in route_ids 1]Replenish on Order (MTO) and 2]Manufacture route auto select and if Buy route is enable then disable it (11)
+
+module :cr_sale_re_nre
+file : /home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_sale_order_re_nre/models/product_product.py
+
+# models/product_product.py
+from odoo import models, api
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        # First, let the original create happen
+        records = super(ProductProduct, self).create(vals_list)
+        
+        # Then update category and routes based on default_code
+        for record in records:
+            if record.default_code and record.default_code.lower().startswith('evr'):
+                evr_category = self.env['product.category'].search([('name', '=ilike', 'EVR')], limit=1)
+                if evr_category and record.categ_id != evr_category:
+                    record.categ_id = evr_category.id
+                
+                # Set routes for EVR products
+                record.product_tmpl_id._set_evr_routes()
+        
+        return records
+    
+    def write(self, vals):
+        # First execute the write
+        res = super(ProductProduct, self).write(vals)
+        
+        # Then check and update category and routes if needed
+        for record in self:
+            evr_category = self.env['product.category'].search([('name', '=ilike', 'EVR')], limit=1)
+            
+            # Check if category is EVR or default_code starts with evr
+            is_evr = False
+            if vals.get('default_code') and record.default_code and record.default_code.lower().startswith('evr'):
+                is_evr = True
+                if evr_category and record.categ_id != evr_category:
+                    record.sudo().write({'categ_id': evr_category.id})
+            elif vals.get('categ_id') and evr_category and record.categ_id == evr_category:
+                is_evr = True
+            
+            # Set routes for EVR products
+            if is_evr:
+                record.product_tmpl_id._set_evr_routes()
+        
+        return res        
+        
+file : /home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_sale_order_re_nre/models/product_template.py
+
+# models/product_template.py
+from odoo import models, api
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        # First, let the original create happen
+        records = super(ProductTemplate, self).create(vals_list)
+        
+        # Then update category and routes based on default_code
+        for record in records:
+            if record.default_code and record.default_code.lower().startswith('evr'):
+                evr_category = self.env['product.category'].search([('name', '=ilike', 'EVR')], limit=1)
+                if evr_category and record.categ_id != evr_category:
+                    record.categ_id = evr_category.id
+                
+                # Set routes for EVR products
+                record._set_evr_routes()
+        
+        return records
+    
+    def write(self, vals):
+        # First execute the write
+        res = super(ProductTemplate, self).write(vals)
+        
+        # Then check and update category and routes if needed
+        for record in self:
+            evr_category = self.env['product.category'].search([('name', '=ilike', 'EVR')], limit=1)
+            
+            # Check if category is EVR or default_code starts with evr
+            is_evr = False
+            if vals.get('default_code') and record.default_code and record.default_code.lower().startswith('evr'):
+                is_evr = True
+                if evr_category and record.categ_id != evr_category:
+                    record.sudo().write({'categ_id': evr_category.id})
+            elif vals.get('categ_id') and evr_category and record.categ_id == evr_category:
+                is_evr = True
+            
+            # Set routes for EVR products
+            if is_evr:
+                record._set_evr_routes()
+        
+        return res
+    
+    def _set_evr_routes(self):
+        """Set MTO and Manufacture routes, disable Buy route for EVR category products"""
+        self.ensure_one()
+        
+        # Find the routes
+        mto_route = self.env.ref('stock.route_warehouse0_mto', raise_if_not_found=False)
+        manufacture_route = self.env.ref('mrp.route_warehouse0_manufacture', raise_if_not_found=False)
+        buy_route = self.env.ref('purchase_stock.route_warehouse0_buy', raise_if_not_found=False)
+        
+        # Get current routes
+        current_routes = self.route_ids.ids
+        
+        # Add MTO route if exists and not already added
+        if mto_route and mto_route.id not in current_routes:
+            current_routes.append(mto_route.id)
+        
+        # Add Manufacture route if exists and not already added
+        if manufacture_route and manufacture_route.id not in current_routes:
+            current_routes.append(manufacture_route.id)
+        
+        # Remove Buy route if it exists
+        if buy_route and buy_route.id in current_routes:
+            current_routes.remove(buy_route.id)
+        
+        # Update routes
+        self.route_ids = [(6, 0, current_routes)]
+

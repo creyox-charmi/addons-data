@@ -1,0 +1,58 @@
+<tbody>
+  <t t-foreach="categories" t-as="category">
+    <t t-set="selected_data" t-value="selected_products_by_category.get(category.id)"/>
+    <t t-set="products" t-value="selected_data and selected_data['products'] or []"/>
+
+    <!-- If no products, show single row with category + Add button -->
+    <t t-if="not products">
+      <tr class="category-block" t-att-data-allow-multiple="category.allow_multiple_products">
+        <td><t t-esc="category.name"/></td>
+        <td colspan="9">
+          <a t-att-href="'/parts-picker/category/' + str(category.id)"
+             class="btn btn-secondary btn-sm">
+            Add <t t-esc="category.name"/>
+          </a>
+        </td>
+      </tr>
+    </t>
+
+    <!-- If products exist, list each product row -->
+    <t t-else="">
+      <t t-foreach="products" t-as="product">
+        <tr class="category-block" t-att-data-allow-multiple="category.allow_multiple_products">
+          <td><t t-esc="category.name"/></td>
+          <td>
+            <img t-att-src="'/web/image/product.template/' + str(product.id) + '/image_1920'"
+                 style="height:40px;margin-right:8px;"/>
+            <t t-esc="product.name"/>
+          </td>
+          <td><t t-esc="product.list_price"/></td>
+          <td>-</td>
+          <td>Free</td>
+          <td>-</td>
+          <td>In Stock</td>
+          <td><t t-esc="product.list_price"/> €</td>
+          <td>Odoo</td>
+          <td>
+            <a t-att-href="'/parts-picker/remove/' + str(product.id)"
+               class="btn btn-danger btn-sm remove-product"
+               t-att-data-product-id="product.id">
+              Remove
+            </a>
+          </td>
+        </tr>
+      </t>
+
+      <!-- Add button row after product rows -->
+      <tr>
+        <td><t t-esc="category.name"/></td>
+        <td colspan="9">
+          <a t-att-href="'/parts-picker/category/' + str(category.id)"
+             class="btn btn-secondary btn-sm">
+            Add <t t-esc="category.name"/>
+          </a>
+        </td>
+      </tr>
+    </t>
+  </t>
+</tbody>

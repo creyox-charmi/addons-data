@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+        <record id="view_overhead_data_tree" model="ir.ui.view">
+            <field name="name">overhead.data.tree</field>
+            <field name="model">cr.overhead.data</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="overhead_master_id"/>
+                    <field name="cost"/>
+                    <field name="mrp_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_overhead_data_form" model="ir.ui.view">
+            <field name="name">overhead.data.form</field>
+            <field name="model">cr.overhead.data</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="overhead_master_id"/>
+                            <field name="cost"/>
+                            <field name="mrp_id" invisible="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+</odoo>

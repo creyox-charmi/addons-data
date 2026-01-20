@@ -1,0 +1,55 @@
+update:
+>>cr_advanced_website_searchbar
+fix the home page searchbar issue
+debug the code and solve the all error tat come during the search
+try different different ways to solve the error
+compare some methods in v17 and v18
+
+
+>>website development
+Explore for what section have to add after vision , mission
+Add the Development Process snippet for that 
+=>gather the content 
+=>make a propmt and give to different-different AI 
+=>try styles:
+- uses a horizontal stepper-style layout with numbers, titles, and descriptions 
+- each step on a vertical timeline, with alternating left-right alignment on larger screens and full-width stacking on mobile
+- horizontal, animated process flow with clean cards, using gradients, numbers, icons (optional), and hover effects
+- A large number circle, A title and short description ,A gradient line connection between steps , Modern hover effect (top-to-bottom color shift + underline) ,Looks like a progress tracker, not just cards or columns
+-ertical Split Step Showcase with Side Line + Floating Step Markers
+-Floating Zigzag Cards + Number Trail + Animated Line
+-Rotating Circular Wheel (Milestone Carousel) ,A circular process with icons and step labels around the wheel ,The circle rotates on scroll or hover,Central icon or logo in the middle,Interactive and modern – not a list, not a timeline.
+-Animated Wavy Path with Floating Milestone Bubbles , Imagine a smooth SVG wave from left to right ,Milestones float along that wave like buoys,Each has a hover animation or pops up info,Fully responsive and visually abstract.
+-Scrollable Infinite Canvas (Zoomable Milestone Map),A large visual canvas you can pan (like Google Maps),Each milestone is a node placed freely,Could include zoom in/out, like a mindmap or flow,Totally interactive and unexpected.
+=> finally apply Circular Process Wheel code.
+- for that fix the issue like:
+-Circle doesn't appear correctly — often caused by missing dimensions or broken transforms.
+-Steps are overlapping or misaligned — typically happens if the rotation isn't set properly or if the origin isn't centered.
+-Text is cut off or unreadable — possibly due to container overflow or poor placement.
+-No animation or interactivity — caused by missing or incorrect CSS keyframes.
+-Circle isn't centered — usually a layout or margin issue.
+-real orbital animation — where each step orbits around the center, making it more dynamic and visually correctMade wheel-step circular.
+-Applied smooth color transition on hover with a new attractive color.
+-Enhanced visual style with vibrant hover animation, border glow, and shadow.
+-Ensured better positioning and responsiveness.
+-Steps perfectly arranged in a circular layout
+-Step boxes are circular instead of square
+-Improved hover effect with different background color and subtle bounce
+-Center image added instead of text
+-Interactive, modern styling with centered text
+
+Add the Why Choose Us snippet for that 
+=>gather the content 
+=>make a propmt and give to different-different AI 
+=>try styles:
+-Wave-based horizontal layout
+-Interactive Orbit Layout
+-Hex Path Layout
+-Vertical Infinity Loop
+-Water Ripple Interaction
+-Split-Screen Comparison
+and try different-different more styles
+
+
+        
+        

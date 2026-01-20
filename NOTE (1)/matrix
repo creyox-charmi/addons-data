@@ -1,0 +1,1181 @@
+/** @odoo-module **/
+
+import publicWidget from "@web/legacy/js/public/public_widget";
+import VariantMixin from "@website_sale/js/variant_mixin";
+import wSaleUtils from "@website_sale/js/website_sale_utils";
+const cartHandlerMixin = wSaleUtils.cartHandlerMixin;
+import "@website/libs/zoomodoo/zoomodoo";
+import {extraMenuUpdateCallbacks} from "@website/js/content/menu";
+import { ProductImageViewer } from "@website_sale/js/components/website_sale_image_viewer";
+import { jsonrpc } from "@web/core/network/rpc_service";
+import { debounce, throttleForAnimation } from "@web/core/utils/timing";
+import { listenSizeChange, SIZES, utils as uiUtils } from "@web/core/ui/ui_service";
+import { isBrowserFirefox, hasTouch } from "@web/core/browser/feature_detection";
+import { Component } from "@odoo/owl";
+import CrWebsiteSale from "@website_sale/js/website_sale"
+
+//var CustomAddToCart = publicWidget.Widget.extend(WebsiteSale,VariantMixin,cartHandlerMixin,{
+//
+//        selector: '.oe_website_sale', // Ensure this matches the product page container
+//        events: Object.assign({}, VariantMixin.events || {}, {
+//        'click #add_to_cart': '_onClickAddToCart',
+//        }),
+////        events: {
+////            'click #add_to_cart': '_onClickAddToCart', // Capture click event of "Add to Cart" button
+////        },
+//
+//        // On "Add to Cart" click, gather the selected combinations with quantities
+//        _onClickAddToCart: function (ev) {
+//        console.log('in custom-------');
+//            ev.preventDefault();
+//
+//            // Initialize an array to hold selected combinations with quantities
+//            var selectedCombinations = [];
+//            var rows = document.querySelectorAll('#product_table tbody tr');
+//            rows.forEach(function(row, index) {
+//                    var quantity = row.querySelector('.combination_quantity').value;
+//                    var name = row.getElementsByTagName('td');
+////                    console.log('name : ',name[0].innerHTML);
+//
+//
+//                    if (quantity > 0) {
+//                        console.log('row : ',row);
+//                        console.log('index : ',index);
+//                        console.log('quantity : ',quantity);
+//                        console.log('length : ',name.length)
+//
+//                        var text = '';
+//                        var a = '';
+//                        for (let i = 0; i < name.length-2; i++) {
+//                            a = name[i].innerHTML.trim()
+//                            console.log(a);
+//                            text += a + " ";
+//                        }
+//                        console.log('text : ',text);
+//
+//                        selectedCombinations.push(text);
+//                    }
+//            });
+//
+//            if (selectedCombinations.length > 0) {
+//                this._addSelectedToCart(selectedCombinations);
+//
+//            } else {
+//                alert('Please enter quantities for at least one combination.');
+//            }
+//        },
+//
+//        // Send the selected combinations to the backend
+////         _addSelectedToCart: function (combinations) {
+////            var self = this;
+////
+////            combinations.forEach(async function(combination) {
+////                console.log('Selected Combination:', combination);
+////
+////                // Send the combination data to the backend using AJAX
+////                self._sendToBackend(combination);
+////            });
+////        },
+//
+//         _addSelectedToCart: function (combinations) {
+//            var self = this;
+//
+//            for (let i = 0; i < combinations.length; i++) {
+//
+//                self._sendToBackend(combinations[i]);
+//            }
+//        },
+//
+//
+//        _sendToBackend: function (combinations) {
+//            var self = this;
+//            var productTemplateId = $('h1').data('oeId');
+//            console.log('productTemplateId : ',productTemplateId);
+//
+//            // Send the data to the backend for processing (adding to cart)
+//            $.ajax({
+//                url: '/cr_website_order_matrix_view/add_to_cart',
+//                type: 'POST',
+//                contentType: 'application/json',
+//                data: JSON.stringify({
+//                    productTemplateId: productTemplateId,
+//                    combinations: combinations
+//                }),
+//                success: function (response) {
+//                    console.log('Successfully added to cart:', response);
+//                    console.log(response.result.id)
+//                    var form = document.querySelector('form');
+//                    console.log('form : ',form)
+//                    var productReady = this.selectOrCreateProduct(
+//                        form,
+//                        response.result.id,
+//                        form.querySelector('.product_template_id').val(),
+//                        false
+//                    );
+//                    console.log('productReady : ',productReady)
+////
+////                    return productReady.then(function (response('id')) {
+////                        $form.find(productSelector.join(', ')).val(response('id'));
+////                        self._updateRootProduct($form, response('id'));
+////                        return self._onProductReady();
+////                    });
+////                    window.location.href = '/shop/cart';  // Redirect to cart page
+//                },
+//                error: function (error) {
+//                    console.log('Error adding to cart:', error);
+//                    alert('There was an issue adding the product to your cart.');
+//                }
+//            });
+//
+//        }
+//    });
+//
+//
+//
+//    // Register the widget
+//    publicWidget.registry.CustomAddToCart = CustomAddToCart;
+
+
+
+
+
+//var CustomWebsiteSale = publicWidget.Widget.extend(WebsiteSale,{
+//        // Override the _handleAdd function
+//        _onClickAdd: function (ev){
+//            this._super.apply(this, arguments);
+//            console.log('Custom _handleAdd function');
+//
+//        },
+//
+//    });
+//
+//ptionalProductsModal.prototype.willStart = function (){
+//    // Your code
+//    return this._super.apply(this, arguments)
+//}
+
+CrWebsiteSale.WebsiteSale.include({
+        events: Object.assign({}, CrWebsiteSale.WebsiteSale.prototype.events || {},
+//        {
+//        'click #add_to_cart': '_onClickAddToCart',
+//        }
+        ),
+
+
+//        _onClickAdd: function (ev) {
+//        console.log('Beforeeeeeeeee');
+//         this._super.apply(this, arguments);
+//         console.log('Custom _handleAdd function');
+//        },
+
+            _handleAdd: function ($form) {
+             console.log('888888888888888');
+             var self = this;
+             this.$form = $form;
+             const table = document.getElementById('product_table');
+
+            if (table) {
+                console.log('Table exists!');
+                this._onClickAddToCart();
+
+            } else {
+                this._super.apply(this, arguments);
+                console.log('Table does not exist!');
+            }
+
+             console.log('99999999999999999999999');
+            },
+
+
+
+
+            _onClickAddToCart: function (ev) {
+            console.log('in custom-------');
+
+
+            // Initialize an array to hold selected combinations with quantities
+            var selectedCombinations = [];
+            var qu = [];
+            var pr = [];
+            console.log('------------');
+            var rows = document.querySelectorAll('#product_table tbody tr');
+            console.log(rows);
+
+            rows.forEach(function(row, index) {
+            console.log('in for loop');
+                    var quantity = row.querySelector('.combination_quantity').value;
+                    var price = row.querySelector('.combination_price').value;
+                    var name = row.getElementsByTagName('td');
+//                    console.log('name : ',name[0].innerHTML);
+
+
+                    if (quantity > 0) {
+                        console.log('row : ',row);
+                        console.log('index : ',index);
+                        console.log('quantity : ',quantity);
+                        console.log('length : ',name.length);
+                        console.log('price : ',price)
+
+                        var text = '';
+                        var a = '';
+                        for (let i = 0; i < name.length-2; i++) {
+                            a = name[i].innerHTML.trim();
+                            console.log(a);
+                            text += a + " ";
+                        }
+                        console.log('text : ',text);
+
+                        selectedCombinations.push(text);
+                        qu.push(quantity);
+                        pr.push(price);
+                    }
+            });
+
+            if (selectedCombinations.length > 0) {
+            console.log('combination exist....');
+                this._addSelectedToCart(selectedCombinations,qu);
+
+            } else {
+                alert('Please enter quantities for at least one combination.');
+            }
+        },
+
+
+        _addSelectedToCart: function (combinations,quantities) {
+            var self = this;
+
+            for (let i = 0; i < combinations.length; i++) {
+                self._sendToBackend(combinations[i],quantities[i]);
+            }
+        },
+
+        _sendToBackend: function (combinations,quantity) {
+            var self = this;
+            var productTemplateId = $('h1').data('oeId');
+            console.log('productTemplateId : ',productTemplateId);
+
+            // Send the data to the backend for processing (adding to cart)
+            $.ajax({
+                url: '/cr_website_order_matrix_view/add_to_cart',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    productTemplateId: productTemplateId,
+                    combinations: combinations
+                }),
+                success: function (response) {
+                    console.log('Successfully added to cart:', response);
+                    console.log(response.result.id);
+
+                    var productReady = VariantMixin.selectOrCreateProduct(
+                       $('#product').closest('form'),
+                        response.result.id,
+                        productTemplateId,
+                        false
+                    );
+                    console.log('productReady : ',productReady);
+
+//                    return productReady.then(function (productId) {
+//                        console.log('in return');
+//                        response.result.id;
+//                        self._updateRootProduct($('#product').closest('form'), productId);
+//                        return self._onProductReady();
+//                    });
+//                    var form = document.querySelector('form');
+//                    console.log('form : ',form)
+//                    var productReady = this.selectOrCreateProduct(
+//                        form,
+//                        response.result.id,
+//                        form.querySelector('.product_template_id').val(),
+//                        false
+//                    );
+//                    console.log('productReady : ',productReady)
+//
+//                    return productReady.then(function (response('id')) {
+//                        $form.find(productSelector.join(', ')).val(response('id'));
+//                        self._updateRootProduct($form, response('id'));
+//                        return self._onProductReady();
+//                    });
+//                    window.location.href = '/shop/cart';  // Redirect to cart page
+                },
+                error: function (error) {
+                    console.log('Error adding to cart:', error);
+                    alert('There was an issue adding the product to your cart.');
+                }
+            });
+
+        },
+
+
+//        _updateRootProduct: function ($form, productId) {
+//        console.log('Before>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+//        this.rootProduct = {
+//            product_id: productId,
+//            quantity: quantity,
+//            product_custom_attribute_values: this.getCustomVariantValues($form.find('.js_product')),
+//            variant_values: this.getSelectedVariantValues($form.find('.js_product')),
+//            no_variant_attribute_values: this.getNoVariantAttributeValues($form.find('.js_product'))
+//        };
+//         this._super.apply(this, arguments);
+//         console.log('after>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+//        },
+//
+//
+//        getCustomVariantValues: function ($container) {
+//        var variantCustomValues = [];
+//        $container.find('.variant_custom_value').each(function (){
+//            var $variantCustomValueInput = $(this);
+//            if ($variantCustomValueInput.length !== 0){
+//                variantCustomValues.push({
+//                    'custom_product_template_attribute_value_id': $variantCustomValueInput.data('custom_product_template_attribute_value_id'),
+//                    'attribute_value_name': $variantCustomValueInput.data('attribute_value_name'),
+//                    'custom_value': $variantCustomValueInput.val(),
+//                });
+//            }
+//        });
+//
+//        return variantCustomValues;
+//    },
+
+})
+
+
+
+
+----------------------------------
+
+
+<odoo>
+    <template id="cr_product_description_info" inherit_id="website_sale.product">
+
+         <xpath expr="//t[@t-call='website_sale.variants']" position="replace">
+
+        </xpath>
+        <xpath expr="//div[@id='product_detail_main']" position="after">
+            <t t-call="cr_website_order_matrix_view.matrix"/>
+        </xpath>
+    </template>
+
+<!--    <template id="matrix">-->
+<!--        <t>-->
+<!--            <div class="page">-->
+<!--                <t t-set="attribute_lines" t-value="product.attribute_line_ids"/>-->
+
+<!--                &lt;!&ndash; Only render the table if there are attribute lines &ndash;&gt;-->
+<!--                <t t-if="attribute_lines">-->
+<!--                    <t t-set="combinations" t-value="[]"/>-->
+
+<!--                    &lt;!&ndash; Iterate over each attribute line to generate combinations &ndash;&gt;-->
+<!--                    <t t-foreach="attribute_lines" t-as="attribute_line">-->
+<!--                        <t t-set="variant_values" t-value="attribute_line.value_ids"/>-->
+
+<!--                        &lt;!&ndash; If it's the first attribute, initialize combinations with variant values &ndash;&gt;-->
+<!--                        <t t-if="not combinations">-->
+<!--                            <t t-set="combinations" t-value="[[value] for value in variant_values]"/>-->
+<!--                        </t>-->
+<!--                        &lt;!&ndash; If it's not the first attribute, generate new combinations &ndash;&gt;-->
+<!--                        <t t-else="">-->
+<!--                            <t t-set="combinations" t-value="[-->
+<!--                                comb + [value] for comb in combinations for value in variant_values-->
+<!--                            ]"/>-->
+<!--                        </t>-->
+<!--                    </t>-->
+
+<!--                    &lt;!&ndash; Render the table &ndash;&gt;-->
+<!--                    <table class="table table-condensed" id="product_table">-->
+<!--                        <thead class="thead-dark">-->
+<!--                            <tr>-->
+<!--                                &lt;!&ndash; Render headers for each dynamic attribute &ndash;&gt;-->
+<!--                                <t t-foreach="attribute_lines" t-as="attribute_line">-->
+<!--                                    <th><t t-esc="attribute_line.attribute_id.name"/></th>-->
+<!--                                </t>-->
+<!--                                <th>Price</th>-->
+<!--                                <th>Quantity</th>-->
+<!--                            </tr>-->
+<!--                        </thead>-->
+
+<!--                        <tbody>-->
+<!--                            &lt;!&ndash; Iterate through all combinations &ndash;&gt;-->
+<!--                            <t t-foreach="combinations" t-as="comb" t-index="i">-->
+<!--                                <tr class="p_variants">-->
+<!--                                    &lt;!&ndash; Iterate over each value in the combination (Legs, Color, etc.) &ndash;&gt;-->
+<!--                                    <t t-foreach="comb" t-as="value">-->
+<!--                                        <td>-->
+<!--                                            &lt;!&ndash; If the value is 'Custom', replace it with an input field &ndash;&gt;-->
+<!--                                            <t t-if="value.name == 'Custom'">-->
+<!--                                                <t t-esc="value.name"/>-->
+<!--                                                <input type="text" class="p_variants_cust_val" t-att-data-p_attribute_value_id="value.id" t-att-data-p_attribute_value_name="value.name" placeholder="Enter custom value"/>-->
+<!--                                            </t>-->
+<!--                                            &lt;!&ndash; Otherwise, just display the value &ndash;&gt;-->
+<!--                                            <t t-else="">-->
+<!--                                                <t t-esc="value.name"/>-->
+<!--                                            </t>-->
+<!--                                        </td>-->
+<!--                                    </t>-->
+
+<!--                                    &lt;!&ndash; Render the 'Price' and 'Quantity' columns &ndash;&gt;-->
+<!--                                    <td><t t-esc="product.list_price" class="combination_price"/></td>-->
+<!--                                    <td><input type="number" min="0" class="combination_quantity" data-index="${i}" placeholder="Enter quantity"/></td>-->
+<!--                                </tr>-->
+<!--                            </t>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </t>-->
+<!--                <t t-else="">-->
+<!--                </t>-->
+<!--            </div>-->
+<!--        </t>-->
+<!--    </template>-->
+
+
+    <template id="matrix">
+    <t>
+        <div class="page">
+            <t t-set="attribute_lines" t-value="product.attribute_line_ids"/>
+
+            <!-- Only render the table if there are attribute lines -->
+            <t t-if="attribute_lines">
+                <t t-set="combinations" t-value="[]"/>
+
+                <!-- Iterate over each attribute line to generate combinations -->
+                <t t-foreach="attribute_lines" t-as="attribute_line">
+                    <t t-set="variant_values" t-value="attribute_line.value_ids"/>
+
+                    <!-- If it's the first attribute, initialize combinations with variant values -->
+                    <t t-if="not combinations">
+                        <t t-set="combinations" t-value="[[value] for value in variant_values]"/>
+                    </t>
+                    <!-- If it's not the first attribute, generate new combinations -->
+                    <t t-else="">
+                        <t t-set="combinations" t-value="[
+                            comb + [value] for comb in combinations for value in variant_values
+                        ]"/>
+                    </t>
+                </t>
+
+                <!-- Render the table -->
+                <table class="table table-striped table-bordered table-hover" id="product_table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <!-- Render headers for each dynamic attribute -->
+                            <t t-foreach="attribute_lines" t-as="attribute_line">
+                                <th class="text-center"><t t-esc="attribute_line.attribute_id.name"/></th>
+                            </t>
+                            <th class="text-center">Price</th>
+                            <th class="text-center">Quantity</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!-- Iterate through all combinations -->
+                        <t t-foreach="combinations" t-as="comb" t-index="i">
+                            <tr class="p_variants">
+                                <!-- Iterate over each value in the combination (Legs, Color, etc.) -->
+                                <t t-foreach="comb" t-as="value">
+                                    <td class="text-center">
+                                        <!-- If the value is 'Custom', replace it with an input field -->
+                                        <t t-if="value.name == 'Custom'">
+                                            <t t-esc="value.name"/>
+                                            <input type="text" class="form-control p_variants_cust_val" t-att-data-p_attribute_value_id="value.id" t-att-data-p_attribute_value_name="value.name" placeholder="Enter custom value"/>
+                                        </t>
+                                        <!-- Otherwise, just display the value -->
+                                        <t t-else="">
+                                            <t t-esc="value.name"/>
+                                        </t>
+                                    </td>
+                                </t>
+
+                                <!-- Render the 'Price' and 'Quantity' columns -->
+                                <td class="text-center"><span t-esc="product.list_price" class="combination_price text-success font-weight-bold"/></td>
+                                <td class="text-center">
+                                    <input type="number" min="0" class="form-control combination_quantity" data-index="${i}" placeholder="Enter quantity"/>
+                                </td>
+                            </tr>
+                        </t>
+                        </tbody>
+                    </table>
+                </t>
+            <t t-else="">
+
+            </t>
+        </div>
+    </t>
+            <style>
+        #product_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#product_table th, #product_table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+#product_table td input[type="text"],
+#product_table td input[type="number"] {
+    width: 80%;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.p_variants input {
+    width: 100%;
+}
+
+.p_variants input[type="text"] {
+    font-size: 14px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.font-weight-bold {
+    font-weight: 700;
+}
+
+    </style>
+</template>
+
+
+
+
+</odoo>
+--------------------------
+//var CustomAddToCart = publicWidget.Widget.extend(WebsiteSale,VariantMixin,cartHandlerMixin,{
+//
+//        selector: '.oe_website_sale', // Ensure this matches the product page container
+//        events: Object.assign({}, VariantMixin.events || {}, {
+//        'click #add_to_cart': '_onClickAddToCart',
+//        }),
+////        events: {
+////            'click #add_to_cart': '_onClickAddToCart', // Capture click event of "Add to Cart" button
+////        },
+//
+//        // On "Add to Cart" click, gather the selected combinations with quantities
+//        _onClickAddToCart: function (ev) {
+//        console.log('in custom-------');
+//            ev.preventDefault();
+//
+//            // Initialize an array to hold selected combinations with quantities
+//            var selectedCombinations = [];
+//            var rows = document.querySelectorAll('#product_table tbody tr');
+//            rows.forEach(function(row, index) {
+//                    var quantity = row.querySelector('.combination_quantity').value;
+//                    var name = row.getElementsByTagName('td');
+////                    console.log('name : ',name[0].innerHTML);
+//
+//
+//                    if (quantity > 0) {
+//                        console.log('row : ',row);
+//                        console.log('index : ',index);
+//                        console.log('quantity : ',quantity);
+//                        console.log('length : ',name.length)
+//
+//                        var text = '';
+//                        var a = '';
+//                        for (let i = 0; i < name.length-2; i++) {
+//                            a = name[i].innerHTML.trim()
+//                            console.log(a);
+//                            text += a + " ";
+//                        }
+//                        console.log('text : ',text);
+//
+//                        selectedCombinations.push(text);
+//                    }
+//            });
+//
+//            if (selectedCombinations.length > 0) {
+//                this._addSelectedToCart(selectedCombinations);
+//
+//            } else {
+//                alert('Please enter quantities for at least one combination.');
+//            }
+//        },
+//
+//        // Send the selected combinations to the backend
+////         _addSelectedToCart: function (combinations) {
+////            var self = this;
+////
+////            combinations.forEach(async function(combination) {
+////                console.log('Selected Combination:', combination);
+////
+////                // Send the combination data to the backend using AJAX
+////                self._sendToBackend(combination);
+////            });
+////        },
+//
+//         _addSelectedToCart: function (combinations) {
+//            var self = this;
+//
+//            for (let i = 0; i < combinations.length; i++) {
+//
+//                self._sendToBackend(combinations[i]);
+//            }
+//        },
+//
+//
+//        _sendToBackend: function (combinations) {
+//            var self = this;
+//            var productTemplateId = $('h1').data('oeId');
+//            console.log('productTemplateId : ',productTemplateId);
+//
+//            // Send the data to the backend for processing (adding to cart)
+//            $.ajax({
+//                url: '/cr_website_order_matrix_view/add_to_cart',
+//                type: 'POST',
+//                contentType: 'application/json',
+//                data: JSON.stringify({
+//                    productTemplateId: productTemplateId,
+//                    combinations: combinations
+//                }),
+//                success: function (response) {
+//                    console.log('Successfully added to cart:', response);
+//                    console.log(response.result.id)
+//                    var form = document.querySelector('form');
+//                    console.log('form : ',form)
+//                    var productReady = this.selectOrCreateProduct(
+//                        form,
+//                        response.result.id,
+//                        form.querySelector('.product_template_id').val(),
+//                        false
+//                    );
+//                    console.log('productReady : ',productReady)
+////
+////                    return productReady.then(function (response('id')) {
+////                        $form.find(productSelector.join(', ')).val(response('id'));
+////                        self._updateRootProduct($form, response('id'));
+////                        return self._onProductReady();
+////                    });
+////                    window.location.href = '/shop/cart';  // Redirect to cart page
+//                },
+//                error: function (error) {
+//                    console.log('Error adding to cart:', error);
+//                    alert('There was an issue adding the product to your cart.');
+//                }
+//            });
+//
+//        }
+//    });
+//
+//
+//
+//    // Register the widget
+//    publicWidget.registry.CustomAddToCart = CustomAddToCart;
+
+
+
+
+
+//var CustomWebsiteSale = publicWidget.Widget.extend(WebsiteSale,{
+//        // Override the _handleAdd function
+//        _onClickAdd: function (ev){
+//            this._super.apply(this, arguments);
+//            console.log('Custom _handleAdd function');
+//
+//        },
+//
+//    });
+//
+//ptionalProductsModal.prototype.willStart = function (){
+//    // Your code
+//    return this._super.apply(this, arguments)
+//}
+
+CrWebsiteSale.WebsiteSale.include({
+        events: Object.assign({}, CrWebsiteSale.WebsiteSale.prototype.events || {},
+//        {
+//        'click #add_to_cart': '_onClickAddToCart',
+//        }
+        ),
+
+
+//        _onClickAdd: function (ev) {
+//        console.log('Beforeeeeeeeee');
+//         this._super.apply(this, arguments);
+//         console.log('Custom _handleAdd function');
+//        },
+
+
+------------
+/** @odoo-module **/
+import publicWidget from "@web/legacy/js/public/public_widget";
+import VariantMixin from "@website_sale/js/variant_mixin";
+import wSaleUtils from "@website_sale/js/website_sale_utils";
+const cartHandlerMixin = wSaleUtils.cartHandlerMixin;
+import "@website/libs/zoomodoo/zoomodoo";
+import {extraMenuUpdateCallbacks} from "@website/js/content/menu";
+import { ProductImageViewer } from "@website_sale/js/components/website_sale_image_viewer";
+import { jsonrpc } from "@web/core/network/rpc_service";
+import { debounce, throttleForAnimation } from "@web/core/utils/timing";
+import { listenSizeChange, SIZES, utils as uiUtils } from "@web/core/ui/ui_service";
+import { isBrowserFirefox, hasTouch } from "@web/core/browser/feature_detection";
+import { Component } from "@odoo/owl";
+import CrWebsiteSale from "@website_sale/js/website_sale"
+
+
+
+            _handleAdd: function ($form) {
+             console.log('888888888888888');
+             var self = this;
+             this.$form = $form;
+             const table = document.getElementById('product_table');
+
+            if (table) {
+                console.log('Table exists!');
+                this._onClickAddToCart();
+
+            } else {
+                this._super.apply(this, arguments);
+                console.log('Table does not exist!');
+            }
+
+             console.log('99999999999999999999999');
+            },
+
+
+
+
+            _onClickAddToCart: function (ev) {
+            var self = this;
+            console.log('in custom-------');
+
+            console.log('------------');
+            var rows = document.querySelectorAll('#product_table tbody tr');
+            console.log(rows);
+            var data = [];
+            rows.forEach(function(row, index) {
+                    var dict ={};
+                    var $this = $(this);
+                    console.log('in for loop');
+                    var quantity = row.querySelector('.combination_quantity').value;
+                    var name = row.getElementsByTagName('td');
+
+
+
+                    if (quantity > 0) {
+                        console.log('row : ',row);
+                        console.log('index : ',index);
+                        console.log('quantity : ',quantity);
+                        console.log('length : ',name.length);
+
+                        var text = '';
+                        var a = '';
+                        for (let i = 0; i < name.length-2; i++) {
+                            a = name[i].innerHTML.trim();
+                            console.log(a);
+                            if (a.includes("Custom")){
+                                a = 'Custom';
+                            }
+
+                            text += a + " ";
+
+                        }
+                        console.log('text : ',text);
+
+                        var result = text.includes("Custom");
+                        if (result) {
+                        var custom_value = self._getCustomVariantValues($this);
+                        }
+
+
+                        dict['combinations'] = text;
+                        dict['quantity'] = quantity;
+                        dict['product_custom_attribute_values']= JSON.stringify(custom_value);
+                        data.push(dict);
+                    }
+            });
+
+
+            if (data.length > 0) {
+                console.log('in if');
+                this._addSelectedToCart(data);
+            }
+            else {
+                alert('Please enter quantities for at least one combination.');
+            }
+
+
+        },
+        _getCustomVariantValues: function(custom) {
+            var variantCustomValues = [];
+            console.log('custom : ',custom);
+            custom.find('.p_variants_cust_val').each(function (){
+                var $variantCustomValueInput = $(this);
+                if ($variantCustomValueInput.length !== 0){
+                    variantCustomValues.push({
+                        'custom_product_template_attribute_value_id': $variantCustomValueInput.data('p_attribute_value_id'),
+                        'attribute_value_name': $variantCustomValueInput.data('p_attribute_value_name'),
+                        'custom_value': $variantCustomValueInput.val(),
+                    });
+                }
+            });
+            return variantCustomValues;
+        },
+
+
+        _addSelectedToCart: function (combinations) {
+            var self = this;
+            self._sendToBackend(combinations);
+
+        },
+
+        _sendToBackend: function (combinations) {
+            var self = this;
+            var productTemplateId = $('h1').data('oeId');
+            console.log('productTemplateId : ',productTemplateId);
+
+            // Send the data to the backend for processing (adding to cart)
+            $.ajax({
+                url: '/cr_website_order_matrix_view/add_to_cart',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    productTemplateId: productTemplateId,
+                    combinations: combinations
+                }),
+                success: function (response) {
+                    console.log('Successfully added to cart:', response);
+                    console.log(response.result);
+                    console.log(response.result.redirect_url);
+                    window.location.href = window.location.origin + response.result.redirect_url
+                    $(window).on('load',function() {});
+                },
+                error: function (error) {
+                    alert('There was an issue adding the product to your cart.');
+                }
+            });
+
+        },
+
+
+
+
+})
+
+
+--------------------------------
+
+
+/** @odoo-module **/
+
+import publicWidget from "@web/legacy/js/public/public_widget";
+import VariantMixin from "@website_sale/js/variant_mixin";
+import wSaleUtils from "@website_sale/js/website_sale_utils";
+const cartHandlerMixin = wSaleUtils.cartHandlerMixin;
+import "@website/libs/zoomodoo/zoomodoo";
+import {extraMenuUpdateCallbacks} from "@website/js/content/menu";
+import { ProductImageViewer } from "@website_sale/js/components/website_sale_image_viewer";
+import { jsonrpc } from "@web/core/network/rpc_service";
+import { debounce, throttleForAnimation } from "@web/core/utils/timing";
+import { listenSizeChange, SIZES, utils as uiUtils } from "@web/core/ui/ui_service";
+import { isBrowserFirefox, hasTouch } from "@web/core/browser/feature_detection";
+import { Component } from "@odoo/owl";
+import CrWebsiteSale from "@website_sale/js/website_sale"
+
+//var CustomAddToCart = publicWidget.Widget.extend(WebsiteSale,VariantMixin,cartHandlerMixin,{
+//
+//        selector: '.oe_website_sale', // Ensure this matches the product page container
+//        events: Object.assign({}, VariantMixin.events || {}, {
+//        'click #add_to_cart': '_onClickAddToCart',
+//        }),
+////        events: {
+////            'click #add_to_cart': '_onClickAddToCart', // Capture click event of "Add to Cart" button
+////        },
+//
+//        // On "Add to Cart" click, gather the selected combinations with quantities
+//        _onClickAddToCart: function (ev) {
+//        console.log('in custom-------');
+//            ev.preventDefault();
+//
+//            // Initialize an array to hold selected combinations with quantities
+//            var selectedCombinations = [];
+//            var rows = document.querySelectorAll('#product_table tbody tr');
+//            rows.forEach(function(row, index) {
+//                    var quantity = row.querySelector('.combination_quantity').value;
+//                    var name = row.getElementsByTagName('td');
+////                    console.log('name : ',name[0].innerHTML);
+//
+//
+//                    if (quantity > 0) {
+//                        console.log('row : ',row);
+//                        console.log('index : ',index);
+//                        console.log('quantity : ',quantity);
+//                        console.log('length : ',name.length)
+//
+//                        var text = '';
+//                        var a = '';
+//                        for (let i = 0; i < name.length-2; i++) {
+//                            a = name[i].innerHTML.trim()
+//                            console.log(a);
+//                            text += a + " ";
+//                        }
+//                        console.log('text : ',text);
+//
+//                        selectedCombinations.push(text);
+//                    }
+//            });
+//
+//            if (selectedCombinations.length > 0) {
+//                this._addSelectedToCart(selectedCombinations);
+//
+//            } else {
+//                alert('Please enter quantities for at least one combination.');
+//            }
+//        },
+//
+//        // Send the selected combinations to the backend
+////         _addSelectedToCart: function (combinations) {
+////            var self = this;
+////
+////            combinations.forEach(async function(combination) {
+////                console.log('Selected Combination:', combination);
+////
+////                // Send the combination data to the backend using AJAX
+////                self._sendToBackend(combination);
+////            });
+////        },
+//
+//         _addSelectedToCart: function (combinations) {
+//            var self = this;
+//
+//            for (let i = 0; i < combinations.length; i++) {
+//
+//                self._sendToBackend(combinations[i]);
+//            }
+//        },
+//
+//
+//        _sendToBackend: function (combinations) {
+//            var self = this;
+//            var productTemplateId = $('h1').data('oeId');
+//            console.log('productTemplateId : ',productTemplateId);
+//
+//            // Send the data to the backend for processing (adding to cart)
+//            $.ajax({
+//                url: '/cr_website_order_matrix_view/add_to_cart',
+//                type: 'POST',
+//                contentType: 'application/json',
+//                data: JSON.stringify({
+//                    productTemplateId: productTemplateId,
+//                    combinations: combinations
+//                }),
+//                success: function (response) {
+//                    console.log('Successfully added to cart:', response);
+//                    console.log(response.result.id)
+//                    var form = document.querySelector('form');
+//                    console.log('form : ',form)
+//                    var productReady = this.selectOrCreateProduct(
+//                        form,
+//                        response.result.id,
+//                        form.querySelector('.product_template_id').val(),
+//                        false
+//                    );
+//                    console.log('productReady : ',productReady)
+////
+////                    return productReady.then(function (response('id')) {
+////                        $form.find(productSelector.join(', ')).val(response('id'));
+////                        self._updateRootProduct($form, response('id'));
+////                        return self._onProductReady();
+////                    });
+////                    window.location.href = '/shop/cart';  // Redirect to cart page
+//                },
+//                error: function (error) {
+//                    console.log('Error adding to cart:', error);
+//                    alert('There was an issue adding the product to your cart.');
+//                }
+//            });
+//
+//        }
+//    });
+//
+//
+//
+//    // Register the widget
+//    publicWidget.registry.CustomAddToCart = CustomAddToCart;
+
+
+
+
+
+//var CustomWebsiteSale = publicWidget.Widget.extend(WebsiteSale,{
+//        // Override the _handleAdd function
+//        _onClickAdd: function (ev){
+//            this._super.apply(this, arguments);
+//            console.log('Custom _handleAdd function');
+//
+//        },
+//
+//    });
+//
+//ptionalProductsModal.prototype.willStart = function (){
+//    // Your code
+//    return this._super.apply(this, arguments)
+//}
+
+CrWebsiteSale.WebsiteSale.include({
+        events: Object.assign({}, CrWebsiteSale.WebsiteSale.prototype.events || {},
+//        {
+//        'click #add_to_cart': '_onClickAddToCart',
+//        }
+        ),
+
+
+//        _onClickAdd: function (ev) {
+//        console.log('Beforeeeeeeeee');
+//         this._super.apply(this, arguments);
+//         console.log('Custom _handleAdd function');
+//        },
+
+            _handleAdd: function ($form) {
+             console.log('888888888888888');
+             var self = this;
+             this.$form = $form;
+             const table = document.getElementById('product_table');
+
+            if (table) {
+                console.log('Table exists!');
+                this._onClickAddToCart();
+
+            } else {
+                this._super.apply(this, arguments);
+                console.log('Table does not exist!');
+            }
+
+             console.log('99999999999999999999999');
+            },
+
+
+
+
+            _onClickAddToCart: function (ev) {
+            var self = this;
+            console.log('in custom-------');
+
+            console.log('------------');
+            var rows = document.querySelectorAll('#product_table tbody tr');
+            console.log(rows);
+            var data = [];
+            rows.forEach(function(row, index) {
+                    var dict ={};
+                    var $this = $(this);
+                    console.log('in for loop');
+                    var quantity = row.querySelector('.combination_quantity').value;
+                    var name = row.getElementsByTagName('td');
+
+
+
+                    if (quantity > 0) {
+                        console.log('row : ',row);
+                        console.log('index : ',index);
+                        console.log('quantity : ',quantity);
+                        console.log('length : ',name.length);
+
+                        var text = '';
+                        var a = '';
+                        for (let i = 0; i < name.length-2; i++) {
+                            a = name[i].innerHTML.trim();
+                            console.log(a);
+                            if (a.includes("Custom")){
+                                a = 'Custom';
+                            }
+
+                            text += a + " ";
+
+                        }
+                        console.log('text : ',text);
+
+                        var result = text.includes("Custom");
+                        if (result) {
+                        var custom_value = self._getCustomVariantValues($this);
+                        }
+
+
+                        dict['combinations'] = text;
+                        dict['quantity'] = quantity;
+                        dict['product_custom_attribute_values']= JSON.stringify(custom_value);
+                        data.push(dict);
+                    }
+            });
+
+
+            if (data.length > 0) {
+                console.log('in if');
+                this._addSelectedToCart(data);
+            }
+            else {
+                alert('Please enter quantities for at least one combination.');
+            }
+
+
+        },
+        _getCustomVariantValues: function(custom) {
+            var variantCustomValues = [];
+            console.log('custom : ',custom);
+            custom.find('.p_variants_cust_val').each(function (){
+                var $variantCustomValueInput = $(this);
+                if ($variantCustomValueInput.length !== 0){
+                    variantCustomValues.push({
+                        'custom_product_template_attribute_value_id': $variantCustomValueInput.data('p_attribute_value_id'),
+                        'attribute_value_name': $variantCustomValueInput.data('p_attribute_value_name'),
+                        'custom_value': $variantCustomValueInput.val(),
+                    });
+                }
+            });
+            return variantCustomValues;
+        },
+
+
+        _addSelectedToCart: function (combinations) {
+            var self = this;
+            self._sendToBackend(combinations);
+
+        },
+
+        _sendToBackend: function (combinations) {
+            var self = this;
+            var productTemplateId = $('h1').data('oeId');
+            console.log('productTemplateId : ',productTemplateId);
+
+            // Send the data to the backend for processing (adding to cart)
+            $.ajax({
+                url: '/cr_website_order_matrix_view/add_to_cart',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    productTemplateId: productTemplateId,
+                    combinations: combinations
+                }),
+                success: function (response) {
+                    console.log('Successfully added to cart:', response);
+                    console.log(response.result);
+                    console.log(response.result.redirect_url);
+                    window.location.href = window.location.origin + response.result.redirect_url
+                    $(window).on('load',function() {});
+                },
+                error: function (error) {
+                    console.log('Error adding to cart:', error);
+                    alert('There was an issue adding the product to your cart.');
+                }
+            });
+
+        },
+
+
+
+
+})
+
+
+
+
+

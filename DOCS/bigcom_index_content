@@ -1,0 +1,24 @@
+i develop odoo to bigcommerce integration in that i add functionality for
+import :
+Currencies,Product Categories,Brands,Products,Customers,Customer Addresses,Tax Rates,Locations,Shipping Zones,Inventory,Order Statuses,Orders
+
+export:
+categories,product,customer,customer_address,location,inventory
+
+webhooks for:
+order create means when order create in bc then automatic create in odoo
+same for order related any operation means when any changes appear in bc then auto reflact in odoo
+same for product means when product create  in odoo then automatic product create in odoo
+same for product update
+webhooks for above four also  we create , dlt manually by our self
+
+schedual action for:
+import order and import product 
+also action is we create , update , dlt manually by our self 
+also you can configure for how much time you have to make schedual action
+
+and for every operation we can see logs also  
+
+
+so based on above all detail plz give me index content for summary , overview , features , hot features , overview , seo question if any user need this module then what they are search that questions and also some name for module
+

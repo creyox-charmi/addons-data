@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_account_bank_statement_line_kanban_inherit" model="ir.ui.view">
+        <field name="name">cr.account.bank.statement.line.kanban.inherit</field>
+        <field name="model">account.bank.statement.line</field>
+        <field name="inherit_id" ref="account_accountant.view_bank_statement_line_kanban_bank_rec_widget"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@t-attf-id='row1_col2']" position="after">
+                <div id="cr_row1_col3">
+                    <field name="cr_cash_register_name"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

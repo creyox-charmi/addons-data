@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_product_form_bigcommerce_variant" model="ir.ui.view">
+    <field name="name">product.product.form.bigcommerce</field>
+    <field name="model">product.product</field>
+    <field name="inherit_id" ref="product.product_normal_form_view"/>
+    <field name="arch" type="xml">
+<!--         <xpath expr="//header" position="inside">-->
+<!--             <button name="action_update_bigcommerce_variant"-->
+<!--                    string="Update BigCommerce Variant"-->
+<!--                    type="object"-->
+<!--                    class="btn-primary"-->
+<!--                    invisible="not bigcommerce_product_id"/>-->
+<!--         </xpath>-->
+        <xpath expr="//notebook" position="inside">
+            <page name="bigcommerce_info" string="BigCommerce Info">
+                <group>
+                    <field name="bigcommerce_store_id"/>
+                    <field name="bigcommerce_product_attribute_id"/>
+                    <field name="bigcommerce_product_id"/>
+                    <field name="bigcommerce_sku"/>
+                    <field name="bigcommerce_sku_id"/>
+                </group>
+            </page>
+        </xpath>
+    </field>
+</record>
+<!-- Action for BigCommerce Product Variants -->
+<record id="action_bigcommerce_product_variants" model="ir.actions.act_window">
+    <field name="name">BigCommerce Product Variants</field>
+    <field name="res_model">product.product</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('bigcommerce_product_attribute_id', '!=', False)]</field>
+    <field name="context">{}</field>
+</record>
+
+<!-- Menu item under BigCommerce Product Info -->
+<menuitem id="menu_bigcommerce_store_product_variants"
+          name="Product Variants"
+          parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_product_info"
+          action="action_bigcommerce_product_variants"/>
+
+</odoo>

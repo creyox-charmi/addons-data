@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="ir_cron_evr_automated_flow" model="ir.cron">
+        <field name="name">EVR BOM: Automated Flow Processor</field>
+        <field name="model_id" ref="mrp.model_mrp_bom"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_process_evr_automated_flow()</field>
+        <field name="interval_number">10</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="doall" eval="False"/>
+    </record>
+</odoo>

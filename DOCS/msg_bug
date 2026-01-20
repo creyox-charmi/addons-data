@@ -1,0 +1,2533 @@
+currently In my this portal list view one user's multiple records come but i want that all user's one 1 record should be come and in this we have to display the current user's blog's commenter suppose i am login as an admin user then in the [comunidad] blog.blog page we have to check if admin's blog post exist or not if exist then we have to pass the data , so first check which which user is comment on the admin's blog we have to display that all users in the list view of the portal msg template and when open that msg template then only that user's msg should display and  only the admin's blog onlyyyy , are you understand my requriments ? if you have query then ask me after that i will give you my current code
+
+
+
+
+currently what do , 
+first find that blog.bog which is 'comunidad' suppose that blog.blog id is 5 then 
+self.env['blog.post'].search([('blog_id','=',5),('author_id','=',current_user_id)])
+
+
+so we get only one blog post for the list view and only that msg we have to display in the msg template , and only the user which is comment in that particular msg that msg we have to display over there
+
+after that find the self.env['blog.post'].search([('blog_id','=',5),('author_id','!=',current_user_id)]) and in that blog if the current user is comment , suppose we found that demo user's blog and current login user is admin and admin user is commented on the demo user's blog post then if that demo user available in the above msg portal's list view then add that admin's msg in the demo users msg portal form view 
+
+
+and also we have to add the reply button , for the msg in msg portal form view and for that what we have to do is suppose i am admin user and open the msg template of demo user then i can see demo and admin both msg but add reply button for only demo not for own admin 
+
+are you understand or any quetion?
+if you have question then ask me after i  give you code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Message Display: In the form view, should messages be grouped by blog post or just show all messages in chronological order?
+- just show all messages in chronological order
+
+Two-way conversation: If Admin comments on Demo User's blog AND Demo User comments on Admin's blog, should Demo User appear in the list view from BOTH perspectives?
+- yes
+
+Reply functionality: Should the reply button:
+
+Open a text box inline to reply?
+Redirect to the blog post to comment?
+Post directly as a reply to that message? - yes bcoz we get the msg_id of particular msg to whome we reply and also after that anytime when we open that msg template then it should appear as it is , and order should be the normal messanger the way we do in social media if any one repl to me then , for my screen that msg come in left side and if i reply to anyone then for me it appear right side and should be store
+
+
+Unread indicator: Do you still want the unread message count feature we added earlier, or should I focus only on this new structure?
+yes that also we shuold maintain
+
+
+
+
+------------------------------------------------
+and this is my current code but we have to inherite or override and add in our td_website_Customisation module whatever we add
+
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ <template id="portal_my_home_blogs" inherit_id="portal.portal_my_home" name="Portal My Home Blogs"
+              customize_show="True">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <!--                <t t-set="title">Blogs</t>-->
+                <t t-set="title">Perfil Público</t>
+                <t t-set="url" t-value="'/my/blogs'"/>
+                <t t-set="placeholder_count" t-value="'blogs_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mensajes</t>
+                <t t-set="url" t-value="'/my/messages'"/>
+                <t t-set="placeholder_count" t-value="'message_count'"/>
+            </t>
+        </xpath>
+    </template>
+    
+
+    <template id="portal_my_messages_list_view" name="Mis Mensajes">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mensajes</t>
+            </t>
+            <t t-if="not message_ids">
+                <p>You don't have any message yet.</p>
+            </t>
+            <t t-if="message_ids" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Número de mensajes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="message_ids" t-as="item">
+                        <tr>
+                            <td>
+                                <!--                                <a t-attf-href="#{item['blog_id'].website_url}">-->
+                                <a t-attf-href="/my/messages/thread/partner/#{item['message_id'][0].author_id.id}/blog/#{item['blog_id'].id}">
+                                    <t t-esc="item['message_id'][0].author_id.name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="item['message_id'][0].author_id.email"/>
+                            </td>
+                            <td>
+                                <t t-esc="item['count_message']"/>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_messages_form_view" name="Mensajes">
+        <t t-call="portal.portal_layout">
+
+            <!-- Sección para comentarios o thread -->
+            <div class="container my-4">
+                <t t-if="true">
+                    <h2>💬 Comentarios de
+                        <t t-esc="partner.name"/>
+                        en esta entrada
+                    </h2>
+                    </t>
+                </t>
+            </div>
+
+        </t>
+    </template>
+
+
+</odoo>
+ 
+ 
+ 
+ # -*- coding: utf-8 -*-
+import base64, logging
+import re
+import json
+from odoo import exceptions, http
+from odoo.http import request
+from .portal import CustomerPortalBlogs as portal
+
+_logger = logging.getLogger(__name__)
+
+
+class CustomerPortalBlogsController(http.Controller):
+    _items_per_page = 10
+
+    @http.route(['/blog/tag/<model("blog.tag"):tag>'], type='http', auth="public", website=True)
+    def blog_filter_by_tag(self, tag, **kwargs):
+        BlogPost = request.env['blog.post'].sudo()
+        posts = BlogPost.search([('tag_ids', 'in', tag.ids)])
+        values = {
+            'tag': tag,
+            'posts': posts,
+        }
+        return request.render("website_blog.blog_post_short", values)
+
+    @http.route(['/my/blogs', '/my/blogs/page/<int:page>'], auth='user', website=True)
+    def myBlogsListView(self, page=1, **kw):
+        partner = request.env.user.partner_id.id
+        blog_blog_id = self._get_community_id()
+        blog_posts = request.env['blog.post'].sudo().search(portal._get_blogs_domain(self, partner)).filtered(
+            lambda x: x.blog_id.id == blog_blog_id.id)
+
+        pager = request.website.pager(
+            url='/my/blogs',
+            total=len(blog_posts),
+            page=page,
+            step=self._items_per_page,
+            scope=7
+        )
+
+        return request.render("wb_portal_blogs.portal_my_blogs_list_view", {
+            'blog_posts': blog_posts[pager['offset']:pager['offset'] + self._items_per_page],
+            'pager': pager,
+            'page_name': 'my_blogs',
+            'breadcrumb': [('/my/home', 'Inicio'), ('/my/blogs', 'Mis Blogs')],
+        })
+
+    @http.route('/my/blog/edit/<int:blog_id>', type='http', auth="user", website=True, csrf=True,
+                methods=['GET', 'POST'])
+    def portal_blog_edit_profile(self, blog_id, **kwargs):
+        print('yesss...')
+        BlogPost = request.env['blog.post'].sudo()
+        blog_blog_id = self._get_community_id()
+
+        blog_entry = BlogPost.browse(blog_id)
+        partner = request.env.user.partner_id
+        blog_posts = blog_entry or BlogPost.search(portal._get_blogs_domain(self, partner.id)).filtered(
+            lambda x: x.blog_id.id == blog_blog_id.id
+        )
+
+        # if blog_posts:
+        #     blog_entry = blog_posts[0]
+        #     blog_id = blog_posts[0].id
+
+        # if blog_id == 0:
+        if not blog_posts:
+            # if request.httprequest.method == 'POST':
+            vals = {
+                'blog_id': blog_blog_id.id,
+                'name': kwargs.get('name') or request.env.user.partner_id.name,
+                'subtitle': '',
+                'content': '',
+                'is_published': False,
+            }
+            blog_entry = BlogPost.create(vals)
+            blog_id = blog_entry.id
+            # else:
+            #     blog_entry = BlogPost.new({
+            #         'blog_id': blog_blog_id.id,
+            #         'name': kwargs.get('name') or request.env.user.partner_id.name,
+            #     })
+
+        if blog_entry.create_uid.partner_id != request.env.user.partner_id:
+            return request.redirect('/my/blogs')
+
+        # Manejar el envío del formulario (POST)
+        if request.httprequest.method == 'POST':
+            try:
+                # Procesar categorías
+                tag_ids = [int(value) for key, value in kwargs.items() if key.startswith("category-")]
+
+                # Lista para las tuplas de comandos de actualización del one2many
+                multimedia_updates = []
+
+                # Obtener todos los índices de los campos de multimedia del formulario
+                multimedia_indices = sorted(
+                    # list(set(re.findall(r"multimedia_ids\[(-?\d+)\]\.id", ' '.join(kwargs.keys())))), key=int)
+                    list(set(re.findall(r"multimedia_ids\[(-?\d+)]\.id", ' '.join(kwargs.keys())))), key=int)
+
+                # Itera sobre los índices para procesar los campos de multimedia de forma segura
+                for multimedia_index in multimedia_indices:
+                    multimedia_id = int(kwargs.get('multimedia_ids[%s].id' % multimedia_index))
+                    multimedia_type = kwargs.get('multimedia_ids[%s].content_type' % multimedia_index)
+                    multimedia_url = kwargs.get('multimedia_ids[%s].content_url' % multimedia_index)
+
+                    multimedia_file = request.httprequest.files.get(
+                        'multimedia_ids[%s].content_file' % multimedia_index)
+
+                    file_data = False
+                    filename = kwargs.get('multimedia_ids[%s].content_file_filename' % multimedia_index)
+                    mimetype = kwargs.get('multimedia_ids[%s].content_file_mimetype' % multimedia_index)
+
+                    if multimedia_file and multimedia_file.filename:
+                        file_data = base64.b64encode(multimedia_file.read())
+                        filename = multimedia_file.filename
+                        mimetype = multimedia_file.content_type
+
+                    multimedia_vals = {
+                        'content_type': multimedia_type,
+                        'content_url': multimedia_url,
+                    }
+                    if file_data:
+                        multimedia_vals['content_file'] = file_data
+                        multimedia_vals['content_file_filename'] = filename
+                        multimedia_vals['content_file_mimetype'] = mimetype
+
+                    if multimedia_id > 0:
+                        multimedia_updates.append((1, multimedia_id, multimedia_vals))
+                    elif file_data or multimedia_url:
+                        multimedia_updates.append((0, 0, multimedia_vals))
+
+                current_multimedia_ids = blog_entry.multimedia_ids.ids
+                submitted_multimedia_ids = [m[1] for m in multimedia_updates if m[0] == 1]
+                multimedia_to_remove = list(set(current_multimedia_ids) - set(submitted_multimedia_ids))
+                for multimedia_id in multimedia_to_remove:
+                    multimedia_updates.append((2, multimedia_id))
+
+                vals = {
+                    'name': kwargs.get('name'),
+                    'subtitle': kwargs.get('subtitle'),
+                    'is_published': kwargs.get('is_published') == '1',
+                    'only_text_content': kwargs.get('only_text_content'),
+                    # 'content': kwargs.get('content'),
+                    # 'content': multimedia_html,
+                    'website_meta_title': kwargs.get('website_meta_title'),
+                    'website_meta_description': kwargs.get('website_meta_description'),
+                    'website_meta_keywords': kwargs.get('website_meta_keywords'),
+                    'tag_ids': [(6, 0, tag_ids)],
+                    'cover_properties': self._get_background_json(
+                        kwargs.get('bg-img') or f'/web/image/blog.post/{blog_entry.id}/blog_entry_html'),
+                    'multimedia_ids': multimedia_updates,
+                }
+
+                # Manejo de imágenes de cabecera de forma segura
+                blog_entry_html_file = request.httprequest.files.get('blog_entry_html')
+                if blog_entry_html_file and blog_entry_html_file.filename:
+                    vals['blog_entry_html'] = base64.b64encode(blog_entry_html_file.read())
+
+                main_image_file = request.httprequest.files.get('main_image')
+                if main_image_file and main_image_file.filename:
+                    vals['main_image'] = base64.b64encode(main_image_file.read())
+
+                social_media_fields = [
+                    'facebook_url',
+                    'instagram_url',
+                    'linkedin_url',
+                    'twitter_url',
+                    'youtube_url',
+                    'github_url'
+                ]
+
+                # Creamos un diccionario para almacenar los valores que se van a actualizar
+                author_vals = {}
+                for field in social_media_fields:
+                    url = kwargs.get(field, False)
+                    # if url:
+                    # Agregamos el campo y su URL al diccionario
+                    author_vals[field] = url
+
+                # Si hay URLs para actualizar, usamos el método 'write' en el registro del autor
+                if author_vals:
+                    blog_entry.author_id.write(author_vals)
+
+                blog_entry.sudo().write(vals)
+
+                multimedia_html = request.env['ir.ui.view']._render_template(
+                    "wb_portal_blogs.portal_blog_multimedia_html",
+                    {
+                        'dynamic_text_content': blog_entry.only_text_content or '',
+                        'id': blog_entry.id,  # Pasar el objeto blog_entry completo
+                        'multimedia_items': blog_entry.multimedia_ids,
+                    }
+                )
+
+                vals = {
+                    'content': multimedia_html,
+                }
+
+                blog_entry.sudo().write(vals)
+
+                return request.redirect('/my/blog/edit/%s?success=1' % blog_id)
+                # vals['success'] = True
+                # return request.render("wb_portal_blogs.portal_my_blogs_form_view_edit", vals)
+            except exceptions.UserError as e:
+                _logger.exception(e)
+                return request.redirect('/my/blog/edit/%s?error=1' % blog_id)
+                # return request.render("wb_portal_blogs.portal_my_blogs_form_view_edit", {'error': True})
+            except Exception as e:
+                _logger.exception(e)
+                return request.redirect('/my/blog/edit/%s?error=1' % blog_id)
+                # return request.render("wb_portal_blogs.portal_my_blogs_form_view_edit", {'error': True})
+
+        # Manejar la carga de la página (GET)
+        multimedia_items = blog_entry.multimedia_ids or request.env['blog.post.multimedia'].sudo()
+
+        multimedia_html = request.env['ir.ui.view']._render_template(
+            "wb_portal_blogs.portal_blog_multimedia_html",
+            {
+                'dynamic_text_content': blog_entry.only_text_content or '',
+                'id': blog_entry.id,  # Pasar el objeto blog_entry completo
+                'multimedia_items': multimedia_items,
+            }
+        )
+
+        full_content = multimedia_html
+
+        values = {
+            'action': 'edit' if blog_id > 0 else 'new',
+            'page_name': 'blog_edit',
+            'blog_entry': blog_entry,
+            'blog_entry_html': self._extract_image_html(blog_entry.cover_properties),
+            'blog_ids': blog_blog_id,
+            'tag_ids': request.env['blog.tag'].search([]),
+            'full_content': full_content,
+        }
+
+        if kwargs.get('success'):
+            values['error'] = False
+        if kwargs.get('error'):
+            values['error'] = True
+
+        return request.render("wb_portal_blogs.portal_my_blogs_form_view_edit", values)
+
+    def _get_background_json(self, val):
+        # Se espera recibir el HTML en el parámetro "html_string"
+        html_string = val
+
+        # Buscamos la etiqueta <img> y extraemos lo que esté dentro de src=""
+        # match = re.search(r'<img[^>]+src="([^"]+)"', html_string)
+        match = val or False
+        if match:
+            # image_src = match.group(1)
+            image_src = val
+            # Se define el JSON actualizado para el caso en que se encuentra una imagen:
+            result_data = {
+                "background-image": "url(" + image_src + ")",
+                "background_color_class": "o_cc3 o_cc",  # Puedes ajustar este valor según tus necesidades
+                "background_color_style": "",
+                "opacity": "0.2",
+                "resize_class": "o_half_screen_height o_record_has_cover",
+                # Igual puedes modificarlo según tus requerimientos
+                "text_align_class": ""
+            }
+        else:
+            # Si no se encontró ninguna ruta, se utiliza el JSON por defecto
+            result_data = {
+                "background-image": "none",
+                "background_color_class": "o_cc3 o_cc",
+                "background_color_style": "",
+                "opacity": "0.2",
+                "resize_class": "cover_auto",
+                "text_align_class": ""
+            }
+
+        # Odoo se encargará de serializar el diccionario a JSON automáticamente
+        return json.dumps(result_data)
+
+    def _extract_image_html(self, json_str):
+        """
+        Recibe una cadena JSON con la siguiente estructura:
+          {
+            "background-image": "url(/web/image/1216-bfc69190/EMCOOP-7.jpg)",
+            "background_color_class": "o_cc3 o_cc",
+            "background_color_style": "",
+            "opacity": "0.2",
+            "resize_class": "o_half_screen_height o_record_has_cover",
+            "text_align_class": ""
+          }
+
+        Si se encuentra la URL en el campo "background-image", se retorna un HTML con ese formato:
+          <p><img src="/web/image/1216-bfc69190/EMCOOP-7.jpg" class="img img-fluid o_we_custom_image" style="width: 50%;"><br></p>
+
+        Si no se encuentra la URL, se devuelve por defecto:
+          <p><img src="/web/image/1360-f72d89e1/marvin-meyer-SYTO3xs06fU-unsplash.jpg" class="img img-fluid o_we_custom_image" style="width: 50%;"><br></p>
+        """
+        # HTML por defecto a usar si la URL no se encuentra o si ocurre un error al parsear
+        default_html = (
+            '                                <p><img src="/web/image/1360-f72d89e1/marvin-meyer-SYTO3xs06fU-unsplash.jpg" '
+            'class="img img-fluid o_we_custom_image" style="width: 50%;"><br></p>\n'
+        )
+
+        try:
+            data = json.loads(json_str.strip())
+        except Exception as e:
+            # Si falla el parseo del JSON, devolvemos el HTML por defecto
+            print("Error al parsear el JSON:", e)
+            return default_html
+
+        # Extraemos el valor de "background-image"
+        bg_image = data.get("background-image", "")
+
+        # Extraemos la URL que se encuentre dentro de url(...)
+        match = re.search(r'url\((.*?)\)', bg_image)
+        if match:
+            image_url = match.group(1)
+            html = (
+                '<p><img src="{}" class="img img-fluid o_we_custom_image" style="width: 50%;"><br></p>'
+            ).format(image_url)
+            return html
+        else:
+            # Si no se encuentra el patrón, devolvemos el HTML por defecto
+            return default_html
+
+    def _get_community_id(self):
+        BlogPost = request.env['blog.post'].sudo()
+        return BlogPost.blog_id.search([('name', 'ilike', 'comunidad')], limit=1)
+
+    def portal_blog_edit(self, action, blog_id, **kwargs):
+        values = {}
+        try:
+            BlogPost = request.env['blog.post'].sudo()
+            blog_entry = BlogPost.browse(blog_id)
+            # Verificar que el usuario actual es el autor de la entrada.
+            # if blog_entry.author_id != request.env.user.partner_id:
+            #     return request.render('http_routing.404')
+
+            # Si el método es POST, se actualizan los datos
+            if request.httprequest.method == 'POST' and kwargs:
+                # Actualiza los campos de la entrada
+                # vals = {
+                #     'name': kwargs.get('name'),
+                #     'content': kwargs.get('content'),
+                # }
+                vals = {
+                    'is_published': kwargs.get('is_published') == '1',
+                    'blog_id': int(kwargs.get('blog_id_edit')) if kwargs.get('blog_id_edit') else False,
+                    'name': kwargs.get('name'),
+                    'subtitle': kwargs.get('subtitle', ''),
+                    # Para el campo Many2many "tag_ids", se espera un comando (6, 0, [ids])
+                    # Suponiendo que 'tag_id' viene como una cadena con los IDs separados por comas,
+                    # se parsea y se monta la lista; si ya es una lista, adapta según corresponda.
+                    'tag_ids': [(6, 0, [int(value) for key, value in kwargs.items() if key.startswith("category-")])],
+                    # if kwargs.get('tag_id') else [],
+                    'cover_properties': self._get_background_json(kwargs.get('bg-img')),
+                    'content': kwargs.get('content'),
+                    'website_meta_title': kwargs.get('website_meta_title', ''),
+                    'website_meta_description': kwargs.get('website_meta_description', ''),
+                    'website_meta_keywords': kwargs.get('website_meta_keywords', ''),
+                }
+                if action == 'new':
+                    resp = BlogPost.create(vals)
+                    action = 'complete'
+                elif action == 'edit':
+                    blog_entry.sudo().write(vals)
+                # Redirige tras la actualización
+                # return request.redirect('/my/blogs')
+
+                values['error'] = False
+            if action == 'new':
+                values.update({
+                    'action': action,
+                    'page_name': 'blog_edit',
+                    'blog_entry': BlogPost,
+                    'blog_entry_html': self._extract_image_html(''),
+                    'blog_ids': blog_entry.blog_id.search([('name', 'ilike', 'comunidad')], limit=1),
+                    # BlogPost.blog_id.search([]),
+                    'tag_ids': BlogPost.tag_ids.search([])
+                })
+            elif action == 'edit':
+                values.update({
+                    'action': action,
+                    'page_name': 'blog_edit',
+                    'blog_entry': blog_entry,
+                    'blog_entry_html': self._extract_image_html(blog_entry.cover_properties),
+                    'blog_ids': blog_entry.blog_id.search([('name', 'ilike', 'comunidad')], limit=1),
+                    # blog_entry.blog_id.search([]),
+                    'tag_ids': blog_entry.tag_ids.search([])
+                })
+        except Exception as exc:
+            values.update({
+                'error': True,
+                'page_name': 'blog_edit',
+                'blog_entry': blog_entry if blog_entry else BlogPost,
+            })
+        return request.render("wb_portal_blogs.portal_my_blogs_form_view_edit", values)
+
+
+
+    @http.route(['/my/messages', '/my/messages/page/<int:page>'], auth='user', website=True)
+    def myMessagesListView(self, page=1, **kw):
+        print("------ ENTER myMessagesListView ------")
+        print(f"Page: {page}, kw: {kw}")
+
+        partner = request.env.user.partner_id.id
+        print(f"Current Partner ID: {partner}")
+
+        blog_blog_id = self._get_community_id()
+        print(f"Community Blog ID: {blog_blog_id.id if blog_blog_id else 'No Blog Found'}")
+
+        # Fetch blog posts that belong to this blog and have messages
+        blog_posts_messages = request.env['blog.post'].sudo().search([]).filtered(lambda x:
+                                                                                  x.blog_id.id == blog_blog_id.id
+                                                                                  and x.message_ids
+                                                                                  )
+        print(f"Found {len(blog_posts_messages)} blog posts with messages")
+
+        message_ids = list()
+        for bpm in blog_posts_messages:
+            print(f"Processing Blog Post: {bpm.id} - {bpm.name}")
+            author_ids = bpm.message_ids.filtered(lambda x: x.author_id.id != partner).author_id
+            print(f"Found {len(author_ids)} unique authors (excluding current partner)")
+
+            for a in author_ids:
+                print(f"Processing Author: {a.id} - {a.name}")
+                message_id = request.env['mail.message'].sudo()
+                filtered_msgs = bpm.message_ids.filtered(lambda x: x.author_id.id == a.id)
+                print(f"Messages by this author in this post: {len(filtered_msgs)}")
+                message_id |= filtered_msgs
+
+                message_data = {
+                    'blog_id': bpm,
+                    'message_id': message_id,
+                    'count_message': len(message_id)
+                }
+                print(f"Appending message data: blog_id={bpm.id}, count={len(message_id)}")
+                message_ids.append(message_data)
+
+        print(f"Total message groups prepared: {len(message_ids)}")
+
+        pager = request.website.pager(
+            url='/my/messages',
+            total=len(message_ids),
+            page=page,
+            step=self._items_per_page,
+            scope=7
+        )
+        print(f"Pager Info: {pager}")
+
+        render_data = {
+            'message_ids': message_ids[pager['offset']:pager['offset'] + self._items_per_page],
+            'pager': pager,
+            'page_name': 'my_messages',
+            'breadcrumb': [('/my/home', 'Inicio'), ('/my/messages', 'Mis Mensajes')],
+        }
+        print(f"Rendering with {len(render_data['message_ids'])} paginated items")
+
+        print("------ EXIT myMessagesListView ------")
+        return request.render("wb_portal_blogs.portal_my_messages_list_view", render_data)
+
+    @http.route(['/my/messages/thread/partner/<int:partner_id>/blog/<int:blog_id>'], type='http', auth="user",
+                website=True, csrf=True)
+    def portal_messages_profile(self, partner_id, blog_id, **kwargs):
+        values = {}
+        try:
+            blog_entry = partner = filtered_messages = None
+
+            if blog_id and partner_id:
+                blog_entry = request.env['blog.post'].sudo().browse(int(blog_id))
+                partner = request.env['res.partner'].sudo().browse(int(partner_id))
+
+                # filtered_messages = blog_entry.message_ids.filtered(
+                #     lambda m: m.author_id.id in [partner.id] and m.message_type == 'comment' or not m.parent_id
+                # )
+                #
+                # blog_entry.message_ids = filtered_messages
+            values = {
+                'blog_entry': blog_entry,
+                'partner': partner,
+            }
+        except Exception as exc:
+            values.update({
+                'error': True,
+                # 'page_name': 'blog_edit',
+            })
+        return request.render("wb_portal_blogs.portal_my_messages_form_view", values)
+
+
+# -*- coding: utf-8 -*-
+from odoo import SUPERUSER_ID
+from odoo.http import request
+
+from odoo.addons.portal.controllers.portal import CustomerPortal, pager
+
+
+class CustomerPortalBlogs(CustomerPortal):
+
+    def _get_blogs_domain(self, partner_id):
+        return [
+            '|', '|',
+            ('author_id', 'in', [partner_id, SUPERUSER_ID]),
+            ('create_uid', 'in', [partner_id, SUPERUSER_ID]),
+            ('write_uid', 'in', [partner_id, SUPERUSER_ID])
+        ]
+
+    def _prepare_home_portal_values(self, counters):
+        """ Add subscription details to main account page """
+        values = super()._prepare_home_portal_values(counters)
+        if 'blogs_count' in counters:
+            #     if request.env['sale.order'].check_access_rights('read', raise_exception=False):
+            partner = request.env.user.partner_id.id
+            BlogPost = request.env['blog.post'].sudo()
+            blog_blog_id = BlogPost.blog_id.search([('name', 'ilike', 'comunidad')], limit=1)
+            values['blogs_count'] = len(
+                request.env['blog.post'].sudo().search(self._get_blogs_domain(partner)).filtered(
+                    lambda x: x.blog_id.id == blog_blog_id.id
+                )
+            )
+        if 'message_count' in counters:
+            partner = request.env.user.partner_id.id
+            BlogPost = request.env['blog.post'].sudo()
+            blog_blog_id = BlogPost.blog_id.search([('name', 'ilike', 'comunidad')], limit=1)
+            blog_post_ids = request.env['blog.post'].sudo().search(self._get_blogs_domain(partner)).filtered(
+                lambda x: x.blog_id.id == blog_blog_id.id
+            )
+
+            values['message_count'] = len(
+                blog_post_ids.message_ids
+            )
+        return values
+
+
+
+
+
+
+--------------------------------------
+I give you above my requriments and you give me below code 
+
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extended List View -->
+    <template id="portal_my_messages_list_view_extended" name="My Messages List Extended">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mensajes</t>
+            </t>
+
+            <t t-if="not message_ids">
+                <div class="alert alert-info">
+                    <p>No tienes mensajes aún.</p>
+                </div>
+            </t>
+
+            <t t-if="message_ids" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Correo</th>
+                        <th>Número de mensajes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="message_ids" t-as="item">
+                        <tr>
+                            <td>
+                                <a t-attf-href="/my/messages/thread/#{item['partner'].id}">
+                                    <t t-esc="item['partner'].name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="item['partner'].email or 'N/A'"/>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">
+                                    <t t-esc="item['message_count']"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <!-- Thread View with Messages -->
+    <template id="portal_my_messages_thread_view" name="Messages Thread View">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-comments me-2"/>
+                                    Conversación con <t t-esc="other_partner.name"/>
+                                </h4>
+                            </div>
+                            <div class="card-body p-4" style="max-height: 600px; overflow-y: auto;" id="messageContainer">
+                                <t t-if="not messages">
+                                    <p class="text-muted text-center">No hay mensajes en esta conversación.</p>
+                                </t>
+                                <t t-else="">
+                                    <t t-foreach="messages" t-as="msg">
+                                        <t t-set="is_mine" t-value="msg.author_id.id == current_partner.id"/>
+
+                                        <div t-attf-class="message-item mb-3 d-flex #{('justify-content-end' if is_mine else 'justify-content-start')}">
+                                            <div t-attf-class="p-3 rounded #{('bg-primary text-white' if is_mine else 'bg-light')}"
+                                                 style="max-width: 70%;">
+                                                <div>
+                                                    <strong>
+                                                        <t t-esc="msg.author_id.name"/>
+                                                    </strong>
+                                                    <div class="mt-2" t-raw="msg.body"/>
+                                                    <small t-attf-class="d-block mt-2 #{('text-white-50' if is_mine else 'text-muted')}">
+                                                        <t t-esc="msg.date" t-options="{'widget': 'datetime'}"/>
+                                                    </small>
+                                                </div>
+
+                                                <!-- Reply button only for other user's messages -->
+                                                <t t-if="not is_mine">
+                                                    <button class="btn btn-sm btn-outline-secondary mt-2 reply-btn"
+                                                            t-att-data-message-id="msg.id"
+                                                            t-att-data-blog-id="msg.res_id"
+                                                            t-att-data-author-name="msg.author_id.name">
+                                                        <i class="fa fa-reply me-1"/>
+                                                        Responder
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+
+                            <!-- New Message / Reply Form -->
+                            <div class="card-footer">
+                                <!-- Reply indicator (hidden by default) -->
+                                <div class="alert alert-info mb-3 d-none" id="replyIndicator">
+                                    <i class="fa fa-reply me-2"/>
+                                    Respondiendo a: <strong id="replyToName"></strong>
+                                    <button type="button" class="btn-close float-end" id="cancelReply" aria-label="Close"></button>
+                                </div>
+
+                                <!-- Message form -->
+                                <div class="mb-2">
+                                    <label class="form-label">Escribe un mensaje:</label>
+                                    <textarea class="form-control" id="messageText" rows="3"
+                                              placeholder="Escribe tu mensaje aquí..."></textarea>
+                                </div>
+                                <button class="btn btn-primary" id="sendMessage">
+                                    <i class="fa fa-send me-1"></i>
+                                    Enviar Mensaje
+                                </button>
+
+                                <!-- Hidden fields -->
+                                <input type="hidden" id="parentMessageId" value=""/>
+                                <input type="hidden" id="blogPostId" value=""/>
+                                <input type="hidden" id="otherPartnerId" t-att-value="other_partner.id"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
+
+// td_website_customisation/static/src/js/portal_messages.js
+
+odoo.define('td_website_customisation.portal_messages', function (require) {
+'use strict';
+
+var publicWidget = require('web.public.widget');
+var rpc = require('web.rpc');
+var core = require('web.core');
+var _t = core._t;
+
+var PortalMessagesWidget = publicWidget.Widget.extend({
+    selector: '.container.my-4',
+    events: {
+        'click .reply-btn': '_onReplyClick',
+        'click #sendMessage': '_onSendMessage',
+        'click #cancelReply': '_onCancelReply',
+    },
+
+    start: function () {
+        this._super.apply(this, arguments);
+        this.parentMessageId = null;
+        this.blogPostId = null;
+        return Promise.resolve();
+    },
+
+    _onReplyClick: function (ev) {
+        ev.preventDefault();
+        var $btn = $(ev.currentTarget);
+        this.parentMessageId = $btn.data('message-id');
+        this.blogPostId = $btn.data('blog-id');
+        var authorName = $btn.data('author-name');
+
+        // Show reply indicator
+        $('#replyToName').text(authorName);
+        $('#replyIndicator').removeClass('d-none');
+
+        // Store in hidden fields
+        $('#parentMessageId').val(this.parentMessageId);
+        $('#blogPostId').val(this.blogPostId);
+
+        // Focus on textarea
+        $('#messageText').focus();
+
+        // Scroll to bottom
+        $('html, body').animate({
+            scrollTop: $('#messageText').offset().top - 100
+        }, 500);
+    },
+
+    _onCancelReply: function (ev) {
+        ev.preventDefault();
+        this._resetReplyForm();
+    },
+
+    _onSendMessage: function (ev) {
+        ev.preventDefault();
+        var self = this;
+        var body = $('#messageText').val().trim();
+        var parentMessageId = $('#parentMessageId').val();
+        var blogPostId = $('#blogPostId').val();
+        var otherPartnerId = $('#otherPartnerId').val();
+
+        if (!body) {
+            this._showAlert('Por favor escribe un mensaje', 'warning');
+            return;
+        }
+
+        // Disable button to prevent double submission
+        $('#sendMessage').prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i>Enviando...');
+
+        rpc.query({
+            route: '/my/messages/send',
+            params: {
+                body: body,
+                parent_message_id: parentMessageId || false,
+                blog_post_id: blogPostId || false,
+                other_partner_id: parseInt(otherPartnerId)
+            }
+        }).then(function (result) {
+            if (result.success) {
+                // Reload page to show new message
+                window.location.reload();
+            } else {
+                self._showAlert(result.error || 'Error al enviar el mensaje', 'danger');
+                $('#sendMessage').prop('disabled', false).html('<i class="fa fa-send me-1"></i>Enviar Mensaje');
+            }
+        }).catch(function (error) {
+            console.error('Error sending message:', error);
+            self._showAlert('Error al enviar el mensaje. Por favor intenta de nuevo.', 'danger');
+            $('#sendMessage').prop('disabled', false).html('<i class="fa fa-send me-1"></i>Enviar Mensaje');
+        });
+    },
+
+    _resetReplyForm: function () {
+        $('#replyIndicator').addClass('d-none');
+        $('#parentMessageId').val('');
+        $('#blogPostId').val('');
+        this.parentMessageId = null;
+        this.blogPostId = null;
+    },
+
+    _showAlert: function (message, type) {
+        var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+                        message +
+                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                        '</div>';
+        $('.card-footer').prepend(alertHtml);
+
+        // Auto dismiss after 5 seconds
+        setTimeout(function() {
+            $('.alert').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 5000);
+    }
+});
+
+publicWidget.registry.portalMessages = PortalMessagesWidget;
+
+return PortalMessagesWidget;
+});
+
+
+------------------------------
+# td_website_customisation/controllers/portal_messages.py
+
+from odoo import http
+from odoo.http import request
+from odoo.addons.wb_portal_blogs.controllers.controllers import CustomerPortalBlogsController
+
+
+class PortalMessagesExtended(CustomerPortalBlogsController):
+
+    @http.route(['/my/messages', '/my/messages/page/<int:page>'], auth='user', website=True)
+    def myMessagesListView(self, page=1, **kw):
+        """
+        Override to show one row per user who commented on current user's blog posts
+        """
+        current_partner_id = request.env.user.partner_id.id
+        blog_blog_id = self._get_community_id()
+
+        # Get current user's blog posts in Comunidad
+        my_blog_posts = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '=', current_partner_id)
+        ])
+
+        # Get other users' blog posts in Comunidad where current user commented
+        other_blog_posts = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '!=', current_partner_id)
+        ])
+
+        # Find users who commented on my posts
+        commenters = {}
+
+        for post in my_blog_posts:
+            comments = post.message_ids.filtered(
+                lambda m: m.message_type == 'comment' and m.author_id.id != current_partner_id
+            )
+            for comment in comments:
+                author = comment.author_id
+                if author.id not in commenters:
+                    commenters[author.id] = {
+                        'partner': author,
+                        'message_count': 0,
+                        'blog_posts': set()
+                    }
+                commenters[author.id]['message_count'] += 1
+                commenters[author.id]['blog_posts'].add(post.id)
+
+        # Find users whose posts I commented on
+        for post in other_blog_posts:
+            my_comments = post.message_ids.filtered(
+                lambda m: m.message_type == 'comment' and m.author_id.id == current_partner_id
+            )
+            if my_comments:
+                author = post.author_id
+                if author.id not in commenters:
+                    commenters[author.id] = {
+                        'partner': author,
+                        'message_count': 0,
+                        'blog_posts': set()
+                    }
+                commenters[author.id]['message_count'] += len(my_comments)
+                commenters[author.id]['blog_posts'].add(post.id)
+
+        # Convert to list for pagination
+        message_list = []
+        for commenter_data in commenters.values():
+            message_list.append({
+                'partner': commenter_data['partner'],
+                'message_count': commenter_data['message_count'],
+                'blog_post_ids': list(commenter_data['blog_posts'])
+            })
+
+        pager = request.website.pager(
+            url='/my/messages',
+            total=len(message_list),
+            page=page,
+            step=self._items_per_page,
+            scope=7
+        )
+
+        return request.render("td_website_customisation.portal_my_messages_list_view_extended", {
+            'message_ids': message_list[pager['offset']:pager['offset'] + self._items_per_page],
+            'pager': pager,
+            'page_name': 'my_messages',
+            'breadcrumb': [('/my/home', 'Inicio'), ('/my/messages', 'Mis Mensajes')],
+        })
+
+    @http.route(['/my/messages/thread/<int:partner_id>'], type='http', auth="user", website=True, csrf=True)
+    def portal_messages_thread(self, partner_id, **kwargs):
+        """
+        Show conversation between current user and selected partner
+        """
+        current_partner_id = request.env.user.partner_id.id
+        other_partner = request.env['res.partner'].sudo().browse(partner_id)
+        blog_blog_id = self._get_community_id()
+
+        # Get all blog posts in Comunidad
+        all_comunidad_posts = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            '|',
+            ('author_id', '=', current_partner_id),
+            ('author_id', '=', partner_id)
+        ])
+
+        # Collect all messages between these two users
+        all_messages = request.env['mail.message']
+        for post in all_comunidad_posts:
+            messages = post.message_ids.filtered(
+                lambda m: m.message_type == 'comment' and
+                          m.author_id.id in [current_partner_id, partner_id]
+            ).sorted('create_date')
+            all_messages |= messages
+
+        return request.render("td_website_customisation.portal_my_messages_thread_view", {
+            'messages': all_messages,
+            'other_partner': other_partner,
+            'current_partner': request.env.user.partner_id,
+            'page_name': 'my_messages',
+            'breadcrumb': [
+                ('/my/home', 'Inicio'),
+                ('/my/messages', 'Mis Mensajes'),
+                ('#', other_partner.name)
+            ],
+        })
+
+    @http.route(['/my/messages/send'], type='json', auth="user", methods=['POST'])
+    def post_message_send(self, body, parent_message_id=False, blog_post_id=False, other_partner_id=False, **kwargs):
+        """
+        Send a new message or reply to existing message
+        """
+        try:
+            current_partner_id = request.env.user.partner_id.id
+            blog_blog_id = self._get_community_id()
+
+            # Determine which blog post to comment on
+            if blog_post_id:
+                # Reply to specific message on specific blog
+                blog_post = request.env['blog.post'].sudo().browse(int(blog_post_id))
+            else:
+                # New message - find appropriate blog post
+                # First try current user's blog post
+                blog_post = request.env['blog.post'].sudo().search([
+                    ('blog_id', '=', blog_blog_id.id),
+                    ('author_id', '=', current_partner_id)
+                ], limit=1)
+
+                # If no blog post exists, try other user's blog post
+                if not blog_post and other_partner_id:
+                    blog_post = request.env['blog.post'].sudo().search([
+                        ('blog_id', '=', blog_blog_id.id),
+                        ('author_id', '=', int(other_partner_id))
+                    ], limit=1)
+
+            if not blog_post:
+                return {'error': 'No se encontró un blog post para comentar'}
+
+            # Post the message
+            message_vals = {
+                'body': body,
+                'message_type': 'comment',
+                'subtype_xmlid': 'mail.mt_comment',
+                'author_id': current_partner_id,
+            }
+
+            if parent_message_id:
+                message_vals['parent_id'] = int(parent_message_id)
+
+            new_message = blog_post.sudo().message_post(**message_vals)
+
+            return {
+                'success': True,
+                'message_id': new_message.id
+            }
+
+        except Exception as e:
+            return {'error': str(e)}
+  
+and yes alaso we nees to change count in this template also
+
+which is display the total number of count
+ <template id="portal_my_home_blogs" inherit_id="portal.portal_my_home" name="Portal My Home Blogs"
+              customize_show="True">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <!--                <t t-set="title">Blogs</t>-->
+                <t t-set="title">Perfil Público</t>
+                <t t-set="url" t-value="'/my/blogs'"/>
+                <t t-set="placeholder_count" t-value="'blogs_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mensajes</t>
+                <t t-set="url" t-value="'/my/messages'"/>
+                <t t-set="placeholder_count" t-value="'message_count'"/>
+            </t>
+        </xpath>
+    </template>    
+            
+            
+--------------------
+but in this
+- when we reply particular msg then still not identify that which msg you replying , IN the watsup how can we reply of particular msg then we can identify that we are replying to particular that msg i want that functionality
+- when we gather the msg suppose i am singin as an admin user and gather the msg from thier bolgs then only take msg which is not send by admin bcoz in this what happen the msg in admin's blog which is send by the admin in that we coudn't identify that to whome admin is send msg that's why here we develop this module are you understand what i want to say? see below
+first find that blog.bog which is 'comunidad' suppose that blog.blog id is 5 then 
+self.env['blog.post'].search([('blog_id','=',5),('author_id','=',current_user_id)])
+when we add above domain and gather the msg then gather only msg which have not send by the current_user_id from the inside blog
+inside when we gather the msg from te blog then only take msg in which mail.message notified_partner_ids is exist , i said only this when you gather content from loged user's itselfs blog only , when admin user is login and it reply any msg from the demo user's portal template then that msg shold be visible 
+- and i also face one problem i m sign in to admin user and when send msg from any user template then in sender admin come and in reciever demo come in backend in record why????
+- make sure when i am login as user A and open a remplate of user B and msg from that temmplate then in the backend when record is create then in the sender should be A come and in recivere sender B come and this should be dynamically and we have to mnage it only for the our portal msg temlate that we currently customise and makae sure base flow of any other messge not affect
+
+
+
+and plz give description only give updated code 
+and give seprate file for each py , js and xml and css
+
+----------------------
+after that you give me this code see below 
+
+# -*- coding: utf-8 -*-
+from odoo import http
+from odoo.http import request
+from odoo.addons.wb_portal_blogs.controllers.controllers import CustomerPortalBlogsController
+
+
+class PortalMessagesExtended(CustomerPortalBlogsController):
+
+    @http.route(['/my/messages', '/my/messages/page/<int:page>'], auth='user', website=True)
+    def myMessagesListView(self, page=1, **kw):
+        current_partner_id = request.env.user.partner_id.id
+        blog_blog_id = self._get_community_id()
+
+        my_blog_post = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '=', current_partner_id)
+        ], limit=1)
+
+        other_blog_posts = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '!=', current_partner_id)
+        ])
+
+        commenters = {}
+
+        if my_blog_post:
+            comments = my_blog_post.message_ids.filtered(
+                lambda m: m.message_type == 'comment' and 
+                          m.author_id.id != current_partner_id and
+                          current_partner_id in m.notified_partner_ids.ids
+            )
+            for comment in comments:
+                author = comment.author_id
+                if author.id not in commenters:
+                    commenters[author.id] = {
+                        'partner': author,
+                        'message_count': 0
+                    }
+                commenters[author.id]['message_count'] += 1
+
+        for post in other_blog_posts:
+            my_comments = post.message_ids.filtered(
+                lambda m: m.message_type == 'comment' and m.author_id.id == current_partner_id
+            )
+            if my_comments:
+                author = post.author_id
+                if author.id not in commenters:
+                    commenters[author.id] = {
+                        'partner': author,
+                        'message_count': 0
+                    }
+                commenters[author.id]['message_count'] += len(my_comments)
+
+        message_list = [{'partner': data['partner'], 'message_count': data['message_count']} 
+                       for data in commenters.values()]
+
+        pager = request.website.pager(
+            url='/my/messages',
+            total=len(message_list),
+            page=page,
+            step=self._items_per_page,
+            scope=7
+        )
+
+        return request.render("td_website_customisation.portal_my_messages_list_view_extended", {
+            'message_ids': message_list[pager['offset']:pager['offset'] + self._items_per_page],
+            'pager': pager,
+            'page_name': 'my_messages',
+            'breadcrumb': [('/my/home', 'Inicio'), ('/my/messages', 'Mis Mensajes')],
+        })
+
+    @http.route(['/my/messages/thread/<int:partner_id>'], type='http', auth="user", website=True, csrf=True)
+    def portal_messages_thread(self, partner_id, **kwargs):
+        current_partner_id = request.env.user.partner_id.id
+        other_partner = request.env['res.partner'].sudo().browse(partner_id)
+        blog_blog_id = self._get_community_id()
+
+        my_blog_post = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '=', current_partner_id)
+        ], limit=1)
+
+        other_blog_post = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '=', partner_id)
+        ], limit=1)
+
+        all_messages = request.env['mail.message']
+        
+        if my_blog_post:
+            my_blog_messages = my_blog_post.message_ids.filtered(
+                lambda m: m.message_type == 'comment' and
+                          m.author_id.id in [current_partner_id, partner_id]
+            )
+            all_messages |= my_blog_messages
+
+        if other_blog_post:
+            other_blog_messages = other_blog_post.message_ids.filtered(
+                lambda m: m.message_type == 'comment' and
+                          m.author_id.id in [current_partner_id, partner_id]
+            )
+            all_messages |= other_blog_messages
+
+        all_messages = all_messages.sorted('create_date')
+
+        return request.render("td_website_customisation.portal_my_messages_thread_view", {
+            'messages': all_messages,
+            'other_partner': other_partner,
+            'current_partner': request.env.user.partner_id,
+            'my_blog_post': my_blog_post,
+            'other_blog_post': other_blog_post,
+            'page_name': 'my_messages',
+            'breadcrumb': [
+                ('/my/home', 'Inicio'),
+                ('/my/messages', 'Mis Mensajes'),
+                ('#', other_partner.name)
+            ],
+        })
+
+    @http.route(['/my/messages/send'], type='json', auth="user", methods=['POST'])
+    def post_message_send(self, body, parent_message_id=False, blog_post_id=False, other_partner_id=False, **kwargs):
+        try:
+            current_partner_id = request.env.user.partner_id.id
+            blog_post = request.env['blog.post'].sudo().browse(int(blog_post_id))
+
+            if not blog_post:
+                return {'error': 'No se encontró el blog post'}
+
+            message_vals = {
+                'body': body,
+                'message_type': 'comment',
+                'subtype_xmlid': 'mail.mt_comment',
+                'author_id': current_partner_id,
+                'partner_ids': [(4, int(other_partner_id))]
+            }
+
+            if parent_message_id:
+                message_vals['parent_id'] = int(parent_message_id)
+
+            new_message = blog_post.sudo().message_post(**message_vals)
+
+            return {
+                'success': True,
+                'message_id': new_message.id
+            }
+
+        except Exception as e:
+            return {'error': str(e)}
+
+
+class CustomerPortalBlogsInherit(CustomerPortalBlogsController):
+
+    def _prepare_home_portal_values(self, counters):
+        values = super(CustomerPortalBlogsInherit, self)._prepare_home_portal_values(counters)
+        
+        if 'message_count' in counters:
+            current_partner_id = request.env.user.partner_id.id
+            blog_blog_id = request.env['blog.post'].blog_id.sudo().search([('name', 'ilike', 'comunidad')], limit=1)
+
+            my_blog_post = request.env['blog.post'].sudo().search([
+                ('blog_id', '=', blog_blog_id.id),
+                ('author_id', '=', current_partner_id)
+            ], limit=1)
+
+            other_blog_posts = request.env['blog.post'].sudo().search([
+                ('blog_id', '=', blog_blog_id.id),
+                ('author_id', '!=', current_partner_id)
+            ])
+
+            unique_partners = set()
+
+            if my_blog_post:
+                comments = my_blog_post.message_ids.filtered(
+                    lambda m: m.message_type == 'comment' and 
+                              m.author_id.id != current_partner_id and
+                              current_partner_id in m.notified_partner_ids.ids
+                )
+                unique_partners.update(comments.mapped('author_id.id'))
+
+            for post in other_blog_posts:
+                my_comments = post.message_ids.filtered(
+                    lambda m: m.message_type == 'comment' and m.author_id.id == current_partner_id
+                )
+                if my_comments:
+                    unique_partners.add(post.author_id.id)
+
+            values['message_count'] = len(unique_partners)
+
+        return values
+        
+        
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_messages_list_view_extended" name="My Messages List Extended">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mensajes</t>
+            </t>
+
+            <t t-if="not message_ids">
+                <div class="alert alert-info">
+                    <p>No tienes conversaciones aún.</p>
+                </div>
+            </t>
+
+            <t t-if="message_ids" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Correo</th>
+                        <th>Mensajes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="message_ids" t-as="item">
+                        <tr>
+                            <td>
+                                <a t-attf-href="/my/messages/thread/#{item['partner'].id}">
+                                    <t t-esc="item['partner'].name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="item['partner'].email or 'N/A'"/>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">
+                                    <t t-esc="item['message_count']"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_messages_thread_view" name="Messages Thread View">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-comments me-2"/>
+                                    Conversación con <t t-esc="other_partner.name"/>
+                                </h4>
+                            </div>
+                            <div class="card-body p-4 message-container" id="messageContainer">
+                                <t t-if="not messages">
+                                    <p class="text-muted text-center">No hay mensajes en esta conversación.</p>
+                                </t>
+                                <t t-else="">
+                                    <t t-foreach="messages" t-as="msg">
+                                        <t t-set="is_mine" t-value="msg.author_id.id == current_partner.id"/>
+                                        <t t-set="replied_to" t-value="msg.parent_id"/>
+
+                                        <div t-attf-class="message-item mb-3 d-flex #{('justify-content-end' if is_mine else 'justify-content-start')}"
+                                             t-att-data-message-id="msg.id">
+                                            <div t-attf-class="message-bubble p-3 rounded #{('bg-primary text-white' if is_mine else 'bg-light')}"
+                                                 style="max-width: 70%;">
+                                                
+                                                <t t-if="replied_to">
+                                                    <div t-attf-class="reply-reference p-2 mb-2 rounded #{('bg-white bg-opacity-25' if is_mine else 'bg-secondary bg-opacity-10')}">
+                                                        <small>
+                                                            <i class="fa fa-reply me-1"/>
+                                                            Respondió a: <strong t-esc="replied_to.author_id.name"/>
+                                                        </small>
+                                                        <div class="small" t-raw="replied_to.body[:100] + '...' if len(replied_to.body) > 100 else replied_to.body"/>
+                                                    </div>
+                                                </t>
+
+                                                <div>
+                                                    <strong>
+                                                        <t t-esc="msg.author_id.name"/>
+                                                    </strong>
+                                                    <div class="mt-2 message-body" t-raw="msg.body"/>
+                                                    <small t-attf-class="d-block mt-2 #{('text-white-50' if is_mine else 'text-muted')}">
+                                                        <t t-esc="msg.date" t-options="{'widget': 'datetime'}"/>
+                                                    </small>
+                                                </div>
+
+                                                <t t-if="not is_mine">
+                                                    <button class="btn btn-sm btn-outline-secondary mt-2 reply-btn"
+                                                            t-att-data-message-id="msg.id"
+                                                            t-att-data-blog-id="msg.res_id"
+                                                            t-att-data-author-name="msg.author_id.name"
+                                                            t-att-data-message-preview="msg.body[:50]">
+                                                        <i class="fa fa-reply me-1"/>
+                                                        Responder
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="alert alert-info mb-3 d-none" id="replyIndicator">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <i class="fa fa-reply me-2"/>
+                                            <strong>Respondiendo a: <span id="replyToName"></span></strong>
+                                            <div class="small mt-1 text-muted" id="replyToPreview"></div>
+                                        </div>
+                                        <button type="button" class="btn-close" id="cancelReply" aria-label="Close"></button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Escribe un mensaje:</label>
+                                    <textarea class="form-control" id="messageText" rows="3"
+                                              placeholder="Escribe tu mensaje aquí..."></textarea>
+                                </div>
+                                <button class="btn btn-primary" id="sendMessage">
+                                    <i class="fa fa-send me-1"></i>
+                                    Enviar Mensaje
+                                </button>
+
+                                <input type="hidden" id="parentMessageId" value=""/>
+                                <input type="hidden" id="myBlogPostId" t-att-value="my_blog_post.id if my_blog_post else ''"/>
+                                <input type="hidden" id="otherBlogPostId" t-att-value="other_blog_post.id if other_blog_post else ''"/>
+                                <input type="hidden" id="otherPartnerId" t-att-value="other_partner.id"/>
+                                <input type="hidden" id="currentPartnerId" t-att-value="current_partner.id"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
+
+
+odoo.define('td_website_customisation.portal_messages', function (require) {
+'use strict';
+
+var publicWidget = require('web.public.widget');
+var rpc = require('web.rpc');
+var core = require('web.core');
+var _t = core._t;
+
+var PortalMessagesWidget = publicWidget.Widget.extend({
+    selector: '.container.my-4',
+    events: {
+        'click .reply-btn': '_onReplyClick',
+        'click #sendMessage': '_onSendMessage',
+        'click #cancelReply': '_onCancelReply',
+    },
+
+    start: function () {
+        this._super.apply(this, arguments);
+        this._scrollToBottom();
+        return Promise.resolve();
+    },
+
+    _onReplyClick: function (ev) {
+        ev.preventDefault();
+        var $btn = $(ev.currentTarget);
+        var messageId = $btn.data('message-id');
+        var blogId = $btn.data('blog-id');
+        var authorName = $btn.data('author-name');
+        var messagePreview = $btn.data('message-preview');
+
+        $('#replyToName').text(authorName);
+        $('#replyToPreview').html(messagePreview + '...');
+        $('#replyIndicator').removeClass('d-none');
+        $('#parentMessageId').val(messageId);
+
+        $('#messageText').focus();
+        $('html, body').animate({
+            scrollTop: $('#messageText').offset().top - 100
+        }, 500);
+    },
+
+    _onCancelReply: function (ev) {
+        ev.preventDefault();
+        this._resetReplyForm();
+    },
+
+    _onSendMessage: function (ev) {
+        ev.preventDefault();
+        var self = this;
+        var body = $('#messageText').val().trim();
+        var parentMessageId = $('#parentMessageId').val();
+        var otherPartnerId = $('#otherPartnerId').val();
+        var currentPartnerId = $('#currentPartnerId').val();
+        var myBlogPostId = $('#myBlogPostId').val();
+        var otherBlogPostId = $('#otherBlogPostId').val();
+
+        if (!body) {
+            this._showAlert('Por favor escribe un mensaje', 'warning');
+            return;
+        }
+
+        var blogPostId = parentMessageId ? 
+            this._getBlogIdFromMessage(parentMessageId) : 
+            (myBlogPostId || otherBlogPostId);
+
+        $('#sendMessage').prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i>Enviando...');
+
+        rpc.query({
+            route: '/my/messages/send',
+            params: {
+                body: body,
+                parent_message_id: parentMessageId || false,
+                blog_post_id: blogPostId,
+                other_partner_id: parseInt(otherPartnerId)
+            }
+        }).then(function (result) {
+            if (result.success) {
+                window.location.reload();
+            } else {
+                self._showAlert(result.error || 'Error al enviar el mensaje', 'danger');
+                $('#sendMessage').prop('disabled', false).html('<i class="fa fa-send me-1"></i>Enviar Mensaje');
+            }
+        }).catch(function (error) {
+            console.error('Error sending message:', error);
+            self._showAlert('Error al enviar el mensaje. Por favor intenta de nuevo.', 'danger');
+            $('#sendMessage').prop('disabled', false).html('<i class="fa fa-send me-1"></i>Enviar Mensaje');
+        });
+    },
+
+    _getBlogIdFromMessage: function (messageId) {
+        var $messageDiv = $('.message-item[data-message-id="' + messageId + '"]');
+        return $messageDiv.find('.reply-btn').data('blog-id');
+    },
+
+    _resetReplyForm: function () {
+        $('#replyIndicator').addClass('d-none');
+        $('#parentMessageId').val('');
+    },
+
+    _scrollToBottom: function () {
+        var container = $('#messageContainer');
+        if (container.length) {
+            container.scrollTop(container[0].scrollHeight);
+        }
+    },
+
+    _showAlert: function (message, type) {
+        var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+                        message +
+                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                        '</div>';
+        $('.card-footer').prepend(alertHtml);
+
+        setTimeout(function() {
+            $('.alert').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 5000);
+    }
+});
+
+publicWidget.registry.portalMessages = PortalMessagesWidget;
+
+return PortalMessagesWidget;
+});
+
+
+.message-container {
+    max-height: 600px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.message-bubble {
+    word-wrap: break-word;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.message-bubble.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.reply-reference {
+    border-left: 3px solid currentColor;
+    font-size: 0.9em;
+}
+
+.message-body img {
+    max-width: 100%;
+    height: auto;
+}
+
+#replyIndicator {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-item {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .message-bubble {
+        max-width: 85% !important;
+    }
+}
+
+
+
+but in this also i face same problem
+still below 2 point is not work
+
+but in this
+- when we reply particular msg then still not identify that which msg you replying , IN the watsup how can we reply of particular msg then we can identify that we are replying to particular that msg i want that functionaliry
+- when we gather the msg suppose i am singin as an admin user and gather the msg from thier bolgs then only take msg which is not send by admin bcoz in this what happen the msg in admin's blog which is send by the admin in that we coudn't identify that to whome admin is send msg that's why here we develop this module are you understand what i want to say? see below
+first find that blog.bog which is 'comunidad' suppose that blog.blog id is 5 then 
+self.env['blog.post'].search([('blog_id','=',5),('author_id','=',current_user_id)])
+when we add above domain and gather the msg then gather only msg which have not send by the current_user_id from the inside blog
+
+
+
+
+when you reply particular msg then it not indicate particular that msg suppose demo user send three msg 
+1]hii
+2]hellow
+3]how are you
+and if admin user want to send the hellow repply when you click reply then text come ok that you replay particular that msg but when you reply then in the reply msg that msg not come why???
+
+and this is not work
+- when we gather the msg suppose i am singin as an admin user and gather the msg from thier bolgs then only take msg which is not send by admin bcoz in this what happen the msg in admin's blog which is send by the admin in that we coudn't identify that to whome admin is send msg that's why here we develop this module are you understand what i want to say? see below
+first find that blog.bog which is 'comunidad' suppose that blog.blog id is 5 then 
+current_blog = self.env['blog.post'].search([('blog_id','=',5),('author_id','=',current_user_id)])
+when we find msgs from the current_blog then only take the blog in which author_id is not current_user_id , currently it is not work whyyy?
+
+
+
+and only give code not description plzzzzzzz
+the code you recently provide from that what happen below point is work
+
+- when we gather the msg suppose i am singin as an admin user and gather the msg from thier bolgs then only take msg which is not send by admin bcoz in this what happen the msg in admin's blog which is send by the admin in that we coudn't identify that to whome admin is send msg that's why here we develop this module are you understand what i want to say? see below
+first find that blog.bog which is 'comunidad' suppose that blog.blog id is 5 then 
+self.env['blog.post'].search([('blog_id','=',5),('author_id','=',current_user_id)])
+when we add above domain and gather the msg then gather only msg which have not send by the current_user_id from the inside blog
+
+
+
+but currently what happen when I am signin as an admin user and when i open the test user blog then all other user comment also display suppose there are two user in system and user1 annd user2 and they both are comment on the admin's blog then , when i open user1's msg template then in that user2's comment also come why? 
+
+
+and below point not work proper
+when you reply particular msg then it not indicate particular that msg suppose demo user send three msg 
+1]hii
+2]hellow
+3]how are you
+and if admin user want to send the hellow repply when you click reply then text come ok that you replay particular that msg but when you reply then in the reply msg that msg not come why???
+
+
+
+I give you above explanation after you give me this code see
+
+------------------------------------------------------------------
+# -*- coding: utf-8 -*-
+from odoo import http
+from odoo.http import request
+from odoo.addons.wb_portal_blogs.controllers.controllers import CustomerPortalBlogsController
+from odoo.addons.portal.controllers.portal import CustomerPortal
+
+
+class PortalMessagesExtended(CustomerPortalBlogsController):
+
+    @http.route(['/my/messages', '/my/messages/page/<int:page>'], auth='user', website=True)
+    def myMessagesListView(self, page=1, **kw):
+        current_partner = request.env.user.partner_id
+        blog_blog_id = self._get_community_id()
+
+        # Get current user's blog post
+        my_blog_post = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '=', current_partner.id)
+        ], limit=1)
+
+        # Other users' blog posts
+        other_blog_posts = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '!=', current_partner.id)
+        ])
+
+        commenters = {}
+
+        # 1️⃣ Messages in current user's blog
+        if my_blog_post:
+            for msg in my_blog_post.message_ids.filtered(lambda m: m.message_type == 'comment'):
+                if msg.author_id != current_partner:
+                    # Messages from others
+                    if msg.author_id.id not in commenters:
+                        commenters[msg.author_id.id] = {'partner': msg.author_id, 'message_count': 0}
+                    commenters[msg.author_id.id]['message_count'] += 1
+                elif msg.author_id == current_partner and msg.partner_ids:
+                    # Messages sent by current user to others
+                    for partner in msg.partner_ids:
+                        if partner.id not in commenters:
+                            commenters[partner.id] = {'partner': partner, 'message_count': 0}
+                        commenters[partner.id]['message_count'] += 1
+
+        print('before commenters : ', commenters)
+
+        # 2️⃣ Messages in others' blogs where current user commented
+        for post in other_blog_posts:
+            for msg in post.message_ids.filtered(
+                    lambda m: m.message_type == 'comment' and m.author_id == current_partner):
+                author = post.author_id
+                if author.id not in commenters:
+                    commenters[author.id] = {'partner': author, 'message_count': 0}
+                commenters[author.id]['message_count'] += 1
+
+        # Convert to list
+        message_list = [{'partner': data['partner'], 'message_count': data['message_count']}
+                        for data in commenters.values()]
+
+        # Optional: sort by message count descending
+        message_list.sort(key=lambda x: x['message_count'], reverse=True)
+
+        pager = request.website.pager(
+            url='/my/messages',
+            total=len(message_list),
+            page=page,
+            step=self._items_per_page,
+            scope=7
+        )
+
+        return request.render("td_website_customisation.portal_my_messages_list_view_extended", {
+            'message_ids': message_list[pager['offset']:pager['offset'] + self._items_per_page],
+            'pager': pager,
+            'page_name': 'my_messages',
+            'breadcrumb': [('/my/home', 'Inicio'), ('/my/messages', 'Mis Mensajes')],
+        })
+
+    @http.route(['/my/messages/thread/<int:partner_id>'], type='http', auth="user", website=True, csrf=True)
+    def portal_messages_thread(self, partner_id, **kwargs):
+        current_partner_id = request.env.user.partner_id.id
+        other_partner = request.env['res.partner'].sudo().browse(partner_id)
+        blog_blog_id = self._get_community_id()
+
+        my_blog_post = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '=', current_partner_id)
+        ], limit=1)
+
+        other_blog_post = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '=', partner_id)
+        ], limit=1)
+
+        all_messages = request.env['mail.message']
+
+        if my_blog_post:
+            print('my_blog_post : ',my_blog_post ,'name : ',my_blog_post.name)
+            for data in my_blog_post.message_ids:
+                print('data : ',data)
+            # my_blog_messages = my_blog_post.message_ids.filtered(
+            #     lambda m: (
+            #             m.message_type == 'comment' and
+            #             (
+            #                     m.author_id.id != current_partner_id or
+            #                     (m.author_id.id == current_partner_id and m.partner_ids and other_partner.id in m.partner_ids.ids)
+            #             )
+            #     )
+            # )
+            my_blog_messages = my_blog_post.message_ids.filtered(
+                lambda m: (
+                        m.message_type == 'comment' and (
+                    # Case 1: message sent by current user to other partner
+                        (
+                                    m.author_id.id == current_partner_id and m.partner_ids and other_partner.id in m.partner_ids.ids)
+                        or
+                        # Case 2: message sent by the other partner (received message)
+                        (m.author_id.id == other_partner.id)
+                )
+                )
+            )
+            all_messages |= my_blog_messages
+
+        if other_blog_post:
+            other_blog_messages = other_blog_post.message_ids.filtered(
+                lambda m: m.message_type == 'comment' and
+                          m.author_id.id == current_partner_id
+            )
+            all_messages |= other_blog_messages
+
+        all_messages = all_messages.sorted('create_date')
+
+        return request.render("td_website_customisation.portal_my_messages_thread_view", {
+            'messages': all_messages,
+            'other_partner': other_partner,
+            'current_partner': request.env.user.partner_id,
+            'my_blog_post': my_blog_post,
+            'other_blog_post': other_blog_post,
+            'page_name': 'my_messages',
+            'breadcrumb': [
+                ('/my/home', 'Inicio'),
+                ('/my/messages', 'Mis Mensajes'),
+                ('#', other_partner.name)
+            ],
+        })
+
+    @http.route(['/my/messages/send'], type='json', auth="user", methods=['POST'])
+    def post_message_send(self, body, parent_message_id=False, blog_post_id=False, other_partner_id=False, **kwargs):
+        try:
+            current_partner_id = request.env.user.partner_id.id
+            blog_post = request.env['blog.post'].sudo().browse(int(blog_post_id))
+
+            if not blog_post:
+                return {'error': 'No se encontró el blog post'}
+
+            message_vals = {
+                'body': body,
+                'message_type': 'comment',
+                'subtype_xmlid': 'mail.mt_comment',
+                'author_id': current_partner_id,
+                'partner_ids': [int(other_partner_id)],
+            }
+
+            if parent_message_id:
+                message_vals['parent_id'] = int(parent_message_id)
+
+            new_message = blog_post.with_context(mail_create_nosubscribe=True).sudo().message_post(**message_vals)
+
+            return {
+                'success': True,
+                'message_id': new_message.id
+            }
+
+        except Exception as e:
+            return {'error': str(e)}
+
+
+class CustomerPortalBlogsInherit(CustomerPortal):
+
+    def _get_community_id(self):
+        BlogPost = request.env['blog.post'].sudo()
+        return BlogPost.blog_id.search([('name', 'ilike', 'comunidad')], limit=1)
+
+    def _prepare_home_portal_values(self, counters):
+        values = super(CustomerPortalBlogsInherit, self)._prepare_home_portal_values(counters)
+        current_partner = request.env.user.partner_id
+        blog_blog_id = self._get_community_id()
+
+        if 'message_count' in counters:
+            # 1️⃣ Current user's blog
+            my_blog_post = request.env['blog.post'].sudo().search([
+                ('blog_id', '=', blog_blog_id.id),
+                ('author_id', '=', current_partner.id)
+            ], limit=1)
+
+            # 2️⃣ Other users' blogs
+            other_blog_posts = request.env['blog.post'].sudo().search([
+                ('blog_id', '=', blog_blog_id.id),
+                ('author_id', '!=', current_partner.id)
+            ])
+
+            total_count = 0
+
+            # Messages in current user's blog
+            if my_blog_post:
+                for msg in my_blog_post.message_ids.filtered(lambda m: m.message_type == 'comment'):
+                    if msg.author_id != current_partner:
+                        total_count += 1
+                    elif msg.author_id == current_partner and msg.partner_ids:
+                        total_count += len(msg.partner_ids)
+                    else:
+                        print('>> msg.author_id : ',msg.author_id.name , 'msg.partner_ids : ',msg.partner_ids)
+
+            print('total_count : ',total_count)
+
+            # Messages in others' blogs where current user commented
+            for post in other_blog_posts:
+                for msg in post.message_ids.filtered(lambda m: m.message_type == 'comment' and m.author_id == current_partner):
+                    total_count += 1
+
+            values['message_count'] = total_count
+
+        return values
+
+// td_website_customisation/static/src/js/portal_messages.js
+odoo.define('td_website_customisation.portal_messages', function (require) {
+'use strict';
+
+var publicWidget = require('web.public.widget');
+var rpc = require('web.rpc');
+var core = require('web.core');
+var _t = core._t;
+
+var PortalMessagesWidget = publicWidget.Widget.extend({
+    selector: '.container.my-4',
+    events: {
+        'click .reply-btn': '_onReplyClick',
+        'click #sendMessage': '_onSendMessage',
+        'click #cancelReply': '_onCancelReply',
+    },
+
+    start: function () {
+        this._super.apply(this, arguments);
+        this._scrollToBottom();
+        return Promise.resolve();
+    },
+
+    _onReplyClick: function (ev) {
+        ev.preventDefault();
+        var $btn = $(ev.currentTarget);
+        var messageId = $btn.data('message-id');
+        var authorName = $btn.data('author-name');
+
+        var $messageDiv = $('.message-item[data-message-id="' + messageId + '"]');
+        var $messageBody = $messageDiv.find('.message-body[data-message-id="' + messageId + '"]');
+        var messageBodyHtml = $messageBody.html();
+
+        $('#replyToName').text(authorName);
+        $('#replyToPreview').html(messageBodyHtml);
+        $('#replyIndicator').removeClass('d-none');
+        $('#parentMessageId').val(messageId);
+
+        $('#messageText').focus();
+        $('html, body').animate({
+            scrollTop: $('#messageText').offset().top - 100
+        }, 500);
+    },
+
+    _onCancelReply: function (ev) {
+        ev.preventDefault();
+        this._resetReplyForm();
+    },
+
+    _onSendMessage: function (ev) {
+        ev.preventDefault();
+        var self = this;
+        var body = $('#messageText').val().trim();
+        var parentMessageId = $('#parentMessageId').val();
+        var otherPartnerId = $('#otherPartnerId').val();
+        var myBlogPostId = $('#myBlogPostId').val();
+        var otherBlogPostId = $('#otherBlogPostId').val();
+
+        if (!body) {
+            this._showAlert('Por favor escribe un mensaje', 'warning');
+            return;
+        }
+
+        var blogPostId;
+        if (parentMessageId) {
+            var $messageDiv = $('.message-item[data-message-id="' + parentMessageId + '"]');
+            blogPostId = $messageDiv.find('.reply-btn').data('blog-id');
+        } else {
+            blogPostId = myBlogPostId || otherBlogPostId;
+        }
+
+        $('#sendMessage').prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i>Enviando...');
+
+        rpc.query({
+            route: '/my/messages/send',
+            params: {
+                body: body,
+                parent_message_id: parentMessageId || false,
+                blog_post_id: blogPostId,
+                other_partner_id: parseInt(otherPartnerId)
+            }
+        }).then(function (result) {
+            if (result.success) {
+                window.location.reload();
+            } else {
+                self._showAlert(result.error || 'Error al enviar el mensaje', 'danger');
+                $('#sendMessage').prop('disabled', false).html('<i class="fa fa-send me-1"></i>Enviar Mensaje');
+            }
+        }).catch(function (error) {
+            console.error('Error sending message:', error);
+            self._showAlert('Error al enviar el mensaje. Por favor intenta de nuevo.', 'danger');
+            $('#sendMessage').prop('disabled', false).html('<i class="fa fa-send me-1"></i>Enviar Mensaje');
+        });
+    },
+
+    _resetReplyForm: function () {
+        $('#replyIndicator').addClass('d-none');
+        $('#parentMessageId').val('');
+        $('#replyToName').text('');
+        $('#replyToPreview').html('');
+    },
+
+    _scrollToBottom: function () {
+        var container = $('#messageContainer');
+        if (container.length) {
+            setTimeout(function() {
+                container.scrollTop(container[0].scrollHeight);
+            }, 100);
+        }
+    },
+
+    _showAlert: function (message, type) {
+        var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+                        message +
+                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                        '</div>';
+        $('.card-footer').prepend(alertHtml);
+
+        setTimeout(function() {
+            $('.alert').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 5000);
+    }
+});
+
+publicWidget.registry.portalMessages = PortalMessagesWidget;
+
+return PortalMessagesWidget;
+});
+
+/* td_website_customisation/static/src/css/portal_messages.css */
+.message-container {
+    max-height: 600px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.message-bubble {
+    word-wrap: break-word;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.message-bubble.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.reply-reference {
+    border-left: 3px solid currentColor;
+    font-size: 0.85em;
+}
+
+.reply-reference .reply-body {
+    max-height: 80px;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.reply-preview {
+    word-break: break-word;
+}
+
+.message-body {
+    word-break: break-word;
+}
+
+.message-body img {
+    max-width: 100%;
+    height: auto;
+}
+
+#replyIndicator {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-item {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .message-bubble {
+        max-width: 85% !important;
+    }
+}
+/* td_website_customisation/static/src/css/portal_messages.css - ADD THIS */
+
+.reply-body-text {
+    max-height: 80px;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.reply-body-text p {
+    margin: 0;
+}
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_messages_list_view_extended" name="My Messages List Extended">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mensajes</t>
+            </t>
+
+            <t t-if="not message_ids">
+                <div class="alert alert-info">
+                    <p>No tienes conversaciones aún.</p>
+                </div>
+            </t>
+
+            <t t-if="message_ids" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Correo</th>
+                        <th>Mensajes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="message_ids" t-as="item">
+                        <tr>
+                            <td>
+                                <a t-attf-href="/my/messages/thread/#{item['partner'].id}">
+                                    <t t-esc="item['partner'].name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="item['partner'].email or 'N/A'"/>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">
+                                    <t t-esc="item['message_count']"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_messages_thread_view" name="Messages Thread View">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-comments me-2"/>
+                                    Conversación con <t t-esc="other_partner.name"/>
+                                </h4>
+                            </div>
+                            <div class="card-body p-4 message-container" id="messageContainer">
+                                <t t-if="not messages">
+                                    <p class="text-muted text-center">No hay mensajes en esta conversación.</p>
+                                </t>
+                                <t t-else="">
+                                    <t t-foreach="messages" t-as="msg">
+                                        <t t-set="is_mine" t-value="msg.author_id.id == current_partner.id"/>
+                                        <t t-set="replied_to" t-value="msg.parent_id"/>
+
+                                        <div t-attf-class="message-item mb-3 d-flex #{('justify-content-end' if is_mine else 'justify-content-start')}"
+                                             t-att-data-message-id="msg.id">
+                                            <div t-attf-class="message-bubble p-3 rounded #{('bg-primary text-white ms-auto' if is_mine else 'bg-light me-auto')}"
+                                                 style="max-width: 70%;">
+
+                                                <!-- td_website_customisation/views/portal_messages_templates.xml - ONLY CHANGES -->
+
+                                                <t t-if="replied_to">
+                                                    <div t-attf-class="reply-reference p-2 mb-2 rounded #{('bg-white bg-opacity-25' if is_mine else 'bg-secondary bg-opacity-10')}"
+                                                         t-att-data-parent-id="replied_to.id">
+                                                        <small class="d-block mb-1">
+                                                            <i class="fa fa-reply me-1"/>
+                                                            Respondiendo a <strong t-esc="replied_to.author_id.name"/>
+                                                        </small>
+                                                        <div class="small reply-body-text" t-field="replied_to.body"/>
+                                                    </div>
+                                                </t>
+
+                                                <div>
+                                                    <strong>
+                                                        <t t-esc="msg.author_id.name"/>
+                                                    </strong>
+                                                    <div class="mt-2 message-body" t-att-data-message-id="msg.id" t-field="msg.body"/>
+                                                    <small t-attf-class="d-block mt-2 #{('text-white-50' if is_mine else 'text-muted')}">
+                                                        <t t-esc="msg.date" t-options="{'widget': 'datetime'}"/>
+                                                    </small>
+                                                </div>
+
+                                                <t t-if="not is_mine">
+                                                    <button class="btn btn-sm btn-outline-secondary mt-2 reply-btn"
+                                                            t-att-data-message-id="msg.id"
+                                                            t-att-data-blog-id="msg.res_id"
+                                                            t-att-data-author-name="msg.author_id.name">
+                                                        <i class="fa fa-reply me-1"/>
+                                                        Responder
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="alert alert-info mb-3 d-none" id="replyIndicator">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div style="flex: 1;">
+                                            <i class="fa fa-reply me-2"/>
+                                            <strong>Respondiendo a: <span id="replyToName"></span></strong>
+                                            <div class="small mt-1 text-muted reply-preview" id="replyToPreview" style="max-height: 60px; overflow: hidden;"></div>
+                                        </div>
+                                        <button type="button" class="btn-close" id="cancelReply" aria-label="Close"></button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Escribe un mensaje:</label>
+                                    <textarea class="form-control" id="messageText" rows="3"
+                                              placeholder="Escribe tu mensaje aquí..."></textarea>
+                                </div>
+                                <button class="btn btn-primary" id="sendMessage">
+                                    <i class="fa fa-send me-1"></i>
+                                    Enviar Mensaje
+                                </button>
+
+                                <input type="hidden" id="parentMessageId" value=""/>
+                                <input type="hidden" id="myBlogPostId" t-att-value="my_blog_post.id if my_blog_post else ''"/>
+                                <input type="hidden" id="otherBlogPostId" t-att-value="other_blog_post.id if other_blog_post else ''"/>
+                                <input type="hidden" id="otherPartnerId" t-att-value="other_partner.id"/>
+                                <input type="hidden" id="currentPartnerId" t-att-value="current_partner.id"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
+
+
+but in this also face same problem for reply msg , 
+- Even I am admin user and I am send msg without reply of any msg then also in that msg reply functionality come , that should not come so solve that
+- Suppose i am admin user and I am open the msg template of user1 and user1 is send 7 msg to admin user and suppose admin wants to reply of 2nd msg then when admin click the reply button of 2nd msg then in the input come ok but when we send msg then in reply of msg 2nd msg not come another any msg come why?
+
+
+so solve above two issue 
+only give me the updated code in which i have to make change annd give seprate file of changing file like .py,.js,.xml,etc
+and plz don't give description only give me updated code in which i have to make changes and new code if i have to add anything
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------
+- How the Msg portal is work 
+1] Suppose I am sign in as an admin user then first find that for the admin we are finding that 
+first find that blog.bog which is 'comunidad' suppose that blog.blog id is 5 then 
+is_post_exist_with_comunidad_blog_page = self.env['blog.post'].search([('blog_id','=',5),('author_id','=',current_user_id)])
+if is_post_exist_with_comunidad_blog_page is exist then we are check for that blog post which which user is comment on that post , rather then the login user we take all user and display in the msg portal form view , suppose admin have one blog post in 'comunidad' blog.blog page and user1 , user2 , user3 have msg in that , then in msg portal list view we display that 3 users's record ,
+now when admin open user1's form view from msg list view then in that we display the comment of user1 of particular admin's blog post we didn't display the comment which is do by the current user from iside the blog.post but we display msg which is done by the current user inside the msg portal form view , so here when i open user1's form msg template then in that we display the msg which is comment by the user1 inside the blog of current user and also msg that is send by user1 inside the form msg porta , but we only consider current user msg that is send by the current user inside the msg portal form view and not consider msg that is send inside the blog.post and see for current user msg what we apply domain here see
+
+ @http.route(['/my/messages/thread/<int:partner_id>'], type='http', auth="user", website=True, csrf=True)
+    def portal_messages_thread(self, partner_id, **kwargs):
+        current_partner_id = request.env.user.partner_id.id
+        other_partner = request.env['res.partner'].sudo().browse(partner_id)
+        blog_blog_id = self._get_community_id()
+
+        my_blog_post = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '=', current_partner_id)
+        ], limit=1)
+
+        other_blog_post = request.env['blog.post'].sudo().search([
+            ('blog_id', '=', blog_blog_id.id),
+            ('author_id', '=', partner_id)
+        ], limit=1)
+
+        all_messages = request.env['mail.message']
+
+        if my_blog_post:
+            my_blog_messages = my_blog_post.message_ids.filtered(
+                lambda m: (
+                        m.message_type == 'comment' and (
+                        (
+                                    m.author_id.id == current_partner_id and m.partner_ids and other_partner.id in m.partner_ids.ids)
+                        or
+                        (m.author_id.id == other_partner.id)
+                )
+                )
+            )
+            all_messages |= my_blog_messages
+
+        if other_blog_post:
+            other_blog_messages = other_blog_post.message_ids.filtered(
+                lambda m: m.message_type == 'comment' and
+                          m.author_id.id == current_partner_id
+            )
+            all_messages |= other_blog_messages
+
+        all_messages = all_messages.sorted('create_date')
+
+        for msg in all_messages:
+            if msg.parent_id:
+                msg.parent_id = msg.parent_id.exists()
+
+        return request.render("td_website_customisation.portal_my_messages_thread_view", {
+            'messages': all_messages,
+            'other_partner': other_partner,
+            'current_partner': request.env.user.partner_id,
+            'my_blog_post': my_blog_post,
+            'other_blog_post': other_blog_post,
+            'page_name': 'my_messages',
+            'breadcrumb': [
+                ('/my/home', 'Inicio'),
+                ('/my/messages', 'Mis Mensajes'),
+                ('#', other_partner.name)
+            ],
+        })
+
+and when current login user is send msg to any other user's template at that time we pass here value see
+
+  @http.route(['/my/messages/send'], type='json', auth="user", methods=['POST'])
+    def post_message_send(self, body, parent_message_id=False, blog_post_id=False, other_partner_id=False,
+                          parent_body=False, **kwargs):
+        try:
+            current_partner_id = request.env.user.partner_id.id
+            blog_post = request.env['blog.post'].sudo().browse(int(blog_post_id))
+
+            if not blog_post:
+                return {'error': 'No se encontró el blog post'}
+
+            message_vals = {
+                'body': body,
+                'message_type': 'comment',
+                'subtype_xmlid': 'mail.mt_comment',
+                'author_id': current_partner_id,
+                'partner_ids': [int(other_partner_id)],
+                'is_portal_reply': bool(parent_message_id),
+            }
+
+            if parent_message_id:
+                message_vals['parent_id'] = int(parent_message_id)
+                if parent_body:
+                    message_vals['portal_reply_body'] = parent_body
+
+            new_message = blog_post.with_context(mail_create_nosubscribe=True).sudo().message_post(**message_vals)
+
+            if parent_message_id and parent_body:
+                new_message.sudo().write({'portal_reply_body': parent_body})
+
+            return {
+                'success': True,
+                'message_id': new_message.id
+            }
+
+        except Exception as e:
+            return {'error': str(e)}
+            
+so if current user is reply through the msg portal then in their msg record partner_ids is exist and if the current user is msg in their own blog.post then in that partner_ids not exist
+
+2] and after that we check that the other bolg post of 'comunidad' blog.blog , which is not of current login user but , current user is comment on that then , suppose user1 and user4's post current login user is commented then in the list view check oth user's record exist in list view in our case user1 is exist so for that add the comment of current user's login which is do current user login in user1's post and user4 is not exist so for  that add user4's record in list view and sfter that in the form view of user4 add the comment of current user's login which is do current user login in user4's post
+
+
+so above is how we maintain list view and for the msg and the form view record
+
+
+
+
+1. Unread Count Logic:
+Based on your new message system where conversations are per user (not per blog post), how should unread count work?
+
+Option A: Count unread messages from a specific user across ALL their messages (in both your blog and their blog)?
+Option B: Only count unread messages in YOUR blog post?
+Option C: Count separately - unread in your blog + unread in their blog where you're conversing?
+
+ans: here  suppose I am admin user and user1 is do 2 comment on my post and i didn't see yet then in the user1's that count also include and , user1 have also record of admin in their msg portal view so from the inside portal msg template also user1 is send me msg somthing so if they send msg from there and i didn't see yet then that count also include
+
+2. Mark as Read Trigger:
+When should messages be marked as read?
+
+Option A: Automatically when user opens the thread view (/my/messages/thread/<partner_id>)?
+Option B: Only when user scrolls to view that specific message?
+Option C: When page loads completely?
+
+ans:Automatically when user opens the thread view
+and if that msg is include in the blog.post and open the blog.post then also bcoz I am current user and i have my post and three user is comment on my post then that comment is i can see in the inside blog.post and also inside the msg template of related user also
+
+
+3. Bell Notification Dropdown:
+In the bell dropdown, should it show:
+
+Option A: List of users with unread message count (e.g., "Demo User - 3 unread")?
+Option B: Individual unread messages preview?
+Option C: Just total count with "View All" link?
+
+ans:
+Option A: List of users with unread message count (e.g., "Demo User - 3 unread")?with "View" link
+suppose I am current user and i havve 5 unread msg 2 from user1 and 3 from user2 then their seorate record display and suppose i am click on the user1 then user1's msg form view template is redirect and msg mark as read
+
+
+4. Portal Home Counter:
+The "message_count" in portal home should show:
+
+Current behavior: Total messages with all users
+Should change to: Only unread messages count?
+Or keep both: "5 total (2 unread)"?
+
+ans: Or keep both: "5 total (2 unread)"?
+
+
+5. List View Display:
+
+ans:
+ separate column:
+Usuario    | Correo         | Total | No leídos
+Demo User  | demo@email.com | 10    | 3
+
+
+6. Read Status Storage:
+ans: from my above explanation i think you should get the ans of current question 
+
+
+
+if you have still any doubt then ask me and give seprate file for all .py,.js.,.css,.xml
+
+and plz don't give description
+

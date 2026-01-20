@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="client_review" name="Client Review">
+
+        <section class="client_review">
+            <div class="container-fluid">
+                <div class="row justify-content-center" id="review"/>
+            </div>
+        </section>
+
+    </template>
+
+    <!-- To be used in JS for snippet options -->
+    <template id="client_review_options" inherit_id="website.snippet_options">
+        <xpath expr="." position="inside">
+
+        </xpath>
+    </template>
+
+
+<!--    <record id="cr_case_study.client_review_000_scss" model="ir.asset">-->
+<!--        <field name="name">Client Review 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_case_study/static/src/snippets/client_review/000.scss</field>-->
+<!--    </record>-->
+
+<!--    <record id="cr_case_study.client_review_000_js" model="ir.asset">-->
+<!--        <field name="name">Client Review 000 JS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_case_study/static/src/snippets/client_review/000.js</field>-->
+<!--    </record>-->
+
+
+</odoo>
+
+

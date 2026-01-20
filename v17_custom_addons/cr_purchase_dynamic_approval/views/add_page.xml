@@ -1,0 +1,56 @@
+<odoo>
+    <record id="view_purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="approval_level_name"/>
+            </xpath>
+             <xpath expr="//page[@name='purchase_delivery_invoice']" position='after'>
+                <page string='Approval Info'>
+
+                        <div class="row mb-2">
+                            <div class="col-auto col-6">
+                                <div style="border-bottom: 1px solid #454;">
+                                    <strong>NEXT APPROVAL</strong>
+                                </div>
+                            </div>
+                            <div class="col-auto col-6">
+                                <div style="border-bottom:1px solid black;">
+                                    <strong>REJECT ORDER INFO</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <group>
+                            <group>
+
+                                <field name="next_approval_level"/>
+                                <field name="users" widget="many2many_tags"/>
+                                <field name="groups" widget="many2many_tags"/>
+                                <field name="is_boolean" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="reject_date"/>
+                                <field name="reject_by"/>
+                                <field name="reject_reason"/>
+                            </group>
+                        </group>
+                        <field name="approval_info_line_ids">
+                            <tree>
+                                    <field name="level" />
+                                    <field name="user_info" />
+                                    <field name="group_info" />
+                                    <field name="status" widget="boolean_toggle"/>
+                                    <field name="approved_date"/>
+                                    <field name="approved_by"/>
+                                    <field name="purchase_order"/>
+
+                            </tree>
+                        </field>
+                </page>
+	         </xpath>
+        </field>
+    </record>
+</odoo>

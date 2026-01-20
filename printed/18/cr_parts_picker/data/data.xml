@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="menu_parts_picker" model="website.menu">
+            <field name="name">Parts Picker</field>
+            <field name="url">/parts-picker</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">30</field>
+        </record>
+        <record id="action_open_parts_picker" model="ir.actions.act_url">
+            <field name="name">Parts Picker</field>
+            <field name="target">self</field>
+            <field name="url">/parts-picker</field>
+        </record>
+        <record id="base.open_menu" model="ir.actions.todo">
+            <field name="action_id" ref="action_open_parts_picker"/>
+            <field name="state">open</field>
+        </record>
+    </data>
+</odoo>

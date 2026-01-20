@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="cr_resource_calendar_leaves_tree" model="ir.ui.view">
+        <field name="name">cr.resource.calendar.leaves.tree</field>
+        <field name="model">resource.calendar.leaves</field>
+        <field name="inherit_id" ref="hr_holidays.resource_calendar_leaves_tree_inherit" />
+        <field name="arch" type="xml">
+            <!--NUMBER OF DAYS FOR PUBLIC HOLIDAY-->
+            <xpath expr="//tree/field[@name='date_to']" position = "after">
+                <field name='leave_days'></field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

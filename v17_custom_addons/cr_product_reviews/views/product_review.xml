@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="product_review_view_search" model="ir.ui.view">
+        <field name="name">product.review.view.search</field>
+        <field name="model">product.review</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+                <field name="customer_name"/>
+                <field name="rating"/>
+
+                <filter string="Poor" name="rating" domain="[('rating', '=','poor')]" />
+                <filter string="Fair" name="rating" domain="[('rating', '=','fair')]" />
+                <filter string="Good" name="rating" domain="[('rating', '=','good')]" />
+                <filter string="Very Good" name="rating" domain="[('rating', '=','very good')]" />
+                <filter string="Excellent" name="rating" domain="[('rating', '=','excellent')]" />
+
+            </search>
+        </field>
+    </record>
+    <record id="product_review_view_form" model="ir.ui.view">
+        <field name="name">product.review.view.form</field>
+        <field name="model">product.review</field>
+        <field name="arch" type="xml">
+            <form string="Product Review">
+                <sheet>
+                    <group>
+                        <field name="product_id"/>
+                        <field name="product_price"/>
+                        <field name="customer_name"/>
+                        <field name="rating"/>
+                        <field name="comment"/>
+                        <field name="review_date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_review_view_tree" model="ir.ui.view">
+        <field name="name">product.review.view.tree</field>
+        <field name="model">product.review</field>
+        <field name="arch" type="xml">
+            <tree string="Product Review">
+                <field name="product_id"/>
+                <field name="customer_name"/>
+                <field name="rating"/>
+                <field name="comment"/>
+                <field name="review_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_review_action" model="ir.actions.act_window">
+        <field name="name">Product Review</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.review</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="product_review_main_menu"
+              name="Product Review Module"
+              sequence="999"/>
+
+    <menuitem id="product_review_menu"
+              name="Product Review"
+              parent="product_review_main_menu"
+              action="product_review_action"
+              sequence="1"/>
+</odoo>

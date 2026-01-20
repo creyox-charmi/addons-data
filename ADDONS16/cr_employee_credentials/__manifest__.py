@@ -1,0 +1,18 @@
+{
+    "name": "cr_employee_credentials",
+    "author": "Creyox Technologies",
+    "version": "16.0.0.0",
+    "summary": "",
+    "sequence": 10,
+    "description": """""",
+    "category": "",
+    "website": "",
+    "depends": ['base', 'hr'],
+    "data": ["security/ir.model.access.csv",
+            "views/employee_credentials.xml",
+            ],
+    "demo": [],
+    "installable": True,
+    "application": True,
+    "license": "LGPL-3",
+}

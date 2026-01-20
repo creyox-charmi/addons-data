@@ -1,0 +1,876 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="case_study_detail" name="Case Study Detail">
+        <t t-call="website.layout">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"/>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+            <section class="main_page_banner">
+                <img t-att-src="case_study_main_page_banner" title="Summary" alt="Summary"/>
+            </section>
+            <t t-set="opt_blog_post_sidebar" t-value="is_view_active('cr_case_study.opt_blog_post_sidebar')"/>
+            <section class="main_page_of_case_study">
+                <section class="default_animation">
+                    <div t-if="opt_blog_post_sidebar" t-attf-class="mx-auto">
+                        <t t-call="cr_case_study.cr_case_study_main_heading"/>
+                        <div t-attf-class="d-flex flex-column flex-lg-row #{'justify-content-between'}">
+                            <div id="o_wblog_post_content" class="col-lg-8">
+                                <t t-call="cr_case_study.cr_case_study_main_details"/>
+                            </div>
+                            <div id="o_wblog_post_sidebar_col" class="col-lg-4">
+                                                        <t t-call="cr_case_study.contact_us_form"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No-Sidebar Layout -->
+                    <div t-if="not opt_blog_post_sidebar" >
+                        <t t-call="cr_case_study.cr_case_study_main_heading"/>
+                        <div class="d-flex flex-column">
+
+                            <t t-call="cr_case_study.cr_case_study_main_details"/>
+                        </div>
+                    </div>
+                    <t t-call="cr_case_study.cr_case_study_client_reviews"/>
+                </section>
+
+            </section>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                <!--                console.log('in default.......');-->
+                <!--                console.log("DOM fully loaded.");-->
+
+                // Select all elements with AOS attributes
+                let aosElements = document.querySelectorAll("[data-aos]");
+
+                // Initially hide elements so they only appear when animation starts
+                aosElements.forEach(el => {
+                el.style.opacity = "0";
+                el.style.visibility = "hidden";
+                });
+
+                // Initialize AOS
+                AOS.init({
+                duration: 1200,
+                easing: 'ease-in-out',
+                once: false, // Allow reanimation on scroll
+                mirror: false
+                });
+                <!--                console.log("AOS initialized.");-->
+
+                // Force AOS refresh to detect all elements
+                setTimeout(() => {
+                AOS.refreshHard();
+                <!--                console.log("AOS hard refresh completed.");-->
+                }, 500);
+
+                // Intersection Observer to trigger animations
+                let observer = new IntersectionObserver(
+                (entries) => {
+                entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                <!--                console.log("Element entered viewport:", entry.target);-->
+
+                // Show element only when animation starts
+                entry.target.style.opacity = "1";
+                entry.target.style.visibility = "visible";
+                entry.target.classList.add("aos-animate"); // Trigger AOS animation
+                }
+                });
+                },
+                { threshold: 0.2 } // Element must be at least 20% visible before animation starts
+                );
+
+                // Observe all AOS elements
+                aosElements.forEach(el => {
+                observer.observe(el);
+                });
+                });
+
+                // Ensure AOS refreshes after full page load
+                window.addEventListener("load", function () {
+                <!--                console.log("Window fully loaded.");-->
+                <!--                console.log('in default.......');-->
+                AOS.refreshHard(); // Ensures all animations work properly
+                <!--                console.log('in default.......');-->
+                <!--                console.log("AOS hard refresh on window load.");-->
+                });
+
+            </script>
+
+        </t>
+    </template>
+
+    <template id="cr_case_study_main_heading">
+        <section id="odoo_service_call_to_action" class="odoo_service_call_to_action aos-init aos-animate">
+            <div class="container">
+                <div class="sh_call_action_box aos-init" data-aos="fade-up">
+
+                    <h2 class="sh_title_heading" t-esc="case_study_name"></h2>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="cr_case_study_main_details">
+        <section id="cr_odoo_case_study" class="cr_odoo_case_study aos-init aos-animate">
+            <div class="container">
+
+                <div class="row">
+                    <div class="sh_service_content aos-init" data-aos="fade-right">
+                        <h2 class="sh_box_title">Summary</h2>
+                        <div class="sh_text" t-field="case.case_study_detail_description">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mobile-reverse">
+                    <div class="sh_service_content aos-init" data-aos="fade-left">
+                        <h2 class="sh_box_title">Client Challenges</h2>
+                        <div class="sh_text" t-field="case.case_study_detail_description">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="sh_service_content aos-init" data-aos="fade-right">
+                        <h2 class="sh_box_title">Solution</h2>
+                        <div class="sh_text" t-field="case.our_solution">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mobile-reverse">
+                    <div class="sh_service_content aos-init" data-aos="fade-left">
+                        <h2 class="sh_box_title">Impact</h2>
+                        <div class="sh_text" t-field="case.impact">
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </template>
+
+    <template id="cr_case_study_client_reviews">
+        <section id="client_reviews" class="client_reviews aos-init aos-animate" data-aos="fade-up">
+            <div class="container">
+                <h2 class="text-center section-title" data-aos="fade-up">Client Reviews</h2>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="review-section shadow-sm p-2 aos-init aos-animate" data-aos="fade-up">
+                            <div class="quote-icon">
+                                <i class="fa fa-quote-left"></i>
+                            </div>
+                            <div class="review-content">
+                                <div class="review-text" t-field="case.client_review"></div>
+                                <h3 class="review-author">
+                                    <strong t-field="case.name"></strong>
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+<!--<template id="contact_us_form">-->
+
+<!--    <div id="o_wblog_post_sidebar">-->
+<!--        <div class="oe_structure aos-init aos-animate" id="oe_structure_blog_post_sidebar_1" data-aos="fade-left">-->
+<!--            <section class="s_title o_colored_level pb8" data-vcss="001" data-snippet="s_title" data-name="Title" style="background-image: none; text-align: center;">-->
+<!--                <h2><font class="text-o-color-2" style="text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Contact Us</font></h2>-->
+<!--            </section>-->
+<!--            <section class="s_website_form o_colored_level pt16 pb16 mb-5 neumorphic" data-vcss="001" data-snippet="s_website_form" data-name="Form">-->
+<!--                <div class="container">-->
+<!--                    <form action="/website/form/" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-pre-fill="true" data-success-mode="redirect" data-success-page="/contactus-thank-you" data-model_name="crm.lead">-->
+<!--                        <div class="s_website_form_rows row s_col_no_bgcolor w-100 ms-0">-->
+<!--                            <div class="form-group s_website_form_field col-12 s_website_form_required s_website_form_custom" data-name="Field">-->
+<!--                                <input type="text" class="form-control s_website_form_input row s_col_no_resize s_col_no_bgcolor" name="partner_id" required="1" placeholder="Full Name*"/>-->
+<!--                            </div>-->
+<!--                            <div class="form-group s_website_form_field col-12 s_website_form_required s_website_form_custom" data-name="Field">-->
+<!--                                <input type="text" class="form-control s_website_form_input row s_col_no_resize s_col_no_bgcolor" name="email_from" required="1" placeholder="Business Email*"/>-->
+<!--                            </div>-->
+<!--                            <div class="s_website_form_field s_website_form_required col-12 s_website_form_custom" data-name="Field">-->
+<!--                                <input class="form-control s_website_form_input row s_col_no_resize s_col_no_bgcolor" type="text" name="phone" required="1" placeholder="Phone / WhatsApp *"/>-->
+<!--                            </div>-->
+<!--                            <div class="form-group s_website_form_field col-12 s_website_form_model_required s_website_form_custom" data-name="Field">-->
+<!--                                <input type="text" class="form-control s_website_form_input row s_col_no_resize s_col_no_bgcolor" name="name" required="true" placeholder="Subject*"/>-->
+<!--                            </div>-->
+<!--                            <div class="form-group s_website_form_field col-12 s_website_form_required s_website_form_custom" data-name="Field">-->
+<!--                                <textarea class="form-control s_website_form_input row s_col_no_resize s_col_no_bgcolor" name="description" required="1" placeholder="Message*" rows="3"></textarea>-->
+<!--                            </div>-->
+<!--                            <div class="col-12 mb-0 py-2 s_website_form_submit text-center">-->
+<!--                                <button type="submit" class="s_website_form_send">Send Message</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </section>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</template>-->
+
+
+
+
+
+    <template id="contact_us_form">
+            <div id="o_wblog_post_sidebar">
+                <div class="oe_structure" id="oe_structure_blog_post_sidebar_1">
+                    <section class="s_title o_colored_level pb8 pt32" data-vcss="001" data-snippet="s_title"
+                             data-name="Title" style="background-image: none;">
+                        <div class="s_allow_columns">
+                            <h2 style="text-align: center;"><font class="text-o-color-2" style="
+    text-transform: uppercase;
+">Contact ​Us</font>​
+                            </h2>
+                        </div>
+                    </section>
+                    <section class="s_website_form o_colored_level pt16 pb16 mb-5" data-vcss="001"
+                             data-snippet="s_website_form" data-name="Form"
+                             style="background-color: rgb(149, 177, 185); border-radius: 10px; background-image: none;">
+                        <div class="container">
+                            <form action="/website/form/" method="post" enctype="multipart/form-data"
+                                  class="o_mark_required" data-mark="*" data-pre-fill="true"
+                                  data-success-mode="redirect" data-success-page="/contactus-thank-you"
+                                  data-model_name="crm.lead" data-gtm-form-interact-id="0">
+                                <div class="s_website_form_rows row s_col_no_bgcolor w-100 ms-0">
+
+
+                                    <div data-visibility-condition="" data-visibility-between=""
+                                         class="form-group s_website_form_field col-12 s_website_form_required"
+                                         data-type="char" data-name="Field">
+
+
+                                        <input type="text" class="form-control s_website_form_input" name="contact_name"
+                                               required="1" placeholder="Full Name*" id="oikxlgaqy22j"
+                                               data-fill-with="name"/>
+
+
+                                        <label class="font-jr s_website_form_label d-none input-has-value"
+                                               style="width: 200px" for="oikxlgaqy22j">
+
+
+                                            <span class="s_website_form_label_content">Full Name*</span>
+
+                                            <span class="s_website_form_mark">*</span>
+
+
+                                        </label>
+                                        <span class="bar"></span>
+
+                                    </div>
+                                    <div data-visibility-condition="" data-visibility-between=""
+                                         class="form-group s_website_form_field col-12 s_website_form_required"
+                                         data-type="char" data-name="Field">
+
+
+                                        <input type="text" class="form-control s_website_form_input" name="email_from"
+                                               required="1" placeholder="Business Email*" id="ov6wcr3sny5"
+                                               data-fill-with="email"/>
+
+
+                                        <label class="font-jr s_website_form_label d-none input-has-value"
+                                               style="width: 200px" for="ov6wcr3sny5">
+
+
+                                            <span class="s_website_form_label_content">Business Email</span>
+
+                                            <span class="s_website_form_mark">*</span>
+
+
+                                        </label>
+                                        <span class="bar"></span>
+
+                                    </div>
+                                    <div data-visibility-condition="" data-visibility-between="" data-name="Field"
+                                         class="s_website_form_field mb-3 col-12" data-type="char">
+                                        <label class="s_website_form_label d-none" style="width: 200px"
+                                               for="op4dbcga11w">
+                                            <span class="s_website_form_label_content">Phone / WhatsApp</span>
+                                        </label>
+                                        <input class="form-control s_website_form_input" type="text" name="phone"
+                                               placeholder="Phone / WhatsApp" id="op4dbcga11w" data-fill-with="phone"/>
+                                    </div>
+                                    <div data-visibility-condition="" data-visibility-between=""
+                                         class="form-group s_website_form_field col-12 s_website_form_model_required"
+                                         data-type="char" data-name="Field">
+
+
+                                        <input type="text" class="form-control s_website_form_input" name="name"
+                                               required="true" value="" placeholder="Subject*" id="op4n0azejqnc"
+                                               data-fill-with="undefined"/>
+
+
+                                        <label class="font-jr s_website_form_label d-none" style="width: 200px"
+                                               for="op4n0azejqnc">
+
+
+                                            <span class="s_website_form_label_content">Subject</span>
+
+                                            <span class="s_website_form_mark">*</span>
+
+
+                                        </label>
+                                        <span class="bar"></span>
+
+                                    </div>
+                                    <div data-visibility-condition="" data-visibility-between=""
+                                         class="form-group s_website_form_field col-12 s_website_form_required"
+                                         data-type="html" data-name="Field">
+
+
+                                        <textarea class="form-control s_website_form_input" name="description"
+                                                  required="1" placeholder="Message*" id="ow7hhqzn60t"
+                                                  rows="3"></textarea>
+
+
+                                        <label class="font-jr s_website_form_label d-none" style="width: 200px"
+                                               for="ow7hhqzn60t">
+
+
+                                            <span class="s_website_form_label_content">Message</span>
+
+                                            <span class="s_website_form_mark">*</span>
+
+
+                                        </label>
+                                        <span class="bar"></span>
+
+                                    </div>
+                                    <div data-visibility-condition="" data-visibility-between=""
+                                         class="form-group s_website_form_field col-12 s_website_form_field_hidden"
+                                         data-type="many2one" data-name="Field">
+
+
+                                        <select class="form-select s_website_form_input" name="medium_id"
+                                                id="o6squr0mifm7">
+
+                                            <option value="3">Direct</option>
+
+                                            <option value="4">Email</option>
+
+                                            <option value="7">Facebook</option>
+
+                                            <option value="10">Google Adwords</option>
+
+                                            <option value="8">LinkedIn</option>
+
+                                            <option value="2">Phone</option>
+
+                                            <option value="14">Skype</option>
+
+                                            <option value="6">Twitter</option>
+
+                                            <option value="13">Website</option>
+
+                                            <option value="15">Website Chat</option>
+
+                                            <option value="12">Website Contact Us</option>
+
+                                            <option value="1">Website Free Demo Page</option>
+
+                                            <option value="11">company_profile</option>
+
+                                            <option value="16" selected="selected">Website Blog Contact Us</option>
+
+                                        </select>
+
+
+                                        <label class="font-jr s_website_form_label d-none input-has-value"
+                                               style="width: 200px" for="o6squr0mifm7">
+
+
+                                            <span class="s_website_form_label_content">Medium</span>
+
+
+                                        </label>
+                                        <span class="bar"></span>
+
+                                    </div>
+
+                                    <div class="col-12 mb-0 py-2 col-12 s_website_form_submit"
+                                         data-name="Submit Button">
+
+                                        <a href="#" role="button"
+                                           class="s_website_form_send o_default_snippet_text font-cm text-center text-uppercase hvr-shadow w-100">
+                                            Send Message
+                                        </a>
+                                        <span id="s_website_form_result"></span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+    </template>
+    <template id="opt_blog_post_sidebar" name="Show Sidebar" inherit_id="cr_case_study.case_study_detail"
+              active="False"/>
+
+
+    <template id="zoom_in_zoom_out_animation" name="zoom_in_zoom_out_animation"
+              inherit_id="cr_case_study.case_study_detail" active="False">
+
+        <xpath expr="//section[@class='default_animation']" position="replace">
+            <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+
+            <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+            <section class="main_page_of_case_study_with_zoom_in_out">
+                <section id="odoo_service_call_to_action" class="odoo_service_call_to_action aos-init aos-animate">
+                    <div class="container">
+                        <div class="sh_call_action_box aos-init" data-aos="fade-up">
+                            <h2 class="sh_title_heading" t-esc="case_study_name"></h2>
+                        </div>
+                    </div>
+                </section>
+                <section id="cr_odoo_case_study" class="cr_odoo_case_study aos-init aos-animate">
+                    <div class="container">
+
+                        <!-- Case Study Summary Section -->
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_service_content aos-init" data-aos="zoom-in">
+                                    <h2 class="sh_box_title">Summary</h2>
+                                    <div class="sh_text" t-field="case.case_study_detail_description">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="zoom-out">
+                                    <img t-att-src="case_study_main_page_banner" title="Summary" alt="Summary"
+                                         loading="lazy" style=""/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="zoom-in">
+                                    <img t-att-src="client_challenges_img" title="client_challenges_img"
+                                         alt="client_challenges_img" loading="lazy" style=""/>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="zoom-out">
+                                    <h2 class="sh_box_title">Client Challenges</h2>
+                                    <div class="sh_text" t-field="case.case_study_detail_description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="zoom-in">
+                                    <h2 class="sh_box_title">Solution</h2>
+                                    <div class="sh_text" t-field="case.our_solution">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="zoom-out">
+                                    <img t-att-src="our_solution_img" title="Summary" alt="Summary" loading="lazy"
+                                         style=""/>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="zoom-in">
+                                    <img t-att-src="impact_img" title="client_challenges_img"
+                                         alt="client_challenges_img" loading="lazy" style=""/>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="zoom-out">
+                                    <h2 class="sh_box_title">Impact</h2>
+                                    <div class="sh_text" t-field="case.impact">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="client_reviews" class="client_reviews aos-init aos-animate" data-aos="fade-up">
+                    <div class="container">
+                        <h2 class="text-center section-title" data-aos="fade-up">Client Reviews</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="review-section shadow-sm p-4 aos-init aos-animate" data-aos="fade-up">
+                                    <div class="quote-icon">
+                                        <i class="fa fa-quote-left"></i>
+                                    </div>
+                                    <div class="review-content">
+                                        <div class="review-text" t-esc="case.client_review"></div>
+                                        <h3 class="review-author">
+                                            <strong t-esc="case.name"></strong>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </section>
+        </xpath>
+
+    </template>
+
+    <template id="fade_up_fade_down_animation" name="fade_up_fade_down_animation"
+              inherit_id="cr_case_study.case_study_detail" active="False">
+
+        <xpath expr="//section[@class='default_animation']" position="replace">
+            <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+
+            <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+            <section class="main_page_of_case_study_with_zoom_in_out">
+                <section id="odoo_service_call_to_action" class="odoo_service_call_to_action aos-init aos-animate">
+                    <div class="container">
+                        <div class="sh_call_action_box aos-init" data-aos="fade-up">
+                            <h2 class="sh_title_heading" t-esc="case_study_name"></h2>
+                        </div>
+                    </div>
+                </section>
+                <section id="cr_odoo_case_study" class="cr_odoo_case_study aos-init aos-animate">
+                    <div class="container">
+
+                        <!-- Case Study Summary Section -->
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_service_content aos-init" data-aos="fade-up">
+                                    <h2 class="sh_box_title">Summary</h2>
+                                    <div class="sh_text" t-field="case.case_study_detail_description">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="fade-down">
+                                    <img t-att-src="case_study_main_page_banner" title="Summary" alt="Summary"
+                                         loading="lazy" style=""/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="fade-up">
+                                    <img t-att-src="client_challenges_img" title="client_challenges_img"
+                                         alt="client_challenges_img" loading="lazy" style=""/>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="fade-down">
+                                    <h2 class="sh_box_title">Client Challenges</h2>
+                                    <div class="sh_text" t-field="case.case_study_detail_description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="fade-up">
+                                    <h2 class="sh_box_title">Solution</h2>
+                                    <div class="sh_text" t-field="case.our_solution">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="fade-down">
+                                    <img t-att-src="our_solution_img" title="Summary" alt="Summary" loading="lazy"
+                                         style=""/>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="fade-up">
+                                    <img t-att-src="impact_img" title="client_challenges_img"
+                                         alt="client_challenges_img" loading="lazy" style=""/>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="fade-down">
+                                    <h2 class="sh_box_title">Impact</h2>
+                                    <div class="sh_text" t-field="case.impact">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="client_reviews" class="client_reviews aos-init aos-animate" data-aos="fade-up">
+                    <div class="container">
+                        <h2 class="text-center section-title" data-aos="fade-up">Client Reviews</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="review-section shadow-sm p-4 aos-init aos-animate" data-aos="fade-up">
+                                    <div class="quote-icon">
+                                        <i class="fa fa-quote-left"></i>
+                                    </div>
+                                    <div class="review-content">
+                                        <div class="review-text" t-esc="case.client_review"></div>
+                                        <h3 class="review-author">
+                                            <strong t-esc="case.name"></strong>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </xpath>
+
+    </template>
+
+    <template id="flip_left_flip_right_animation" name="flip_left_flip_right_animation"
+              inherit_id="cr_case_study.case_study_detail" active="False">
+
+        <xpath expr="//section[@class='default_animation']" position="replace">
+            <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+
+            <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+            <section class="main_page_of_case_study_with_zoom_in_out">
+                <section id="odoo_service_call_to_action" class="odoo_service_call_to_action aos-init aos-animate">
+                    <div class="container">
+                        <div class="sh_call_action_box aos-init" data-aos="fade-up">
+                            <h2 class="sh_title_heading" t-esc="case_study_name"></h2>
+                        </div>
+                    </div>
+                </section>
+                <section id="cr_odoo_case_study" class="cr_odoo_case_study aos-init aos-animate">
+                    <div class="container">
+
+                        <!-- Case Study Summary Section -->
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_service_content aos-init" data-aos="flip-left">
+                                    <h2 class="sh_box_title">Summary</h2>
+                                    <div class="sh_text" t-field="case.case_study_detail_description">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="flip-right">
+                                    <img t-att-src="case_study_main_page_banner" title="Summary" alt="Summary"
+                                         loading="lazy" style=""/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="flip-left">
+                                    <img t-att-src="client_challenges_img" title="client_challenges_img"
+                                         alt="client_challenges_img" loading="lazy" style=""/>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="flip-right">
+                                    <h2 class="sh_box_title">Client Challenges</h2>
+                                    <div class="sh_text" t-field="case.case_study_detail_description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="flip-left">
+                                    <h2 class="sh_box_title">Solution</h2>
+                                    <div class="sh_text" t-field="case.our_solution">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="flip-right">
+                                    <img t-att-src="our_solution_img" title="Summary" alt="Summary" loading="lazy"
+                                         style=""/>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="flip-left">
+                                    <img t-att-src="impact_img" title="client_challenges_img"
+                                         alt="client_challenges_img" loading="lazy" style=""/>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="flip-right">
+                                    <h2 class="sh_box_title">Impact</h2>
+                                    <div class="sh_text" t-field="case.impact">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="client_reviews" class="client_reviews aos-init aos-animate" data-aos="fade-up">
+                    <div class="container">
+                        <h2 class="text-center section-title" data-aos="fade-up">Client Reviews</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="review-section shadow-sm p-4 aos-init aos-animate" data-aos="fade-up">
+                                    <div class="quote-icon">
+                                        <i class="fa fa-quote-left"></i>
+                                    </div>
+                                    <div class="review-content">
+                                        <div class="review-text" t-esc="case.client_review"></div>
+                                        <h3 class="review-author">
+                                            <strong t-esc="case.name"></strong>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </xpath>
+
+    </template>
+
+    <template id="flip_up_flip_down_animation" name="flip_up_flip_down_animation"
+              inherit_id="cr_case_study.case_study_detail" active="False">
+
+        <xpath expr="//section[@class='default_animation']" position="replace">
+            <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+
+            <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+            <section class="main_page_of_case_study_with_zoom_in_out">
+                <section id="odoo_service_call_to_action" class="odoo_service_call_to_action aos-init aos-animate">
+                    <div class="container">
+                        <div class="sh_call_action_box aos-init" data-aos="fade-up">
+                            <h2 class="sh_title_heading" t-esc="case_study_name"></h2>
+                        </div>
+                    </div>
+                </section>
+                <section id="cr_odoo_case_study" class="cr_odoo_case_study aos-init aos-animate">
+                    <div class="container">
+
+                        <!-- Case Study Summary Section -->
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_service_content aos-init" data-aos="flip-up">
+                                    <h2 class="sh_box_title">Summary</h2>
+                                    <div class="sh_text" t-field="case.case_study_detail_description">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="flip-down">
+                                    <img t-att-src="case_study_main_page_banner" title="Summary" alt="Summary"
+                                         loading="lazy" style=""/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="flip-up">
+                                    <img t-att-src="client_challenges_img" title="client_challenges_img"
+                                         alt="client_challenges_img" loading="lazy" style=""/>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="flip-down">
+                                    <h2 class="sh_box_title">Client Challenges</h2>
+                                    <div class="sh_text" t-field="case.case_study_detail_description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="flip-up">
+                                    <h2 class="sh_box_title">Solution</h2>
+                                    <div class="sh_text" t-field="case.our_solution">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="flip-down">
+                                    <img t-att-src="our_solution_img" title="Summary" alt="Summary" loading="lazy"
+                                         style=""/>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="sh_image_box aos-init" data-aos="flip-up">
+                                    <img t-att-src="impact_img" title="client_challenges_img"
+                                         alt="client_challenges_img" loading="lazy" style=""/>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                <div class="sh_service_content aos-init" data-aos="flip-down">
+                                    <h2 class="sh_box_title">Impact</h2>
+                                    <div class="sh_text" t-field="case.impact">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="client_reviews" class="client_reviews aos-init aos-animate" data-aos="fade-up">
+                    <div class="container">
+                        <h2 class="text-center section-title" data-aos="fade-up">Client Reviews</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="review-section shadow-sm p-4 aos-init aos-animate" data-aos="fade-up">
+                                    <div class="quote-icon">
+                                        <i class="fa fa-quote-left"></i>
+                                    </div>
+                                    <div class="review-content">
+                                        <div class="review-text" t-esc="case.client_review"></div>
+                                        <h3 class="review-author">
+                                            <strong t-esc="case.name"></strong>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </xpath>
+
+    </template>
+
+
+</odoo>

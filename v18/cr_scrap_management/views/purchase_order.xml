@@ -1,0 +1,48 @@
+<odoo>
+    <record id="cr_purchase_order_form_view" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_print_receipt"
+                        string="Print Receipt"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state!='purchase'"/>
+                <button name="action_create_bill"
+                        string="Create Bill &amp; Payment"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state!='purchase'"
+                        groups="cr_scrap_management.group_cashier,cr_scrap_management.group_administrator"/>
+            </xpath>
+            <xpath expr="//button[@name='action_create_invoice'][1]" position="attributes">
+                <attribute name="groups">cr_scrap_management.group_cashier</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_create_invoice'][2]" position="attributes">
+                <attribute name="groups">cr_scrap_management.group_cashier</attribute>
+            </xpath>
+
+<!--            <xpath expr="//field[@name='partner_ref']" position="after">-->
+<!--                <field name="payment_state" widget="badge"/>-->
+<!--            </xpath>-->
+
+<!--            <xpath expr="//div[@class='oe_button_box']" position="before">-->
+<!--                <widget name="web_ribbon"-->
+<!--                        title="Not Paid"-->
+<!--                        bg_color="bg-info"-->
+<!--                        invisible="payment_state != 'not_paid'"/>-->
+<!--                <widget name="web_ribbon"-->
+<!--                        title="Pending"-->
+<!--                        bg_color="bg-warning"-->
+<!--                        invisible="payment_state != 'partially_paid'"/>-->
+<!--                <widget name="web_ribbon"-->
+<!--                        title="Paid"-->
+<!--                        bg_color="bg-success"-->
+<!--                        invisible="payment_state != 'paid'"/>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!-- Test Email Template -->
+        <record id="email_template_test_scheduled" model="mail.template">
+            <field name="name">Test Scheduled Email Report</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="subject">Test Report - {{ ctx.get('today', '') }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="lang">{{ user.lang or 'en_US' }}</field>
+            <field name="description">Test email template for scheduled reports</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Hello <t t-out="object.name"/>,</p>
+                    <p>This is a test scheduled email report.</p>
+                    <p>Current Date: <t t-out="ctx.get('today', '')"/></p>
+                    <p>Best regards,<br/>Odoo Bot</p>
+                </div>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

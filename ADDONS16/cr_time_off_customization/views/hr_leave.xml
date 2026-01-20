@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.actions.server" id="action_refuse_leave">
+        <field name="name">Refuse Leave</field>
+        <field name="model_id" ref="cr_time_off_customization.model_hr_leave"/>
+        <field name="binding_model_id" ref="hr_holidays.model_hr_leave"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.leave_refusal()
+        </field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cr_migration,cr_migration,model_cr_migration,base.group_user,1,1,1,1
+access_cr_stage,cr_stage,model_cr_stage,base.group_user,1,1,1,1
+access_cr_odoo_apps,cr_odoo_apps,model_cr_odoo_apps,base.group_user,1,1,1,1
+access_cr_versions_odoo,cr_versions_odoo,model_cr_versions_odoo,base.group_user,1,1,1,1
+access_cr_categories,cr_categories,model_cr_categories,base.group_user,1,1,1,1
+access_cr_categories,cr_categories,model_cr_categories,base.group_user,1,1,1,1
+access_cr_select_version_wizard,cr_select_version_wizard,model_cr_select_version_wizard,base.group_user,1,1,1,1
+access_odoo_app_wizard,odoo_app_wizard,model_odoo_app_wizard,base.group_user,1,1,1,1

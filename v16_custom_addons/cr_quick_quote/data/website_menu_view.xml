@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="menu_user_quick_quote_form" model="website.menu">
+            <field name="name">Get Quick Quote</field>
+            <field name="url">/user/get_quote_form</field>
+            <field name="parent_id" ref="website.main_menu"></field>
+            <field name="sequence" type="int">2</field>
+        </record>
+    </data>
+</odoo>

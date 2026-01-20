@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_mrp_work_order">
+        <t t-call="web.basic_layout">
+            <div class="page">
+                <h2 style="text-align: center;">Work Order Issue Report</h2>
+
+                <t t-if="docs and docs[0].production_id.supervisor_id">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <div>
+                            <strong>Supervisor:</strong>
+                            <t t-esc="docs[0].production_id.supervisor_id.name"/>
+                        </div>
+                        <div>
+                            <strong>Date:</strong>
+                            <t t-esc="datetime.datetime.now().strftime('%d/%m/%Y')"/>
+                        </div>
+                    </div>
+                </t>
+
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Manufacturing Order Number</th>
+                            <th>Product Name</th>
+                            <th>Work Order Name</th>
+                            <th>Responsible User Name</th>
+                            <th>Actual Delay In Workorder</th>
+                            <th>Reason For Delay</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="workorder">
+                            <t t-set="productions"
+                               t-value="workorder.filtered(lambda p: p.state == 'done' and p.delay_reason)"/>
+                            <t t-if="productions.delay_reason">
+                                <t t-foreach="productions" t-as="production">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="production.production_id.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="production.product_id.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="production.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="request.env.user.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="round(production.duration - (production.duration_expected + production.grace_time),2)"/>
+                                            Minutes
+                                        </td>
+                                        <td>
+                                            <t t-esc="production.delay_reason"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <record id="action_report_of_mrp_work_order" model="ir.actions.report">
+        <field name="name">Workorder Issue Report</field>
+        <field name="model">mrp.workorder</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">cr_mrp_work_order_alert.report_mrp_work_order</field>
+        <field name="report_file">cr_mrp_work_order_alert.report_mrp_work_order</field>
+        <field name="print_report_name">'Workorder Issue Report'</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,69 @@
+bucket_name="creyox-sire"
+aws_access_key_id = 'AKIAZQ3DOCCG6ZD6AN6W'
+aws_secret_access_key = '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'
+ODOO_URL="http://localhost:8074/jsonrpc"
+DB="odoo17_sire"
+DB_USER="odoo17_ce_cr"
+DB_PASSWORD="odoo17"
+DB_HOST="localhost"
+DB_PORT="5432"
+
+- TO CHECK THE ENV PARAMETERE OR UDATE IF
+1]nano .env
+2]ctrl x
+3]y
+4]enter
+
+- IF IN ENV YOU CHANGE ANYTHING THEN USE BELOW COMMAND TO RUN IT
+export $(grep -v '^#' .env | xargs)
+echo $DB 
+
+
+
+- open terminal and run below command
+ssh -i /home/aashruti/Documents/aws-key/aws_smart_sire.pem ubuntu@18.230.51.76
+sudo su
+cd ..
+cd ..
+cd odoo17 [click tab] custom [click tab] esire_v17
+ 
+- COMMAND FOR RESTART ODOO SERVICE
+sudo systemctl restart odoo17-server
+
+- SEE THE LOGS OF SERVER
+tail -f /var/log/odoo17/odoo17-server.log
+
+- COMMAND FOR RESTART COMPARISON SERVICE
+sudo systemctl restart comparison_process
+
+- COMMAND FOR RESTART IMPORT SERVICE
+sudo systemctl restart import
+
+- FOR TAKE THE LATEST PULL
+git checkout .
+git pull origin main
+username : creyox-odoo
+password : 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
+
+http://18.230.51.76:8069/web/login
+
+
+DB_NAME = 'odoo17_sire'
+DB_USER = 'odoo17_ce_cr'
+DB_PASSWORD = 'odoo17'
+DB_HOST = 'localhost'
+DB_PORT = '5432'
+ODOO_URL = "http://localhost:8071/jsonrpc"
+UID = 2
+PASSWORD = "admin"
+
+
+
+# *.[oa]
+# *~
+*.pyc
+pycache
+.idea
+__pycache
+
+http://18.230.51.76:8069/web#cids=3

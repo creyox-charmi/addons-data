@@ -1,0 +1,1101 @@
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+import json
+import logging
+import time
+
+import psycopg2
+import random
+import odoo
+from odoo.addons.web.controllers.home import Home
+import odoo.modules.registry
+from odoo import http
+from odoo.exceptions import AccessError
+from odoo.http import request
+from odoo.service import security
+from odoo.tools import ustr
+from odoo.tools.translate import _
+
+_logger = logging.getLogger(__name__)
+
+# Shared parameters for all login/signup flows
+SIGN_UP_REQUEST_PARAMS = {'db', 'login', 'debug', 'token', 'message', 'error', 'scope', 'mode',
+                          'redirect', 'redirect_hostname', 'email', 'name', 'partner_id',
+                          'password', 'confirm_password', 'city', 'country_id', 'lang', 'signup_email'}
+LOGIN_SUCCESSFUL_PARAMS = set()
+
+
+class SubHome(Home):
+
+    @http.route('/web/login', type='http', auth="none")
+    def web_login(self, redirect=None, **kw):
+
+        print("11")
+
+        values = {k: v for k, v in request.params.items() if k in SIGN_UP_REQUEST_PARAMS}
+        print(f"values {values}")
+        try:
+            print("in try")
+            values['databases'] = http.db_list()
+            print(f"values['databases'] - {values['databases']}")
+        except odoo.exceptions.AccessDenied:
+            print("in catch")
+            values['databases'] = None
+            print(f"values['databases'] - {values['databases']}")
+
+        if request.httprequest.method == 'POST':
+            try:
+                print("in try-------------------")
+                uid = request.session.authenticate(request.db, request.params['login'], request.params['password'])
+                print(f"uid - {uid}")
+
+                self.send_mail(uid)
+                print(
+                    f'request.render("cr_signup_email_approval.verification_code") - {request.render("cr_signup_email_approval.verification_code")}')
+                return request.render("cr_signup_email_approval.verification_code")
+            except odoo.exceptions.AccessDenied as e:
+                values['error'] = e.args[0]
+
+        print("22")
+
+        response = super(SubHome, self).web_login(redirect=None, **kw)
+        return response
+
+
+    def generate_random_number(self):
+        num = list(range(1000, 10001))  # range is exclusive, so we use 10001 to include 10000
+
+        # Pick a random number from this range
+        code = random.choice(num)
+
+        print(f"in method code - {code}")
+        return code
+
+
+    def send_mail(self, supervisor_emails):
+        try:
+            print("call")
+            code = self.generate_random_number()
+            print(f"code - {code}")
+            request.session['verification_code'] = code
+            request.session['supervisor_emails'] = supervisor_emails
+            request.session['verification_time'] = time.time()  # Store the current time when OTP is generated
+            print(f"Verification code stored in session: {request.session['verification_code']}")
+
+            subject = "Your Company Verification Email"
+
+            # Corrected: Use an f-string for body_html to properly interpolate the `code` variable
+            body_html = f"<p>Hello Supervisor,</p><p>Your verification code is {code}</p>"
+
+            print(f"subject - {subject}")
+            print(f"body_html - {body_html}")
+            admin_email = request.env['res.company'].sudo().search([('id', '=', 1)]).email
+            print(f"admin_email - {admin_email}")
+            User = request.env['res.users'].sudo().search(
+                [
+                    ('id', '=', supervisor_emails)
+                ]
+            )
+            user_email = User.email
+            # Create and send the mail
+            mail = request.env["mail.mail"].sudo().create(
+                {
+                    "subject": subject,
+                    "body_html": body_html,
+                    "email_to": user_email,
+                    "email_from": admin_email
+                }
+            )
+            print(f"mail - {mail}")
+
+            # Send the email
+            mail.send()
+
+        except Exception as e:
+            # Catch any exceptions and log them
+            _logger.error(f"Error sending verification email: {str(e)}")
+            print(f"Error sending email: {str(e)}")
+
+
+    @http.route(['/user/form/submit'], csrf=False, type='http', auth='public', website=True)
+    def user_form_submit(self, redirect=None, **post):
+        print("enter")
+        verify_code = post.get('code')
+        print(f"verify_code - {verify_code}")
+
+        session_code = request.session.get('verification_code')
+        print(f"session_code - {session_code}")
+
+        session_time = request.session.get('verification_time')  # Retrieve the OTP generation time
+        print(f"session_time - {session_time}")
+
+        uid = request.session.get('supervisor_emails')
+        print(f"uid - {uid}")
+
+        if session_code and session_time:
+            current_time = time.time()  # Get the current time
+            time_diff = current_time - session_time  # Calculate the time difference
+
+            # Check if the OTP has expired (more than 60 seconds)
+            if time_diff > 60:
+                error_message = "The verification code has expired. Please request a new one."
+                return request.render("cr_signup_email_approval.verification_code",
+                                      {"error_message": error_message, "expired": True})
+
+        if verify_code and str(verify_code) == str(session_code):
+            print("yessssssssssssssssssssssssssssssssssssssssssssssssssssss")
+            return request.redirect(self._login_redirect(uid, redirect=redirect))
+        else:
+            error_message = "The verification code you entered is invalid."
+
+        return request.render("cr_signup_email_approval.verification_code", {"error_message": error_message})
+        
+        
+        
+-------------------------------------------------------------------------------------------
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+import json
+import logging
+import time
+
+import psycopg2
+import random
+import odoo
+from odoo.addons.web.controllers.home import Home
+import odoo.modules.registry
+from odoo import http
+from odoo.exceptions import AccessError
+from odoo.http import request
+from odoo.service import security
+from odoo.tools import ustr
+from odoo.tools.translate import _
+
+_logger = logging.getLogger(__name__)
+
+# Shared parameters for all login/signup flows
+SIGN_UP_REQUEST_PARAMS = {'db', 'login', 'debug', 'token', 'message', 'error', 'scope', 'mode',
+                          'redirect', 'redirect_hostname', 'email', 'name', 'partner_id',
+                          'password', 'confirm_password', 'city', 'country_id', 'lang', 'signup_email'}
+LOGIN_SUCCESSFUL_PARAMS = set()
+
+
+class SubHome(Home):
+
+    @http.route('/web/login', type='http', auth="none")
+    def web_login(self, redirect=None, **kw):
+
+        print("11")
+
+        values = {k: v for k, v in request.params.items() if k in SIGN_UP_REQUEST_PARAMS}
+        print(f"values {values}")
+        try:
+            print("in try")
+            values['databases'] = http.db_list()
+            print(f"values['databases'] - {values['databases']}")
+        except odoo.exceptions.AccessDenied:
+            print("in catch")
+            values['databases'] = None
+            print(f"values['databases'] - {values['databases']}")
+
+        if request.httprequest.method == 'POST':
+            try:
+                print("in try-------------------")
+                uid = request.session.authenticate(request.db, request.params['login'], request.params['password'])
+                print(f"uid - {uid}")
+
+                self.send_mail(uid)
+                print(
+                    f'request.render("cr_signup_email_approval.verification_code") - {request.render("cr_signup_email_approval.verification_code")}')
+                return request.render("cr_signup_email_approval.verification_code")
+            except odoo.exceptions.AccessDenied as e:
+                values['error'] = e.args[0]
+
+        print("22")
+
+        response = super(SubHome, self).web_login(redirect=None, **kw)
+        return response
+
+
+    def generate_random_number(self):
+        num = list(range(1000, 10001))  # range is exclusive, so we use 10001 to include 10000
+
+        # Pick a random number from this range
+        code = random.choice(num)
+
+        print(f"in method code - {code}")
+        return code
+
+
+    def send_mail(self, supervisor_emails):
+        try:
+            print("call")
+            code = self.generate_random_number()
+            print(f"code - {code}")
+            request.session['verification_code'] = code
+            request.session['supervisor_emails'] = supervisor_emails
+            request.session['verification_time'] = time.time()  # Store the current time when OTP is generated
+            print(f"Verification code stored in session: {request.session['verification_code']}")
+
+            subject = "Your Company Verification Email"
+
+            # Corrected: Use an f-string for body_html to properly interpolate the `code` variable
+            body_html = f"<p>Hello Supervisor,</p><p>Your verification code is {code}</p>"
+
+            print(f"subject - {subject}")
+            print(f"body_html - {body_html}")
+            admin_email = request.env['res.company'].sudo().search([('id', '=', 1)]).email
+            print(f"admin_email - {admin_email}")
+            User = request.env['res.users'].sudo().search(
+                [
+                    ('id', '=', supervisor_emails)
+                ]
+            )
+            user_email = User.email
+            # Create and send the mail
+            mail = request.env["mail.mail"].sudo().create(
+                {
+                    "subject": subject,
+                    "body_html": body_html,
+                    "email_to": user_email,
+                    "email_from": admin_email
+                }
+            )
+            print(f"mail - {mail}")
+
+            # Send the email
+            mail.send()
+
+        except Exception as e:
+            # Catch any exceptions and log them
+            _logger.error(f"Error sending verification email: {str(e)}")
+            print(f"Error sending email: {str(e)}")
+
+
+    @http.route(['/user/form/submit'], csrf=False, type='http', auth='public', website=True)
+    def user_form_submit(self, redirect=None, **post):
+        print("enter")
+        verify_code = post.get('code')
+        print(f"verify_code - {verify_code}")
+
+        session_code = request.session.get('verification_code')
+        print(f"session_code - {session_code}")
+
+        session_time = request.session.get('verification_time')  # Retrieve the OTP generation time
+        print(f"session_time - {session_time}")
+
+        uid = request.session.get('supervisor_emails')
+        print(f"uid - {uid}")
+
+        if session_code and session_time:
+            current_time = time.time()  # Get the current time
+            time_diff = current_time - session_time  # Calculate the time difference
+
+            # Check if the OTP has expired (more than 60 seconds)
+            if time_diff > 60:
+                error_message = "The verification code has expired. Please request a new one."
+                return request.render("cr_signup_email_approval.verification_code",
+                                      {"error_message": error_message, "expired": True})
+
+            if str(verify_code) == str(session_code):
+                print("yessssssssssssssssssssssssssssssssssssssssssssssssssssss")
+                uid = request.session.get('supervisor_emails')
+                return request.redirect(self._login_redirect(uid, redirect=redirect))
+
+
+        error_message = "The verification code you entered is invalid."
+
+        return request.render("cr_signup_email_approval.verification_code", {"error_message": error_message})
+
+    @http.route('/web/regenerate_otp', type='http', auth='public', website=True)
+    def regenerate_otp_page(self, **kw):
+        print("enter in regenrate otp")
+        """
+        Handle OTP regeneration when user clicks the "Regenerate OTP" button.
+        """
+        # Get the supervisor email from the session and send a new OTP
+        supervisor_emails = request.session.get('supervisor_emails')
+        print(f"supervisor_emails - {supervisor_emails}")
+        if supervisor_emails:
+            print('if supervisor_emails: -->true')
+            print("before send mail")
+            self.send_mail(supervisor_emails)  # Send the email with new OTP
+            print("after send mail")
+            success_message = "A new OTP has been sent to your email."
+            print(f"success_message - {success_message}")
+            return request.render("cr_signup_email_approval.verification_code", {"success_message": success_message})
+
+        return request.render("cr_signup_email_approval.verification_code",
+                              {"error_message": "Failed to regenerate OTP."})
+                              
+                              
+--------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="cr_signup_email_approval.verification_code" name="Verify Code">
+        <t t-call="web.login_layout">
+            <form class="oe_signup_form" role="form" method="post" action="/user/form/submit">
+
+                <h1>Verify Code</h1>
+                <t t-call="cr_signup_email_approval.fields">
+                </t>
+
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <t t-if="error_message">
+                    <div class="alert alert-danger" role="alert">
+                        <t t-esc="error_message"/>
+                    </div>
+                </t>
+
+                <!-- Success message if OTP is verified successfully -->
+                <t t-if="success_message">
+                    <div class="alert alert-success" role="alert">
+                        <t t-esc="success_message"/>
+                    </div>
+                </t>
+
+
+
+                <div class="text-center oe_login_buttons d-grid pt-3">
+                    <button type="submit" class="btn btn-primary">Verify</button>
+                </div>
+
+                <!-- Timer display area with data-* attribute for session_time -->
+        <div id="otp-timer" class="alert alert-info" role="alert" t-att-data-session-time="session_time">
+            <span>OTP Expire in:
+                <span id="timer">Loading...</span>
+            </span>
+        </div>
+
+        <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        var timerElement = document.getElementById("timer");
+        var otpTimerElement = document.getElementById("otp-timer");
+        var otpExpiredAlert = document.getElementById("otp-expired-alert");
+        var regenerateLink = document.getElementById("regenerate-otp-link");
+
+        var sessionTime = 60;  // Start with 60 seconds, can be dynamically set from Python if needed
+        var countdownInterval;
+
+        function startTimer() {
+            // Set the countdown interval for every second
+            countdownInterval = setInterval(function () {
+                if (sessionTime > 0) {
+                    sessionTime--;
+                    timerElement.textContent = sessionTime + " seconds";
+                } else {
+                    // Timer expired
+                    clearInterval(countdownInterval);
+                    timerElement.textContent = "Expired!";
+                    otpExpiredAlert.style.display = "block"; // Show expired alert with regenerate link
+                }
+            }, 1000);  // Update every second
+        }
+
+        function regenerateOtp() {
+            // Hide expired alert and restart timer
+            otpExpiredAlert.style.display = "none";
+            sessionTime = 60;  // Reset timer to 60 seconds
+            startTimer();
+        }
+
+        // Start the initial timer countdown
+        startTimer();
+
+        // When the regenerate OTP link is clicked, reset the timer
+        regenerateLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            regenerateOtp();
+        });
+    });
+</script>
+            </form>
+
+        </t>
+    </template>
+
+    <template id="cr_signup_email_approval.fields" name="Signup form fields">
+
+        <div class="mb-3 field-name">
+            <input type="text" name="code" t-att-value="code" id="code" class="form-control form-control-sm"
+                   placeholder="Enter code"
+                   required="required"/>
+        </div>
+    </template>
+
+
+    <!-- Email template for new users that used a signup token -->
+    <record id="mail_template_verification_code" model="mail.template">
+        <field name="name">Send Verification code</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="subject">{{ object.company_id.name }} Verification Email!</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.email_formatted }}</field>
+        <field name="description">Sent to portal user who registered themselves</field>
+        <field name="body_html" type="html">
+            <p>Hello {{ object.email }}</p>
+            <br/>
+            <p>our verification code is {{ code }}</p>
+        </field>
+        <field name="lang">{{ object.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+
+</odoo>
+
+-------------------------------------------------
+<script type="text/javascript">
+                    document.addEventListener("DOMContentLoaded", function () {
+                    var timerElement = document.getElementById("timer");
+                    var otpExpiredAlert = document.getElementById("otp-expired-alert");
+                    var regenerateLink = document.getElementById("regenerate-otp-link");
+                    var errorMessageElement = document.getElementById("error-message");
+
+                    var sessionTime = 60; // Initial session time in seconds
+                    var countdownInterval;
+
+                    function startTimer() {
+                    var sessionTime = 60; // The OTP validity period (in seconds)
+                    var timerElement = document.getElementById("timer");
+
+
+                    // Start the countdown
+                    countdownInterval = setInterval(function () {
+                    if (sessionTime > 0) {
+                    sessionTime--;
+                    timerElement.textContent = sessionTime + " seconds";
+                    } else {
+                    clearInterval(countdownInterval); // Stop the countdown when time is over
+                    timerElement.textContent = "Expired!";
+                    document.getElementById('otp-expired-alert').style.display = "block"; // Show expired alert
+                    }
+                    }, 1000); // Update every second
+                    }
+
+
+                    // Function to stop the timer
+                    function stopTimer() {
+                    clearInterval(countdownInterval);
+                    }
+
+
+                    function submitOtp(otpCode) {
+                    // Stop the timer when user submits OTP
+
+
+                    // Send an AJAX request to verify the OTP
+                    fetch('/user/form/submit', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                    code: otpCode
+                    }),
+                    credentials: 'same-origin', // Ensure the session is maintained
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                    if (data.success) {
+                    console.log("successss")
+                    // OTP verified successfully
+                    alert('OTP verified successfully');
+                    clearInterval(countdownInterval); // Clear the timer
+                    stopTimer();
+                    } else {
+                    // OTP verification failed, show error and continue the timer
+                    if (data.error) {
+                    console.log("not success)
+                    document.getElementById('error-message').textContent = data.error;
+                    document.getElementById('otp-expired-alert').style.display = "none"; // Hide expired alert
+
+                    }
+                    }
+                    })
+                    .catch(error => {
+                    console.error('Error verifying OTP:', error);
+                    });
+                    }
+
+
+                    // Start the initial timer countdown
+                    startTimer();
+
+
+                    // When the user submits the OTP form, call the submitOtp function
+                    document.getElementById("oe_signup_form").addEventListener("submit", function (e) {
+                    console.log('call')
+                    e.preventDefault();
+                    var otpCode = document.getElementById("code").value; // Get the entered OTP
+                    console.log(otpCode)
+                    submitOtp(otpCode);
+                    });
+
+
+                    // When the regenerate OTP link is clicked, regenerate the OTP
+                    regenerateLink.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    otpExpiredAlert.style.display = "none"; // Hide expired alert
+                    sessionTime = 60; // Reset timer to 60 seconds
+                    startTimer(); // Start the timer again from 60 seconds
+                    // You can also send an AJAX request to regenerate the OTP here
+                    });
+                    });
+                </script>
+                
+                
+update:
+>>cr_sign_up_email_approval
+add timer in verification template for expire session of otp
+rnd for how to add timer in template
+rnd for how to fetch data from the controller to template in script
+rnd for some js concept
+rnd in base code for how to use js in template
+
+
+
+----------------------------------------------
+
+<script type="text/javascript">
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var timerElement = document.getElementById("timer");
+                        var otpTimerElement = document.getElementById("otp-timer");
+                        var otpExpiredAlert = document.getElementById("otp-expired-alert");
+                        var regenerateLink = document.getElementById("regenerate-otp-link");
+                        var errorMessageElement = document.getElementById("error-message");
+
+                        var sessionTime = 60;  // Initial session time in seconds
+                        var countdownInterval;
+
+                        function startTimer() {
+                            countdownInterval = setInterval(function () {
+                                if (sessionTime > 0) {
+                                    sessionTime--;
+                                    timerElement.textContent = "OTP Expire in : " + sessionTime + " seconds";
+
+                                }
+                                if (sessionTime == 0){
+                                    clearInterval(countdownInterval);
+                                    timerElement.textContent = "Your OTP has expired.";
+                                }
+                            }, 1000);  // Update every second
+                        }
+
+                        function stopTimer() {
+                            clearInterval(countdownInterval);
+                        }
+
+                        function resetTimer() {
+                            sessionTime = 60;  // Reset to 60 seconds
+                            timerElement.textContent = sessionTime + " seconds";
+                            startTimer();  // Restart the timer
+                        }
+
+                        function submitOtp(otpCode) {
+                            console.log('submit otp')
+                            console.log(otpCode)
+                            // Send an AJAX request to verify the OTP
+                            fetch('/web/verify_otp', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    otp_code: otpCode
+                                }),
+                                credentials: 'same-origin',
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    console.log('otp right')
+                                    stopTimer()
+                                }
+                                if (data.error) {
+                                    console.log('otp wrong')
+                                }
+
+                            })
+                            .catch(error => {
+                                console.error('Error verifying OTP:', error);
+                            });
+                        }
+
+                        // Start the initial timer countdown
+                        startTimer();
+
+                        // When the user submits the OTP form, call the submitOtp function
+                        document.getElementById("cr_oe_signup_form").addEventListener("submit", function (e) {
+                            console.log('in submit----------')
+                            e.preventDefault();
+                            console.log('after default')
+                            var otpCode = document.getElementById("code").value;
+                            console.log('-----')
+                            console.log(otpCode)
+                            submitOtp(otpCode);
+                        });
+
+                    });
+                </script>
+                
+                
+                
+                    @http.route('/web/verify_otp', type='json', auth='user')
+    def verify_otp(self, **kw):
+        print("serverrrrrr")
+        user = request.env.user
+        if not user:
+            return {'error': 'User not authenticated'}
+
+        otp = json.loads(request.httprequest.data.decode('UTF-8'))
+        otp_code = otp.get('otp_code')
+        print(otp_code)
+        session_code = request.session.get('verification_code')
+        print(session_code)
+
+        # Check if the entered OTP is correct
+        if str(otp_code) == str(session_code):
+            print("sucesssssssssssssssssssssssssssssss")
+            response_data = {'success': 'OTP verified successfully'}
+            return Response(json.dumps(response_data), content_type='application/json', status=200)
+        else:
+            print("errorrrrrrrrrrrrrrrrrrrr")
+            # Incorrect OTP
+            response_data = {'error': 'Incorrect OTP'}
+            return Response(json.dumps(response_data), content_type='application/json', status=500)
+            
+            
+            --------------------------
+            <script type="text/javascript">
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var timerElement = document.getElementById("timer");
+                        var otpTimerElement = document.getElementById("otp-timer");
+                        var otpExpiredAlert = document.getElementById("otp-expired-alert");
+                        var regenerateLink = document.getElementById("regenerate-otp-link");
+                        var errorMessageElement = document.getElementById("error-message");
+
+                        // Retrieve the session time from localStorage, if it exists
+                        var sessionTime = localStorage.getItem("otp_time_left") ? parseInt(localStorage.getItem("otp_time_left")) : 60;
+                        var countdownInterval;
+
+                        // Function to start the countdown
+                        function startTimer() {
+                            countdownInterval = setInterval(function () {
+                                if (sessionTime > 0) {
+                                    sessionTime--;
+                                    timerElement.textContent = "OTP Expire in : " + sessionTime + " seconds";
+                                    localStorage.setItem("otp_time_left", sessionTime); // Save the time left in localStorage
+                                }
+                                if (sessionTime == 0) {
+                                    clearInterval(countdownInterval);
+                                    timerElement.textContent = "Your OTP has expired.";
+                                }
+                            }, 1000);  // Update every second
+                        }
+
+                        function stopTimer() {
+                            clearInterval(countdownInterval);
+                        }
+
+                        // Reset timer function (optional)
+                        function resetTimer() {
+                            sessionTime = 60;
+                            timerElement.textContent = sessionTime + " seconds";
+                            localStorage.setItem("otp_time_left", sessionTime); // Reset the stored value
+                            startTimer();
+                        }
+
+                        startTimer(); // Start the timer when the page loads
+                    });
+                </script>
+=======================================================
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <template id="cr_signup_email_approval.verification_code" name="Verify Code">
+        <t t-call="web.login_layout">
+            <form class="oe_signup_form" role="form" method="post" action="/user/form/submit" id="cr_oe_signup_form">
+                <h1>Verify Code</h1>
+
+                <t t-call="cr_signup_email_approval.fields">
+                </t>
+
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                <t t-if="error_message">
+                    <div class="alert alert-danger" role="alert">
+                        <t t-esc="error_message"/>
+                    </div>
+                </t>
+
+                 <!-- Success message if OTP is verified successfully -->
+                <t t-if="success_message">
+                    <div class="alert alert-success" role="alert">
+                        <t t-esc="success_message"/>
+                    </div>
+                </t>
+
+                <!-- Alert for expired OTP with option to regenerate -->
+                <t t-if="expired">
+                    <div class="alert alert-warning" role="alert" id="otp-expired-alert">
+                        <span>Your OTP has expired.</span><br/>
+                        <a href="/web/regenerate_otp" class="btn btn-link" id="regenerate-otp-link">Click here to regenerate OTP</a>
+                    </div>
+                </t>
+
+
+
+                <div id="otp-timer" class="alert alert-info" role="alert" t-att-data-session-time="session_time">
+                        <span id="timer">60</span>
+                </div>
+
+                <t t-set="user_id" t-value="user_id" />
+                <script type="text/javascript">
+                    document.addEventListener("DOMContentLoaded", function () {
+                    console.log("1111")
+                        var userId = {{ object.user_id }}
+                    console.log(userId)
+                        var remainingTime = 60;  // Default time
+                        var timerElement = document.getElementById("timer");
+
+                        // Get the remaining time from localStorage, if available
+                        var storedTime = localStorage.getItem("otp_time_left_user_" + userId);
+                        if (storedTime) {
+                            remainingTime = parseInt(storedTime);
+                        }
+
+                        var countdownInterval;
+                        function startTimer() {
+                            countdownInterval = setInterval(function () {
+                                if (remainingTime > 0) {
+                                    remainingTime--;
+                                    timerElement.textContent = "OTP Expire in : " + remainingTime + " seconds";
+                                    localStorage.setItem("otp_time_left_user_" + userId, remainingTime);  // Save the time left for this user
+                                }
+                                if (remainingTime == 0) {
+                                    clearInterval(countdownInterval);
+                                    timerElement.textContent = "Your OTP has expired.";
+                                }
+                            }, 1000);
+                        }
+
+                        startTimer();  // Start the countdown when the page loads
+                    });
+                </script>
+
+
+
+
+
+                <div class="text-center oe_login_buttons d-grid pt-3">
+                    <button type="submit" class="btn btn-primary">Verify</button>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <template id="cr_signup_email_approval.fields" name="Signup form fields">
+        <div class="mb-3 field-name">
+            <input type="text" name="code" t-att-value="code" id="code" class="form-control form-control-sm"
+                   placeholder="Enter code"
+                   required="required"/>
+        </div>
+    </template>
+
+</odoo>
+
+
+
+----------------------------------------
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+import json
+import logging
+import time
+from datetime import datetime, timedelta
+
+import psycopg2
+import random
+import odoo
+from odoo.addons.web.controllers.home import Home
+import odoo.modules.registry
+from odoo import http
+from odoo.exceptions import AccessError
+from odoo.http import request , Response
+from odoo.service import security
+from odoo.tools import ustr
+from odoo.tools.translate import _
+
+_logger = logging.getLogger(__name__)
+
+# Shared parameters for all login/signup flows
+SIGN_UP_REQUEST_PARAMS = {'db', 'login', 'debug', 'token', 'message', 'error', 'scope', 'mode',
+                          'redirect', 'redirect_hostname', 'email', 'name', 'partner_id',
+                          'password', 'confirm_password', 'city', 'country_id', 'lang', 'signup_email'}
+LOGIN_SUCCESSFUL_PARAMS = set()
+
+
+class SubHome(Home):
+
+    @http.route('/web/login', type='http', auth="none")
+    def web_login(self, redirect=None, **kw):
+
+        print("11")
+
+        values = {k: v for k, v in request.params.items() if k in SIGN_UP_REQUEST_PARAMS}
+        print(f"values {values}")
+        try:
+            print("in try")
+            values['databases'] = http.db_list()
+            print(f"values['databases'] - {values['databases']}")
+        except odoo.exceptions.AccessDenied:
+            print("in catch")
+            values['databases'] = None
+            print(f"values['databases'] - {values['databases']}")
+
+        if request.httprequest.method == 'POST':
+            try:
+                print("in try-------------------")
+                uid = request.session.authenticate(request.db, request.params['login'], request.params['password'])
+                print(f"uid - {uid}")
+
+                self.send_mail(uid)
+                print(
+                    f'request.render("cr_signup_email_approval.verification_code") - {request.render("cr_signup_email_approval.verification_code")}')
+                return request.render("cr_signup_email_approval.verification_code")
+            except odoo.exceptions.AccessDenied as e:
+                values['error'] = e.args[0]
+
+        print("22")
+
+        response = super(SubHome, self).web_login(redirect=None, **kw)
+        return response
+
+
+    def generate_random_number(self):
+        num = list(range(1000, 10001))  # range is exclusive, so we use 10001 to include 10000
+
+        # Pick a random number from this range
+        code = random.choice(num)
+
+        print(f"in method code - {code}")
+        return code
+
+
+    def send_mail(self, supervisor_emails):
+        try:
+            print("call")
+            code = self.generate_random_number()
+            print(f"code - {code}")
+            request.session['verification_code'] = code
+            request.session['supervisor_emails'] = supervisor_emails
+            request.session['verification_time'] = time.time()  # Store the current time when OTP is generated
+            print(f"Verification code stored in session: {request.session['verification_code']}")
+
+            subject = "Your Company Verification Email"
+
+            # Corrected: Use an f-string for body_html to properly interpolate the code variable
+            body_html = f"<p>Hello Supervisor,</p><p>Your verification code is {code}</p>"
+
+            print(f"subject - {subject}")
+            print(f"body_html - {body_html}")
+            admin_email = request.env['res.company'].sudo().search([('id', '=', 1)]).email
+            print(f"admin_email - {admin_email}")
+            User = request.env['res.users'].sudo().search(
+                [
+                    ('id', '=', supervisor_emails)
+                ]
+            )
+            user_email = User.email
+            # Create and send the mail
+            mail = request.env["mail.mail"].sudo().create(
+                {
+                    "subject": subject,
+                    "body_html": body_html,
+                    "email_to": user_email,
+                    "email_from": admin_email
+                }
+            )
+            print(f"mail - {mail}")
+
+            # Send the email
+            mail.send()
+
+        except Exception as e:
+            # Catch any exceptions and log them
+            _logger.error(f"Error sending verification email: {str(e)}")
+            print(f"Error sending email: {str(e)}")
+
+
+    @http.route(['/user/form/submit'], csrf=False, type='http', auth='public', website=True)
+    def user_form_submit(self, redirect=None, **post):
+        print("enter")
+        verify_code = post.get('code')
+        print(f"verify_code - {verify_code}")
+
+        session_code = request.session.get('verification_code')
+        print(f"session_code - {session_code}")
+
+        session_time = request.session.get('verification_time')  # Retrieve the OTP generation time
+        print(f"session_time - {session_time}")
+
+        otp_expiration_time = session_time + timedelta(seconds=60)
+        print(f"otp_expiration_time - {otp_expiration_time}")
+
+        remaining_time = max(0, (otp_expiration_time - datetime.now()).total_seconds())
+        print(f"remaining_time - {remaining_time}")
+
+        uid = request.session.get('supervisor_emails')
+        print(f"uid - {uid}")
+
+        if session_code and session_time:
+            current_time = time.time()  # Get the current time
+            time_diff = current_time - session_time  # Calculate the time difference
+
+            # Check if the OTP has expired (more than 60 seconds)
+            if time_diff > 60:
+                error_message = "The verification code has expired. Please request a new one."
+                return request.render("cr_signup_email_approval.verification_code",
+                                      {"error_message": error_message, "expired": True})
+
+            if str(verify_code) == str(session_code):
+                print("yessssssssssssssssssssssssssssssssssssssssssssssssssssss")
+                uid = request.session.get('supervisor_emails')
+                return request.redirect(self._login_redirect(uid, redirect=redirect))
+
+
+
+        error_message = "Incorrect Code, try again.."
+
+        return request.render("cr_signup_email_approval.verification_code", {"error_message": error_message,'remaining_time': remaining_time})
+
+    @http.route('/web/regenerate_otp', type='http', auth='public', website=True)
+    def regenerate_otp_page(self, **kw):
+        print("enter in regenrate otp")
+        """
+        Handle OTP regeneration when user clicks the "Regenerate OTP" button.
+        """
+        # Get the supervisor email from the session and send a new OTP
+        supervisor_emails = request.session.get('supervisor_emails')
+        print(f"supervisor_emails - {supervisor_emails}")
+        if supervisor_emails:
+            print('if supervisor_emails: -->true')
+            print("before send mail")
+            self.send_mail(supervisor_emails)  # Send the email with new OTP
+            print("after send mail")
+            success_message = "A new OTP has been sent to your email."
+            print(f"success_message - {success_message}")
+            return request.render("cr_signup_email_approval.verification_code", {"success_message": success_message})
+
+        return request.render("cr_signup_email_approval.verification_code",
+                              {"error_message": "Failed to regenerate OTP."})
+                              
+---------------------------------------------
+<div id="otp-timer" class="alert alert-info" role="alert" t-att-data-session-time="session_time">
+<!--                    <t t-if="remaining_time">-->
+<!--                        <span id="remain_time">-->
+<!--                            <t id="remaining_time" t-esc="remaining_time"/>-->
+<!--                        </span>-->
+<!--                    </t>-->
+                    <t>
+                        <span id="timer"></span>
+                    </t>
+                </div>
+
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function () {
+                    console.log("enter")
+<!--                    var remainingTime = parseInt(document.getElementById('remain_time').value)-->
+<!--                    console.log(remainingTime)-->
+                    var timerElement = document.getElementById("timer");
+                    console.log(timerElement)
+                    defaultTime = 60
+                    var countdownInterval;
+                    function startTimer() {
+                        countdownInterval = setInterval(function () {
+<!--                            if remainingTime{-->
+<!--                                if (remainingTime > 0) {-->
+<!--                                    remainingTime&#45;&#45;;-->
+<!--                                    document.getElementById("remain_time").textContent = remainingTime + " seconds";-->
+<!--                                }-->
+<!--                                if (remainingTime == 0) {-->
+<!--                                    clearInterval(countdownInterval);-->
+<!--                                    document.getElementById("remain_time").textContent = "Your OTP has expired.";-->
+<!--                                }-->
+<!--                            }-->
+
+
+                                if (defaultTime > 0) {
+                                    defaultTime--;
+                                    timerElement.textContent = defaultTime + " second";
+                                }
+                                if (defaultTime == 0) {
+                                    clearInterval(countdownInterval);
+                                    timerElement.textContent = "Your OTP has expired.";
+                                }
+
+
+                        }, 1000);  // Update every second
+                    }
+
+                    startTimer();  // Start the countdown when the page loads
+                });
+            </script>
+-------------           ----------------------------------------------------------------
+
+
+                <script type="text/javascript">
+                    document.addEventListener("DOMContentLoaded", function () {
+                        console.log("DOMContentLoaded event triggered");
+
+                        var timerElement = document.getElementById("timer");
+                        console.log("timerElement:", timerElement);
+
+                        var remainingTimeElement = document.getElementById("remaining_time");
+                        console.log("remainingTimeElement:", remainingTimeElement);
+
+                        // Check if the 'remaining_time' element exists and get its value, otherwise set a default value
+                        var remainingTime = remainingTimeElement ? parseInt(remainingTimeElement.value) : 60;
+                        console.log("Initial remainingTime value:", remainingTime);
+
+                        // Check if remaining time is stored in localStorage (for persistent state across page refreshes)
+                        if (localStorage.getItem('otp_remaining_time')) {
+                            remainingTime = parseInt(localStorage.getItem('otp_remaining_time'));
+                            console.log("Remaining time retrieved from localStorage:", remainingTime);
+                        } else {
+                            console.log("No remaining time found in localStorage, using default:", remainingTime);
+                        }
+
+                        var countdownInterval;
+
+                        function startTimer() {
+                            console.log("Starting timer...");
+
+                            countdownInterval = setInterval(function () {
+                                console.log("Timer running... Remaining time:", remainingTime);
+
+                                if (remainingTime > 0) {
+                                    remainingTime--;
+                                    console.log("Decrementing remainingTime:", remainingTime);
+
+                                    localStorage.setItem('otp_remaining_time', remainingTime); // Save remaining time in localStorage
+                                    console.log("Remaining time saved to localStorage:", remainingTime);
+
+                                    timerElement.textContent = "OTP Expires in: " + remainingTime + " seconds";
+                                }
+
+                                if (remainingTime == 0) {
+                                    clearInterval(countdownInterval);
+                                    console.log("Timer finished, OTP expired.");
+                                    timerElement.textContent = "Your OTP has expired.";
+                                }
+                            }, 1000);
+                        }
+
+                        startTimer();
+                    });
+                </script>
+
+
+
+

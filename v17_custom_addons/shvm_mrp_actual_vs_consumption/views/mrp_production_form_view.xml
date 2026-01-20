@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_production_consumption_form_view" model="ir.ui.view">
+        <field name="name">mrp.production.consumption.form.view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='components']" position="after">
+                <page string="Consumption Ratio" name="consumption_ratio" invisible="state != 'done'">
+                    <field name="consumption_ids" readonly="1">
+                        <tree decoration-danger="ratio_type == 'lower'" decoration-warning="ratio_type == 'higher'" decoration-success="ratio_type == 'accurate'">
+                            <field name="production_id" invisible="1"/>
+                            <field name="product_id"/>
+                            <field name="to_consume" string="Need to Consume"/>
+                            <field name="actual_consume" string="Actual Consumption"/>
+                            <field name="uom_id"/>
+                            <field name="ratio" string="Ratio(%)"/>
+                            <field name="ratio_type" string="Consumption Status"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

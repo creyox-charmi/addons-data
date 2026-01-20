@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree view of Odoo Apps-->
+    <record id="view_tree_odoo_apps" model="ir.ui.view">
+        <field name="name">cr.odoo.apps.tree</field>
+        <field name="model">cr.odoo.apps</field>
+        <field name="arch" type="xml">
+            <tree editable='bottom'>
+                <field name="name"/>
+                <field name="tech_name"/>
+                <field name="version_ids" widget="many2many_tags"/>
+                <field name="non_migrated_version_ids" widget="many2many_tags"/>
+                <field name="category_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_search_odoo_apps" model="ir.ui.view">
+        <field name="name">cr.odoo.apps.search</field>
+        <field name="model">cr.odoo.apps</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="tech_name"/>
+                <separator name="version_ids"/>
+                <filter string="Available 13.0" name="version_ids" domain="[('version_ids', '=', '13.0')]"/>
+                <filter string="Available 14.0" name="version_ids" domain="[('version_ids', '=', '14.0')]"/>
+                <filter string="Available 15.0" name="version_ids" domain="[('version_ids', '=', '15.0')]"/>
+                <filter string="Available 16.0" name="version_ids" domain="[('version_ids', '=', '16.0')]"/>
+                <filter string="Available 17.0" name="version_ids" domain="[('version_ids', '=', '17.0')]"/>
+                <filter string="Available 18.0" name="version_ids" domain="[('version_ids', '=', '18.0')]"/>
+                <separator name="non_migrated_version_ids"/>
+                <filter string="Not-Available 13.0" name="non_migrated_version_ids" domain="[('non_migrated_version_ids', '=', '13.0')]"/>
+                <filter string="Not-Available 14.0" name="non_migrated_version_ids" domain="[('non_migrated_version_ids', '=', '14.0')]"/>
+                <filter string="Not-Available 15.0" name="non_migrated_version_ids" domain="[('non_migrated_version_ids', '=', '15.0')]"/>
+                <filter string="Not-Available 16.0" name="non_migrated_version_ids" domain="[('non_migrated_version_ids', '=', '16.0')]"/>
+                <filter string="Not-Available 17.0" name="non_migrated_version_ids" domain="[('non_migrated_version_ids', '=', '17.0')]"/>
+                <filter string="Not-Available 18.0" name="non_migrated_version_ids" domain="[('non_migrated_version_ids', '=', '18.0')]"/>
+                <separator name="category_id"/>
+                <filter string="Sales" name="category_id" domain="[('category_id', '=', 'Sales')]"/>
+                <filter string="Purchase" name="category_id" domain="[('category_id', '=', 'Purchase')]"/>
+                <filter string="Accounting" name="category_id" domain="[('category_id', '=', 'Accounting')]"/>
+                <filter string="eCommerce" name="category_id" domain="[('category_id', '=', 'eCommerce')]"/>
+                <filter string="Extra Tools" name="category_id" domain="[('category_id', '=', 'Extra Tools')]"/>
+                <filter string="Manufacturing" name="category_id" domain="[('category_id', '=', 'Manufacturing')]"/>
+                <filter string="Marketing" name="category_id" domain="[('category_id', '=', 'Marketing')]"/>
+                <filter string="Point Of Sale" name="category_id" domain="[('category_id', '=', 'Point Of Sale')]"/>
+                <filter string="Project" name="category_id" domain="[('category_id', '=', 'Project')]"/>
+                <filter string="Purchase" name="category_id" domain="[('category_id', '=', 'Purchase')]"/>
+                <filter string="Warehouse" name="category_id" domain="[('category_id', '=', 'Warehouse')]"/>
+                <group expand="0">
+                    <filter name="tech_name" context="{'group_by': 'tech_name'}"/>
+                    <filter name="version_ids" context="{'group_by': 'version_ids'}"/>
+                    <filter name="non_migrated_version_ids" context="{'group_by': 'non_migrated_version_ids'}"/>
+                    <filter name="category_id" context="{'group_by': 'category_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Odoo Apps -->
+    <record id="action_odoo_apps" model="ir.actions.act_window">
+        <field name="name">Odoo Apps</field>
+        <field name="res_model">cr.odoo.apps</field>
+        <field name="view_mode">tree,search</field>
+    </record>
+
+    <!-- Menu inside config-->
+    <menuitem id="menu_migration_config"
+              name="Configuration"
+              parent="menu_migration"
+              sequence="21"
+              groups='base.group_system'/>
+
+    <menuitem id="menu_odoo_apps"
+              name="Available Apps"
+              parent="cr_odoo_apps.menu_migration_config"
+              action="action_odoo_apps"
+              sequence="2"/>
+</odoo>

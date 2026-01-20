@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="action_wizard_open" model="ir.actions.act_window">
+        <field name="name">Stock Summary</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cr.stock.summary</field>
+        <field name="view_mode">form</field>
+    </record>
+    <menuitem action="action_wizard_open"
+              id="menu_product_stock_summary"
+              name="Product Stock Summary"
+              parent="stock.menu_warehouse_report"
+              sequence="999"/>
+</odoo>

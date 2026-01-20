@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cr_department,access_cr_department,model_cr_department_department,,1,1,1,1
+access_cr_student,access_cr_student,model_cr_student_student,,1,1,1,1
+access_cr_employee,access_cr_employee,model_cr_employee_employee,,1,1,1,1
+access_cr_departmentWizard,access_cr_departmentWizard,model_cr_department_wizard,,1,1,1,1
+access_cr_split_sale_wizard,access_cr_split_sale_wizard,model_split_sale_wizard,,1,1,1,1
+

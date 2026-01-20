@@ -1,0 +1,210 @@
+<!-- views/sale_order_views.xml -->
+<odoo>
+    <data>
+        <!-- Inherit Sale Order Form View to Customize Order Lines -->
+        <record id="view_order_form_custom" model="ir.ui.view">
+            <field name="name">sale.order.form.custom</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/list/field[@name='product_id']" position="before">
+                    <!-- 1. Line N -->
+                    <field name="line_number" readonly="1"/>
+
+                    <!-- 2. Everest PN -->
+                    <field name="everest_pn" readonly="1"/>
+
+                    <!-- 3. Customer PN -->
+                    <field name="customer_pn"/>
+
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/list/field[@name='product_uom_qty']" position="after">
+                    <!-- 6. Remaining quantity to deliver -->
+                    <field name="remaining_qty_to_deliver" readonly="1"/>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/list/field[@name='price_unit']" position="before">
+                    <!-- 8. RE & NRE Field -->
+                    <field name="re_nre"/>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/list/field[@name='price_subtotal']" position="after">
+
+                    <!-- 12. Required Delivery date -->
+                    <field name="required_delivery_date"/>
+
+                    <!-- 13. Updated Delivery date -->
+                    <field name="updated_delivery_date"/>
+
+                    <field name="re_sub_line_ids" column_invisible="True"/>
+                    <field name="nre_sub_line_ids" column_invisible="True"/>
+                    <field name="nre_invoiced_amount" column_invisible="True"/>
+                    <field name="nre_remaining_amount" column_invisible="True"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Tree view for Sale Order Lines (if accessed separately) -->
+        <record id="view_sale_order_line_tree_custom" model="ir.ui.view">
+            <field name="name">sale.order.line.tree.custom</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_order_line_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//list" position="replace">
+                    <list string="Order Lines">
+                        <field name="line_number"/>
+                        <field name="everest_pn"/>
+                        <field name="customer_pn"/>
+                        <field name="product_id"/>
+                        <field name="product_uom_qty"/>
+                        <field name="remaining_qty_to_deliver"/>
+                        <field name="product_uom" groups="uom.group_uom"/>
+                        <field name="re_nre"/>
+                        <field name="price_unit" widget='monetary'/>
+                        <field name="discount" groups="product.group_discount_per_so_line"/>
+                        <field name="price_subtotal" widget="monetary"/>
+                        <field name="required_delivery_date"/>
+                        <field name="updated_delivery_date"/>
+                        <field name="order_id"/>
+                        <field name="state" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                    </list>
+                </xpath>
+            </field>
+        </record>
+
+        <odoo>
+    <record id="view_order_form_inherit_re_nre" model="ir.ui.view">
+        <field name="name">sale.order.form.re.nre.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Target the order_line tree view -->
+            <xpath expr="//field[@name='order_line']/list/field[@name='re_nre']" position="after">
+                <button name="action_open_re_sub_lines"
+        type="object"
+        icon="fa-plus"
+        string="Add RE"
+        context="{'line_id': id}"
+        invisible="re_nre != 're'"/>
+
+<button name="action_open_nre_sub_lines"
+        type="object"
+        icon="fa-plus"
+        string="Add NRE"
+        context="{'line_id': id}"
+        invisible="re_nre != 'nre'"/>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
+
+    </data>
+
+    <!-- NRE Sub-lines Views -->
+    <data>
+        <record id="view_sale_order_line_nre_sub_tree" model="ir.ui.view">
+            <field name="name">sale.order.line.nre.sub.tree</field>
+            <field name="model">sale.order.line.nre.sub</field>
+            <field name="arch" type="xml">
+
+                <list string="NRE Sub Lines" editable="bottom" multi_edit="1">
+                    <field name="everest_pn"/>
+                    <field name="product_id" readonly="1"/>
+                    <field name="updated_delivery_date"/>
+                    <field name="required_delivery_date"/>
+                    <field name="billing_percentage"/>
+<!--                    <field name="billing_amount" widget="monetary" readonly="1"/>-->
+                    <field name="sub_line_description"/>
+                    <field name="sub_line_code"/>
+                    <field name="invoicing_status" readonly="1"/>
+<!--                    <button name="action_mark_ready_to_invoice"-->
+<!--                            type="object"-->
+<!--                            icon="fa-clock-o"-->
+<!--                            string="Ready to Invoice"-->
+<!--                            invisible="[('invoicing_status', '!=', 'pending')]"/>-->
+<!--                    <button name="action_create_invoice"-->
+<!--                            type="object"-->
+<!--                            icon="fa-file-text-o"-->
+<!--                            string="Create Invoice"-->
+<!--                            class="btn-primary"-->
+<!--                            invisible="[('invoicing_status', '!=', 'ready')]"/>-->
+                </list>
+            </field>
+
+
+        </record>
+
+        <record id="view_sale_order_line_nre_sub_form" model="ir.ui.view">
+            <field name="name">sale.order.line.nre.sub.form</field>
+            <field name="model">sale.order.line.nre.sub</field>
+            <field name="arch" type="xml">
+                <form string="NRE Sub Line">
+                    <header>
+<!--                        <button name="action_mark_ready_to_invoice"-->
+<!--                                type="object"-->
+<!--                                string="Mark Ready to Invoice"-->
+<!--                                class="btn-secondary"-->
+<!--                                invisible="[('invoicing_status', '!=', 'pending')]"/>-->
+<!--                        <button name="action_create_invoice"-->
+<!--                                type="object"-->
+<!--                                string="Create Invoice"-->
+<!--                                class="btn-primary"-->
+<!--                                invisible="[('invoicing_status', '!=', 'ready')]"/>-->
+                        <field name="invoicing_status" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="everest_pn"/>
+                                <field name="product_id"/>
+                                <field name="billing_percentage"/>
+                                <field name="billing_amount" widget="monetary"/>
+                                <field name="invoiced_amount" widget="monetary"/>
+                            </group>
+                            <group>
+                                <field name="sub_line_code"/>
+                                <field name="required_delivery_date"/>
+                                <field name="updated_delivery_date"/>
+                                <field name="sub_line_description"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Window Actions for Sub-lines -->
+        <record id="action_sale_order_line_re_sub" model="ir.actions.act_window">
+            <field name="name">RE Sub Lines</field>
+            <field name="res_model">sale.order.line.re.sub</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No RE sub-lines found!
+                </p>
+                <p>
+                    RE sub-lines are automatically generated based on the quantity of the main line.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_sale_order_line_nre_sub" model="ir.actions.act_window">
+            <field name="name">NRE Sub Lines</field>
+            <field name="res_model">sale.order.line.nre.sub</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No NRE sub-lines found!
+                </p>
+                <p>
+                    Add NRE sub-lines to define payment milestones for this line.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

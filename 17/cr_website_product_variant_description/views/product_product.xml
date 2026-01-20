@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="cr_product_variant_description_page" model="ir.ui.view">
+        <field name="name">view.product.description</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position='inside'>
+                <page string="Website Description" name="Description">
+                    <div class="row mb-2">
+                        <div class="col-auto col-6">
+                            <div style="border-bottom: 1px solid #454;">
+                                <strong>DESCRIPTION</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <group name="g1">
+                        <group>
+                            <field name="cr_description"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+

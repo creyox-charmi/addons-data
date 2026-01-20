@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="hero_snippet_template" name="section-1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+              media="print" onload="this.media='all'"/>
+
+        <section class="hero-section">
+            <!-- Background Floating Shapes -->
+            <div class="floating-shapes-bg">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            
+            <div class="hero-inner">
+                <div class="hero-content-wrapper">
+                    <!-- Left Content -->
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Transform Your
+                            <span class="rotating-words">
+                                <span class="word">Business</span>
+                                <span class="word">Operations</span>
+                                <span class="word">Workflow</span>
+                                <span class="word">Growth</span>
+                            </span>
+                            <br/>With Intelligent Odoo ERP
+                        </h1>
+
+                        <p class="hero-subtitle">
+                            Streamline operations, boost productivity, and scale your business with our comprehensive
+                            Odoo ERP solutions tailored for modern enterprises.
+                        </p>
+
+                        <a href="#contact" class="cta-button">
+                            <i class="fas fa-rocket" aria-hidden="true"></i>
+                            <span>Book a Free Demo</span>
+                        </a>
+                    </div>
+
+                    <!-- Right Side - Professional PC -->
+                    <div class="hero-images">
+                        <!-- Random Scattered Tech Icons -->
+                        <div class="tech-icons">
+                            <div class="tech-icon icon-1">
+                                <i class="fab fa-react"></i>
+                            </div>
+                            <div class="tech-icon icon-2">
+                                <i class="fab fa-node-js"></i>
+                            </div>
+                            <div class="tech-icon icon-3">
+                                <i class="fab fa-python"></i>
+                            </div>
+                            <div class="tech-icon icon-4">
+                                <i class="fab fa-aws"></i>
+                            </div>
+                            <div class="tech-icon icon-5">
+                                <i class="fab fa-docker"></i>
+                            </div>
+                            <div class="tech-icon icon-6">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="tech-icon icon-7">
+                                <i class="fab fa-git-alt"></i>
+                            </div>
+                            <div class="tech-icon icon-8">
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                        </div>
+
+                        <!-- Professional Desktop Computer -->
+                        <div class="desktop-computer">
+                            <div class="monitor">
+                                <div class="screen-bezel">
+                                    <div class="screen">
+                                        <!-- Corporate Dashboard -->
+                                        <div class="dashboard-content">
+                                            <div class="dashboard-header">
+                                                <div class="logo">DASHBOARD</div>
+                                                <div style="display: flex; gap: 6px;">
+                                                    <div style="width: 8px; height: 8px; background: white; border-radius: 50%; opacity: 0.8;"></div>
+                                                    <div style="width: 8px; height: 8px; background: white; border-radius: 50%; opacity: 0.8;"></div>
+                                                    <div style="width: 8px; height: 8px; background: white; border-radius: 50%; opacity: 0.8;"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="stats-grid">
+                                                <div class="stat-card">
+                                                    <div class="stat-label">Revenue</div>
+                                                    <div class="stat-value">$94.2K</div>
+                                                </div>
+                                                <div class="stat-card">
+                                                    <div class="stat-label">Orders</div>
+                                                    <div class="stat-value">3,847</div>
+                                                </div>
+                                                <div class="stat-card">
+                                                    <div class="stat-label">Users</div>
+                                                    <div class="stat-value">18.5K</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="chart-area">
+                                                <div class="chart-bar"></div>
+                                                <div class="chart-bar"></div>
+                                                <div class="chart-bar"></div>
+                                                <div class="chart-bar"></div>
+                                                <div class="chart-bar"></div>
+                                                <div class="chart-bar"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stand-neck"></div>
+                            <div class="stand-base"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="floating-shapes">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+
+        </section>
+    </template>
+</odoo>
+
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Snippet 2: Enhanced Rocket Growth Section -->
+    <template id="growth_snippet_template" name="section-2">
+        <section class="growth-section py-5 cr_font" aria-label="Business Growth Call to Action">
+            <div class="container">
+                <div class="row align-items-center">
+                    <!-- Left Side - Enhanced Rocket Illustration -->
+                    <div class="col-lg-6 text-center order-2 order-lg-1">
+                        <div class="growth-visual-container">
+                            <!-- Rocket Scene -->
+                            <div class="rocket-wrapper">
+                                <!-- Main Rocket -->
+                                <div class="rocket-body">
+                                    <div class="rocket-tip"></div>
+                                    <div class="rocket-window"></div>
+                                    <div class="rocket-stripe stripe-1"></div>
+                                    <div class="rocket-stripe stripe-2"></div>
+                                    <div class="rocket-fin rocket-fin-left"></div>
+                                    <div class="rocket-fin rocket-fin-right"></div>
+
+                                    <!-- Enhanced Flames -->
+                                    <div class="rocket-flame">
+                                        <div class="flame flame-large flame-1"></div>
+                                        <div class="flame flame-large flame-2"></div>
+                                        <div class="flame flame-large flame-3"></div>
+                                    </div>
+
+                                    <!-- Exhaust Particles -->
+                                    <div class="exhaust-particle ex-1"></div>
+                                    <div class="exhaust-particle ex-2"></div>
+                                    <div class="exhaust-particle ex-3"></div>
+                                    <div class="exhaust-particle ex-4"></div>
+                                </div>
+
+                                <!-- Stars with Twinkle -->
+                                <div class="star-particle star-p-1">✦</div>
+                                <div class="star-particle star-p-2">✦</div>
+                                <div class="star-particle star-p-3">✦</div>
+                                <div class="star-particle star-p-4">✦</div>
+                                <div class="star-particle star-p-5">✦</div>
+                                <div class="star-particle star-p-6">✦</div>
+                                <div class="star-particle star-p-7">✦</div>
+                                <div class="star-particle star-p-8">✦</div>
+
+
+                                <!-- Premium Achievement Badges -->
+                                <div class="achievement-badge badge-pos-1">
+                                    <div class="badge-glow"></div>
+                                    <div class="badge-inner">
+                                        <div class="badge-icon">🎯</div>
+                                        <div class="badge-text">Goal</div>
+                                        <div class="badge-value">100%</div>
+                                    </div>
+                                </div>
+
+                                <div class="achievement-badge badge-pos-2">
+                                    <div class="badge-glow"></div>
+                                    <div class="badge-inner">
+                                        <div class="badge-icon">⚡</div>
+                                        <div class="badge-text">Speed</div>
+                                        <div class="badge-value">Fast</div>
+                                    </div>
+                                </div>
+
+                                <div class="achievement-badge badge-pos-3">
+                                    <div class="badge-glow"></div>
+                                    <div class="badge-inner">
+                                        <div class="badge-icon">📈</div>
+                                        <div class="badge-text">Growth</div>
+                                        <div class="badge-value">+245%</div>
+                                    </div>
+                                </div>
+
+                                <!-- Orbit Rings with Glow -->
+                                <div class="orbit-ring ring-size-1">
+                                    <div class="orbit-dot dot-1"></div>
+                                    <div class="orbit-dot dot-2"></div>
+                                </div>
+                                <div class="orbit-ring ring-size-2">
+                                    <div class="orbit-dot dot-3"></div>
+                                    <div class="orbit-dot dot-4"></div>
+                                </div>
+
+                                <!-- Background Glow -->
+                                <div class="bg-glow glow-blue"></div>
+                                <div class="bg-glow glow-green"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side - Enhanced Content -->
+                    <div class="col-lg-6 order-1 order-lg-2">
+                        <div class="content-enhanced-wrapper">
+
+                            <h2 class="main-heading">
+                                Ready To Scale?
+                                <span class="highlight-text">We Help You Grow Smarter!</span>
+                            </h2>
+
+                            <h3 class="sub-heading">
+                                Stuck in Place? <strong>Accelerate Your Business</strong> with Our Expertise!
+                            </h3>
+
+                            <p class="description-text">
+                                Our software solutions are designed to help you <strong>take control of your business operations</strong> in a natural, intuitive way. With streamlined workflows and easy-to-use interfaces, you can focus on what matters most – <strong>growing your business and serving your customers.</strong>
+                            </p>
+
+                            <p class="description-text">
+                                We put our customers first. We offer a range of <strong>high-quality products and services</strong> designed to meet your specific needs and desires. Our team is dedicated to providing exceptional customer service and constantly improving our offerings to ensure your satisfaction.
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+</odoo>
+
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Snippet 3: Odoo ERP Export Solutions with Points -->
+
+    <template id="expert_snippet_template"  name="section-3">
+        <section class="py-5 cr_font">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6 text-center">
+                        <img t-att-src="'/cr_internal_website_theme/static/src/img/erp_expert_img.jpeg'"
+                             alt="Odoo Expert Image" class="img-fluid rounded shadow-lg" loading="lazy"/>
+
+
+                    </div>
+                    <div class="col-lg-6">
+                        <h2 class="fw-bold mb-4" style="color:#0A173B;">Leading Odoo ERP Export
+                            Solutions Provider
+                        </h2>
+                        <div class="key-points-section" aria-label="Our Odoo Development Advantages" role="list">
+                            <div class="key-points-row">
+                                <div class="point" style="--i:1;">
+                                    <i class="fas fa-code"></i>
+                                    <span>High Coding Standard</span>
+                                </div>
+                                <div class="point" style="--i:2;">
+                                    <i class="fas fa-star"></i>
+                                    <span>Committed to Excellence</span>
+                                </div>
+                            </div>
+                            <div class="key-points-row">
+                                <div class="point" style="--i:3;">
+                                    <i class="fas fa-headset"></i>
+                                    <span>End-to-End Support</span>
+                                </div>
+                                <div class="point" style="--i:4;">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Powered by Integrity</span>
+                                </div>
+                            </div>
+                            <div class="key-points-row">
+                                <div class="point" style="--i:5;">
+                                    <i class="fas fa-layer-group"></i>
+                                    <span>Proficient Across All Odoo Versions</span>
+                                </div>
+                                <div class="point" style="--i:6;">
+                                    <i class="fas fa-users"></i>
+                                    <span>A Passionate and Committed Team</span>
+                                </div>
+                            </div>
+                            <div class="key-points-row">
+                                <div class="point" style="--i:7;">
+                                    <i class="fas fa-award"></i>
+                                    <span>Putting Quality First</span>
+                                </div>
+                                <div class="point" style="--i:8;">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>100+ Odoo Projects</span>
+                                </div>
+                            </div>
+                            <div class="key-points-row">
+                                <div class="point" style="--i:9;">
+                                    <i class="fas fa-comment-dots"></i>
+                                    <span>Clear and Honest Communication</span>
+                                </div>
+                                <div class="point" style="--i:10;">
+                                    <i class="fas fa-people-arrows"></i>
+                                    <span>Empowering Teams Through Inclusivity</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+</odoo>
+
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Section 4: Odoo Services Full Block -->
+
+    <template id="service_snippet_template" name="section-4">
+        <section class="odoo-services-section cr_font" aria-labelledby="services-heading">
+            <h2 id="services-heading" class="odoo-services-heading">Our Odoo Services</h2>
+            <div class="services-grid" role="list">
+                <div class="service-card" role="listitem">
+                    <div class="service-icon" aria-hidden="true">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Odoo Development</h3>
+                    <p>Custom modules aligned to your business logic with clean, maintainable code.</p>
+                </div>
+                <div class="service-card" role="listitem">
+                    <div class="service-icon" aria-hidden="true">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3>Odoo Integration</h3>
+                    <p>Seamless sync with CRMs, eCommerce platforms, and third-party APIs.</p>
+                </div>
+                <div class="service-card" role="listitem">
+                    <div class="service-icon" aria-hidden="true">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Odoo Implementation</h3>
+                    <p>End-to-end Odoo ERP setup, configuration, and user onboarding.</p>
+                </div>
+                <div class="service-card" role="listitem">
+                    <div class="service-icon" aria-hidden="true">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Odoo Customisation</h3>
+                    <p>Tailored apps, forms, reports, and workflows for your specific needs.</p>
+                </div>
+                <div class="service-card" role="listitem">
+                    <div class="service-icon" aria-hidden="true">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3>Odoo Installation</h3>
+                    <p>Secure installations on cloud, on-premise, or hybrid server environments.</p>
+                </div>
+                <div class="service-card" role="listitem">
+                    <div class="service-icon" aria-hidden="true">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3>Odoo Migration</h3>
+                    <p>Smooth transition to newer Odoo versions with data integrity maintained.</p>
+                </div>
+                <div class="service-card" role="listitem">
+                    <div class="service-icon" aria-hidden="true">
+                        <i class="fas fa-life-ring"></i>
+                    </div>
+                    <h3>Odoo Support</h3>
+                    <p>24/7 monitoring, bug fixes, security patches, and performance tuning.</p>
+                </div>
+                <div class="service-card" role="listitem">
+                    <div class="service-icon" aria-hidden="true">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Odoo Consulting</h3>
+                    <p>Strategic planning and workflow optimization for maximum ROI.</p>
+                </div>
+                <div class="service-card" role="listitem">
+                    <div class="service-icon" aria-hidden="true">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3>Odoo Training</h3>
+                    <p>Comprehensive role-based training programs for users and administrators.</p>
+                </div>
+            </div>
+        </section>
+
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const cards = document.querySelectorAll(".service-card");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate");
+        }
+      });
+    },
+    {
+      threshold: 0.1,
+      rootMargin: "0px 0px -100px 0px"
+    }
+  );
+  cards.forEach(card => observer.observe(card));
+});
+</script>
+
+    </template>
+
+</odoo>
+
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Section 5: Milestones & Achievements with Dynamic Counter -->
+    <template id="milestone_snippet_template" name="section-5">
+        <section class="milestone-light-section cr_font" aria-labelledby="milestones-heading">
+            <div class="milestone-wrapper">
+                <h2 id="milestones-heading" class="milestone-heading">Our Milestones &amp; Achievements</h2>
+                <div class="milestone-grid" role="list">
+                    <div class="milestone-card" style="--i:1" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3><span class="counter" data-count="100">0</span>+
+                        </h3>
+                        <p>Satisfied Clients</p>
+                    </div>
+                    <div class="milestone-card" style="--i:2" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <h3><span class="counter" data-count="120">0</span>+
+                        </h3>
+                        <p>Projects Delivered</p>
+                    </div>
+                    <div class="milestone-card" style="--i:3" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <h3><span class="counter" data-count="5">0</span>+
+                        </h3>
+                        <p>Years of Experience</p>
+                    </div>
+                    <div class="milestone-card" style="--i:4" role="listitem">
+                        <div class="milestone-icon" aria-hidden="true">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3><span class="counter" data-count="15">0</span>+
+                        </h3>
+                        <p>Countries Served</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            const milestoneSection = document.querySelector(".milestone-light-section");
+            const counters = document.querySelectorAll(".counter");
+            let animated = false;
+
+            const animateCounter = (el, target) => {
+            let count = 0;
+            const speed = 10;
+            const increment = target / 40;
+            const update = () => {
+            count += increment;
+            if (count &lt; target) {
+            el.textContent = Math.floor(count);
+            requestAnimationFrame(update);
+            } else {
+            el.textContent = target;
+            }
+            };
+            update();
+            };
+
+            const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+            if (entry.isIntersecting &amp;&amp; !animated) {
+            animated = true;
+            counters.forEach(counter => {
+            animateCounter(counter, +counter.dataset.count);
+            });
+            }
+            });
+            }, { threshold: 0.4 });
+
+            observer.observe(milestoneSection);
+            });
+        </script>
+
+    </template>
+
+</odoo>
+
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="explore_clients" name="Section-6">
+        <section class="explore_clients cr_font">
+            <div class="container-fluid">
+                <div class="text-center py-5">
+                    <h2 class="h1">Our Clients</h2>
+                    <p>Your experience matters to us, and we’re driven by the desire to provide the best possible
+                        service, always with your needs in mind.
+                    </p>
+                </div>
+
+                <!-- element to store list of cities using JS -->
+                <div class="row justify-content-center" id="client-logo"/>
+            </div>
+        </section>
+    </template>
+
+    <!-- To be used in JS for snippet options -->
+    <template id="explore_clients_options" inherit_id="website.snippet_options">
+        <xpath expr="." position="inside">
+            <div data-js="ExploreClients" data-selector=".explore_clients">
+                <!-- Animation Speed Selector -->
+                <we-select string="Animation Direction">
+                    <we-button data-select-class="normal">Normal</we-button>
+                    <we-button data-select-class="reverse">Reverse</we-button>
+                    <we-button data-select-class="alternate">Alternate</we-button>
+                </we-select>
+                <we-input class="speed o_we_large" data-select-data-attribute="" string="Animation Speed"
+                          data-attribute-name="speed"/>
+                <we-select string="Border">
+                    <we-button data-select-class="square">Square</we-button>
+                    <we-button data-select-class="round">Round</we-button>
+                </we-select>
+                <div>
+                </div>
+            </div>
+
+
+        </xpath>
+    </template>
+
+
+</odoo>
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="contact_snippet_template" name="section-7">
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section class="connect-section o_wfull cr_font" aria-labelledby="connect-heading">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+
+            <div class="container connect-container">
+                <div class="connect-row">
+                    <h2 id="connect-heading">
+                        Seeking Professional <span class="highlight">Odoo Advice</span>? Need Implementation Assistance?
+                        Let's Connect!
+                    </h2>
+                    <a href="/contactus" class="dark-cta-btn" title="Get Odoo Consultation"
+                       aria-label="Contact Our Odoo Experts">
+                        <i class="fas fa-phone" aria-hidden="true"></i>
+                        <span>Contact Us</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </template>
+
+
+</odoo>
+
+
+
+all above is my current code section but i don't like secion3 for that can you give me the another ideas?
+and all other sections are ok , i give all other section only for refrence that this all are i have been already added through my code , and this all sections are the part of my homepage , no  i want unique design for sectcion 3 so can you give me suggestion that what i can do for that? , no extra description plz and only give code for section 3 only use digital img also i give you one refrence
+
+
+this is the refrence of digital img
+
+
+  <div class="hero-visual-container" style="perspective: 1200px; perspective-origin: center;">
+                <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; display: block;">
+                    <defs>
+                        <!-- Gradients for 3D effect -->
+                        <linearGradient id="surfaceGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="surfaceGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="surfaceGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="surfaceGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#43e97b;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#38f9d7;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="surfaceGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fa709a;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#fee140;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="surfaceGrad6" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#30cfd0;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#330867;stop-opacity:1" />
+                        </linearGradient>
+
+                        <filter id="shadow3d">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+                            <feOffset dx="0" dy="8" result="offsetblur"/>
+                            <feComponentTransfer>
+                                <feFuncA type="linear" slope="0.3"/>
+                            </feComponentTransfer>
+                            <feMerge>
+                                <feMergeNode/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Base Platform -->
+                    <g opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" dur="0.6s" fill="freeze"/>
+                        <polygon points="400,650 150,520 400,390 650,520" fill="#e0e7ff" stroke="#c7d2fe" stroke-width="3"/>
+                        <polygon points="400,650 400,390 650,520 650,780" fill="#c7d2fe" opacity="0.6"/>
+                        <polygon points="400,650 150,520 150,780 400,650" fill="#a5b4fc" opacity="0.4"/>
+                    </g>
+
+                    <!-- Module Block 1: CRM (Back Left) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="0.3s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="0.3s" dur="0.8s" fill="freeze"/>
+
+                        <!-- Top face -->
+                        <polygon points="220,380 300,340 380,380 300,420" fill="url(#surfaceGrad1)" filter="url(#shadow3d)"/>
+                        <!-- Right face -->
+                        <polygon points="300,420 380,380 380,480 300,520" fill="#5a67d8" opacity="0.8"/>
+                        <!-- Left face -->
+                        <polygon points="220,380 300,420 300,520 220,480" fill="#4c51bf" opacity="0.9"/>
+
+                        <!-- Icon/Label -->
+                        <text x="300" y="460" text-anchor="middle" fill="white" font-size="16" font-weight="700">CRM</text>
+                        <circle cx="300" cy="430" r="15" fill="white" opacity="0.3"/>
+                        <path d="M 295,427 L 300,432 L 308,422" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Module Block 2: Sales (Back Right) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="0.5s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="0.5s" dur="0.8s" fill="freeze"/>
+
+                        <polygon points="420,380 500,340 580,380 500,420" fill="url(#surfaceGrad2)" filter="url(#shadow3d)"/>
+                        <polygon points="500,420 580,380 580,480 500,520" fill="#ec4899" opacity="0.8"/>
+                        <polygon points="420,380 500,420 500,520 420,480" fill="#db2777" opacity="0.9"/>
+
+                        <text x="500" y="460" text-anchor="middle" fill="white" font-size="16" font-weight="700">Sales</text>
+                        <circle cx="500" cy="430" r="15" fill="white" opacity="0.3"/>
+                        <text x="500" y="437" text-anchor="middle" fill="white" font-size="18" font-weight="800">$</text>
+                    </g>
+
+                    <!-- Module Block 3: Inventory (Middle Left) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="0.7s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="0.7s" dur="0.8s" fill="freeze"/>
+
+                        <polygon points="270,280 350,240 430,280 350,320" fill="url(#surfaceGrad3)" filter="url(#shadow3d)"/>
+                        <polygon points="350,320 430,280 430,380 350,420" fill="#0ea5e9" opacity="0.8"/>
+                        <polygon points="270,280 350,320 350,420 270,380" fill="#0284c7" opacity="0.9"/>
+
+                        <text x="350" y="360" text-anchor="middle" fill="white" font-size="14" font-weight="700">Stock</text>
+                        <rect x="340" y="330" width="20" height="20" rx="3" fill="white" opacity="0.3"/>
+                    </g>
+
+                    <!-- Module Block 4: Accounting (Middle Right) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="0.9s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="0.9s" dur="0.8s" fill="freeze"/>
+
+                        <polygon points="470,280 550,240 630,280 550,320" fill="url(#surfaceGrad4)" filter="url(#shadow3d)"/>
+                        <polygon points="550,320 630,280 630,380 550,420" fill="#10b981" opacity="0.8"/>
+                        <polygon points="470,280 550,320 550,420 470,380" fill="#059669" opacity="0.9"/>
+
+                        <text x="550" y="360" text-anchor="middle" fill="white" font-size="13" font-weight="700">Finance</text>
+                        <circle cx="550" cy="335" r="12" fill="white" opacity="0.3"/>
+                        <text x="550" y="342" text-anchor="middle" fill="white" font-size="14" font-weight="800">₹</text>
+                    </g>
+
+                    <!-- Module Block 5: Analytics (Front Left) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="1.1s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="1.1s" dur="0.8s" fill="freeze"/>
+
+                        <polygon points="320,180 400,140 480,180 400,220" fill="url(#surfaceGrad5)" filter="url(#shadow3d)"/>
+                        <polygon points="400,220 480,180 480,280 400,320" fill="#fb923c" opacity="0.8"/>
+                        <polygon points="320,180 400,220 400,320 320,280" fill="#f97316" opacity="0.9"/>
+
+                        <text x="400" y="265" text-anchor="middle" fill="white" font-size="13" font-weight="700">Reports</text>
+                        <path d="M 385,235 L 390,245 L 395,240 L 400,250 L 405,238 L 410,248 L 415,235"
+                              stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+                    </g>
+
+                    <!-- Module Block 6: HR (Front Center) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="1.3s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="1.3s" dur="0.8s" fill="freeze"/>
+
+                        <polygon points="370,80 450,40 530,80 450,120" fill="url(#surfaceGrad6)" filter="url(#shadow3d)"/>
+                        <polygon points="450,120 530,80 530,180 450,220" fill="#7c3aed" opacity="0.8"/>
+                        <polygon points="370,80 450,120 450,220 370,180" fill="#6d28d9" opacity="0.9"/>
+
+                        <text x="450" y="165" text-anchor="middle" fill="white" font-size="15" font-weight="700">HR</text>
+                        <circle cx="450" cy="140" r="14" fill="white" opacity="0.3"/>
+                        <circle cx="450" cy="137" r="5" fill="white"/>
+                        <path d="M 442,148 Q 450,144 458,148" stroke="white" stroke-width="2" fill="none"/>
+                    </g>
+
+                    <!-- Connecting Lines (showing integration) -->
+                    <g opacity="0">
+                        <animate attributeName="opacity" from="0" to="0.3" begin="1.8s" dur="0.8s" fill="freeze"/>
+                        <line x1="300" y1="420" x2="450" y2="120" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5">
+                            <animate attributeName="stroke-dashoffset" from="100" to="0" begin="1.8s" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="500" y1="420" x2="450" y2="120" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5">
+                            <animate attributeName="stroke-dashoffset" from="100" to="0" begin="2s" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="350" y1="320" x2="450" y2="120" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5">
+                            <animate attributeName="stroke-dashoffset" from="100" to="0" begin="2.2s" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="550" y1="320" x2="450" y2="120" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5">
+                            <animate attributeName="stroke-dashoffset" from="100" to="0" begin="2.4s" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                    </g>
+
+                    <!-- Floating particles around modules -->
+                    <g opacity="0.6">
+                        <circle cx="250" cy="400" r="4" fill="#667eea">
+                            <animate attributeName="cy" values="400;380;400" dur="3s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="550" cy="350" r="3" fill="#4facfe">
+                            <animate attributeName="cy" values="350;330;350" dur="2.5s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="380" cy="250" r="5" fill="#43e97b">
+                            <animate attributeName="cy" values="250;230;250" dur="3.5s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="520" cy="200" r="3" fill="#fa709a">
+                            <animate attributeName="cy" values="200;180;200" dur="2.8s" repeatCount="indefinite"/>
+                        </circle>
+                    </g>
+                </svg>
+            </div>
+            
+            
+            
+we have also about us page also so in that also we add info regarding about us , so give some unique and professional which is suitable for home page and regarding odoo bcoz our company work in odoo 

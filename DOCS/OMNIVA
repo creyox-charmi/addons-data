@@ -1,0 +1,1743 @@
+/odoo17/custom/addons/cr_omniva_integration/controllers/__init__.py
+-----------------
+from . import main
+
+/odoo17/custom/addons/cr_omniva_integration/controllers/main.py
+-----------------
+# -*- coding: utf-8 -*-
+
+from odoo import http
+from odoo.http import request
+
+
+class OmnivaController(http.Controller):
+
+    @http.route('/shop/omniva/set_delivery_channel', type='json', auth='public', website=True)
+    def set_delivery_channel(self, delivery_channel='COURIER', **kwargs):
+        """Store selected delivery channel"""
+        request.session['omniva_delivery_channel'] = delivery_channel
+
+        # Save to order
+        order = request.website.sale_get_order()
+        if order:
+            order.sudo().write({'omniva_delivery_channel': delivery_channel})
+
+        return {'success': True}
+
+    @http.route('/shop/omniva/set_location', type='json', auth='public', website=True)
+    def set_location(self, location_id=None, **kwargs):
+        """Store selected location"""
+        order = request.website.sale_get_order()
+
+        if order and location_id:
+            location = request.env['omniva.location'].sudo().browse(int(location_id))
+            if location.exists():
+                order.sudo().write({'omniva_location_id': location.id})
+                return {'success': True, 'location_name': location.name}
+
+        return {'success': False}
+        
+        
+/odoo17/custom/addons/cr_omniva_integration/data
+-----------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Demo Omniva Carrier -->
+        <record id="omniva_carrier_demo" model="delivery.carrier">
+            <field name="name">Omniva</field>
+            <field name="delivery_type">omniva</field>
+            <field name="product_id" ref="delivery.product_product_delivery"/>
+        </record>
+    </data>
+</odoo>
+
+
+/odoo17/custom/addons/cr_omniva_integration/models/__init__.py
+-----------------
+# -*- coding: utf-8 -*-
+from . import res_company
+from . import delivery_carrier
+from . import stock_picking
+from . import omniva_location
+from . import sale_order
+
+/odoo17/custom/addons/cr_omniva_integration/models/delivery_carrier.py
+-----------------
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+from odoo.http import request
+
+
+class DeliveryCarrier(models.Model):
+    _inherit = 'delivery.carrier'
+
+    delivery_type = fields.Selection(
+        selection_add=[('omniva', 'Omniva')],
+        ondelete={'omniva': 'set default'},
+    )
+
+    # Omniva specific fields
+    omniva_main_service = fields.Selection([
+        ('PARCEL', 'Parcel'),
+        ('LETTER', 'Letter'),
+    ], string="Main Service", default='PARCEL')
+
+    omniva_delivery_channel = fields.Selection([
+        ('COURIER', 'Courier'),
+        ('POST_OFFICE', 'Post Office'),
+        ('PARCEL_MACHINE', 'Parcel Machine'),
+    ], string="Delivery Channel", default='COURIER')
+
+    omniva_service_package = fields.Selection([
+        ('STANDARD', 'Standard'),
+        ('ECONOMY', 'Economy'),
+        ('PREMIUM', 'Premium'),
+    ], string="Service Package", default='STANDARD')
+
+    omniva_label_format = fields.Selection([
+        ('A4', 'A4'),
+        ('A6', 'A6'),
+    ], string="Label Format", default='A4')
+
+    omniva_default_package_id = fields.Many2one(
+        'stock.package.type',
+        string="Default Package Type"
+    )
+
+    def omniva_rate_shipment(self, order):
+        """Calculate shipping rate based on selected delivery channel"""
+        self.ensure_one()
+        company = self.env.company
+
+        # Get delivery channel from session or default
+        delivery_channel = 'COURIER'
+        if request and hasattr(request, 'session'):
+            delivery_channel = request.session.get('omniva_delivery_channel', 'COURIER')
+
+        # Get price based on channel
+        if delivery_channel == 'COURIER':
+            price = company.omniva_courier_price or 5.00
+        elif delivery_channel == 'PARCEL_MACHINE':
+            price = company.omniva_parcel_machine_price or 3.50
+        else:  # POST_OFFICE
+            price = company.omniva_post_office_price or 4.00
+
+        return {
+            'success': True,
+            'price': price,
+            'error_message': False,
+            'warning_message': False
+        }
+
+    def omniva_send_shipping(self, pickings):
+        """Send shipment to Omniva and return tracking info.
+
+        This method is called by Odoo's standard delivery flow.
+        """
+        res = []
+
+        for picking in pickings:
+            try:
+                # Call the picking's omniva_send_shipping method
+                picking.omniva_send_shipping()
+
+                # Return the expected format for Odoo
+                res.append({
+                    'exact_price': 0.0,  # You can calculate actual price here
+                    'tracking_number': picking.omniva_barcode or False,
+                })
+            except Exception as e:
+                raise UserError(
+                    _('Failed to create Omniva shipment for %s: %s')
+                    % (picking.name, str(e))
+                )
+
+        return res
+
+    def omniva_get_tracking_link(self, picking):
+        """Get tracking link for Omniva shipment."""
+        if picking.omniva_barcode:
+            return f"https://www.omniva.ee/track?barcode={picking.omniva_barcode}"
+        return False
+
+    def omniva_cancel_shipment(self, pickings):
+        """Cancel Omniva shipment.
+
+        Note: As per Omniva API docs, shipments can only be cancelled/modified
+        if they are in REGISTERED status. This should be done via Omniva portal.
+        """
+        pickings.message_post(
+            body=_('Omniva shipments must be cancelled through the Omniva portal or by contacting support.')
+        )
+
+
+class ChooseDeliveryCarrier(models.TransientModel):
+    _inherit = 'choose.delivery.carrier'
+
+    def _get_shipment_rate(self):
+        """Override to handle Omniva rate calculation."""
+        if self.delivery_type == 'omniva':
+            return self.carrier_id.omniva_rate_shipment(self.order_id)
+        return super()._get_shipment_rate()
+        
+        
+/odoo17/custom/addons/cr_omniva_integration/models/omniva_location.py
+-----------------
+# -*- coding: utf-8 -*-
+
+import logging
+import requests
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
+
+
+class OmnivaLocation(models.Model):
+    _name = 'omniva.location'
+    _description = 'Omniva Pickup Locations'
+    _order = 'country, city, name'
+    _rec_name = 'display_name'
+
+    # Fields from JSON
+    zip_code = fields.Char('ZIP', index=True)
+    name = fields.Char('Name', required=True, index=True)
+    location_type = fields.Selection([
+        ('0', 'Parcel Machine'),
+        ('1', 'Post Office / Pickup Point')
+    ], string='Type', required=True, index=True)
+    country = fields.Selection([
+        ('EE', 'Estonia'),
+        ('LV', 'Latvia'),
+        ('LT', 'Lithuania'),
+        ('FI', 'Finland')
+    ], string='Country', required=True, index=True)
+    city = fields.Char('City', index=True)
+    address = fields.Char('Address')
+    latitude = fields.Float('Latitude', digits=(10, 6))
+    longitude = fields.Float('Longitude', digits=(10, 6))
+    comment_est = fields.Text('Comment (EST)')
+    comment_eng = fields.Text('Comment (ENG)')
+    comment_rus = fields.Text('Comment (RUS)')
+    comment_lat = fields.Text('Comment (LAT)')
+    comment_lit = fields.Text('Comment (LIT)')
+    active = fields.Boolean('Active', default=True)
+
+    display_name = fields.Char(
+        string='Display Name',
+        compute='_compute_display_name',
+        store=True
+    )
+
+    _sql_constraints = [
+        ('unique_zip_name', 'unique(zip_code, name, country)', 'Location must be unique!'),
+    ]
+
+    @api.depends('name', 'city', 'location_type')
+    def _compute_display_name(self):
+        """Generate display name"""
+        type_dict = dict(self._fields['location_type'].selection)
+        for location in self:
+            location_type = type_dict.get(location.location_type, '')
+            location.display_name = f"{location.name} - {location.city} ({location_type})"
+
+    @api.model
+    def sync_locations_from_omniva(self, country=None):
+        """Sync locations from Omniva JSON API"""
+
+        # Use full locations list (includes Finland)
+        url = 'https://www.omniva.ee/locationsfull.json'
+
+        try:
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+
+            created = updated = skipped = 0
+
+            for item in data:
+                # Filter by country if specified
+                if country and item.get('A0_NAME') != country:
+                    continue
+
+                try:
+                    values = {
+                        'zip_code': item.get('ZIP'),
+                        'name': item.get('NAME'),
+                        'location_type': item.get('TYPE', '0'),
+                        'country': item.get('A0_NAME'),
+                        'city': item.get('A2_NAME') or item.get('A1_NAME'),
+                        'address': item.get('A5_NAME') or item.get('A7_NAME'),
+                        'latitude': float(item.get('Y_COORDINATE', 0)),
+                        'longitude': float(item.get('X_COORDINATE', 0)),
+                        'comment_est': item.get('comment_est'),
+                        'comment_eng': item.get('comment_eng'),
+                        'comment_rus': item.get('comment_rus'),
+                        'comment_lat': item.get('comment_lat'),
+                        'comment_lit': item.get('comment_lit'),
+                        'active': True
+                    }
+
+                    # Find existing
+                    existing = self.search([
+                        ('zip_code', '=', values['zip_code']),
+                        ('name', '=', values['name']),
+                        ('country', '=', values['country'])
+                    ], limit=1)
+
+                    if existing:
+                        existing.write(values)
+                        updated += 1
+                    else:
+                        self.create(values)
+                        created += 1
+
+                except Exception as e:
+                    _logger.error(f"Failed to process location: {e}")
+                    skipped += 1
+
+            _logger.info(f"Omniva sync: {created} created, {updated} updated, {skipped} skipped")
+
+            return {
+                'created': created,
+                'updated': updated,
+                'skipped': skipped,
+                'total': len(data)
+            }
+
+        except Exception as e:
+            raise UserError(_('Failed to sync Omniva locations: %s') % str(e))
+
+
+/odoo17/custom/addons/cr_omniva_integration/models/res_company.py
+-----------------
+# -*- coding: utf-8 -*-
+
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
+
+
+class ResCompany(models.Model):
+    _inherit = 'res.company'
+
+    # Omniva API Configuration (existing fields...)
+    omniva_api_url = fields.Selection([
+        ('test', 'Test Environment'),
+        ('live', 'Live Environment'),
+    ], string="Omniva Environment", default='test')
+
+    omniva_username = fields.Char(string="Omniva Username")
+    omniva_password = fields.Char(string="Omniva Password")
+    omniva_customer_code = fields.Char(
+        string="Customer Code",
+        help="Your Omniva customer code (e.g., 37884)"
+    )
+    omniva_developer_id = fields.Char(
+        string="Developer ID",
+        default="Developer_ODOO18_v1",
+        help="X-Integration-Agent-Id header value"
+    )
+    omniva_default_hs_code = fields.Char(
+        string='Default Omniva HS Code',
+        size=10,
+        help='Default 10-digit HS code for non-EU customs'
+    )
+
+    # ==================== NEW: PRICE CONFIGURATION ====================
+    omniva_courier_price = fields.Float(
+        string='Courier Delivery Price',
+        default=5.00,
+        help='Fixed delivery price for door-to-door courier delivery'
+    )
+    omniva_parcel_machine_price = fields.Float(
+        string='Parcel Machine Price',
+        default=3.50,
+        help='Fixed delivery price for parcel machine pickup'
+    )
+    omniva_post_office_price = fields.Float(
+        string='Post Office Price',
+        default=4.00,
+        help='Fixed delivery price for post office pickup'
+    )
+    omniva_custom_service_names = fields.Boolean(
+        string='Use Custom Service Names',
+        default=False,
+        help='Enable custom naming for delivery service types'
+    )
+    omniva_courier_label = fields.Char(
+        string='Courier Service Label',
+        default='Kuller (uksele)',
+        help='Custom label for courier delivery service'
+    )
+    omniva_pudo_label = fields.Char(
+        string='Parcel Machine Label',
+        default='Pakiautomaadid',
+        help='Custom label for parcel machine service'
+    )
+    omniva_post_office_label = fields.Char(
+        string='Post office Label',
+        default='Postkontor',
+        help='Custom label for Post office service'
+    )
+    # ==================================================================
+
+    def _get_omniva_base_url(self):
+        """Get the base URL based on environment selection."""
+        self.ensure_one()
+        if self.omniva_api_url == 'live':
+            return "https://omx.omniva.eu/api/v01/omx"
+        return "https://test-omx.omniva.eu/api/v01/omx"
+
+    def action_test_omniva_connection(self):
+        """Test Omniva API credentials"""
+        self.ensure_one()
+
+        if not self.omniva_username or not self.omniva_password:
+            raise ValidationError(
+                _('Please configure Omniva username and password first.')
+            )
+
+        if not self.omniva_customer_code:
+            raise ValidationError(
+                _('Please configure Omniva customer code first.')
+            )
+
+        import requests
+        import base64
+
+        base_url = self._get_omniva_base_url()
+        credentials = f"{self.omniva_username}:{self.omniva_password}"
+        auth_token = base64.b64encode(credentials.encode('utf-8')).decode('ascii')
+
+        headers = {
+            "Authorization": f"Basic {auth_token}",
+            "X-Integration-Agent-Id": self.omniva_developer_id or "Developer_ODOO18_v1",
+            "Content-Type": "application/json"
+        }
+
+        try:
+            response = requests.get(
+                f"{base_url}/shipments",
+                headers=headers,
+                params={'fromTrackEventId': 0, 'size': 1},
+                timeout=10
+            )
+
+            if response.status_code == 200:
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': _('Success'),
+                        'message': _('Connection to Omniva API successful!'),
+                        'type': 'success',
+                        'sticky': False,
+                    }
+                }
+            elif response.status_code == 401:
+                raise ValidationError(
+                    _('Authentication failed. Please verify credentials.')
+                )
+            else:
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get('message', response.text)
+                except:
+                    error_msg = response.text
+
+                raise ValidationError(
+                    _('Connection failed with status %s: %s') %
+                    (response.status_code, error_msg)
+                )
+
+        except ValidationError:
+            raise
+        except requests.RequestException as e:
+            raise ValidationError(
+                _('Network error: %s') % str(e)
+            )
+        except Exception as e:
+            raise ValidationError(
+                _('Unexpected error: %s') % str(e)
+            )
+
+    def action_sync_omniva_locations(self):
+        """Sync Omniva locations"""
+        self.ensure_one()
+
+        try:
+            Location = self.env['omniva.location']
+            result = Location.sync_locations_from_omniva()
+
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Locations Synced'),
+                    'message': _('Created: %(created)s, Updated: %(updated)s, Total: %(total)s') % result,
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
+        except Exception as e:
+            raise ValidationError(_('Sync failed: %s') % str(e))
+            
+            
+/odoo17/custom/addons/cr_omniva_integration/models/sale_order.py
+-----------------
+# -*- coding: utf-8 -*-
+
+from odoo import api, models, fields
+from odoo.http import request
+
+
+class SaleOrder(models.Model):
+    _inherit = "sale.order"
+
+    # SmartPosti fields
+    smartposti_service_type = fields.Selection([
+        ('pudo', 'Parcel Machines'),
+        ('po', 'Post Offices')
+    ], string='SmartPosti Service Type', copy=False)
+
+    smartposti_place_id = fields.Many2one(
+        'smartposti.place',
+        string='Selected Pickup Point',
+        copy=False
+    )
+
+    # Omniva fields
+    omniva_delivery_channel = fields.Selection([
+        ('COURIER', 'Courier'),
+        ('POST_OFFICE', 'Post Office'),
+        ('PARCEL_MACHINE', 'Parcel Machine'),
+    ], string='Omniva Delivery Channel', copy=False)
+
+    omniva_location_id = fields.Many2one(
+        'omniva.location',
+        string='Omniva Pickup Location',
+        copy=False
+    )
+
+    def _action_confirm(self):
+        """Override to transfer data to picking"""
+        result = super(SaleOrder, self)._action_confirm()
+
+        # Transfer SmartPosti data
+        for order in self:
+            if order.carrier_id and order.carrier_id.delivery_type == 'smartposti':
+                pickings = order.picking_ids.filtered(
+                    lambda p: p.picking_type_code == 'outgoing' and not p.smartposti_place_id
+                )
+                if pickings and order.smartposti_place_id:
+                    pickings.write({
+                        'smartposti_place_id': order.smartposti_place_id.id,
+                    })
+
+            # Transfer Omniva data
+            if order.carrier_id and order.carrier_id.delivery_type == 'omniva':
+                pickings = order.picking_ids.filtered(
+                    lambda p: p.picking_type_code == 'outgoing'
+                )
+                if pickings and order.omniva_location_id:
+                    for picking in pickings:
+                        picking.write({
+                            'note': f"Omniva {order.omniva_delivery_channel}: {order.omniva_location_id.name}, {order.omniva_location_id.address}"
+                        })
+
+        return result
+
+    @api.depends('order_line.price_total', 'order_line.price_subtotal', 'carrier_id')
+    def _compute_amount_delivery(self):
+        """Override to handle dynamic pricing for SmartPosti and Omniva"""
+
+        # Call parent first
+        super(SaleOrder, self)._compute_amount_delivery()
+
+        # Handle SmartPosti
+        for order in self.filtered(lambda o: o.website_id and o.carrier_id):
+
+            # ==================== NEW: Handle Omniva ====================
+            if order.carrier_id.delivery_type == 'omniva':
+                # Get delivery channel from session OR order field
+                delivery_channel = order.omniva_delivery_channel or 'COURIER'
+                if request and hasattr(request, 'session'):
+                    delivery_channel = request.session.get('omniva_delivery_channel', delivery_channel)
+                    if delivery_channel != order.omniva_delivery_channel:
+                        order.omniva_delivery_channel = delivery_channel
+
+                company = order.company_id
+
+                # Get price based on delivery channel
+                if delivery_channel == 'COURIER':
+                    target_price = company.omniva_courier_price or 5.00
+                elif delivery_channel == 'PARCEL_MACHINE':
+                    target_price = company.omniva_parcel_machine_price or 3.50
+                else:  # POST_OFFICE
+                    target_price = company.omniva_post_office_price or 4.00
+
+                # Update delivery line price
+                delivery_lines = order.order_line.filtered('is_delivery')
+                if delivery_lines:
+                    for line in delivery_lines:
+                        if line.price_unit != target_price:
+                            line.write({'price_unit': target_price})
+
+                    # Recalculate amount_delivery
+                    if order.website_id.show_line_subtotals_tax_selection == 'tax_excluded':
+                        order.amount_delivery = sum(delivery_lines.mapped('price_subtotal'))
+                    else:
+                        order.amount_delivery = sum(delivery_lines.mapped('price_total'))
+                        
+/odoo17/custom/addons/cr_omniva_integration/models/stock_picking.py
+-----------------
+# -*- coding: utf-8 -*-
+
+import requests
+import base64
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    omniva_barcode = fields.Char(
+        string="Omniva Barcode",
+        copy=False,
+        readonly=True
+    )
+    omniva_partner_shipment_id = fields.Char(
+        string="Partner Shipment ID",
+        copy=False
+    )
+    omniva_label_id = fields.Many2one(
+        'ir.attachment',
+        string="Omniva Label",
+        copy=False,
+        readonly=True,
+        store=True
+    )
+
+    def button_validate(self):
+        """Override to send shipment to Omniva when validating."""
+        res = super().button_validate()
+
+        for picking in self:
+            if (picking.carrier_id and
+                    picking.carrier_id.delivery_type == 'omniva' and
+                    not picking.omniva_barcode and
+                    picking.picking_type_code == 'outgoing'):
+
+                try:
+                    picking.omniva_send_shipping()
+                except Exception as e:
+                    picking.message_post(
+                        body=_('Warning: Failed to create Omniva shipment automatically: %s') % str(e),
+                        message_type='comment'
+                    )
+        return res
+
+    def action_omniva_send_shipping(self):
+        """Manual action to send shipment to Omniva."""
+        self.ensure_one()
+
+        if not self.carrier_id or self.carrier_id.delivery_type != 'omniva':
+            raise UserError(_('This is not an Omniva shipment.'))
+
+        if self.omniva_barcode:
+            raise UserError(_('Shipment already sent to Omniva. Barcode: %s') % self.omniva_barcode)
+
+        try:
+            self.omniva_send_shipping()
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Success'),
+                    'message': _('Omniva shipment created successfully! Barcode: %s') % self.omniva_barcode,
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
+        except Exception as e:
+            raise UserError(_('Failed to create Omniva shipment: %s') % str(e))
+
+    def _validate_and_format_phone(self, phone_number):
+        """Validate and format phone number for Omniva API."""
+        if not phone_number:
+            return None
+
+        clean = ''.join(c for c in str(phone_number) if c.isdigit() or c == '+')
+        digit_count = len(clean.replace('+', ''))
+
+        if digit_count < 8:
+            return None
+
+        if not clean.startswith('+'):
+            if digit_count >= 10:
+                clean = '+' + clean
+            else:
+                return None
+
+        if len(clean) > 12:
+            clean = clean[:12]
+
+        if len(clean.replace('+', '')) < 8:
+            return None
+
+        return clean
+
+    def _prepare_omniva_headers(self):
+        """Prepare authentication headers for Omniva API."""
+        company = self.company_id
+
+        if not company.omniva_username or not company.omniva_password:
+            raise ValidationError(
+                _('Omniva credentials not configured in company settings.')
+            )
+
+        credentials = f"{company.omniva_username}:{company.omniva_password}"
+        auth_token = base64.b64encode(credentials.encode('utf-8')).decode('ascii')
+
+        return {
+            "Authorization": f"Basic {auth_token}",
+            "X-Integration-Agent-Id": company.omniva_developer_id or "Developer_ODOO18_v1",
+            "Content-Type": "application/json"
+        }
+
+    def _get_omniva_country_code(self, country_code):
+        """Convert country code to Omniva-compatible code."""
+        if not country_code:
+            return 'EE'
+
+        omniva_sender_countries = ['EE', 'LV', 'LT']
+
+        if country_code in omniva_sender_countries:
+            return country_code
+
+        return 'EE'
+
+    def _prepare_omniva_shipment_data(self):
+        """Prepare shipment data for Omniva API."""
+        self.ensure_one()
+        company = self.company_id
+        carrier = self.carrier_id
+        partner = self.partner_id
+
+        if not company.omniva_customer_code:
+            raise ValidationError(
+                _('Customer Code not configured in company settings.')
+            )
+
+        required_partner_fields = {
+            'Name': partner.name,
+            'Street': partner.street,
+            'City': partner.city,
+            'Zip': partner.zip,
+            'Country': partner.country_id.code if partner.country_id else None,
+        }
+
+        missing_fields = [
+            field for field, value in required_partner_fields.items()
+            if not value
+        ]
+        if missing_fields:
+            raise ValidationError(
+                _('Missing required delivery partner fields: %s') %
+                ', '.join(missing_fields)
+            )
+
+        # Get delivery channel from sale order
+        delivery_channel = carrier.omniva_delivery_channel or 'COURIER'
+
+        if self.sale_id and self.sale_id.omniva_delivery_channel:
+            delivery_channel = self.sale_id.omniva_delivery_channel
+            carrier.omniva_delivery_channel = delivery_channel
+
+        # Validate contact information based on delivery channel
+        if delivery_channel == 'COURIER':
+            if not partner.phone and not partner.mobile:
+                raise ValidationError(
+                    _('Courier delivery requires at least phone or mobile number for the delivery partner.')
+                )
+        elif delivery_channel in ['POST_OFFICE', 'PARCEL_MACHINE']:
+            if not partner.mobile and not partner.email:
+                raise ValidationError(
+                    _('%s delivery requires at least mobile number or email for the delivery partner.')
+                    % delivery_channel.replace('_', ' ').title()
+                )
+
+        # Prepare receiver addressee
+        receiver_address = {
+            "personName": partner.name[:50],
+            "address": {
+                "street": partner.street[:80],
+                "deliverypoint": partner.city[:80],
+                "postcode": partner.zip[:10],
+                "country": partner.country_id.code,
+            }
+        }
+
+        if partner.street2:
+            receiver_address["address"]["apartmentNo"] = partner.street2[:20]
+
+        # ========== CRITICAL FIX: Validate location type matches delivery channel ==========
+        if self.sale_id and self.sale_id.omniva_location_id:
+            location = self.sale_id.omniva_location_id
+
+            # Validate location type matches delivery channel
+            if delivery_channel == 'PARCEL_MACHINE':
+                # For parcel machine, location MUST be type '0' (Parcel Machine)
+                if location.location_type != '0':
+                    raise ValidationError(
+                        _('Selected location "%s" is not a Parcel Machine.\n'
+                          'Please select a Parcel Machine location for PARCEL_MACHINE delivery channel.\n\n'
+                          'Location Type: %s')
+                        % (location.name, dict(location._fields['location_type'].selection).get(location.location_type))
+                    )
+                # Add offloadPostcode (mandatory for parcel machines)
+                if location.zip_code:
+                    receiver_address["address"]["offloadPostcode"] = location.zip_code[:10]
+                else:
+                    raise ValidationError(
+                        _('Selected Parcel Machine "%s" does not have a valid postcode.')
+                        % location.name
+                    )
+
+            elif delivery_channel == 'POST_OFFICE':
+                # For post office, location MUST be type '1' (Post Office)
+                if location.location_type != '1':
+                    raise ValidationError(
+                        _('Selected location "%s" is not a Post Office.\n'
+                          'Please select a Post Office location for POST_OFFICE delivery channel.\n\n'
+                          'Location Type: %s')
+                        % (location.name, dict(location._fields['location_type'].selection).get(location.location_type))
+                    )
+                # Add offloadPostcode (optional for post offices, but recommended)
+                if location.zip_code:
+                    receiver_address["address"]["offloadPostcode"] = location.zip_code[:10]
+
+            # For COURIER: do NOT add offloadPostcode at all (per API docs)
+            # No need for else block - we simply don't add offloadPostcode for courier
+
+        # Add contact info with validation
+        validated_phone = self._validate_and_format_phone(partner.phone)
+        validated_mobile = self._validate_and_format_phone(partner.mobile)
+
+        destination_country = partner.country_id.code if partner.country_id else 'EE'
+        is_international = destination_country not in ['EE', 'LV', 'LT', 'FI']
+
+        if validated_phone:
+            receiver_address["contactPhone"] = validated_phone
+            if is_international and not validated_mobile:
+                receiver_address["contactMobile"] = validated_phone
+
+        if validated_mobile:
+            receiver_address["contactMobile"] = validated_mobile
+        if partner.email:
+            receiver_address["contactEmail"] = partner.email[:50]
+
+        # Re-validate contact methods after cleaning
+        if delivery_channel == 'COURIER':
+            if not validated_phone and not validated_mobile:
+                raise ValidationError(
+                    _('Courier delivery requires a valid phone or mobile number.\n'
+                      'Phone: %s\nMobile: %s\n'
+                      'Please ensure phone numbers are in international format (e.g., +372XXXXXXXX)')
+                    % (partner.phone or 'Not provided', partner.mobile or 'Not provided')
+                )
+        elif delivery_channel in ['POST_OFFICE', 'PARCEL_MACHINE']:
+            if not validated_mobile and not partner.email:
+                raise ValidationError(
+                    _('%s delivery requires a valid mobile number or email.\n'
+                      'Mobile: %s\nEmail: %s\n'
+                      'Please ensure mobile number is in international format (e.g., +372XXXXXXXX)')
+                    % (delivery_channel.replace('_', ' ').title(),
+                       partner.mobile or 'Not provided',
+                       partner.email or 'Not provided')
+                )
+
+        # Prepare sender addressee
+        sender_address = {
+            "personName": company.name[:50],
+            "address": {
+                "street": (company.street or 'Main Street')[:80],
+                "deliverypoint": (company.city or 'City')[:80],
+                "postcode": (company.zip or '10111')[:10],
+                "country": self._get_omniva_country_code(company.country_id.code if company.country_id else None),
+            }
+        }
+
+        validated_sender_phone = self._validate_and_format_phone(company.phone)
+        if validated_sender_phone:
+            sender_address["contactPhone"] = validated_sender_phone
+        if company.email:
+            sender_address["contactEmail"] = company.email[:50]
+
+        if not self.omniva_partner_shipment_id:
+            self.omniva_partner_shipment_id = f"ODO_{self.name.replace('/', '_')}"
+
+        # Prepare shipment payload
+        shipment_data = {
+            "mainService": carrier.omniva_main_service or "PARCEL",
+            "deliveryChannel": delivery_channel,
+            "partnerShipmentId": self.omniva_partner_shipment_id,
+            "receiverAddressee": receiver_address,
+            "senderAddressee": sender_address,
+        }
+
+        # Add service package for international PARCEL
+        if carrier.omniva_main_service == 'PARCEL' and is_international:
+            shipment_data["servicePackage"] = {
+                "code": "ECONOMY"
+            }
+        elif carrier.omniva_service_package:
+            if carrier.omniva_main_service == 'LETTER' or is_international:
+                shipment_data["servicePackage"] = {
+                    "code": carrier.omniva_service_package
+                }
+
+        # Add content description for international shipments
+        content_desc = self.origin or "Goods"
+        if partner.country_id and partner.country_id.code not in ['EE', 'LV', 'LT', 'FI']:
+            if self.sale_id and self.sale_id.note:
+                content_desc = self.sale_id.note[:500]
+            shipment_data["contentDescription"] = content_desc
+
+        # Add weight if available
+        if self.shipping_weight and self.shipping_weight > 0:
+            shipment_data["measurement"] = {
+                "weight": round(self.shipping_weight, 3)
+            }
+
+        # Add shipment comment
+        if self.note:
+            shipment_data["shipmentComment"] = self.note[:128]
+
+        # Add customs data for non-EU destinations
+        eu_countries = [
+            'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU',
+            'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE'
+        ]
+
+        if is_international and destination_country not in eu_countries:
+            if not company.omniva_default_hs_code:
+                raise ValidationError(
+                    _('Default HS Code not configured for Omniva shipments.\n\n'
+                      'Go to Settings > Companies > [Your Company] and set "Default Omniva HS Code".')
+                )
+
+            if not self.move_ids:
+                raise ValidationError(_('No stock moves found for customs declaration.'))
+
+            first_move = self.move_ids[0]
+            item_description = (first_move.product_id.name or content_desc)[:500]
+
+            total_value = self.sale_id.amount_untaxed if self.sale_id else 10.0
+            total_pieces = int(sum(self.move_ids.mapped('product_uom_qty')) or 1)
+            total_weight = self.shipping_weight or float(total_pieces)
+
+            per_piece_weight = round(total_weight / total_pieces, 3)
+            per_piece_value = round(total_value / total_pieces, 2)
+
+            shipment_data["customs"] = {
+                "goodsCategoryCode": "SALE_OF_GOODS",
+                "shipmentItems": [{
+                    "description": item_description,
+                    "numberOfPieces": total_pieces,
+                    "weight": per_piece_weight,
+                    "financialValue": per_piece_value,
+                    "tariffNumber": company.omniva_default_hs_code,
+                    "originCountry": self._get_omniva_country_code(
+                        company.country_id.code if company.country_id else None)
+                }]
+            }
+
+        return {
+            "customerCode": company.omniva_customer_code,
+            "fileId": f"FILE_{fields.Datetime.now().strftime('%Y%m%d%H%M%S')}_{self.id}",
+            "shipments": [shipment_data]
+        }
+
+    def omniva_send_shipping(self):
+        """Send shipment to Omniva API."""
+        self.ensure_one()
+        company = self.company_id
+        base_url = company._get_omniva_base_url()
+
+        headers = self._prepare_omniva_headers()
+        payload = self._prepare_omniva_shipment_data()
+
+        import json
+        import logging
+        _logger = logging.getLogger(__name__)
+
+        try:
+            response = requests.post(
+                f"{base_url}/shipments/business-to-client",
+                headers=headers,
+                json=payload,
+                timeout=30
+            )
+
+            if response.status_code in [200, 201]:
+                result = response.json()
+
+                if result.get('resultCode') == 'OK' and result.get('savedShipments'):
+                    saved_shipment = result['savedShipments'][0]
+                    self.omniva_barcode = saved_shipment.get('barcode')
+                    self.carrier_tracking_ref = self.omniva_barcode
+
+                    self.message_post(
+                        body=_('Omniva shipment created successfully.<br/>Barcode: %s')
+                             % self.omniva_barcode
+                    )
+
+                    try:
+                        self._omniva_get_label()
+                    except Exception as label_error:
+                        self.message_post(
+                            body=_('Shipment created but label generation failed: %s<br/>'
+                                   'You can try to generate the label manually later.') % str(label_error),
+                            message_type='comment'
+                        )
+
+                elif result.get('failedShipments'):
+                    failed = result['failedShipments'][0]
+                    error_msg = failed.get('message', 'Unknown error')
+                    error_code = failed.get('messageCode', '')
+
+                    raise ValidationError(
+                        _('Omniva shipment creation failed:\n\n'
+                          'Error Code: %s\n'
+                          'Message: %s\n\n'
+                          'Please check the delivery address and contact information.')
+                        % (error_code, error_msg)
+                    )
+                else:
+                    raise ValidationError(
+                        _('Unexpected response from Omniva API. No shipments saved or failed.')
+                    )
+
+            else:
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get('message', error_data.get('error', response.text))
+                except:
+                    error_msg = response.text
+
+                raise ValidationError(
+                    _('Omniva API error (Status %s):\n%s') %
+                    (response.status_code, error_msg)
+                )
+
+        except requests.RequestException as e:
+            raise ValidationError(
+                _('Network error while connecting to Omniva:\n%s\n\n'
+                  'Please check your internet connection.') % str(e)
+            )
+
+    def _omniva_get_label(self):
+        """Request shipping label from Omniva."""
+        self.ensure_one()
+
+        if not self.omniva_barcode:
+            raise ValidationError(
+                _('No barcode available. Create shipment first.')
+            )
+
+        company = self.company_id
+        base_url = company._get_omniva_base_url()
+        headers = self._prepare_omniva_headers()
+
+        payload = {
+            "customerCode": company.omniva_customer_code,
+            "barcodes": [{"barcode": self.omniva_barcode}],
+            "sendAddressCardTo": "RESPONSE",
+        }
+
+        import json
+        import logging
+        _logger = logging.getLogger(__name__)
+
+        try:
+            response = requests.post(
+                f"{base_url}/shipments/package-labels",
+                headers=headers,
+                json=payload,
+                timeout=30
+            )
+
+            if response.status_code == 200:
+                result = response.json()
+
+                if result.get('successAddressCards'):
+                    label_info = result['successAddressCards'][0]
+                    label_data = label_info.get('fileData')
+
+                    if label_data:
+                        if self.omniva_label_id:
+                            self.omniva_label_id.unlink()
+
+                        attachment = self.env['ir.attachment'].create({
+                            'name': f'Omniva_Label_{self.name.replace("/", "_")}.pdf',
+                            'type': 'binary',
+                            'datas': label_data,
+                            'res_model': self._name,
+                            'res_id': self.id,
+                            'mimetype': 'application/pdf',
+                        })
+
+                        self.omniva_label_id = attachment.id
+
+                        self.message_post(
+                            body=_('Omniva shipping label generated successfully.'),
+                            attachment_ids=[attachment.id]
+                        )
+                    else:
+                        raise ValidationError(_('No label data in response'))
+
+                elif result.get('failedAddressCards'):
+                    failed = result['failedAddressCards'][0]
+                    error_msg = failed.get('message', 'Unknown error')
+                    raise ValidationError(
+                        _('Label generation failed: %s') % error_msg
+                    )
+                else:
+                    raise ValidationError(_('Unexpected label response'))
+
+            else:
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get('message', error_data.get('error', response.text))
+                except:
+                    error_msg = response.text
+
+                raise ValidationError(
+                    _('Label request failed (Status %s): %s') %
+                    (response.status_code, error_msg)
+                )
+
+        except ValidationError:
+            raise
+        except Exception as e:
+            raise ValidationError(_('Error generating label: %s') % str(e))
+
+    def action_omniva_get_label(self):
+        """Manual action to regenerate label."""
+        self.ensure_one()
+
+        if not self.omniva_barcode:
+            raise UserError(_('No Omniva barcode found. Please create the shipment first.'))
+
+        try:
+            self._omniva_get_label()
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Success'),
+                    'message': _('Label generated successfully!'),
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
+        except Exception as e:
+            raise UserError(_('Failed to generate label: %s') % str(e))
+
+    def omniva_tracking_url(self):
+        """Generate tracking URL for Omniva shipment."""
+        self.ensure_one()
+
+        if not self.omniva_barcode:
+            return False
+
+        return f"https://www.omniva.ee/track?barcode={self.omniva_barcode}"
+
+    def action_open_omniva_tracking(self):
+        """Open Omniva tracking page."""
+        self.ensure_one()
+        url = self.omniva_tracking_url()
+
+        if not url:
+            raise UserError(_('No tracking information available. Please create the shipment first.'))
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'new',
+        }
+
+    def action_omniva_cancel_shipment(self):
+        """Cancel Omniva shipment (if in REGISTERED status)."""
+        self.ensure_one()
+
+        if not self.omniva_barcode:
+            raise UserError(_('No Omniva shipment to cancel.'))
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Information'),
+                'message': _('Shipment cancellation must be done through Omniva portal or contact support.\n'
+                             'Barcode: %s') % self.omniva_barcode,
+                'type': 'info',
+                'sticky': True,
+            }
+        }
+        
+        
+/odoo17/custom/addons/cr_omniva_integration/security/ir.model.access.csv
+-----------------
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_omniva_location,omniva.location.place.user,model_omniva_location,base.group_user,1,1,1,1
+        
+/odoo17/custom/addons/cr_omniva_integration/static/src/js/omniva_delivery.js
+-----------------
+/** @odoo-module **/
+
+import publicWidget from "@web/legacy/js/public/public_widget";
+
+publicWidget.registry.websiteSaleDelivery.include({
+
+    events: Object.assign({}, publicWidget.registry.websiteSaleDelivery.prototype.events, {
+        'change .omniva-channel-radio': '_onOmnivaChannelChange',
+        'change .omniva-location-select': '_onOmnivaLocationChange',
+    }),
+
+    // -------------------------------------------------------------
+    // 1. Initialize Select2 on both dropdowns
+    // -------------------------------------------------------------
+    start: function () {
+        const self = this;
+        return this._super.apply(this, arguments).then(function () {
+            self._initializeOmnivaSelect2();
+        });
+    },
+
+    _initializeOmnivaSelect2: function () {
+        this.$('.omniva-location-select[data-location-type="parcel_machine"]').select2({
+            placeholder: '-- Search and Select Parcel Machine --',
+            allowClear: true,
+            width: '100%',
+            dropdownParent: this.$('.parcel-machine-section'),
+        });
+
+        this.$('.omniva-location-select[data-location-type="post_office"]').select2({
+            placeholder: '-- Search and Select Post Office --',
+            allowClear: true,
+            width: '100%',
+            dropdownParent: this.$('.post-office-section'),
+        });
+    },
+
+    // -------------------------------------------------------------
+    // 2. Channel switch – safe clear
+    // -------------------------------------------------------------
+    _onOmnivaChannelChange: async function (ev) {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        const deliveryChannel = ev.currentTarget.value;
+        const carrierId = parseInt(ev.currentTarget.dataset.carrierId);
+        const price = parseFloat(ev.currentTarget.dataset.price);
+
+        // Update price display
+        this.$('.omniva-price-display').text('€' + price.toFixed(2));
+
+        // Toggle sections
+        if (deliveryChannel === 'PARCEL_MACHINE') {
+            this.$('.parcel-machine-section').show();
+            this.$('.post-office-section').hide();
+        } else if (deliveryChannel === 'POST_OFFICE') {
+            this.$('.parcel-machine-section').hide();
+            this.$('.post-office-section').show();
+        } else { // COURIER
+            this.$('.parcel-machine-section').hide();
+            this.$('.post-office-section').hide();
+        }
+
+        // Clear selection safely
+        this.$('.omniva-selection-info').hide();
+        this.$('.omniva-location-select').val('').trigger('change'); // ← '' not null
+
+        // Save to session
+        try {
+            await this.rpc('/shop/omniva/set_delivery_channel', {
+                'delivery_channel': deliveryChannel,
+            });
+        } catch (error) {
+            console.error('Failed to save delivery channel:', error);
+            return;
+        }
+
+        // Update carrier
+        const carrierInput = document.querySelector(`input[name="delivery_type"][value="${carrierId}"]`);
+        if (!carrierInput) return;
+
+        if (carrierInput.checked) {
+            this._showLoading(carrierInput);
+            const result = await this.rpc('/shop/update_carrier', {
+                'carrier_id': carrierId,
+                'no_reset_access_point_address': true,
+            });
+            this._handleCarrierUpdateResultBadge(result);
+
+            if (result.new_amount_delivery !== undefined) {
+                const amountDelivery = document.querySelector('#order_delivery .monetary_field');
+                const amountTotal = document.querySelectorAll('#order_total .monetary_field, #amount_total_summary.monetary_field');
+                if (amountDelivery) amountDelivery.innerHTML = result.new_amount_delivery;
+                amountTotal.forEach(total => total.innerHTML = result.new_amount_total);
+            }
+        } else {
+            this._showLoading(carrierInput);
+            await this._getCarrierRateShipment(carrierInput);
+        }
+    },
+
+    // -------------------------------------------------------------
+    // 3. Location change – SAFE for Select2
+    // -------------------------------------------------------------
+        /**
+     * Handle location selection – works with Select2
+     */
+    _onOmnivaLocationChange: async function (ev) {
+        const select = ev.currentTarget;                     // <select>
+        const $select = $(select);                           // jQuery wrapper
+
+        // ---- 1. Get the selected value safely ----
+        const locationId = select.value;
+        if (!locationId) {
+            this.$('.omniva-selection-info').hide();
+            return;
+        }
+
+        // ---- 2. Get name & address – native option first ----
+        let locationName = '';
+        let locationAddress = '';
+
+        const idx = select.selectedIndex;
+        if (idx >= 0) {
+            const opt = select.options[idx];
+            locationName    = opt.dataset.name    || '';
+            locationAddress = opt.dataset.address || '';
+        } else {
+            // ---- 3. Fallback: Select2 stores data in .data('select2').data ----
+            const s2 = $select.data('select2');
+            if (s2 && s2.data && s2.data[0]) {
+                const item = s2.data[0];
+                // Select2 builds its own text, we split it the same way the <option> does
+                const parts = (item.text || '').split(' - ');
+                locationName    = parts[2] || parts[0] || '';
+                locationAddress = `${parts[1] || ''}, ${parts[0] || ''}`.trim().replace(/^, /, '');
+            }
+        }
+
+        // ---- 4. Show selection ----
+        this.$('.selected-location-name').text(locationName);
+        this.$('.selected-location-address').text(locationAddress);
+        this.$('.omniva-selection-info').show();
+
+        // ---- 5. Save to order ----
+        try {
+            await this.rpc('/shop/omniva/set_location', {
+                'location_id': locationId,
+            });
+        } catch (error) {
+            console.error('Failed to save location:', error);
+        }
+    },
+    // -------------------------------------------------------------
+    // 4. Destroy Select2 on widget destroy
+    // -------------------------------------------------------------
+    destroy: function () {
+        this.$('.omniva-location-select').select2('destroy');
+        return this._super.apply(this, arguments);
+    },
+});
+
+
+/odoo17/custom/addons/cr_omniva_integration/views/delivery_carrier_views.xml
+-----------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_delivery_carrier_omniva_form" model="ir.ui.view">
+        <field name="name">delivery.carrier.form.omniva</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='pricing']" position="before">
+                <page name="omniva_configuration"
+                      string="Omniva Configuration"
+                      invisible="delivery_type != 'omniva'">
+                    <group>
+                        <group string="Service Configuration">
+                            <field name="omniva_main_service" required="1"/>
+                            <field name="omniva_delivery_channel" required="1"/>
+                            <field name="omniva_service_package"/>
+                        </group>
+                        <group string="Label Configuration">
+                            <field name="omniva_label_format"/>
+                            <field name="omniva_default_package_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+/odoo17/custom/addons/cr_omniva_integration/views/omniva_location_views.xml
+-----------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="omniva_location_view_tree" model="ir.ui.view">
+        <field name="name">omniva.location.tree</field>
+        <field name="model">omniva.location</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="city"/>
+                <field name="country"/>
+                <field name="location_type"/>
+                <field name="zip_code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="omniva_location_action" model="ir.actions.act_window">
+        <field name="name">Omniva Locations</field>
+        <field name="res_model">omniva.location</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="omniva_location_menu"
+              name="Omniva Locations"
+              parent="stock.menu_stock_config_settings"
+              action="omniva_location_action"/>
+</odoo>
+
+/odoo17/custom/addons/cr_omniva_integration/views/res_company_views.xml
+-----------------
+
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_omniva_config_form" model="ir.ui.view">
+        <field name="name">res.company.form.omniva</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_info']" position="after">
+                <page string="Omniva Configuration" name="omniva_config">
+                    <group>
+                        <group string="API Credentials">
+                            <field name="omniva_api_url" widget="radio"/>
+                            <field name="omniva_username"/>
+                            <field name="omniva_password" password="True"/>
+                            <field name="omniva_customer_code"
+                                   help="Your Omniva customer code (e.g., 37884)"/>
+                            <field name="omniva_developer_id"/>
+                            <field name="omniva_default_hs_code"/>
+                        </group>
+
+                        <!-- NEW: Delivery Prices Section -->
+                        <group string="Default Name">
+                            <field name="omniva_courier_price"
+                                   widget="monetary"
+                                   invisible="1"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="omniva_parcel_machine_price"
+                                   widget="monetary"
+                                   invisible="1"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="omniva_post_office_price"
+                                   widget="monetary"
+                                   invisible="1"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="omniva_custom_service_names"/>
+                            <field name="omniva_courier_label" invisible="not omniva_custom_service_names"
+           required="omniva_custom_service_names"/>
+                            <field name="omniva_pudo_label" invisible="not omniva_custom_service_names"
+           required="omniva_custom_service_names"/>
+                            <field name="omniva_post_office_label" invisible="not omniva_custom_service_names"
+           required="omniva_custom_service_names"/>
+
+
+                        </group>
+
+                        <group string="Actions">
+                            <button name="action_test_omniva_connection"
+                                    type="object"
+                                    string="Test Connection"
+                                    class="oe_highlight"
+                                    icon="fa-plug"/>
+                            <button name="action_sync_omniva_locations"
+                                    type="object"
+                                    string="Sync Locations"
+                                    class="btn-primary"
+                                    icon="fa-refresh"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" role="alert">
+                        <strong>Setup Instructions:</strong>
+                        <ul>
+                            <li>Get credentials from your Omniva Account Manager</li>
+                            <li>Configure delivery prices for each channel</li>
+                            <li>Sync locations after configuring</li>
+                            <li>Test connection before going live</li>
+                        </ul>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+/odoo17/custom/addons/cr_omniva_integration/views/website_sale_delivery_templates.xml
+-----------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="payment_delivery_omniva"
+              name="Omniva Delivery Options"
+              inherit_id="website_sale.payment_delivery_methods">
+
+        <xpath expr="//t[@t-if='delivery.website_description']" position="after">
+            <t t-if="delivery.delivery_type == 'omniva'">
+
+                <t t-set="company" t-value="delivery.env.company"/>
+
+                <!-- Fetch locations by type -->
+                <t t-set="parcel_machines" t-value="delivery.env['omniva.location'].search([
+                    ('location_type', '=', '0'),
+                    ('active', '=', True)
+                ], order='country, city, name', limit=1000000)"/>
+
+                <t t-set="post_offices" t-value="delivery.env['omniva.location'].search([
+                    ('location_type', '=', '1'),
+                    ('active', '=', True)
+                ], order='country, city, name', limit=1000000)"/>
+
+                <div class="o_omniva_selector mt-3 p-3 bg-light rounded border">
+
+                    <!-- Delivery Channel Selection with Prices -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Select Delivery Method:</label>
+
+                        <!-- Courier -->
+                        <div class="form-check mb-2">
+                            <input type="radio"
+                                   name="omniva_channel_radio"
+                                   value="COURIER"
+                                   id="omniva_courier"
+                                   class="form-check-input omniva-channel-radio"
+                                   checked="checked"
+                                   t-att-data-carrier-id="delivery.id"
+                                   t-att-data-price="company.omniva_courier_price"/>
+                            <label class="form-check-label" for="omniva_courier">
+                                <i class="fa fa-truck me-2 text-success"/>
+<!--                                <strong>Kuller (uksele)</strong>-->
+                                <t t-esc="company.omniva_courier_label if company.omniva_custom_service_names else 'Kuller (uksele)'"/>
+
+                                <span class="badge bg-success ms-2">
+                                    €<t t-esc="'%.2f' % company.omniva_courier_price"/>
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Parcel Machine -->
+                        <div class="form-check mb-2">
+                            <input type="radio"
+                                   name="omniva_channel_radio"
+                                   value="PARCEL_MACHINE"
+                                   id="omniva_parcel_machine"
+                                   class="form-check-input omniva-channel-radio"
+                                   t-att-data-carrier-id="delivery.id"
+                                   t-att-data-price="company.omniva_parcel_machine_price"/>
+                            <label class="form-check-label" for="omniva_parcel_machine">
+                                <i class="fa fa-cube me-2 text-primary"/>
+<!--                                <strong>Pakiautomaat</strong>-->
+                                        <t t-esc="company.omniva_pudo_label if company.omniva_custom_service_names else 'Pakiautomaadid'"/>
+
+                                <span class="badge bg-success ms-2">
+                                    €<t t-esc="'%.2f' % company.omniva_parcel_machine_price"/>
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Post Office -->
+                        <div class="form-check mb-2">
+                            <input type="radio"
+                                   name="omniva_channel_radio"
+                                   value="POST_OFFICE"
+                                   id="omniva_post_office"
+                                   class="form-check-input omniva-channel-radio"
+                                   t-att-data-carrier-id="delivery.id"
+                                   t-att-data-price="company.omniva_post_office_price"/>
+                            <label class="form-check-label" for="omniva_post_office">
+                                <i class="fa fa-building me-2 text-info"/>
+<!--                                <strong>Postkontor</strong>-->
+
+                                <t t-esc="company.omniva_post_office_label if company.omniva_custom_service_names else 'Pakiautomaadid'"/>
+
+                                <span class="badge bg-success ms-2">
+                                    €<t t-esc="'%.2f' % company.omniva_post_office_price"/>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Parcel Machine Dropdown -->
+                    <div class="parcel-machine-section mb-3" style="display:none;">
+                        <label class="form-label small">Select Parcel Machine:</label>
+                        <select name="omniva_location_id"
+                                class="form-select form-select-sm omniva-location-select"
+                                data-location-type="parcel_machine"
+                                style="width: 100%;"
+                                t-if="parcel_machines">
+                            <option value="">-- Select Location --</option>
+                            <t t-foreach="parcel_machines" t-as="location">
+                                <option t-att-value="location.id"
+                                        t-att-data-name="location.name"
+                                        t-att-data-address="'%s, %s' % (location.address or '', location.city)">
+                                    <t t-esc="location.country"/>
+                                    -
+                                    <t t-esc="location.city"/>
+                                    -
+                                    <t t-esc="location.name"/>
+                                </option>
+                            </t>
+                        </select>
+                        <p t-else="" class="text-muted small">No parcel machines available</p>
+                    </div>
+
+                    <!-- Post Office Dropdown -->
+                    <div class="post-office-section mb-3" style="display:none;">
+                        <label class="form-label small">Select Post Office:</label>
+                        <select name="omniva_location_id"
+                                class="form-select form-select-sm omniva-location-select"
+                                data-location-type="post_office"
+                                style="width: 100%;"
+                                t-if="post_offices">
+                            <option value="">-- Select Location --</option>
+                            <t t-foreach="post_offices" t-as="location">
+                                <option t-att-value="location.id"
+                                        t-att-data-name="location.name"
+                                        t-att-data-address="'%s, %s' % (location.address or '', location.city)">
+                                    <t t-esc="location.country"/>
+                                    -
+                                    <t t-esc="location.city"/>
+                                    -
+                                    <t t-esc="location.name"/>
+                                </option>
+                            </t>
+                        </select>
+                        <p t-else="" class="text-muted small">No post offices available</p>
+                    </div>
+
+                    <!-- Selected Location Display -->
+                    <div class="alert alert-info small mb-0 omniva-selection-info" style="display:none;">
+                        <strong>Selected:</strong> <span class="selected-location-name"></span><br/>
+                        <small class="selected-location-address"></small>
+                    </div>
+
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>
+
+/odoo17/custom/addons/cr_omniva_integration/__init__.py
+-----------------
+# -*- coding: utf-8 -*-
+from . import models
+from . import controllers
+
+/odoo17/custom/addons/cr_omniva_integration/__manifest__.py
+-----------------
+# -*- coding: utf-8 -*-
+{
+    'name': 'Omniva Shipping Integration | Omniva Delivery Integration | Omniva Integration Solutions | Omniva Integration | Omniva Shipping Integration In Odoo',
+    'version': '17.0.3.0.0',
+    'category': 'Inventory/Delivery',
+    'summary': """
+        The Omniva Shipping Integration module is a powerful and efficient tool for businesses using Odoo,
+        enabling seamless connectivity with Omniva's shipping services. 
+        It simplifies the management of shipping operations such as generating shipments, printing labels, 
+        tracking parcels, and handling delivery orders directly from the Odoo interface.
+
+        Shipping Integration,
+        Omniva Shipping Integration,
+        Omniva Delivery Integration,
+        Omniva Integration,
+        Omniva Integration Solutions,
+        Shipping Integration in Odoo,
+        Omniva Shipping Integration in Odoo,
+        Omniva Delivery Integration in Odoo,
+        Omniva Integration Solutions in Odoo,
+    """,
+    'description': """
+        The Omniva Shipping Integration module is a powerful and efficient tool for businesses using Odoo,
+        enabling seamless connectivity with Omniva's shipping services. 
+        This module allows smooth management of various shipping operations — including generating shipments via Omniva API, 
+        printing shipping labels, tracking deliveries, cancelling shipments, and managing delivery orders — 
+        all directly within the Odoo interface.
+
+        Key Features:
+        --------------
+        - Create shipments through the Omniva API.
+        - Generate and download Omniva shipping labels.
+        - Track real-time shipment status directly from Odoo.
+        - Support for Business-to-Client (B2C) shipments.
+        - Simplified delivery order handling and management.
+
+        Keywords:
+        Shipping Integration,
+        Omniva Shipping Integration,
+        Omniva Delivery Integration,
+        Omniva Integration,
+        Omniva Integration Solutions,
+        Shipping Integration in Odoo,
+        Omniva Shipping Integration in Odoo,
+        Omniva Delivery Integration in Odoo,
+        Omniva Integration Solutions in Odoo,
+    """,
+    'author': 'Creyox Technologies',
+    'website': 'https://www.creyox.com',
+    'depends': ['base', 'delivery', 'stock', 'sale_management', 'sale_stock', 'stock_delivery','website','website_sale'],
+    "assets": {
+        "web.assets_frontend": [
+            "cr_omniva_integration/static/src/js/omniva_delivery.js",
+        ],
+    },
+    'data': [
+        'security/ir.model.access.csv',
+        'views/res_company_views.xml',
+        'data/delivery_carrier_data.xml',
+        'views/delivery_carrier_views.xml',
+        'views/omniva_location_views.xml',
+        'views/website_sale_delivery_templates.xml',
+    ],
+    'images': ["static/description/banner.png"],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+    'license': 'OPL-1',
+}
+
+
+
+this is my  custom module for omniva and in this also i want the same change that we do in smartposting for the price based on the country
+
+Are you understand ??
+If you have any doubt then tell me
+and plz don't give description 
+only give code which i have to add or in the code which i have to change 
+no repeat whole code

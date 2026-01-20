@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_account_tax_form_inherit_bigcommerce" model="ir.ui.view">
+        <field name="name">account.tax.form.inherit.bigcommerce</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_form"/>
+        <field name="arch" type="xml">
+            <field name="active" position="after">
+                <field name="bigcommerce_tax_class_id"/>
+                <field name="bigcommerce_store_id"/>
+            </field>
+        </field>
+    </record>
+
+     <!-- Action -->
+    <record id="action_bigcommerce_taxes" model="ir.actions.act_window">
+        <field name="name">Taxes</field>
+        <field name="res_model">account.tax</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('bigcommerce_tax_class_id', '!=', False)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_taxes"
+        name="Taxes"
+        action="action_bigcommerce_taxes"
+        parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+        sequence="10"
+    />
+</odoo>

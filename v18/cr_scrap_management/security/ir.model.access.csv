@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_user,access_purchase_user,purchase.model_purchase_order,cr_scrap_management.group_purchase_user,1,0,1,0
+access_security_user,access_security_user,purchase.model_purchase_order,cr_scrap_management.group_security,1,1,0,0
+access_cashier_user,access_cashier_user,purchase.model_purchase_order,cr_scrap_management.group_cashier,1,0,0,0
+access_administrator_user,access_administrator_user,purchase.model_purchase_order,cr_scrap_management.group_administrator,1,1,1,1

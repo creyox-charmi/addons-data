@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="case_study_detail" name="Case Study Detail">
+        <t t-call="website.layout">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"/>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+            <section class="drag_and_drop_section">
+            <section class="main_page_of_case_study">
+                <section class="default_animation">
+                    <section id="odoo_service_call_to_action" class="odoo_service_call_to_action aos-init aos-animate">
+                        <div class="container">
+                            <div class="sh_call_action_box aos-init" data-aos="fade-up">
+
+                                <h2 class="sh_title_heading" t-esc="case_study_name"></h2>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="cr_odoo_case_study" class="cr_odoo_case_study aos-init aos-animate">
+                        <div class="container">
+
+                            <!-- Case Study Summary Section -->
+                            <div class="row">
+
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_service_content aos-init" data-aos="fade-right">
+                                        <h2 class="sh_box_title">Summary</h2>
+                                        <div class="sh_text" t-field="case.case_study_detail_description">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="fade-left">
+                                        <img t-att-src="case_study_main_page_banner" title="Summary" alt="Summary"
+                                             loading="lazy" style=""/>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="row mobile-reverse">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="fade-right">
+                                        <img t-att-src="client_challenges_img" title="client_challenges_img"
+                                             alt="client_challenges_img" loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="fade-left">
+                                        <h2 class="sh_box_title">Client Challenges</h2>
+                                        <div class="sh_text" t-field="case.case_study_detail_description">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="fade-right">
+                                        <h2 class="sh_box_title">Solution</h2>
+                                        <div class="sh_text" t-field="case.our_solution">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="fade-left">
+                                        <img t-att-src="our_solution_img" title="Summary" alt="Summary" loading="lazy"
+                                             style=""/>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row mobile-reverse">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="fade-right">
+                                        <img t-att-src="impact_img" title="client_challenges_img"
+                                             alt="client_challenges_img" loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="fade-left">
+                                        <h2 class="sh_box_title">Impact</h2>
+                                        <div class="sh_text" t-field="case.impact">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <section id="client_reviews" class="client_reviews aos-init aos-animate" data-aos="fade-up">
+                        <div class="container">
+                            <h2 class="text-center section-title" data-aos="fade-up">Client Reviews</h2>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="review-section shadow-sm p-2 aos-init aos-animate" data-aos="fade-up">
+                                        <div class="quote-icon">
+                                            <i class="fa fa-quote-left"></i>
+                                        </div>
+                                        <div class="review-content">
+                                            <div class="review-text" t-esc="case.client_review"></div>
+                                            <h3 class="review-author">
+                                                <strong t-esc="case.name"></strong>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+
+<!--                <section id="cr_contact_us_button" class="cr_contact_us_button aos-init aos-animate" data-aos="fade-up">-->
+<!--                        <div class="container">-->
+<!--                            <div class="cr_call_action_contact_us1 aos-init" data-aos="fade-up">-->
+<!--                                <div>Need guidance or have a brilliant suggestion? We’d love to hear from you!-->
+<!--                                    <br/>-->
+<!--                                    We value your input! Contact us for questions, suggestions, or collaborations.-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="cr_call_action_contact_us aos-init" data-aos="fade-down">-->
+<!--                                <a href="/contactus">CONTACT US</a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                </section>-->
+
+            </section>
+            </section>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+<!--                console.log('in default.......');-->
+<!--                console.log("DOM fully loaded.");-->
+
+                // Select all elements with AOS attributes
+                let aosElements = document.querySelectorAll("[data-aos]");
+
+                // Initially hide elements so they only appear when animation starts
+                aosElements.forEach(el => {
+                el.style.opacity = "0";
+                el.style.visibility = "hidden";
+                });
+
+                // Initialize AOS
+                AOS.init({
+                duration: 1200,
+                easing: 'ease-in-out',
+                once: false, // Allow reanimation on scroll
+                mirror: false
+                });
+<!--                console.log("AOS initialized.");-->
+
+                // Force AOS refresh to detect all elements
+                setTimeout(() => {
+                AOS.refreshHard();
+<!--                console.log("AOS hard refresh completed.");-->
+                }, 500);
+
+                // Intersection Observer to trigger animations
+                let observer = new IntersectionObserver(
+                (entries) => {
+                entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+<!--                console.log("Element entered viewport:", entry.target);-->
+
+                // Show element only when animation starts
+                entry.target.style.opacity = "1";
+                entry.target.style.visibility = "visible";
+                entry.target.classList.add("aos-animate"); // Trigger AOS animation
+                }
+                });
+                },
+                { threshold: 0.2 } // Element must be at least 20% visible before animation starts
+                );
+
+                // Observe all AOS elements
+                aosElements.forEach(el => {
+                observer.observe(el);
+                });
+                });
+
+                // Ensure AOS refreshes after full page load
+                window.addEventListener("load", function () {
+<!--                console.log("Window fully loaded.");-->
+<!--                console.log('in default.......');-->
+                AOS.refreshHard(); // Ensures all animations work properly
+<!--                console.log('in default.......');-->
+<!--                console.log("AOS hard refresh on window load.");-->
+                });
+
+            </script>
+
+        </t>
+    </template>
+
+    <template id="zoom_in_zoom_out_animation" name="zoom_in_zoom_out_animation"
+              inherit_id="cr_case_study.case_study_detail" active="False">
+
+        <xpath expr="//section[@class='default_animation']" position="replace">
+            <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+
+            <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+            <section class="main_page_of_case_study_with_zoom_in_out">
+                <section id="odoo_service_call_to_action" class="odoo_service_call_to_action aos-init aos-animate">
+                    <div class="container">
+                        <div class="sh_call_action_box aos-init" data-aos="fade-up">
+                            <h2 class="sh_title_heading" t-esc="case_study_name"></h2>
+                        </div>
+                    </div>
+                </section>
+                <section id="cr_odoo_case_study" class="cr_odoo_case_study aos-init aos-animate">
+                        <div class="container">
+
+                            <!-- Case Study Summary Section -->
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_service_content aos-init" data-aos="zoom-in">
+                                        <h2 class="sh_box_title">Summary</h2>
+                                        <div class="sh_text" t-field="case.case_study_detail_description">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="zoom-out">
+                                        <img t-att-src="case_study_main_page_banner" title="Summary" alt="Summary"
+                                             loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="zoom-in">
+                                        <img t-att-src="client_challenges_img" title="client_challenges_img"
+                                             alt="client_challenges_img" loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="zoom-out">
+                                        <h2 class="sh_box_title">Client Challenges</h2>
+                                        <div class="sh_text" t-field="case.case_study_detail_description">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="zoom-in">
+                                        <h2 class="sh_box_title">Solution</h2>
+                                        <div class="sh_text" t-field="case.our_solution">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="zoom-out">
+                                        <img t-att-src="our_solution_img" title="Summary" alt="Summary" loading="lazy"
+                                             style=""/>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="zoom-in">
+                                        <img t-att-src="impact_img" title="client_challenges_img"
+                                             alt="client_challenges_img" loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="zoom-out">
+                                        <h2 class="sh_box_title">Impact</h2>
+                                        <div class="sh_text" t-field="case.impact">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                <section id="client_reviews" class="client_reviews aos-init aos-animate" data-aos="fade-up">
+                    <div class="container">
+                        <h2 class="text-center section-title" data-aos="fade-up">Client Reviews</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="review-section shadow-sm p-4 aos-init aos-animate" data-aos="fade-up">
+                                    <div class="quote-icon">
+                                        <i class="fa fa-quote-left"></i>
+                                    </div>
+                                    <div class="review-content">
+                                        <div class="review-text" t-esc="case.client_review"></div>
+                                        <h3 class="review-author">
+                                            <strong t-esc="case.name"></strong>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </section>
+        </xpath>
+
+    </template>
+
+    <template id="fade_up_fade_down_animation" name="fade_up_fade_down_animation"
+              inherit_id="cr_case_study.case_study_detail" active="False">
+
+        <xpath expr="//section[@class='default_animation']" position="replace">
+            <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+
+            <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+            <section class="main_page_of_case_study_with_zoom_in_out">
+                <section id="odoo_service_call_to_action" class="odoo_service_call_to_action aos-init aos-animate">
+                    <div class="container">
+                        <div class="sh_call_action_box aos-init" data-aos="fade-up">
+                            <h2 class="sh_title_heading" t-esc="case_study_name"></h2>
+                        </div>
+                    </div>
+                </section>
+                <section id="cr_odoo_case_study" class="cr_odoo_case_study aos-init aos-animate">
+                        <div class="container">
+
+                            <!-- Case Study Summary Section -->
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_service_content aos-init" data-aos="fade-up">
+                                        <h2 class="sh_box_title">Summary</h2>
+                                        <div class="sh_text" t-field="case.case_study_detail_description">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="fade-down">
+                                        <img t-att-src="case_study_main_page_banner" title="Summary" alt="Summary"
+                                             loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="fade-up">
+                                        <img t-att-src="client_challenges_img" title="client_challenges_img"
+                                             alt="client_challenges_img" loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="fade-down">
+                                        <h2 class="sh_box_title">Client Challenges</h2>
+                                        <div class="sh_text" t-field="case.case_study_detail_description">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="fade-up">
+                                        <h2 class="sh_box_title">Solution</h2>
+                                        <div class="sh_text" t-field="case.our_solution">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="fade-down">
+                                        <img t-att-src="our_solution_img" title="Summary" alt="Summary" loading="lazy"
+                                             style=""/>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="fade-up">
+                                        <img t-att-src="impact_img" title="client_challenges_img"
+                                             alt="client_challenges_img" loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="fade-down">
+                                        <h2 class="sh_box_title">Impact</h2>
+                                        <div class="sh_text" t-field="case.impact">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                <section id="client_reviews" class="client_reviews aos-init aos-animate" data-aos="fade-up">
+                    <div class="container">
+                        <h2 class="text-center section-title" data-aos="fade-up">Client Reviews</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="review-section shadow-sm p-4 aos-init aos-animate" data-aos="fade-up">
+                                    <div class="quote-icon">
+                                        <i class="fa fa-quote-left"></i>
+                                    </div>
+                                    <div class="review-content">
+                                        <div class="review-text" t-esc="case.client_review"></div>
+                                        <h3 class="review-author">
+                                            <strong t-esc="case.name"></strong>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </xpath>
+
+    </template>
+
+    <template id="flip_left_flip_right_animation" name="flip_left_flip_right_animation"
+              inherit_id="cr_case_study.case_study_detail" active="False">
+
+        <xpath expr="//section[@class='default_animation']" position="replace">
+            <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+
+            <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+            <section class="main_page_of_case_study_with_zoom_in_out">
+                <section id="odoo_service_call_to_action" class="odoo_service_call_to_action aos-init aos-animate">
+                    <div class="container">
+                        <div class="sh_call_action_box aos-init" data-aos="fade-up">
+                            <h2 class="sh_title_heading" t-esc="case_study_name"></h2>
+                        </div>
+                    </div>
+                </section>
+                <section id="cr_odoo_case_study" class="cr_odoo_case_study aos-init aos-animate">
+                        <div class="container">
+
+                            <!-- Case Study Summary Section -->
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_service_content aos-init" data-aos="flip-left">
+                                        <h2 class="sh_box_title">Summary</h2>
+                                        <div class="sh_text" t-field="case.case_study_detail_description">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="flip-right">
+                                        <img t-att-src="case_study_main_page_banner" title="Summary" alt="Summary"
+                                             loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="flip-left">
+                                        <img t-att-src="client_challenges_img" title="client_challenges_img"
+                                             alt="client_challenges_img" loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="flip-right">
+                                        <h2 class="sh_box_title">Client Challenges</h2>
+                                        <div class="sh_text" t-field="case.case_study_detail_description">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="flip-left">
+                                        <h2 class="sh_box_title">Solution</h2>
+                                        <div class="sh_text" t-field="case.our_solution">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="flip-right">
+                                        <img t-att-src="our_solution_img" title="Summary" alt="Summary" loading="lazy"
+                                             style=""/>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="flip-left">
+                                        <img t-att-src="impact_img" title="client_challenges_img"
+                                             alt="client_challenges_img" loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="flip-right">
+                                        <h2 class="sh_box_title">Impact</h2>
+                                        <div class="sh_text" t-field="case.impact">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                <section id="client_reviews" class="client_reviews aos-init aos-animate" data-aos="fade-up">
+                    <div class="container">
+                        <h2 class="text-center section-title" data-aos="fade-up">Client Reviews</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="review-section shadow-sm p-4 aos-init aos-animate" data-aos="fade-up">
+                                    <div class="quote-icon">
+                                        <i class="fa fa-quote-left"></i>
+                                    </div>
+                                    <div class="review-content">
+                                        <div class="review-text" t-esc="case.client_review"></div>
+                                        <h3 class="review-author">
+                                            <strong t-esc="case.name"></strong>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </xpath>
+
+    </template>
+
+   <template id="flip_up_flip_down_animation" name="flip_up_flip_down_animation"
+              inherit_id="cr_case_study.case_study_detail" active="False">
+
+        <xpath expr="//section[@class='default_animation']" position="replace">
+            <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+
+            <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+            <section class="main_page_of_case_study_with_zoom_in_out">
+                <section id="odoo_service_call_to_action" class="odoo_service_call_to_action aos-init aos-animate">
+                    <div class="container">
+                        <div class="sh_call_action_box aos-init" data-aos="fade-up">
+                            <h2 class="sh_title_heading" t-esc="case_study_name"></h2>
+                        </div>
+                    </div>
+                </section>
+                <section id="cr_odoo_case_study" class="cr_odoo_case_study aos-init aos-animate">
+                        <div class="container">
+
+                            <!-- Case Study Summary Section -->
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_service_content aos-init" data-aos="flip-up">
+                                        <h2 class="sh_box_title">Summary</h2>
+                                        <div class="sh_text" t-field="case.case_study_detail_description">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="flip-down">
+                                        <img t-att-src="case_study_main_page_banner" title="Summary" alt="Summary"
+                                             loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="flip-up">
+                                        <img t-att-src="client_challenges_img" title="client_challenges_img"
+                                             alt="client_challenges_img" loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="flip-down">
+                                        <h2 class="sh_box_title">Client Challenges</h2>
+                                        <div class="sh_text" t-field="case.case_study_detail_description">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="flip-up">
+                                        <h2 class="sh_box_title">Solution</h2>
+                                        <div class="sh_text" t-field="case.our_solution">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="flip-down">
+                                        <img t-att-src="our_solution_img" title="Summary" alt="Summary" loading="lazy"
+                                             style=""/>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="sh_image_box aos-init" data-aos="flip-up">
+                                        <img t-att-src="impact_img" title="client_challenges_img"
+                                             alt="client_challenges_img" loading="lazy" style=""/>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 align-self-center">
+                                    <div class="sh_service_content aos-init" data-aos="flip-down">
+                                        <h2 class="sh_box_title">Impact</h2>
+                                        <div class="sh_text" t-field="case.impact">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                <section id="client_reviews" class="client_reviews aos-init aos-animate" data-aos="fade-up">
+                    <div class="container">
+                        <h2 class="text-center section-title" data-aos="fade-up">Client Reviews</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="review-section shadow-sm p-4 aos-init aos-animate" data-aos="fade-up">
+                                    <div class="quote-icon">
+                                        <i class="fa fa-quote-left"></i>
+                                    </div>
+                                    <div class="review-content">
+                                        <div class="review-text" t-esc="case.client_review"></div>
+                                        <h3 class="review-author">
+                                            <strong t-esc="case.name"></strong>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </xpath>
+
+    </template>
+
+
+
+
+</odoo>

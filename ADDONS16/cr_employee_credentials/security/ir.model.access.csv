@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cr_employee_credentials,cr_employee_credentials,model_cr_employee_credentials,,1,1,1,1
+access_cr_login_platform,cr_login_platform,model_cr_login_platform,,1,1,1,1
+

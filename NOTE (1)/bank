@@ -1,0 +1,117 @@
+account_bank_statement = self.env["account.bank.statement"].create(
+            {
+                "name": self.cr_cash_register_id.name,
+                "date": fields.Date.today(),
+                'journal_id': self.journal_id.id,
+            }
+        )
+
+        account_bank_statement_lines = []
+
+        account = self.env['account.move'].search([('id','=',self.line_ids.move_id.id)])
+        account_bank_statement_lines.append(
+            (
+                0,
+                0,
+                {
+                    'payment_ref': self.communication,
+                    'partner_id': self.partner_id.id,
+                    'amount': self.amount,
+                    'journal_id': self.journal_id.id,
+                    'date': self.payment_date,
+                    'statement_id': account_bank_statement.id,
+                    'move_id': account.id,
+                },
+            )
+        )
+
+        account_bank_statement.line_ids = account_bank_statement_lines
+        account_bank_statement.action_bank_reconcile_bank_statements()
+
+-----------------------------------------
+
+    def action_create_payments(self):
+        payment = super().action_create_payments()
+        self._create_bank_reconciliation_entry(payment)
+        return payment
+
+    def _create_bank_reconciliation_entry(self,payment):
+        print("enter")
+        if self.cr_cash_register_id:
+            bank_statement_line = {
+                'payment_ref': self.communication,
+                'partner_id': self.partner_id.id,
+                'amount': self.amount,
+                'journal_id': self.journal_id.id,
+                'date': self.payment_date,
+                'statement_id': self.cr_cash_register_id.id,
+            }
+        else:
+            bank_statement_line = {
+                'payment_ref': self.communication,
+                'partner_id': self.partner_id.id,
+                'amount': self.amount,
+                'journal_id': self.journal_id.id,
+                'date': self.payment_date,
+            }
+
+        self.env['account.bank.statement.line'].create(bank_statement_line)
+        print("complete")
+        
+
+        return True
+        
+        
+----------------------------------------------------------
+    def action_create_payments(self):
+        payment = super().action_create_payments()
+        self._create_bank_reconciliation_entry(payment)
+        return payment
+
+    def _create_bank_reconciliation_entry(self, payment):
+        if self.cr_cash_register_id:
+            journal_id = self.cr_cash_register_id.journal_id
+            try:
+                account_bank_statement = self.env["account.bank.statement"].create(
+                    {
+                        "name": self.cr_cash_register_id.name,
+                        "date": fields.Date.today(),
+                        "journal_id": journal_id.id,
+                    }
+                )
+            except Exception as e:
+                print(f"Error creating bank statement: {str(e)}")
+                return
+
+            # Create lines for the bank statement
+            account_bank_statement_lines = [
+                (0, 0, {
+                    'payment_ref': self.communication,
+                    'partner_id': self.partner_id.id,
+                    'amount': self.amount,
+                    'journal_id': journal_id.id,
+                    'date': self.payment_date,
+                    'statement_id': account_bank_statement.id,
+                })
+            ]
+
+            # Assign the lines correctly
+            account_bank_statement.write({'line_ids': account_bank_statement_lines})
+
+            # Post the bank statement
+            account_bank_statement.button_post()
+            account_bank_statement.action_bank_reconcile_bank_statements()
+            if self.cr_cash_register_id and self.cr_cash_register_id.journal_id:
+                journal = self.cr_cash_register_id.journal_id
+                print(f"Journal to configure: {journal.name} (ID: {journal.id})")
+                if journal:
+                    print("Attempting to call action_configure_bank_journal()")
+                    journal.action_configure_bank_journal()
+                    print("Method called successfully")
+            else:
+                print("Cash register or its journal is not set.")
+        else:
+            pass
+        return True
+        
+        

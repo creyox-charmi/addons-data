@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="payment_delivery_omniva"
+              name="Omniva Delivery Options"
+              inherit_id="website_sale.payment_delivery_methods">
+
+        <xpath expr="//t[@t-if='delivery.website_description']" position="after">
+            <t t-if="delivery.delivery_type == 'omniva'">
+                <t t-set="partner_country_obj" t-value="order.partner_id.country_id"/>
+                <t t-set="company" t-value="delivery.env.company"/>
+
+                <!-- Fetch locations by type -->
+                <t t-set="parcel_machines" t-value="delivery.env['omniva.location'].search([
+                    ('location_type', '=', '0'),
+                    ('active', '=', True),
+                     ('country', '=', partner_country_obj.code if partner_country_obj else False)
+                ], order='country, city, name', limit=1000000)"/>
+
+                <t t-set="post_offices" t-value="delivery.env['omniva.location'].search([
+                    ('location_type', '=', '1'),
+                    ('active', '=', True),
+                     ('country', '=', partner_country_obj.code if partner_country_obj else False)
+                ], order='country, city, name', limit=1000000)"/>
+
+
+                <!-- Get country-based prices -->
+                <t t-set="courier_price_record" t-value="delivery.env['omniva.country.price'].search([
+                    ('company_id', '=', company.id),
+                    ('delivery_channel', '=', 'COURIER'),
+                    ('country_id', '=', partner_country_obj.id if partner_country_obj else False)
+                ], limit=1) if partner_country_obj else False"/>
+
+                <t t-set="parcel_machine_price_record" t-value="delivery.env['omniva.country.price'].search([
+                    ('company_id', '=', company.id),
+                    ('delivery_channel', '=', 'PARCEL_MACHINE'),
+                    ('country_id', '=', partner_country_obj.id if partner_country_obj else False)
+                ], limit=1) if partner_country_obj else False"/>
+
+                <t t-set="post_office_price_record" t-value="delivery.env['omniva.country.price'].search([
+                    ('company_id', '=', company.id),
+                    ('delivery_channel', '=', 'POST_OFFICE'),
+                    ('country_id', '=', partner_country_obj.id if partner_country_obj else False)
+                ], limit=1) if partner_country_obj else False"/>
+
+
+                <t t-set="base_courier_price" t-value="courier_price_record.price if courier_price_record else 0"/>
+<t t-set="base_parcel_machine_price_record" t-value="parcel_machine_price_record.price if parcel_machine_price_record else 0"/>
+                <t t-set="base_post_office_price" t-value="post_office_price_record.price if post_office_price_record else 0"/>
+
+
+                <!-- Set prices -->
+                <t t-set="courier_price" t-value="delivery._calculate_price_with_tax(base_courier_price, order) if base_courier_price else 0"/>
+                <t t-set="parcel_machine_price"
+                   t-value="delivery._calculate_price_with_tax(base_parcel_machine_price_record, order) if base_parcel_machine_price_record else 0"/>
+                <t t-set="post_office_price"
+                   t-value="delivery._calculate_price_with_tax(base_post_office_price, order) if base_post_office_price else 0"/>
+
+
+                <div class="o_omniva_selector mt-3 p-3 bg-light rounded border">
+
+                    <!-- Delivery Channel Selection with Prices -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Select Delivery Method:</label>
+
+                        <!-- Courier -->
+                        <t t-if="courier_price != 0">
+                            <div class="form-check mb-2">
+                                <input type="radio"
+                                       name="omniva_channel_radio"
+                                       value="COURIER"
+                                       id="omniva_courier"
+                                       class="form-check-input omniva-channel-radio"
+                                       checked="checked"
+                                       t-att-data-carrier-id="delivery.id"
+                                       t-att-data-price="courier_price"/>
+                                <label class="form-check-label" for="omniva_courier">
+                                    <i class="fa fa-truck me-2 text-success"/>
+                                    <!--                                <strong>Kuller (uksele)</strong>-->
+                                    <t t-esc="company.omniva_courier_label if company.omniva_custom_service_names else 'Kuller (uksele)'"/>
+
+                                    <span class="badge bg-success ms-2">
+                                        €
+                                        <t t-esc="'%.2f' % courier_price"/>
+                                    </span>
+                                </label>
+                            </div>
+                        </t>
+
+                        <!-- Parcel Machine -->
+                        <t t-if="parcel_machine_price != 0">
+                            <div class="form-check mb-2">
+                                <input type="radio"
+                                       name="omniva_channel_radio"
+                                       value="PARCEL_MACHINE"
+                                       id="omniva_parcel_machine"
+                                       class="form-check-input omniva-channel-radio"
+                                       t-att-data-carrier-id="delivery.id"
+                                       t-att-data-price="parcel_machine_price"/>
+                                <label class="form-check-label" for="omniva_parcel_machine">
+                                    <i class="fa fa-cube me-2 text-primary"/>
+                                    <!--                                <strong>Pakiautomaat</strong>-->
+                                    <t t-esc="company.omniva_pudo_label if company.omniva_custom_service_names else 'Pakiautomaadid'"/>
+
+                                    <span class="badge bg-success ms-2">
+                                        €
+                                        <t t-esc="'%.2f' % parcel_machine_price"/>
+                                    </span>
+                                </label>
+                            </div>
+                        </t>
+
+                        <!-- Post Office -->
+                        <t t-if="post_office_price != 0">
+                            <div class="form-check mb-2">
+                                <input type="radio"
+                                       name="omniva_channel_radio"
+                                       value="POST_OFFICE"
+                                       id="omniva_post_office"
+                                       class="form-check-input omniva-channel-radio"
+                                       t-att-data-carrier-id="delivery.id"
+                                       t-att-data-price="post_office_price"/>
+                                <label class="form-check-label" for="omniva_post_office">
+                                    <i class="fa fa-building me-2 text-info"/>
+                                    <!--                                <strong>Postkontor</strong>-->
+
+                                    <t t-esc="company.omniva_post_office_label if company.omniva_custom_service_names else 'Pakiautomaadid'"/>
+
+                                    <span class="badge bg-success ms-2">
+                                        €
+                                        <t t-esc="'%.2f' % post_office_price"/>
+                                    </span>
+                                </label>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Parcel Machine Dropdown -->
+                    <t t-if="parcel_machine_price != 0">
+                        <div class="parcel-machine-section mb-3" style="display:none;">
+                            <label class="form-label small">Select Parcel Machine:</label>
+                            <select name="omniva_location_id"
+                                    class="form-select form-select-sm omniva-location-select"
+                                    data-location-type="parcel_machine"
+                                    style="width: 100%;"
+                                    t-if="parcel_machines">
+                                <option value="">-- Select Location --</option>
+                                <t t-foreach="parcel_machines" t-as="location">
+                                    <option t-att-value="location.id"
+                                            t-att-data-name="location.name"
+                                            t-att-data-address="'%s, %s' % (location.address or '', location.city)">
+                                        <t t-esc="location.country"/>
+                                        -
+                                        <t t-esc="location.city"/>
+                                        -
+                                        <t t-esc="location.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                            <p t-else="" class="text-muted small">No parcel machines available</p>
+                        </div>
+                    </t>
+
+                    <!-- Post Office Dropdown -->
+                    <t t-if="post_office_price != 0">
+                        <div class="post-office-section mb-3" style="display:none;">
+                            <label class="form-label small">Select Post Office:</label>
+                            <select name="omniva_location_id"
+                                    class="form-select form-select-sm omniva-location-select"
+                                    data-location-type="post_office"
+                                    style="width: 100%;"
+                                    t-if="post_offices">
+                                <option value="">-- Select Location --</option>
+                                <t t-foreach="post_offices" t-as="location">
+                                    <option t-att-value="location.id"
+                                            t-att-data-name="location.name"
+                                            t-att-data-address="'%s, %s' % (location.address or '', location.city)">
+                                        <t t-esc="location.country"/>
+                                        -
+                                        <t t-esc="location.city"/>
+                                        -
+                                        <t t-esc="location.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                            <p t-else="" class="text-muted small">No post offices available</p>
+                        </div>
+                    </t>
+
+                    <!-- Selected Location Display -->
+                    <div class="alert alert-info small mb-0 omniva-selection-info" style="display:none;">
+                        <strong>Selected:</strong>
+                        <span class="selected-location-name"></span>
+                        <br/>
+                        <small class="selected-location-address"></small>
+                    </div>
+
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>
+
+
+
+# -*- coding: utf-8 -*-
+
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
+
+
+class ResCompany(models.Model):
+    _inherit = "res.company"
+
+    # Omniva API Configuration (existing fields...)
+    omniva_api_url = fields.Selection(
+        [("test", "Test Environment"), ("live", "Live Environment")],
+        string="Omniva Environment",
+        default="test",
+    )
+
+    omniva_username = fields.Char(string="Omniva Username")
+    omniva_password = fields.Char(string="Omniva Password")
+    omniva_customer_code = fields.Char(
+        string="Customer Code", help="Your Omniva customer code (e.g., 37884)"
+    )
+    omniva_developer_id = fields.Char(
+        string="Developer ID",
+        default="Developer_ODOO18_v1",
+        help="X-Integration-Agent-Id header value",
+    )
+    omniva_default_hs_code = fields.Char(
+        string="Default Omniva HS Code",
+        size=10,
+        help="Default 10-digit HS code for non-EU customs",
+    )
+
+    # ==================== NEW: PRICE CONFIGURATION ====================
+    omniva_courier_price = fields.Float(
+        string="Courier Delivery Price",
+        default=5.00,
+        help="Fixed delivery price for door-to-door courier delivery",
+    )
+    omniva_parcel_machine_price = fields.Float(
+        string="Parcel Machine Price",
+        default=3.50,
+        help="Fixed delivery price for parcel machine pickup",
+    )
+    omniva_post_office_price = fields.Float(
+        string="Post Office Price",
+        default=4.00,
+        help="Fixed delivery price for post office pickup",
+    )
+    omniva_country_price_ids = fields.One2many(
+        "omniva.country.price", "company_id", string="Country-Based Prices"
+    )
+    omniva_custom_service_names = fields.Boolean(
+        string="Use Custom Service Names",
+        default=False,
+        help="Enable custom naming for delivery service types",
+    )
+    omniva_courier_label = fields.Char(
+        string="Courier Service Label",
+        default="Kuller (uksele)",
+        help="Custom label for courier delivery service",
+    )
+    omniva_pudo_label = fields.Char(
+        string="Parcel Machine Label",
+        default="Pakiautomaadid",
+        help="Custom label for parcel machine service",
+    )
+    omniva_post_office_label = fields.Char(
+        string="Post office Label",
+        default="Postkontor",
+        help="Custom label for Post office service",
+    )
+    # ==================================================================
+
+    def _get_omniva_base_url(self):
+        """Get the base URL based on environment selection."""
+        self.ensure_one()
+        if self.omniva_api_url == "live":
+            return "https://omx.omniva.eu/api/v01/omx"
+        return "https://test-omx.omniva.eu/api/v01/omx"
+
+    def action_test_omniva_connection(self):
+        """Test Omniva API credentials"""
+        self.ensure_one()
+
+        if not self.omniva_username or not self.omniva_password:
+            raise ValidationError(
+                _("Please configure Omniva username and password first.")
+            )
+
+        if not self.omniva_customer_code:
+            raise ValidationError(_("Please configure Omniva customer code first."))
+
+        import requests
+        import base64
+
+        base_url = self._get_omniva_base_url()
+        credentials = f"{self.omniva_username}:{self.omniva_password}"
+        auth_token = base64.b64encode(credentials.encode("utf-8")).decode("ascii")
+
+        headers = {
+            "Authorization": f"Basic {auth_token}",
+            "X-Integration-Agent-Id": self.omniva_developer_id or "Developer_ODOO18_v1",
+            "Content-Type": "application/json",
+        }
+
+        try:
+            response = requests.get(
+                f"{base_url}/shipments",
+                headers=headers,
+                params={"fromTrackEventId": 0, "size": 1},
+                timeout=10,
+            )
+
+            if response.status_code == 200:
+                return {
+                    "type": "ir.actions.client",
+                    "tag": "display_notification",
+                    "params": {
+                        "title": _("Success"),
+                        "message": _("Connection to Omniva API successful!"),
+                        "type": "success",
+                        "sticky": False,
+                    },
+                }
+            elif response.status_code == 401:
+                raise ValidationError(
+                    _("Authentication failed. Please verify credentials.")
+                )
+            else:
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get("message", response.text)
+                except:
+                    error_msg = response.text
+
+                raise ValidationError(
+                    _("Connection failed with status %s: %s")
+                    % (response.status_code, error_msg)
+                )
+
+        except ValidationError:
+            raise
+        except requests.RequestException as e:
+            raise ValidationError(_("Network error: %s") % str(e))
+        except Exception as e:
+            raise ValidationError(_("Unexpected error: %s") % str(e))
+
+    def action_sync_omniva_locations(self):
+        """Sync Omniva locations"""
+        self.ensure_one()
+
+        try:
+            Location = self.env["omniva.location"]
+            result = Location.sync_locations_from_omniva()
+
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": _("Locations Synced"),
+                    "message": _(
+                        "Created: %(created)s, Updated: %(updated)s, Total: %(total)s"
+                    )
+                    % result,
+                    "type": "success",
+                    "sticky": False,
+                },
+            }
+        except Exception as e:
+            raise ValidationError(_("Sync failed: %s") % str(e))
+
+
+
+
+in this we have three option and this is another custom module only give me field which i add and also not give whole code only give whole code for template , for company only give field and plz not give description
+
+I want that order customisation in this also

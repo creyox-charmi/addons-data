@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_nre_sub_line_tree" model="ir.ui.view">
+        <field name="name">sale.order.line.nre.sub.tree</field>
+        <field name="model">sale.order.line.nre.sub</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="everest_pn"/>
+                <field name="product_id"/>
+                <field name="updated_delivery_date"/>
+                <field name="required_delivery_date"/>
+                <field name="billing_percentage"/>
+                <field name="sub_line_description"/>
+                <field name="sub_line_code"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_nre_sub_line_form" model="ir.ui.view">
+        <field name="name">sale.order.line.nre.sub.form</field>
+        <field name="model">sale.order.line.nre.sub</field>
+        <field name="arch" type="xml">
+            <form string="NRE Sub Line">
+                <sheet>
+                    <group>
+                        <field name="everest_pn"/>
+                        <field name="product_id"/>
+                    </group>
+                    <group>
+                        <field name="billing_percentage"/>
+                    </group>
+                    <group>
+                        <field name="sub_line_code"/>
+                        <field name="sub_line_description"/>
+                    </group>
+                    <group>
+                        <field name="required_delivery_date"/>
+                        <field name="updated_delivery_date"/>
+                    </group>
+<!--                    <group>-->
+<!--                        <field name="invoice_id"/>-->
+<!--                        <field name="invoicing_status"/>-->
+<!--                        <field name="invoiced_amount"/>-->
+<!--                        <field name="updated_delivery_date"/>-->
+<!--                    </group>-->
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_create_invoice_nre_sub" model="ir.actions.server">
+        <field name="name">Create Invoice</field>
+        <field name="model_id" ref="cr_sale_order_re_nre.model_sale_order_line_nre_sub"/>
+        <field name="binding_model_id" ref="cr_sale_order_re_nre.model_sale_order_line_nre_sub"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.action_create_invoice()
+        </field>
+    </record>
+
+
+
+
+
+</odoo>

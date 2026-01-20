@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="hero_snippet_template" name="section-1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+              media="print" onload="this.media='all'"/>
+
+        <section class="hero-section cr_font" aria-label="Odoo ERP Solutions Hero Banner">
+            <div class="floating-shapes-bg">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="hero-inner">
+                <div class="hero-content-wrapper">
+                    <!-- Left Side: Content -->
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Transform Your
+                            <span class="rotating-words">
+                                <span class="word">Business</span>
+                                <span class="word">Operations</span>
+                                <span class="word">Workflow</span>
+                                <span class="word">Growth</span>
+                            </span>
+                            <br/>With Intelligent Odoo ERP
+                        </h1>
+
+                        <a href="/contactus" class="cta-button" title="Start Your ERP Journey">
+                            <span>Start Your AI-Driven ERP Journey</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Right Side: Images Container -->
+                    <div class="hero-images">
+                        <!-- Main Dashboard SVG -->
+                        <div class="main-dashboard-img">
+                            <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="screenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+                                    </linearGradient>
+                                    <filter id="shadow">
+                                        <feDropShadow dx="0" dy="10" stdDeviation="20" flood-opacity="0.3"/>
+                                    </filter>
+                                </defs>
+
+                                <!-- Main Desktop Computer -->
+                                <g filter="url(#shadow)">
+                                    <!-- Monitor Screen -->
+                                    <rect x="100" y="120" width="400" height="260" rx="12" fill="url(#screenGrad)" stroke="#3b82f6" stroke-width="6"/>
+
+                                    <!-- Screen Content Background -->
+                                    <rect x="115" y="135" width="370" height="230" rx="8" fill="#0f172a"/>
+
+                                    <!-- Dashboard Header Bar -->
+                                    <rect x="125" y="145" width="350" height="35" rx="6" fill="#1e3a8a"/>
+                                    <circle cx="145" cy="162" r="5" fill="#ef4444"/>
+                                    <circle cx="165" cy="162" r="5" fill="#f59e0b"/>
+                                    <circle cx="185" cy="162" r="5" fill="#10b981"/>
+
+                                    <!-- Sidebar Menu -->
+                                    <rect x="125" y="190" width="80" height="160" rx="6" fill="#1e3a8a" opacity="0.5"/>
+                                    <rect x="135" y="200" width="60" height="8" rx="3" fill="#3b82f6"/>
+                                    <rect x="135" y="220" width="60" height="8" rx="3" fill="#3b82f6" opacity="0.6"/>
+                                    <rect x="135" y="240" width="60" height="8" rx="3" fill="#3b82f6" opacity="0.6"/>
+                                    <rect x="135" y="260" width="60" height="8" rx="3" fill="#3b82f6" opacity="0.6"/>
+
+                                    <!-- Main Content Area with Charts -->
+                                    <g class="dashboard-content">
+                                        <!-- Card 1 - Revenue -->
+                                        <rect x="220" y="200" width="110" height="70" rx="8" fill="#1e3a8a" opacity="0.8"/>
+                                        <text x="275" y="225" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">REVENUE</text>
+                                        <text x="275" y="250" text-anchor="middle" fill="#fff" font-size="22" font-weight="bold">$45.2K</text>
+                                        <text x="275" y="265" text-anchor="middle" fill="#10b981" font-size="11" font-weight="600">+12.5%</text>
+
+                                        <!-- Card 2 - Users -->
+                                        <rect x="345" y="200" width="110" height="70" rx="8" fill="#1e3a8a" opacity="0.8"/>
+                                        <text x="400" y="225" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">USERS</text>
+                                        <text x="400" y="250" text-anchor="middle" fill="#fff" font-size="22" font-weight="bold">2,847</text>
+                                        <text x="400" y="265" text-anchor="middle" fill="#10b981" font-size="11" font-weight="600">+8.2%</text>
+
+                                        <!-- Bar Chart -->
+                                        <g class="bar-chart">
+                                            <rect x="230" y="310" width="25" height="25" rx="3" fill="#3b82f6">
+                                                <animate attributeName="height" values="25;40;25" dur="2s" repeatCount="indefinite"/>
+                                                <animate attributeName="y" values="310;295;310" dur="2s" repeatCount="indefinite"/>
+                                            </rect>
+                                            <rect x="265" y="300" width="25" height="35" rx="3" fill="#6366f1">
+                                                <animate attributeName="height" values="35;50;35" dur="2.2s" repeatCount="indefinite"/>
+                                                <animate attributeName="y" values="300;285;300" dur="2.2s" repeatCount="indefinite"/>
+                                            </rect>
+                                            <rect x="300" y="315" width="25" height="20" rx="3" fill="#8b5cf6">
+                                                <animate attributeName="height" values="20;35;20" dur="2.4s" repeatCount="indefinite"/>
+                                                <animate attributeName="y" values="315;300;315" dur="2.4s" repeatCount="indefinite"/>
+                                            </rect>
+                                            <rect x="335" y="295" width="25" height="40" rx="3" fill="#06b6d4">
+                                                <animate attributeName="height" values="40;55;40" dur="2.1s" repeatCount="indefinite"/>
+                                                <animate attributeName="y" values="295;280;295" dur="2.1s" repeatCount="indefinite"/>
+                                            </rect>
+                                            <rect x="370" y="305" width="25" height="30" rx="3" fill="#10b981">
+                                                <animate attributeName="height" values="30;45;30" dur="2.3s" repeatCount="indefinite"/>
+                                                <animate attributeName="y" values="305;290;305" dur="2.3s" repeatCount="indefinite"/>
+                                            </rect>
+                                            <rect x="405" y="300" width="25" height="35" rx="3" fill="#3b82f6">
+                                                <animate attributeName="height" values="35;50;35" dur="2.5s" repeatCount="indefinite"/>
+                                                <animate attributeName="y" values="300;285;300" dur="2.5s" repeatCount="indefinite"/>
+                                            </rect>
+                                        </g>
+
+                                        <!-- Growth Line -->
+                                        <polyline points="230,330 265,315 300,325 335,305 370,310 405,295 440,300"
+                                                  stroke="#10b981" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8">
+                                            <animate attributeName="points"
+                                                     values="230,330 265,315 300,325 335,305 370,310 405,295 440,300;
+                                                             230,330 265,310 300,320 335,300 370,305 405,290 440,295;
+                                                             230,330 265,315 300,325 335,305 370,310 405,295 440,300"
+                                                     dur="3s" repeatCount="indefinite"/>
+                                        </polyline>
+                                    </g>
+
+                                    <!-- Monitor Stand -->
+                                    <rect x="270" y="380" width="60" height="15" rx="4" fill="#1e3a8a"/>
+                                    <rect x="230" y="395" width="140" height="10" rx="5" fill="#0f172a"/>
+                                </g>
+
+                                <!-- Connecting Lines -->
+                                <line x1="70" y1="200" x2="100" y2="180" stroke="#3b82f6" stroke-width="2" opacity="0.3" stroke-dasharray="5,5">
+                                    <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1s" repeatCount="indefinite"/>
+                                </line>
+                                <line x1="520" y1="180" x2="500" y2="160" stroke="#10b981" stroke-width="2" opacity="0.3" stroke-dasharray="5,5">
+                                    <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1s" repeatCount="indefinite"/>
+                                </line>
+
+                                <!-- Particles -->
+                                <circle cx="150" cy="100" r="4" fill="#3b82f6" opacity="0.6">
+                                    <animate attributeName="cy" values="100;90;100" dur="2s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle cx="450" cy="480" r="4" fill="#6366f1" opacity="0.6">
+                                    <animate attributeName="cy" values="480;470;480" dur="2.5s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle cx="550" cy="300" r="4" fill="#10b981" opacity="0.6">
+                                    <animate attributeName="cy" values="300;290;300" dur="2.2s" repeatCount="indefinite"/>
+                                </circle>
+                            </svg>
+                        </div>
+
+                        <!-- Floating Cards -->
+                        <div class="floating-card card-1">
+                            <div class="card-content">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="card-text">
+                                    <span class="label">Revenue</span>
+                                    <span class="value">+127%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="floating-card card-2">
+                            <div class="card-content">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="card-text">
+                                    <span class="label">Efficiency</span>
+                                    <span class="value">98.5%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="floating-card card-3">
+                            <div class="card-content">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <div class="card-text">
+                                    <span class="label">Growth</span>
+                                    <span class="value">3.2x</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+</odoo>
+
+
+
+/* ===========================
+   CSS STYLES - SCOPED TO HERO SECTION ONLY
+=========================== */
+
+.hero-section * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#cr_home_page {
+    background: white;
+}
+
+.hero-section {
+    position: relative;
+    background: linear-gradient(135deg, #f0f4ff, #e0ecff);
+    color: #0f172a;
+    overflow: hidden;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Background Floating Shapes */
+.hero-section .floating-shapes-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.hero-section .floating-shapes-bg span {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.1);
+    animation: floatBg 20s infinite ease-in-out;
+}
+
+.hero-section .floating-shapes-bg span:nth-child(1) {
+    width: 80px;
+    height: 80px;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.hero-section .floating-shapes-bg span:nth-child(2) {
+    width: 60px;
+    height: 60px;
+    top: 60%;
+    left: 80%;
+    animation-delay: 2s;
+}
+
+.hero-section .floating-shapes-bg span:nth-child(3) {
+    width: 100px;
+    height: 100px;
+    top: 80%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+.hero-section .floating-shapes-bg span:nth-child(4) {
+    width: 70px;
+    height: 70px;
+    top: 30%;
+    left: 70%;
+    animation-delay: 1s;
+}
+
+.hero-section .floating-shapes-bg span:nth-child(5) {
+    width: 90px;
+    height: 90px;
+    top: 50%;
+    left: 50%;
+    animation-delay: 3s;
+}
+
+@keyframes floatBg {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-50px) scale(1.1);
+        opacity: 0.6;
+    }
+}
+
+.hero-section .hero-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 20px;
+}
+
+@media (min-width: 768px) {
+    .hero-section .hero-inner {
+        padding: 100px 40px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .hero-section .hero-inner {
+        padding: 120px 60px;
+    }
+}
+
+/* Hero Content Wrapper */
+.hero-section .hero-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+@media (min-width: 992px) {
+    .hero-section .hero-content-wrapper {
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+    }
+}
+
+/* Left Content */
+.hero-section .hero-content {
+    text-align: left;
+}
+
+@media (max-width: 991px) {
+    .hero-section .hero-content {
+        text-align: center;
+    }
+}
+
+.hero-section .hero-title {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #1e293b;
+    margin-bottom: 40px;
+}
+
+@media (min-width: 768px) {
+    .hero-section .hero-title {
+        font-size: 58px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .hero-section .hero-title {
+        font-size: 68px;
+    }
+}
+
+/* Rotating Words Animation */
+.hero-section .rotating-words {
+    display: inline-block;
+    position: relative;
+    height: 1.2em;
+    vertical-align: bottom;
+    min-width: 350px;
+}
+
+@media (max-width: 768px) {
+    .hero-section .rotating-words {
+        min-width: 250px;
+    }
+}
+
+.hero-section .rotating-words .word {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    background: linear-gradient(to right, #3b82f6, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rotateWord 12s infinite;
+}
+
+.hero-section .rotating-words .word:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.hero-section .rotating-words .word:nth-child(2) {
+    animation-delay: 3s;
+}
+
+.hero-section .rotating-words .word:nth-child(3) {
+    animation-delay: 6s;
+}
+
+.hero-section .rotating-words .word:nth-child(4) {
+    animation-delay: 9s;
+}
+
+@keyframes rotateWord {
+    0% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    2% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    23% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    25% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+}
+
+/* CTA Button */
+.hero-section .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    background: linear-gradient(145deg, #0a173b, #1e3a8a);
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(10, 23, 59, 0.3);
+}
+
+.hero-section .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(10, 23, 59, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.hero-section .cta-button i {
+    transition: transform 0.3s ease;
+}
+
+.hero-section .cta-button:hover i {
+    transform: translateX(4px);
+}
+
+/* Right Side - Images Container */
+.hero-section .hero-images {
+    position: relative;
+    width: 100%;
+    height: 600px;
+}
+
+@media (max-width: 991px) {
+    .hero-section .hero-images {
+        height: 500px;
+    }
+}
+
+.hero-section .main-dashboard-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 450px;
+    animation: floatMain 6s ease-in-out infinite;
+    z-index: 1;
+}
+
+.hero-section .main-dashboard-img svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 20px 60px rgba(59, 130, 246, 0.25));
+}
+
+@keyframes floatMain {
+    0%, 100% {
+        transform: translate(-50%, -50%);
+    }
+    50% {
+        transform: translate(-50%, calc(-50% - 20px));
+    }
+}
+
+/* Floating Cards */
+.hero-section .floating-card {
+    position: absolute;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    animation: floatCard 4s ease-in-out infinite;
+}
+
+.hero-section .floating-card .card-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.hero-section .floating-card .icon-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.hero-section .floating-card .card-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-section .floating-card .label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hero-section .floating-card .value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Card 1 - Top Right */
+.hero-section .card-1 {
+    top: 8%;
+    right: 0%;
+    animation-delay: 0s;
+}
+
+.hero-section .card-1 .icon-wrapper {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+/* Card 2 - Bottom Left */
+.hero-section .card-2 {
+    bottom: 8%;
+    left: 0%;
+    animation-delay: 1.5s;
+}
+
+.hero-section .card-2 .icon-wrapper {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+/* Card 3 - Top Left */
+.hero-section .card-3 {
+    top: 55%;
+    left: 87%;
+    animation-delay: 3s;
+}
+
+.hero-section .card-3 .icon-wrapper {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+}
+
+@keyframes floatCard {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .hero-section .floating-card {
+        padding: 14px;
+    }
+
+    .hero-section .floating-card .icon-wrapper {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .hero-section .floating-card .value {
+        font-size: 20px;
+    }
+
+    .hero-section .card-1 {
+        top: 5%;
+        right: 2%;
+    }
+
+    .hero-section .card-2 {
+        bottom: 5%;
+        left: 2%;
+    }
+
+    .hero-section .card-3 {
+        top: 40%;
+        left: 2%;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section .floating-card {
+        padding: 10px;
+    }
+
+    .hero-section .floating-card .card-content {
+        gap: 8px;
+    }
+
+    .hero-section .floating-card .icon-wrapper {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+
+    .hero-section .floating-card .value {
+        font-size: 18px;
+    }
+
+    .hero-section .floating-card .label {
+        font-size: 10px;
+    }
+
+    .hero-section .rotating-words {
+        min-width: 200px;
+    }
+}

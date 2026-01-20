@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="cr_account_inherit" model="ir.ui.view">
+        <field name="name">cr.form.inherit.account.move</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <!-- FIELD ADDED IN OTHER INFO TAB (ACCOUNTING SECTION) -->
+            <xpath expr="//page[@name='other_info']/group/group[@name='accounting_info_group']" position="inside">
+                <field name = 'cr_task_ids' string = 'Tasks' widget='many2many_tags'/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

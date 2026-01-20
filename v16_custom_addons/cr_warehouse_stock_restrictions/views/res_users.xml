@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_cr_warehouse_res_users_form_inherit" model="ir.ui.view">
+        <field name="name">cr.warehouse.res.users.form.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//group[@name='messaging']" position="after">
+                <div style="border-bottom: 1px solid #454; margin-bottom: 10px;"
+                     groups="cr_warehouse_stock_restrictions.cr_restrict_warehouse_access">
+                    <strong>Warehouse Restrictions</strong>
+                </div>
+                <group groups="cr_warehouse_stock_restrictions.cr_restrict_warehouse_access">
+                    <field name="stock_picking_type_ids" widget="many2many_tags"/>
+                    <field name="warehouse_ids" widget="many2many_tags"/>
+                    <field name="limit_sale_order" widget="integer"/>
+                    <field name="is_limit_sale_order" invisible="1"/>
+                    <field name="is_restrict_sale_warehouses" invisible="1"/>
+                </group>
+                <div style="border-bottom: 1px solid #454; margin-bottom: 10px;"
+                     groups="cr_warehouse_stock_restrictions.cr_restrict_warehouse_access">
+                    <strong>Locations</strong>
+                </div>
+                <group groups="cr_warehouse_stock_restrictions.cr_restrict_warehouse_access">
+                    <field name="is_restrict_locations"/>
+                </group>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Allowed Stock Locations" name="stock_locations"
+                      groups="cr_warehouse_stock_restrictions.cr_restrict_warehouse_access"
+                      attrs="{'invisible': [('is_restrict_locations','=',False)] }">
+                    <field name="stock_location_ids"/>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

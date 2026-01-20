@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="cr_sign_up_email_verification_settings_form_view_form" model="ir.ui.view">
+        <field name="name">cr.sign.up.email.verification.setting.view</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='catalog_setting_container']" position="before">
+                <block title="Default Terms &amp; Conditions"
+                       id="cr_terms_and_condition_settings_add">
+                    <setting id="setting_terms_and_condition_creyox"
+                             string='Default Terms &amp; Conditions'
+                             help="Set default terms &amp; conditions for Sale Order">
+                        <field name="cr_is_boolean_for_sale_order"/>
+                        <field name="cr_sale_order_terms_and_condition_id" readonly="cr_is_boolean_for_sale_order != True"
+                               domain="[('cr_model_reference', '=', 'sales')]"/>
+                    </setting>
+                    <setting id="auto_translate_creyox"
+                             string='Auto Translate'
+                             help="Auto Translate Term(s) &amp; Condition(s)">
+                        <field name="cr_is_auto_translate_for_sale_order"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_sales_order_cr_terms_and_conditions_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="cr_sales_order_terms_and_conditions_settings_form_view_form"/>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'sale', 'bin_size': False}</field>
+    </record>
+
+    <record id="cr_account_move_terms_and_conditions_settings_form_view_form" model="ir.ui.view">
+        <field name="name">cr.account.move.terms.and.conditions.setting.view</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='fiscal_localization_setting_container']" position="before">
+                <block title="Default Terms &amp; Conditions"
+                       id="cr_account_move_terms_and_condition_settings_add">
+                    <setting id="account_move_setting_terms_and_condition_creyox"
+                             string='Default Terms &amp; Conditions'
+                             help="Set default terms &amp; conditions for Invoicing">
+                        <field name="cr_is_boolean_for_account_move"/>
+                        <field name="cr_account_move_terms_and_conditions_id"
+                               readonly="cr_is_boolean_for_account_move != True"
+                               domain="[('cr_model_reference', '=', 'invoice')]"/>
+                    </setting>
+                    <setting id="account_move_auto_translate_creyox"
+                             string='Auto Translate'
+                             help="Auto Translate Term(s) &amp; Condition(s)">
+                        <field name="cr_is_auto_translate_for_account_move"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_account_move_cr_terms_and_conditions_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="cr_account_move_terms_and_conditions_settings_form_view_form"/>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'account', 'bin_size': False}</field>
+    </record>
+
+    <record id="cr_purchase_order_terms_and_conditions_settings_form_view_form" model="ir.ui.view">
+        <field name="name">cr.purchase.order.terms.and.conditions.setting.view</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='purchase_setting_container']" position="before">
+                <block title="Default Terms &amp; Conditions"
+                       id="cr_purchase_order_terms_and_condition_settings_add">
+                    <setting id="purchase_order_setting_terms_and_condition_creyox"
+                             string='Default Terms &amp; Conditions'
+                             help="Set default terms &amp; conditions for Purchase">
+                        <field name="cr_is_boolean_for_purchase_order"/>
+                        <field name="cr_purchase_order_terms_and_conditions_id"
+                               readonly="cr_is_boolean_for_purchase_order != True"
+                               domain="[('cr_model_reference', '=', 'purchase')]"/>
+                    </setting>
+                    <setting id="purchase_order_auto_translate_creyox"
+                             string='Auto Translate'
+                             help="Auto Translate Term(s) &amp; Condition(s)">
+                        <field name="cr_is_auto_translate_for_purchase_order"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_purchase_order_cr_terms_and_conditions_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="cr_purchase_order_terms_and_conditions_settings_form_view_form"/>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'purchase', 'bin_size': False}</field>
+    </record>
+</odoo>

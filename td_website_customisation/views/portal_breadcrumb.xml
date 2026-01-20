@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="abc" inherit_id="wb_portal_blogs.portal_my_home_menu_blogs">
+        <xpath expr="//li[@t-if='blog_entry']" position="replace">
+            <li t-if="page_name == 'my_messages'"
+                t-attf-class="breadcrumb-item #{'active' if not partner else ''}">
+                <a t-if="other_partner" t-attf-href="/my/messages">Mensajes</a>
+                <t t-else="">Mensajes</t>
+            </li>
+            <li t-if="other_partner" class="breadcrumb-item active">
+                <t t-esc="other_partner.name"/>
+            </li>
+        </xpath>
+    </template>
+</odoo>

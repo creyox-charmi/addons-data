@@ -1,0 +1,578 @@
+05/05/2025 16:39:40
+
+update stock_move_line set date='05/05/2025 16:39:40' where id=29;
+
+update:
+>>cr_ready_state_picking
+explore when the ready state assign to record of stock.picking when internal transfer is create from receipt is validate
+explore the output of all method when click on validate button of receipt
+try diffrent diffrent method to set status waiting when internal transfer is create
+
+>>cr_filter_delivery_record
+add filter for find the record which delivery
+try different ways to filter the record
+add new menu two see the record wich have no delivey in last 7 days 
+ 
+ case-1
+ see if i give you example with 2 delivry if i have total 2 delivery
+ i have two delivery which is in done state
+ delivery1
+ product1 - delivery happen 10 days before
+ product2 - delivery happen 10 days before
+ 
+ delivery2
+ product1 - delivery happen 2 days before
+ product4 - delivery happen 2 days before
+ 
+ then no moves display related to above to deliveries bcoz the in  delivery1 have product1 which related moves is done  before 10 days but the same product but another moves is done in delivery2 before 2 days so for same product moves is generate within 7 days so above two delivery don't show in the new view that we create
+ 
+ case-2 i have total 2 delivery
+ if 
+ delivery3
+ product3 - delivery happen 10 days before
+ product2 - delivery happen 10 days before
+ 
+ delivery4
+ product3 - delivery happen 9 days before
+ product4 - delivery happen 9 days before
+ 
+ in this case we have to display all 4 moves bcoz in both delivery one product is commomn which is product3 and for that product no moves is create in last 7 days or no delivery is create within last 7 days and same for product2 and product4 so we have to so the moves related to delivery3 and delivery4
+ 
+ if any delivery moves date is within 7 days then we don't display the any moves of that delivery , so basically what we have to do is 
+ 1] we have to filter record of moves with delivery is in the done state
+ 2] that done state delivery moves product have the any other moves delivery create in last 7 days? if create then that moves we don't need to display and if any other product moves delivery of that product  is not created in last 7 days then related delivery moves of related product we have to display  
+ 
+ 
+ ---------
+ in odoo i want to add one view in which it display record which moves have didn't create deliveries in last 7 days are you understand what i want to say? so filter the record which product moves didn't geneate dilevry in last 7 days
+
+
+
+
+I understand you want to create a view in Odoo to display stock moves (stock.move) that haven't generated a delivery (i.e., no associated stock.picking or delivery order) in the last 7 days. Below, I’ll guide you on how to achieve this by creating a custom view in Odoo with a filter to show such records.
+
+Clarification of Requirements
+Model: stock.move (stock moves in Odoo).
+Condition: Filter moves where no delivery (stock.picking) has been created in the last 7 days.
+View: A new view (e.g., tree or kanban) to display these records.
+Assumption: You’re referring to outgoing stock moves (e.g., from a warehouse to a customer) that typically result in a delivery order.
+If this interpretation is incorrect, please clarify further, and I can adjust the solution.
+
+Steps to Create the View in Odoo
+1. Create a Custom Module
+To add a new view, you need a custom Odoo module. If you don’t have one, create a module structure (e.g., custom_stock_view).
+
+2. Define the Filter Logic
+You want to filter stock.move records where:
+
+The move is not associated with a delivery (stock.picking).
+The move date is within the last 7 days.
+Optionally, focus on outgoing moves (e.g., picking_type_id.code = 'outgoing').
+In Odoo, stock moves linked to deliveries are part of a stock.picking. If a move hasn’t resulted in a delivery, it might not have a picking_id or the picking might not be in a ‘done’ state. We’ll filter moves that are in a state like ‘confirmed’ or ‘assigned’ but not yet delivered.
+
+3. Create the View
+You can create a tree view with a domain filter to show the desired records. Here’s how:
+
+Python Model (Optional - For Custom Fields or Logic)
+If you need to add computed fields or custom logic, extend the stock.move model. For now, we’ll use the existing model and add a view with a domain filter.
+
+Create a file models/stock_move.py:
+
+python
+
+Collapse
+
+Wrap
+
+Run
+
+Copy
+from odoo import models
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    # Optional: Add computed fields if needed
+XML View Definition
+Create a file views/stock_move_views.xml to define the new view with a filter.
+
+xml
+
+Collapse
+
+Wrap
+
+Copy
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree View for Stock Moves without Deliveries -->
+    <record id="view_stock_move_no_delivery_tree" model="ir.ui.view">
+        <field name="name">stock.move.no.delivery.tree</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="product_qty"/>
+                <field name="state"/>
+                <field name="date"/>
+                <field name="picking_type_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action to Open the View -->
+    <record id="action_stock_move_no_delivery" model="ir.actions.act_window">
+        <field name="name">Stock Moves Without Delivery (Last 7 Days)</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', 'in', ('confirmed', 'assigned')), ('picking_id', '=', False), ('date', '>=', (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))]</field>
+        <field name="view_id" ref="view_stock_move_no_delivery_tree"/>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_stock_move_no_delivery"
+              name="Moves Without Delivery"
+              parent="stock.menu_stock_inventory_control"
+              action="action_stock_move_no_delivery"/>
+</odoo>
+Explanation of the Domain
+('state', 'in', ('confirmed', 'assigned')): Filters moves that are waiting to be processed (not yet delivered).
+('picking_id', '=', False): Ensures the move is not linked to a delivery order. Adjust this if you want to include moves with pickings that aren’t ‘done’ (e.g., ('picking_id.state', '!=', 'done')).
+('date', '>=', (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')): Filters moves from the last 7 days. This uses Python’s datetime module (handled server-side in Odoo).
+If you want to focus only on outgoing moves, add:
+
+xml
+
+Collapse
+
+Wrap
+
+Copy
+('picking_type_id.code', '=', 'outgoing')
+4. Update the Module Manifest
+Ensure your module’s __manifest__.py includes dependencies:
+
+python
+
+Collapse
+
+Wrap
+
+Run
+
+Copy
+{
+    'name': 'Custom Stock Move View',
+    'depends': ['stock'],
+    'data': [
+        'views/stock_move_views.xml',
+    ],
+}
+5. Install the Module
+Place the module in your Odoo addons directory.
+Restart Odoo and install the module via the Apps menu.
+The new menu “Moves Without Delivery” will appear under Inventory > Inventory Control.
+6. Alternative: Add Filter to Existing View
+If you don’t want a new view but want to add a filter to the existing stock.move view, create a search view:
+
+xml
+
+Collapse
+
+Wrap
+
+Copy
+<record id="view_stock_move_no_delivery_search" model="ir.ui.view">
+    <field name="name">stock.move.no.delivery.search</field>
+    <field name="model">stock.move</field>
+    <field name="arch" type="xml">
+        <search>
+            <filter name="no_delivery_last_7_days"
+                    string="No Delivery (Last 7 Days)"
+                    domain="[('state', 'in', ('confirmed', 'assigned')), ('picking_id', '=', False), ('date', '>=', (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+        </search>
+    </field>
+</record>
+Add this to the existing stock.move view by inheriting it or linking it to the action.
+
+7. Testing
+After installing, check the new view or filter.
+Ensure it shows stock moves that haven’t resulted in a delivery in the last 7 days.
+Verify the date filter and states (confirmed, assigned) match your needs.
+Notes
+Odoo Version: This solution assumes Odoo 15/16/17. If you’re using an older version, let me know, as the domain syntax or model fields might differ.
+Customization: If you need specific fields in the view or additional filters (e.g., by product or warehouse), let me know.
+Performance: For large datasets, consider indexing the date and state fields or optimizing the domain.
+Clarifications Needed: If “didn’t generate delivery” means something specific (e.g., moves stuck in a certain state or specific picking types), please provide more details.
+If you need help with implementation, specific code adjustments, or have a different Odoo version, let me know!
+
+
+
+
+
+
+
+
+1.4s
+ case-1
+ see if i give you example with 2 delivry if i have total 2 delivery
+ i have two delivery which is in done state
+ delivery1
+ product1 - delivery happen 10 days before
+ product2 - delivery happen 10 days before
+ 
+ delivery2
+ product1 - delivery happen 2 days before
+ product4 - delivery happen 2 days before
+ 
+ then no moves display related to above to deliveries bcoz the in  delivery1 have product1 which related moves is done  before 10 days but the same product but another moves is done in delivery2 before 2 days so for same product moves is generate within 7 days so above two delivery don't show in the new view that we create
+ 
+ case-2 i have total 2 delivery
+ if 
+ delivery3
+ product3 - delivery happen 10 days before
+ product2 - delivery happen 10 days before
+ 
+ delivery4
+ product3 - delivery happen 9 days before
+ product4 - delivery happen 9 days before
+ 
+ in this case we have to display all 4 moves bcoz in both delivery one product is commomn which is product3 and for that product no moves is create in last 7 days or no delivery is create within last 7 days and same for product2 and product4 so we have to so the moves related to delivery3 and delivery4
+ 
+ if any delivery moves date is within 7 days then we don't display the any moves of that delivery , so basically what we have to do is 
+ 1] we have to filter record of moves with delivery is in the done state
+ 2] that done state delivery moves product have the any other moves delivery create in last 7 days? if create then that moves we don't need to display and if any other product moves delivery of that product  is not created in last 7 days then related delivery moves of related product we have to display  
+
+
+
+
+Thank you for providing detailed examples. I now understand that you want to create a view in Odoo to display stock.move records associated with deliveries (stock.picking) in the 'done' state, but only for products that have not had any other delivery moves created in the last 7 days. Let’s break it down based on your cases and requirements, and I’ll provide a solution to achieve this in Odoo.
+
+Understanding the Requirements
+From your cases:
+
+Goal: Display stock.move records linked to stock.picking (deliveries) in the 'done' state, where the product associated with the move has no other delivery moves created in the last 7 days.
+Logic:
+Filter stock.move records where:
+The move is linked to a delivery (stock.picking) in the 'done' state.
+The move’s product has no other delivery moves (in 'done' state) within the last 7 days.
+If any delivery move for a product exists within the last 7 days, exclude all moves for that product, even from older deliveries.
+If no delivery moves for a product exist within the last 7 days, include all moves for that product from 'done' deliveries.
+Case Analysis
+Case 1:
+Delivery 1 (done, 10 days ago): Product1, Product2.
+Delivery 2 (done, 2 days ago): Product1, Product4.
+Result: No moves displayed because Product1 has a move in Delivery 2 (within 7 days), so all moves for Product1 (from both deliveries) are excluded. Product2 is only in Delivery 1 (10 days ago), but since Product1’s recent move affects the delivery, we exclude all moves from both deliveries (based on your rule: if any move in a delivery is within 7 days, exclude the entire delivery).
+Case 2:
+Delivery 3 (done, 10 days ago): Product3, Product2.
+Delivery 4 (done, 9 days ago): Product3, Product4.
+Result: Display all moves from Delivery 3 and Delivery 4 because no moves for Product2, Product3, or Product4 have a delivery within the last 7 days (all are 9+ days ago).
+Solution in Odoo
+This is a complex requirement because it involves checking for the absence of recent moves for the same product across all deliveries. Odoo’s domain filters alone cannot handle this logic efficiently (since it requires checking related records dynamically). We’ll need a computed field or a custom method to identify qualifying moves and a view to display them.
+
+Approach
+Extend stock.move with a computed field to flag moves where the product has no delivery moves in the last 7 days.
+Create a view with a domain filter to show only these flagged moves from 'done' deliveries.
+Optionally, group by delivery to exclude entire deliveries if any product has recent moves (per your rule).
+1. Extend the stock.move Model
+Create a file models/stock_move.py in your custom module to add a computed field.
+
+python
+
+Collapse
+
+Wrap
+
+Run
+
+Copy
+from odoo import models, fields, api
+from datetime import datetime, timedelta
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    no_recent_delivery = fields.Boolean(
+        string='No Recent Delivery',
+        compute='_compute_no_recent_delivery',
+        store=True,
+    )
+
+    @api.depends('product_id', 'date', 'picking_id.state')
+    def _compute_no_recent_delivery(self):
+        # Get the date 7 days ago
+        seven_days_ago = datetime.now() - timedelta(days=7)
+        # Fetch all done moves within the last 7 days, grouped by product
+        recent_moves = self.env['stock.move'].search([
+            ('picking_id.state', '=', 'done'),
+            ('date', '>=', seven_days_ago),
+        ])
+        products_with_recent_moves = recent_moves.mapped('product_id')
+
+        for move in self:
+            # Check if move is from a done delivery
+            if move.picking_id and move.picking_id.state == 'done':
+                # Check if the product has no moves in the last 7 days
+                move.no_recent_delivery = move.product_id not in products_with_recent_moves
+            else:
+                move.no_recent_delivery = False
+Explanation:
+
+no_recent_delivery: A computed boolean field that is True if the move’s product has no other delivery moves in the last 7 days and the move is from a 'done' delivery.
+The computation:
+Finds all stock.move records linked to 'done' deliveries within the last 7 days.
+Checks if the move’s product is in this set.
+Sets no_recent_delivery to True only if the product has no recent moves and the move’s delivery is 'done'.
+2. Create the View
+Create a file views/stock_move_views.xml to define the view with a filter.
+
+xml
+
+Collapse
+
+Wrap
+
+Copy
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree View for Stock Moves without Recent Deliveries -->
+    <record id="view_stock_move_no_recent_delivery_tree" model="ir.ui.view">
+        <field name="name">stock.move.no.recent.delivery.tree</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="product_qty"/>
+                <field name="state"/>
+                <field name="date"/>
+                <field name="picking_id"/>
+                <field name="picking_type_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View with Filter -->
+    <record id="view_stock_move_no_recent_delivery_search" model="ir.ui.view">
+        <field name="name">stock.move.no.recent.delivery.search</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter name="no_recent_delivery"
+                        string="No Recent Delivery (Last 7 Days)"
+                        domain="[('no_recent_delivery', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action to Open the View -->
+    <record id="action_stock_move_no_recent_delivery" model="ir.actions.act_window">
+        <field name="name">Stock Moves Without Recent Deliveries</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('no_recent_delivery', '=', True)]</field>
+        <field name="search_view_id" ref="view_stock_move_no_recent_delivery_search"/>
+        <field name="view_id" ref="view_stock_move_no_recent_delivery_tree"/>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_stock_move_no_recent_delivery"
+              name="Moves Without Recent Deliveries"
+              parent="stock.menu_stock_inventory_control"
+              action="action_stock_move_no_recent_delivery"/>
+</odoo>
+Explanation:
+
+The view filters stock.move records where no_recent_delivery is True.
+The search view adds a filter for easy access.
+The action ties the view to a menu item under Inventory > Inventory Control.
+3. Update the Module Manifest
+Ensure your __manifest__.py includes:
+
+python
+
+Collapse
+
+Wrap
+
+Run
+
+Copy
+{
+    'name': 'Custom Stock Move View',
+    'depends': ['stock'],
+    'data': [
+        'views/stock_move_views.xml',
+    ],
+}
+4. Handle Delivery-Level Exclusion
+Your requirement suggests excluding all moves from a delivery if any product in that delivery has a move within 7 days (as in Case 1). To achieve this, we need to modify the computed field to check the delivery’s products.
+
+Update the Python code:
+
+python
+
+Collapse
+
+Wrap
+
+Run
+
+Copy
+from odoo import models, fields, api
+from datetime import datetime, timedelta
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    no_recent_delivery = fields.Boolean(
+        string='No Recent Delivery',
+        compute='_compute_no_recent_delivery',
+        store=True,
+    )
+
+    @api.depends('product_id', 'date', 'picking_id.state', 'picking_id.move_ids_without_package')
+    def _compute_no_recent_delivery(self):
+        seven_days_ago = datetime.now() - timedelta(days=7)
+        recent_moves = self.env['stock.move'].search([
+            ('picking_id.state', '=', 'done'),
+            ('date', '>=', seven_days_ago),
+        ])
+        products_with_recent_moves = recent_moves.mapped('product_id')
+
+        for move in self:
+            if move.picking_id and move.picking_id.state == 'done':
+                # Check all products in the same delivery
+                delivery_products = move.picking_id.move_ids_without_package.mapped('product_id')
+                has_recent_move = any(product in products_with_recent_moves for product in delivery_products)
+                move.no_recent_delivery = not has_recent_move
+            else:
+                move.no_recent_delivery = False
+Explanation:
+
+Now, no_recent_delivery is False if any product in the move’s delivery (picking_id) has a move in the last 7 days.
+This ensures that if any product in a delivery has a recent move (like Product1 in Case 1), all moves from that delivery are excluded.
+5. Install and Test
+Place the module in your Odoo addons directory.
+Restart Odoo and install the module.
+Check the “Moves Without Recent Deliveries” menu under Inventory.
+Verify:
+Case 1: No moves from Delivery 1 or Delivery 2 are shown (Product1 has a move 2 days ago).
+Case 2: All moves from Delivery 3 and Delivery 4 are shown (no moves for Product2, Product3, Product4 in the last 7 days).
+Additional Notes
+Performance: Storing no_recent_delivery (store=True) improves performance but requires recomputation when moves are updated. For large datasets, consider optimizing the search query or using a cron job to update the field periodically.
+Odoo Version: This assumes Odoo 15/16/17. If you’re using Odoo 14 or earlier, let me know, as field names or domain syntax may differ.
+Edge Cases: If a delivery has mixed states or moves are not linked to pickings, adjust the logic. For example, add ('picking_type_id.code', '=', 'outgoing') to focus on outgoing deliveries.
+Debugging: Test with your actual data to ensure the computed field correctly identifies moves. You can log or display intermediate results if needed.
+If you need further customization (e.g., specific fields, grouping by delivery, or handling edge cases), or if you have sample data to test, let me know!
+
+
+
+
+
+
+
+
+2.3s
+we have to display stock.move.line record not stock.move , you know which view open when click on inventory>>reporting>>moves history we want same that type of view but with filter record wich we want
+
+
+
+
+Thank you for the clarification. You want to create a view in Odoo similar to the Moves History report (found under Inventory > Reporting > Moves History), which displays stock.move.line records, but filtered to show only those records where:
+
+The associated delivery (stock.picking) is in the 'done' state.
+The product associated with the move line has no other delivery moves created in the last 7 days.
+If any product in a delivery has a move line in a 'done' delivery within the last 7 days, exclude all move lines from that delivery.
+This is a modification of your previous request, focusing on stock.move.line instead of stock.move, and mimicking the Moves History report view. Below, I’ll provide a solution to achieve this in Odoo.
+
+Understanding the Requirements
+Model: stock.move.line (move lines represent individual operations in a delivery, linked to stock.move and stock.picking).
+View: A tree view like the Moves History report, showing fields like product, quantity, date, picking, etc.
+Filter Logic:
+Include stock.move.line records where the associated stock.picking is in the 'done' state.
+Exclude move lines for products that have any delivery (stock.picking in 'done' state) within the last 7 days.
+If any product in a delivery has a move line within the last 7 days, exclude all move lines from that delivery.
+Reference: The Moves History report is typically a tree view of stock.move.line with fields like product_id, qty_done, date, picking_id, etc.
+Solution in Odoo
+Since stock.move.line is the detailed level of stock operations, we’ll extend this model to add a computed field to identify qualifying move lines. Then, we’ll create a view similar to the Moves History report with the required filter.
+
+1. Create a Custom Module
+Create a custom module (e.g., custom_stock_move_line_view) to implement this.
+
+2. Extend the stock.move.line Model
+Add a computed field to flag move lines where the product has no delivery moves in the last 7 days and the delivery is in the 'done' state.
+
+Create models/stock_move_line.py:
+
+stock_move_line.py
+python
+Show inline
+Explanation:
+
+no_recent_delivery: A computed boolean field that is True if:
+The move line is from a 'done' delivery.
+No product in the associated delivery has a move line in a 'done' delivery within the last 7 days.
+The computation checks all move lines in 'done' deliveries from the last 7 days, maps their products, and excludes move lines from deliveries containing any of those products.
+3. Create the View
+The Moves History report uses a tree view for stock.move.line. We’ll create a similar view with a filter for no_recent_delivery = True.
+
+Create views/stock_move_line_views.xml:
+
+stock_move_line_views.xml
+xml
+Show inline
+Explanation:
+
+Tree View: Mimics the Moves History report with fields like product_id, qty_done, date, picking_id, etc.
+Search View: Includes a filter for no_recent_delivery = True and additional filters/grouping options similar to the Moves History report.
+Action: Links the view to a menu item under Inventory > Reporting.
+Menu: Places the view in the Reporting menu, near the Moves History report.
+4. Update the Module Manifest
+Create or update __manifest__.py:
+
+__manifest__.py
+python
+Show inline
+5. Handle Case Scenarios
+Case 1:
+Delivery 1 (done, 10 days ago): Product1, Product2.
+Delivery 2 (done, 2 days ago): Product1, Product4.
+Result: No move lines shown because Product1 has a move line in Delivery 2 (within 7 days), so all move lines from Delivery 1 and Delivery 2 are excluded (since Delivery 2 contains a product with a recent move).
+Case 2:
+Delivery 3 (done, 10 days ago): Product3, Product2.
+Delivery 4 (done, 9 days ago): Product3, Product4.
+Result: All move lines from Delivery 3 and Delivery 4 are shown because no products (Product2, Product3, Product4) have move lines in 'done' deliveries within the last 7 days.
+6. Install and Test
+Place the module in your Odoo addons directory.
+Restart Odoo and install the module via the Apps menu.
+Navigate to Inventory > Reporting > Move Lines Without Recent Deliveries.
+Verify:
+The view shows stock.move.line records similar to the Moves History report.
+Only move lines from 'done' deliveries where no product in the delivery has a move line in the last 7 days are displayed.
+Test with your Case 1 and Case 2 scenarios to confirm the logic.
+7. Notes
+Performance: The no_recent_delivery field is stored (store=True) to improve performance. For large datasets, consider indexing date and product_id or running the computation periodically via a cron job.
+Odoo Version: This solution is designed for Odoo 15/16/17. If you’re using Odoo 14 or earlier, fields like qty_done or product_uom_qty might differ (e.g., use product_qty in older versions).
+Customization: If you need additional fields, different styling, or specific grouping in the view, let me know.
+Edge Cases: Ensure move lines are correctly linked to deliveries. If you have specific picking types (e.g., only outgoing), add ('picking_type_id.code', '=', 'outgoing') to the domain or computed field logic.
+If you need further adjustments, sample data to test, or help with debugging, please provide more details!
+
+
+
+
+
+
+
+
+2s
+
+How can Grok help?
+
+
+DeepSearch
+
+Think
+
+Grok 3

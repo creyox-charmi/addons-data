@@ -1,0 +1,72 @@
+gelato
+
+
+
+93d72220-849f-419a-ab94-595870586ce9-fbdbbfd3-757a-4276-b9ba-bd78ba38004a:4880d747-826d-4bd1-af2f-0043c887fc76
+
+93d72220-849f-419a-ab94-595870586ce9-fbdbbfd3-757a-4276-b9ba-bd78ba38004a:4880d747-826d-4bd1-af2f-0043c887fc76
+
+http://localhost:8045/gelato/webhook
+
+Header Value
+:
+XOceC7MXBJaDD0yIP82rCn8wJ0VtmvlGAhPc7HfnGMQwhza5qq
+
+https://creyox-odoo-creyox-tiktok-18.odoo.com//gelato/webhook
+
+
+Header Value
+:
+z1hEhvQkEKWQK7woHK7NmuAfFyf7oGQaajCcBcckc9lSE4riR3
+
+
+
+
+https://creyox-odoo-creyox-tiktok-18.odoo.com/gelato/webhook
+charmimandli216@gmail.com
+foraM@21212121
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://www.youtube.com/watch?v=l_wf90mwWo0
+https://www.youtube.com/watch?v=q6Bvelm9cRY
+
+
+api key:
+2d1cb9f9-ad69-45cd-850e-156f8a51fed6-fa3cc915-7878-4a31-a636-5b6f4bee08ba:0bcc3ca7-8130-448d-a2f4-53406ce0f34f
+
+webhook:
+https://creyox-odoo-creyox-tiktok-18.odoo.com/gelato/webhook
+
+
+header:
+zSKd0uGbEyx8B9wmBRhTy5s2w4w24P8LGCWiyLcXr1zpILJtZv
+
+lCYggnDINoBtJunQEFpnb21SIIQkThoJT3vsCzt4SpxHu48fKJ
+
+
+update:
+>>cr_gelato_odoo_integration
+migrate in v16
+make changes in setting block 
+use attrs wherever requried
+add product.document model bcoz in 16 that model is not available
+make changes in some python method
+make changes in some xml code
+test modules for mulriple cases
+
+
+Just one error left to fix—everything else is done

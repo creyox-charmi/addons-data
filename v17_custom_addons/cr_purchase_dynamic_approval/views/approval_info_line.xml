@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_approval_info_tree" model="ir.ui.view">
+    <field name="name">approval.info.line.tree</field>
+    <field name="model">approval.info.line</field>
+    <field name="arch" type="xml">
+        <tree string="Approval Info Lines">
+            <field name="level"/>
+            <field name="user_info"/>
+            <field name="group_info"/>
+            <field name="status"/>
+            <field name="approved_date"/>
+            <field name="approved_by"/>
+            <field name="purchase_order"/>
+            <field name="purchase_order_id"/>
+        </tree>
+    </field>
+</record>
+
+    <record id="view_approval_info_tree" model="ir.ui.view">
+    <field name="name">approval.info.line.tree</field>
+    <field name="model">approval.info.line</field>
+    <field name="arch" type="xml">
+        <tree string="Approval Info Lines">
+            <field name="level"/>
+            <field name="user_info"/>
+            <field name="group_info"/>
+            <field name="status"/>
+            <field name="approved_date"/>
+            <field name="approved_by"/>
+            <field name="purchase_order"/>
+            <field name="purchase_order_id"/>
+        </tree>
+    </field>
+</record>
+
+</odoo>

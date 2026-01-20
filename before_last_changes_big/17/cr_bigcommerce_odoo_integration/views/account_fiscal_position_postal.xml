@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_account_fiscal_position_postal_tree" model="ir.ui.view">
+        <field name="name">account.fiscal.position.postal.tree</field>
+        <field name="model">account.fiscal.position.postal</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="display_name"/>
+                <field name="country_id"/>
+                <field name="postal_code"/>
+                <field name="fiscal_position_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_account_fiscal_position_postal_form" model="ir.ui.view">
+        <field name="name">account.fiscal.position.postal.form</field>
+        <field name="model">account.fiscal.position.postal</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="country_id"/>
+                    <field name="postal_code"/>
+                    <field name="fiscal_position_id"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_fiscal_position_postal" model="ir.actions.act_window">
+        <field name="name">Fiscal Position Postal Codes</field>
+        <field name="res_model">account.fiscal.position.postal</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Manage mappings of postal codes to fiscal positions for tax zone logic.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_account_fiscal_position_postal"
+              name="Fiscal Position Postal Codes"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+              action="action_account_fiscal_position_postal"
+              sequence="99"/>
+</odoo>

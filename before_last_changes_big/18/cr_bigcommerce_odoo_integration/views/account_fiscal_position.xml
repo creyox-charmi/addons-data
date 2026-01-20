@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_account_fiscal_position_form_inherit_bigcommerce" model="ir.ui.view">
+        <field name="name">account.fiscal.position.form.inherit.bigcommerce</field>
+        <field name="model">account.fiscal.position</field>
+        <field name="inherit_id" ref="account.view_account_position_form"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="bigcommerce_zone_id"/>
+                <field name="bigcommerce_store_id"/>
+                <field name="state_ids" widget="many2many_tags"/>
+                <field name="postal_ids" widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_bigcommerce_fiscal_positions" model="ir.actions.act_window">
+        <field name="name">Fiscal Positions</field>
+        <field name="res_model">account.fiscal.position</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('bigcommerce_zone_id', '!=', False)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="cr_menu_account_fiscal_position"
+              name="Fiscal Position"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+              action="action_bigcommerce_fiscal_positions"
+              sequence="1000"/>
+
+</odoo>

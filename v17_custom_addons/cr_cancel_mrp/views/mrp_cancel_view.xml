@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="mrp_cancel_view_form" model="ir.ui.view">
+        <field name="name">mrp.cancel.view.form</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_open_label_type']" position="after">
+                <button name="action_reset_to_draft" string="Reset To Draft" class="oe_highlight" type="object" invisible="state != 'cancel'"/>
+                <button name="action_cancel" string="Cancel" type="object" invisible="state != 'done'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

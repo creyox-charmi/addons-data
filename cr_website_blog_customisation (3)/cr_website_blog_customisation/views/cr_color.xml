@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- views/color_views.xml -->
+
+<odoo>
+    <record id="view_color_management_form" model="ir.ui.view">
+        <field name="name">color.management.form</field>
+        <field name="model">color.management</field>
+        <field name="arch" type="xml">
+            <form string="Color Management">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color_code" widget="color"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_color_management_tree" model="ir.ui.view">
+        <field name="name">color.management.tree</field>
+        <field name="model">color.management</field>
+        <field name="arch" type="xml">
+            <tree string="Color Management">
+                <field name="name"/>
+                <field name="color_code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="color_management_action" model="ir.actions.act_window">
+        <field name="name">Colors</field>
+        <field name="res_model">color.management</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="color_management_menu" name="Colors" parent="website_blog.menu_website_blog_root_global"
+              action="color_management_action" sequence="1"/>
+
+</odoo>

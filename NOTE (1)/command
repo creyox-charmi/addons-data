@@ -1,0 +1,3 @@
+git config --global user.email "charmi.creyox@gmail.com"
+git config --global user.name "creyox-charmi"
+

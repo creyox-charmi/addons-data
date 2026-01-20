@@ -1,0 +1,89 @@
+<odoo>
+    <data>
+        <template id="product_quantity_inherit" inherit_id="website_sale.product_quantity"
+                  name="Inherit Product Quantity Input">
+            <xpath expr="//input[@name='add_qty']" position="replace">
+                <input type="text" class="form-control quantity text-center" data-min="6" name="add_qty"
+                       t-att-value="product.min_sale_qty or 1"
+                       t-att-data-min="product.min_sale_qty"
+                       t-att-data-max="product.max_sale_qty"/>
+            </xpath>
+        </template>
+
+
+        <template id="product_template_inherit" inherit_id="website_sale.product">
+            <xpath expr="//div[@id='o_wsale_cta_wrapper']" position="after">
+                <t t-if="product.min_sale_qty &gt; 0 or product.max_sale_qty &gt; 0 or product.qty_steps &gt; 0">
+                    <div class="product-info-fields mt-4 alert alert-warning" role="alert">
+                        <t t-if="product.min_sale_qty &gt; 0">
+                            <p>
+                                <strong>Minimum</strong>
+                                <span t-field="product.min_sale_qty" id="min_sale_qty"/>
+                                <strong>quantity</strong>
+                            </p>
+                        </t>
+                        <t t-if="product.max_sale_qty &gt; 0">
+                            <p>
+                                <strong>Maximum</strong>
+                                <span t-field="product.max_sale_qty" id="max_sale_qty"/>
+                                <strong>quantity</strong>
+                            </p>
+                        </t>
+                        <t t-if="product.qty_steps &gt; 0">
+                            <p>
+                                <strong>Multiples of</strong>
+                                <span t-field="product.qty_steps" id="qty_steps"/>
+                            </p>
+                        </t>
+                    </div>
+                </t>
+                <t t-call="cr_shop_quantity.product_template_pricelist"/>
+
+            </xpath>
+
+
+        </template>
+
+        <template id="product_template_pricelist" name="pricelist_detail">
+            <t t-set="pl" t-valuef="final_pricelists"/>
+
+            <t t-if="len(pl) > 0">
+                <div id="cr_pricelist">
+                    <div class="product-pricelist mt-4">
+                        <h3>Price Tiers</h3>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Minimum Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Discount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="final_pricelists" t-as="p">
+                                    <tr t-attf-class="#{ 'alert alert-info' if p.min_quantity == product.min_sale_qty else '' }">
+                                        <td>
+                                            <span t-esc="round(p.min_quantity)"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="round(p._compute_price(product_variant,p.min_quantity,product_variant.uom_id,datetime.date.today(),website.pricelist_id.currency_id),2)"/>
+                                        </td>
+                                        <td>
+                                            <span t-if="p.compute_price == 'percentage'">
+                                                <span t-field="p.percent_price"/>
+                                            </span>
+                                            <span t-else="">
+                                                <span t-esc="round(((product_variant.lst_price - p._compute_price(product_variant, p.min_quantity, product_variant.uom_id, datetime.date.today(), website.pricelist_id.currency_id)) / product_variant.lst_price) * 100)"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+
+        </template>
+    </data>
+</odoo>

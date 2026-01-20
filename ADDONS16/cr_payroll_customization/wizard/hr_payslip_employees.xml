@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="cr_hr_payslip_employees" model="ir.ui.view">
+        <field name="name">cr.hr.payslip.employees.form</field>
+        <field name="model">hr.payslip.employees</field>
+        <field name="inherit_id" ref="bi_hr_payroll.view_hr_payslip_by_employees" />
+        <field name="arch" type="xml">
+            <!--GENERATE BUTTON INVISIBLE-->
+            <xpath expr="//header/button[@name='compute_sheet']" position="attributes">
+                <attribute name="attrs">{'invisible' : 1}</attribute>
+            </xpath>
+            <!-- SAVE BUTTON INVISIBLE -->
+            <xpath expr="//form" position="inside">
+                <footer>
+                    <button icon="fa-cogs" string="Generate" name="compute_sheet" type="object" class="oe_highlight"/>
+                    <button string="Close"
+                        type="object"
+                        class="btn-secondary"
+                        name="action_close"/>
+                </footer>
+            </xpath>
+        </field>
+    </record>
+</odoo>

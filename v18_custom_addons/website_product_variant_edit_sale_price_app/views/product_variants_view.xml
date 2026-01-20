@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="product_template_form_view_extended1" model="ir.ui.view">
+        <field name="name">product.template.product.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='list_price_uom']" position="after">
+                <field name="set_attribute_price"/>
+            </xpath>
+        </field>        
+    </record>
+    <record id="product_product_normal_form_view_extended" model="ir.ui.view">
+        <field name="name">product.product.normal.form.extended</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='set_attribute_price']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='list_price']" position="replace">
+                <field name="list_price" invisible="set_attribute_price == True" readonly="1"/>
+            </xpath>
+            <xpath expr="//label[@for='lst_price']" position="replace">
+                <label for="new_list_price"/>
+            </xpath>
+            <xpath expr="//field[@name='lst_price']" position="replace">
+                <field name="new_list_price" invisible="set_attribute_price != True"/>
+            </xpath>
+        </field>        
+    </record>
+    <record id="product_product_normal_tree_view_extended" model="ir.ui.view">
+        <field name="name">product.product.normal.form.extended</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="lst_price" position="after">
+                <field name="new_list_price" invisible="1"/>
+            </field>
+        </field>        
+    </record>
+
+</odoo>

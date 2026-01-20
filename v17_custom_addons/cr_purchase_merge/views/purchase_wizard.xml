@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_wizard_view_form" model="ir.ui.view">
+        <field name="name">purchase.wizard.view.form</field>
+        <field name="model">purchase.wizard</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="purchase_id"/>
+                        <field name="merge_type"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_merge" type="object" string="Merge" class="oe_highlight"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

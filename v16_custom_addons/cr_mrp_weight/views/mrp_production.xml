@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_mrp_production_form" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+             <xpath expr="//label[@for='lot_producing_id']" position='before'>
+                <field name="cr_weight" attrs="{'readonly': [('state', 'in', ['confirmed', 'progress','to_close','done','cancel'])]}"/>
+	         </xpath>
+        </field>
+    </record>
+
+</odoo>

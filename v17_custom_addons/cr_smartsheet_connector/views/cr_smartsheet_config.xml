@@ -1,0 +1,190 @@
+<odoo>
+
+    <record id="view_smartsheet_config_tree" model="ir.ui.view">
+        <field name="name">cr.smartsheet.config.tree</field>
+        <field name="model">cr.smartsheet.config</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="cr_name"/>
+                <field name="cr_client_id"/>
+                <field name="cr_redirect_uri"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_smartsheet_config_form" model="ir.ui.view">
+        <field name="name">cr.smartsheet.config.form</field>
+        <field name="model">cr.smartsheet.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="cr_europe_region"/>
+                            <field name="cr_name"/>
+                            <field name="cr_client_id"/>
+                            <field name="cr_client_secret" password="True"/>
+                        </group>
+                        <group>
+                        <field name="cr_redirect_uri" readonly="1"/>
+                        <field name="cr_access_token" readonly="1"/>
+                        <field name="cr_refresh_token" readonly="1"/>
+                        <field name="cr_expires_in"/>
+                        </group>
+                    </group>
+                    <div style="display: flex; gap: 10px;">
+                        <button string="Generate Access Token" type="object" name="generate_token" class="oe_highlight"/>
+                        <button string="Refresh Access Token" type="object" name="refresh_token" class="oe_highlight"/>
+                    </div>
+                <notebook>
+                    <page string="Smartsheet Settings">
+                         <group>
+                             <separator string="Smartsheet Data Configuration" colspan="2"/>
+                         </group>
+                         <notebook>
+                             <page string="Contacts">
+                                <group>
+                                    <group>
+                                        <group>
+                                            <field name="cr_import_contacts" widget="boolean_toggle"/>
+                                            <field name="cr_import_image" widget="boolean_toggle"/>
+                                        </group>
+                                        <group>
+                                            <field name="cr_auto_contact" widget="boolean_toggle"/>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <field name="cr_import_cron_value" invisible="cr_auto_contact != True"/>
+                                                </div>
+                                                <div class="col-6">
+                                                    <field name="cr_import_scheduled_units" invisible="cr_auto_contact != True"/>
+                                                </div>
+                                            </div>
+
+                                        </group>
+                                    </group>
+                                </group>
+                                <div style="display: flex; gap: 20px; align-items: center;">
+                                    <button string="Import Contacts"
+                                            invisible="cr_import_contacts != True"
+                                            type="object"
+                                            name="import_contact"
+                                            class="oe_highlight"
+                                            icon="fa-address-book"/>
+
+                                    <div style="flex-grow: 0.25;"/>
+
+                                    <div style="display: flex; gap: 10px;">
+                                        <button string="Create Schedule Action"
+                                                invisible="cr_auto_contact != True"
+                                                type="object"
+                                                name="create_schedule_action"
+                                                class="oe_highlight btn-block"
+                                                icon="fa-plus"/>
+                                        <button string="Update Schedule Action"
+                                                invisible="cr_auto_contact != True"
+                                                type="object"
+                                                name="update_schedule_action"
+                                                class="oe_highlight btn-block"
+                                                icon="fa-pencil"/>
+                                        <button string="Delete Schedule Action"
+                                                invisible="cr_auto_contact != True"
+                                                type="object"
+                                                name="delete_schedule_action"
+                                                class="oe_highlight btn-block"
+                                                icon="fa-trash"/>
+                                    </div>
+                                </div>
+                            </page>
+                             <page string="Users">
+                                <group>
+                                    <group>
+                                        <group>
+                                            <field name="cr_import_user" widget="boolean_toggle"/>
+                                            <field name="cr_import_user_image" widget="boolean_toggle"/>
+                                        </group>
+                                        <group>
+                                            <field name="cr_auto_contact" widget="boolean_toggle"/>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <field name="cr_import_cron_value" invisible="cr_auto_contact != True"/>
+                                                </div>
+                                                <div class="col-6">
+                                                    <field name="cr_import_scheduled_units" invisible="cr_auto_contact != True"/>
+                                                </div>
+                                            </div>
+
+                                        </group>
+                                    </group>
+                                </group>
+                                <div style="display: flex; gap: 20px; align-items: center;">
+                                    <button string="Import Users"
+                                            invisible="cr_import_user != True"
+                                            type="object"
+                                            name="import_user"
+                                            class="oe_highlight"
+                                            icon="fa-user"/>
+
+                                    <div style="flex-grow: 0.25;"/>
+
+                                    <div style="display: flex; gap: 10px;">
+                                        <button string="Create Schedule Action"
+                                                invisible="cr_auto_contact != True"
+                                                type="object"
+                                                name="create_schedule_action"
+                                                class="oe_highlight btn-block"
+                                                icon="fa-plus"/>
+                                        <button string="Update Schedule Action"
+                                                invisible="cr_auto_contact != True"
+                                                type="object"
+                                                name="update_schedule_action"
+                                                class="oe_highlight btn-block"
+                                                icon="fa-pencil"/>
+                                        <button string="Delete Schedule Action"
+                                                invisible="cr_auto_contact != True"
+                                                type="object"
+                                                name="delete_schedule_action"
+                                                class="oe_highlight btn-block"
+                                                icon="fa-trash"/>
+                                    </div>
+                                </div>
+                            </page>
+                         </notebook>
+                    </page>
+                </notebook>
+                    <div style="border-top: 2px; margin-top: 10px; padding-top: 10px;">
+                        <h3 style="color: #714b67;">Logs</h3>
+                    </div>
+                        <field name="cr_logs_ids">
+                            <tree>
+                                <field name="cr_record_count"/>
+                                <field name="cr_status" string="Status"/>
+                                <field name="cr_error_message"/>
+                                <field name="cr_timestamp"/>
+                                <field name="cr_message"/>
+                                <field name="cr_initiated_at"/>
+                            </tree>
+                        </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_smartsheet_config" model="ir.actions.act_window">
+        <field name="name">Smartsheet Configurations</field>
+        <field name="res_model">cr.smartsheet.config</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Smartsheet configuration to integrate with Odoo.
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_smartsheet_root" name="Smartsheet Connector"  sequence="189"/>
+    <menuitem id="menu_smartsheet_config" name="Configurations" sequence="1"
+              parent="menu_smartsheet_root"
+              action="action_smartsheet_config"/>
+</odoo>

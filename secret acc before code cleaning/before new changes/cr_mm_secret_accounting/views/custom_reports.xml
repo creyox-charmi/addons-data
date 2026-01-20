@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- =========================
+         Top-Level Menu for Custom Reports
+         ========================= -->
+
+    <menuitem id="menu_custom_accounting_reports"
+              name="Custom Accounting Reports"
+              parent="accountant.menu_accounting"
+              groups="account.group_account_readonly"
+              sequence="30"/>
+
+
+    <!-- =========================
+         Partner Ledger Custom Report
+         ========================= -->
+    <record id="action_partner_ledger_custom" model="ir.actions.client">
+        <field name="name">Partner Ledger Secret</field>
+        <field name="tag">account_report</field>
+        <field name="path">partner-ledger-secret</field>
+        <field name="context" eval="{'report_id': ref('cr_mm_secret_accounting.cr_partner_ledger_report'),
+                                 'secret_report': True}"/>
+    </record>
+
+    <menuitem id="menu_partner_ledger_custom"
+              name="Partner Ledger"
+              parent="cr_mm_secret_accounting.menu_custom_accounting_reports"
+              action="cr_mm_secret_accounting.action_partner_ledger_custom"
+              sequence="10"/>
+
+    <!-- =========================
+         Aged Receivable Custom Report
+         ========================= -->
+    <record id="action_aged_receivable_custom" model="ir.actions.client">
+        <field name="name">Aged Receivable Secret</field>
+        <field name="tag">account_report</field>
+        <field name="path">aged-receivable-secret</field>
+        <field name="context" eval="{'report_id': ref('cr_mm_secret_accounting.cr_aged_receivable_report'),
+                                 'secret_report': True}"/>
+
+    </record>
+
+    <menuitem id="menu_aged_receivable_custom"
+              name="Aged Receivable"
+              parent="cr_mm_secret_accounting.menu_custom_accounting_reports"
+              action="action_aged_receivable_custom"
+              sequence="20"/>
+
+    <!-- =========================
+         Aged Payable Custom Report
+         ========================= -->
+    <record id="action_aged_payable_custom" model="ir.actions.client">
+        <field name="name">Aged Payable Secret</field>
+        <field name="tag">account_report</field>
+        <field name="path">aged-payable-secret</field>
+        <field name="context" eval="{'report_id': ref('cr_mm_secret_accounting.cr_aged_payable_report'),
+                                 'secret_report': True}"/>
+
+    </record>
+
+    <menuitem id="menu_aged_payable_custom"
+              name="Aged Payable"
+              parent="cr_mm_secret_accounting.menu_custom_accounting_reports"
+              action="action_aged_payable_custom"
+              sequence="30"/>
+
+    <record id="account_journal_rule_bookkeeper" model="ir.rule">
+        <field name="name">Journal: Bookkeeper+ only</field>
+        <field name="model_id" ref="account.model_account_journal"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4,ref('account.group_account_user'))]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree view of Stage -->
+    <record id="view_tree_stage" model="ir.ui.view">
+        <field name="name">cr.stage.tree</field>
+        <field name="model">cr.stage</field>
+        <field name="arch" type="xml">
+            <tree editable='bottom'>
+                <field name="name"/>
+                <field name='is_done'/>
+                <field name='is_draft'/>
+                <field name="color" widget="color_picker"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for Stage -->
+    <record id="action_stage" model="ir.actions.act_window">
+        <field name="name">Stages</field>
+        <field name="res_model">cr.stage</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <!-- Added Stage to the menu -->
+    <menuitem id="menu_stage"
+              name="Stages"
+              parent="menu_migration_config"
+              action="action_stage"
+              sequence='3'/>
+
+</odoo>

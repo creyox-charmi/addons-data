@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="cr_project_task_form_inherit_button" model="ir.ui.view">
+        <field name="name">cr.form.inherit.project.task.button</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position='inside'>
+                <field name="odoo_apps_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//header/button[last()]" position='before'>
+                <button class="oe_stat_button btn btn-primary" name="move_to_odoo_apps" string="Move to Odoo Apps" type='object'/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

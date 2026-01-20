@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<templates xml:space="preserve">
+    <t t-inherit="mrp.BomOverviewLine" t-inherit-mode="extension" t-name="BomOverviewComponentsBlockCustom">
+         <xpath expr="//td[@name='td_mrp_bom']" position="before">
+             <td class="text-center" style="width: 50px;">
+                <t t-if="data.product_id">
+                   <!-- Alternative approach using Odoo's web image route -->
+                   <img t-att-src="'/web/image/product.product/' + data.product_id + '/image_128'"
+                        style="max-height:32px; max-width:32px; border-radius: 4px;"
+                        t-att-alt="data.product_name"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"/>
+                   <span class="text-muted" style="display:none;">No Img</span>
+                </t>
+                <t t-else="">
+                    <span class="text-muted">No Img</span>
+                </t>
+            </td>
+         </xpath>
+        <xpath expr="//td[@name='td_mrp_bom']" position="after">
+            <td t-if="data.is_evr" class="text-center">
+                <input t-if="data.cfe_editable"
+                       type="text"
+                       class="form-control form-control-sm cfe-quantity-input"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-model="data.cfe_quantity"
+                       placeholder="CFE Qty"
+                       style="width: 80px; margin: 0 auto;"
+                       t-on-blur="onCfeQuantityChange"/>
+                <span t-elif="data.has_cfe_quantity"
+                      class="badge badge-info bg-info text-white">
+                      CFE: <t t-esc="data.cfe_quantity"/>
+                </span>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+        </xpath>
+
+        <xpath expr="//td[@t-if='showUom']" position="after">
+        <td t-if="data.is_evr" class="text-center">
+            <select t-if="data.mo_internal_ref_editable"
+        class="form-select form-select-sm"
+        t-att-data-bom-line-id="data.bom_line_id"
+        t-model="data.mo_internal_ref"
+        t-on-change="onMoInternalRefChange">
+    <option value="">Select Vendor</option>
+    <t t-foreach="data.available_vendors" t-as="vendor" t-key="vendor.id">
+        <option t-att-value="vendor.partner_id">
+            <t t-esc="vendor.display_name"/>
+        </option>
+    </t>
+</select>
+
+            <span t-else="" class="text-muted">-</span>
+        </td>
+</xpath>
+
+
+        <xpath expr="//td[@t-if='showLeadTimes'][2]" position="after">
+             <td t-if="data.is_evr" class="text-center">
+                <input t-if="data.lli_editable"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.lli"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onLliChange"/>
+                 <span t-elif="data.lli"
+                       class="badge badge-success bg-success text-white">
+                      ✓ LLI
+                </span>
+                 <span t-else="" class="text-muted">-</span>
+            </td>
+
+            <td t-if="data.is_evr" class="text-center">
+                <input t-if="data.approval_1_editable"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.approval_1"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onApproval1Change"/>
+                <span t-elif="data.approval_1"
+                      class="badge badge-success bg-success text-white">
+                      ✓ App1
+                </span>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+
+            <td t-if="data.is_evr" class="text-center">
+                <input t-if="data.approval_2_editable"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.approval_2"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onApproval2Change"/>
+                <span t-elif="data.approval_2"
+                      class="badge badge-success bg-success text-white">
+                      ✓ App2
+                </span>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+        </xpath>
+    </t>
+</templates>

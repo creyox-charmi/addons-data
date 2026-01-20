@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="cr_hr_employee_late_coming_details" model="ir.ui.view">
+        <field name="name">cr.hr.employee.late.coming.details</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="cr_employee_customisation.cr_hr_employee_details" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook//page[@name='employee_contract']" position="after">
+                <page name='employee_contract' string="Late Arrival Approvals" groups='base.group_system'>
+                    <group string="Late Arrival Records" name="late_arrival_details">
+                        <field name="late_arrival_ids" colspan="2" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="employee_id" />
+                                <field name="month" />
+                                <field name="year"/>
+                                <field name="late_check_in_count" />
+                                <field name="approval_btn_show" invisible='1' />
+                                <button class='btn btn-primary' name='action_approve'
+                                    string='Approve' type='object'
+                                    attrs="{'invisible': [('approval_btn_show', '=', False)]}"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//sheet/group//field[@name='coach_id']" position="after">
+                <field name="exp_employee"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

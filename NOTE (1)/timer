@@ -1,0 +1,75 @@
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOMContentLoaded event triggered");
+
+        var timerElement = document.getElementById("timer");
+        console.log("timerElement:", timerElement);
+
+        var remainingTimeElement = document.getElementById("remaining_time");
+        console.log("remainingTimeElement:", remainingTimeElement);
+
+        // Check if the 'remaining_time' element exists and get its value, otherwise set a default value
+        var remainingTime = remainingTimeElement ? parseInt(remainingTimeElement.value) : 60;
+        console.log("Initial remainingTime value:", remainingTime);
+
+        // Check if remaining time is stored in localStorage (for persistent state across page refreshes)
+        if (localStorage.getItem('otp_remaining_time')) {
+            remainingTime = parseInt(localStorage.getItem('otp_remaining_time'));
+            console.log("Remaining time retrieved from localStorage:", remainingTime);
+        } else {
+            console.log("No remaining time found in localStorage, using default:", remainingTime);
+        }
+
+        var countdownInterval;
+
+        function startTimer() {
+            console.log("Starting timer...");
+
+            countdownInterval = setInterval(function () {
+                console.log("Timer running... Remaining time:", remainingTime);
+                localStorage.setItem('otp_remaining_time', 60);
+
+                if (remainingTime > 0) {
+                    remainingTime--;
+                    console.log("Decrementing remainingTime:", remainingTime);
+
+                    localStorage.setItem('otp_remaining_time', remainingTime); // Save remaining time in localStorage
+                    console.log("Remaining time saved to localStorage:", remainingTime);
+
+                    timerElement.textContent = "OTP Expires in: " + remainingTime + " seconds";
+                }
+
+                if (remainingTime == 0) {
+                    clearInterval(countdownInterval);
+                    console.log("Timer finished, OTP expired.");
+                    timerElement.textContent = "Your OTP has expired click on verify button!";
+                    localStorage.setItem('otp_remaining_time', 60);
+
+                }
+            }, 1000);
+        }
+
+
+        // Resetting the timer when OTP is regenerated
+        var regenerateOtpButton = document.getElementById("regenerate-otp-button");
+        if (regenerateOtpButton) {
+            regenerateOtpButton.addEventListener("click", function () {
+                console.log("OTP regenerated, resetting timer.");
+                remainingTime = 60; // Reset to 60 seconds when OTP is regenerated
+                localStorage.setItem('otp_remaining_time', remainingTime); // Reset in localStorage as well
+                console.log("Remaining time reset to:", remainingTime);
+                clearInterval(countdownInterval); // Clear any existing interval
+                startTimer(); // Start the timer again
+            });
+        }
+
+        startTimer();
+    });
+</script>
+
+update:
+>>cr_email_signup_approval
+work on resolve the issue of timer
+rnd for how to add timer
+rnd for hoe to get data from contoller into js
+try different methods to set timer for multiple cases

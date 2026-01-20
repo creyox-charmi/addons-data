@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <menuitem id="cr_bigcommerce_menu"
+              name="Bigcommerce"
+              web_icon="cr_bigcommerce_odoo_integration,static/description/icon.png"
+              sequence="999"/>
+
+
+
+    <menuitem id="menu_bigcommerce_product_info" name="Product Info" parent="cr_bigcommerce_odoo_integration.cr_bigcommerce_menu"
+              sequence="2"/>
+
+    <menuitem id="menu_bigcommerce_configuration" name="Configuration" parent="cr_bigcommerce_odoo_integration.cr_bigcommerce_menu"
+               sequence="999"/>
+
+<!--    <menuitem id="menu_bigcommerce_store_product_category" name="Product Category" parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_product_info"-->
+<!--              action="action_bigcommerce_categories"/>-->
+
+
+
+</odoo>

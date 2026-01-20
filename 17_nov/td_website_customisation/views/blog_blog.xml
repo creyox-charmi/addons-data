@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_blog_blog_form_inherit_tag_categories" model="ir.ui.view">
+        <field name="name">blog.blog.form.inherit.tag.categories</field>
+        <field name="model">blog.blog</field>
+        <field name="inherit_id" ref="website_blog.view_blog_blog_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='subtitle']" position="after">
+                <field name="tag_category_ids"
+                       widget="many2many_tags"
+                       options="{'no_create': True}"
+                       string="Tag Categories"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

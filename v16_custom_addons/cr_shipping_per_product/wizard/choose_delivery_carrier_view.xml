@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cr_choose_delivery_carrier_view_form_inherite" model="ir.ui.view">
+        <field name="name">cr.choose.delivery.carrier.form.inherite</field>
+        <field name="model">choose.delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.choose_delivery_carrier_view_form"/>
+        <field name="arch" type="xml">
+            <form position="inside">
+                <field name="cr_per_product_shipping_ids" string="Add Shipping Per Product" editable="bottom">
+                    <tree>
+                        <field name="product_template_id"/>
+                        <field name="delivery_carrier_id"/>
+                    </tree>
+                </field>
+                <field name="cr_is_update" invisible="True"/>
+            </form>
+        </field>
+    </record>
+</odoo>

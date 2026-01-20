@@ -1,0 +1,1659 @@
+As per base flow what happen during MO process
+1]first product is in wh/stock location
+2] after it goes into the virtual/production
+3] and after it goes in back wh/stock right
+
+I want that 
+1]first product is in wh/stock location
+2]after goes to it's branch location
+3]after it goes to it's parent branch location
+
+
+
+Main BOM
+- Line - 1 (Branch A)
+	- [1L1]component - 1 [of Line-1] (Branch B)
+		- [1(1L1)]component - 1 [of Line 1L1] ( Branch c)
+			- [1(1(1L1))] compontnt - 1 [of Line 1(1L1)]
+		- [2(1L1)]component - 2 [of Line 1L1]
+		- [3(1L1)]component - 3 [of Line 1L1]
+	- [2L1]component - 2 [of Line-1] (Branch D)
+		- [1(2L1)]component - 1 [of Line 2L1]
+		- [2(2L1)]component - 2 [of Line 2L1]
+		- [3(2L1)]component - 3 [of Line 2L1] (Branch E)
+			- [1(3(2L1))] compontnt - 1 [of Line 3(2L1)]
+- Line - 2 (Branch F)
+	- [2L1]component - 1 [of Line-2] (Branch G)
+		- [1(2L1)]component - 1 [of Line 2L1]
+	- [2L2]component - 2 [of Line-2] (Branch H)
+		- [1(2L1)]component - 1 [of Line 2L1]
+
+
+
+See when we  assign branch name if it's a bom line and that bom is also itself BOM then we assign branch name
+
+when MO for branch H's product is make then it for that MO source locataion is wh/stock after it goes into it's branch location means Wh/Project Location/H , and at the end it move to it's parent , it means it moves to Branch F so it's location is Wh/Project Location/F
+
+when MO for branch G's product is make then it for that MO source locataion is wh/stock after it goes into it's branch location means Wh/Project Location/G , and at the end it move to it's parent , it means it moves to Branch F so it's location is Wh/Project Location/F
+
+when MO for branch E's product is make then it for that MO source locataion is wh/stock after it goes into it's branch location means Wh/Project Location/E , and at the end it move to it's parent , it means it moves to Branch D so it's location is Wh/Project Location/D
+
+when MO for branch D's product is make then it for that MO source locataion is wh/stock after it goes into it's branch location means Wh/Project Location/D , and at the end it move to it's parent , it means it moves to Branch A so it's location is Wh/Project Location/A
+
+when MO for branch C's product is make then it for that MO source locataion is wh/stock after it goes into it's branch location means Wh/Project Location/C , and at the end it move to it's parent , it means it moves to Branch C so it's location is Wh/Project Location/B
+
+when MO for branch B's product is make then it for that MO source locataion is wh/stock after it goes into it's branch location means Wh/Project Location/B , and at the end it move to it's parent , it means it moves to Branch A so it's location is Wh/Project Location/A
+
+My current code
+-------------------------
+
+# cr_mrp_bom_customisation/models/mrp_bom.py
+import string
+import uuid
+
+from odoo import models, api, _
+import logging
+
+from odoo.exceptions import UserError, ValidationError
+
+_logger = logging.getLogger(__name__)
+
+
+def _generate_branch_codes():
+    codes = []
+    for c in range(ord('A'), ord('Z') + 1):
+        codes.append(chr(c))
+    for c in range(ord('A'), ord('Z') + 1):
+        for d in range(1, 10):
+            codes.append(f"{chr(c)}{d}")
+    for c1 in range(ord('A'), ord('Z') + 1):
+        for c2 in range(ord('A'), ord('Z') + 1):
+            codes.append(chr(c1) + chr(c2))
+    return codes
+
+
+class MrpBom(models.Model):
+    _inherit = "mrp.bom"
+
+    def create(self, vals_list):
+        boms = super().create(vals_list)
+
+        print("\n=== BOM CREATE HOOK START ===")
+        for bom in boms:
+            print(f"Processing BOM {bom.id} - {bom.display_name}")
+            print(f"  is_evr: {bom.is_evr}")
+
+            # Skip if not EVR
+            if not bom.is_evr:
+                print("  Skipped: is_evr is FALSE")
+                continue
+
+            # Check project
+            project = bom.project_id
+            print(f"  project_id: {project.id if project else None}")
+
+            if not project:
+                print("  Skipped: No project_id found")
+                continue
+
+            # parent: Project Location
+            parent_loc = bom._find_project_parent_location()
+            print(f"  parent Project Location found: {parent_loc.id} - {parent_loc.name}")
+
+            loc_name = project.name
+            print(f"  target new sublocation name = {loc_name}")
+
+            Location = self.env['stock.location']
+
+            # Check existing location
+            existing = Location.search([
+                ('name', '=', loc_name),
+                ('location_id', '=', parent_loc.id),
+                ('usage', '=', 'internal')
+            ], limit=1)
+
+            if existing:
+                print(f"  Existing location FOUND: {existing.id} ({existing.name})")
+                bom.cfe_project_location_id = existing.id
+                continue
+
+            print("  No existing location found → Creating new one...")
+
+            # Create new location
+            new_loc = Location.create({
+                'name': loc_name,
+                'location_id': parent_loc.id,
+                'usage': 'internal',
+            })
+
+            print(f"  Created NEW location: {new_loc.id} - {new_loc.name}")
+
+            # Assign to BOM
+            bom.cfe_project_location_id = new_loc.id
+            print(f"  Assigned location to BOM: {bom.cfe_project_location_id.id}")
+
+        print("=== BOM CREATE HOOK END ===\n")
+
+        # -----------------------------------------------------
+        #  PART 2 — RECURSIVE MO CREATION
+        # -----------------------------------------------------
+        for bom in boms:
+            if bom.is_evr:
+                print(f"\n[DEBUG] Starting recursive MO creation for BOM {bom.display_name}")
+                bom.action_create_child_mos_recursive()
+                print(f"[DEBUG] Finished recursive MO creation for BOM {bom.display_name}")
+
+        print("\n=== BOM CREATE HOOK END ===\n")
+
+        return boms
+
+    def write(self, vals):
+        res = super().write(vals)
+
+        print("\n=== BOM WRITE HOOK START ===")
+        for bom in self:
+            print(f"Processing BOM {bom.id} - {bom.display_name}")
+            print(f"  is_evr: {bom.is_evr}")
+            print(f"  vals: {vals}")
+
+            # Only run if:
+            # - is_evr becomes True
+            # - OR project_id changed
+            if not bom.is_evr:
+                print("  Skipped: is_evr FALSE")
+                continue
+
+            if 'project_id' not in vals and 'is_evr' not in vals:
+                print("  Skipped: irrelevant write")
+                continue
+
+            project = bom.project_id
+            print(f"  project_id: {project.id if project else None}")
+
+            if not project:
+                print("  Skipped: no project assigned")
+                continue
+
+            parent_loc = bom._find_project_parent_location()
+            print(f"  parent Project Location found: {parent_loc.id} - {parent_loc.name}")
+
+            loc_name = project.name
+            print(f"  target sublocation name = {loc_name}")
+
+            Location = self.env['stock.location']
+
+            # Find existing
+            existing = Location.search([
+                ('name', '=', loc_name),
+                ('location_id', '=', parent_loc.id),
+                ('usage', '=', 'internal')
+            ], limit=1)
+
+            if existing:
+                print(f"  Existing location FOUND: {existing.id} ({existing.name})")
+                bom.cfe_project_location_id = existing.id
+                continue
+
+            print("  No existing location found → Creating new one...")
+
+            new_loc = Location.create({
+                'name': loc_name,
+                'location_id': parent_loc.id,
+                'usage': 'internal',
+            })
+
+            print(f"  Created NEW location: {new_loc.id} - {new_loc.name}")
+
+            bom.cfe_project_location_id = new_loc.id
+            print(f"  Assigned location to BOM: {bom.cfe_project_location_id.id}")
+
+        print("=== BOM WRITE HOOK END ===\n")
+        return res
+
+    def _assign_branches_for_bom(self):
+        """
+        Assign branch codes for each root BOM in `self`.
+        Uses path-based unique branch creation and ALSO creates stock.locations
+        same as old code.
+        """
+
+        print("\n========================")
+        print(f"🔥 ENTERED _assign_branches_for_bom FOR BOM {self.id}")
+        print("========================\n")
+
+        Branch = self.env['mrp.bom.line.branch']
+        codes = _generate_branch_codes()
+
+        for root_bom in self:
+
+            if self.env.context.get('skip_branch_recompute'):
+                continue
+
+            print(f"\n=== START assigning branches for root BOM {root_bom.id} ({root_bom.display_name}) ===")
+
+            # remove previous mappings for this root
+            old = Branch.search([('bom_id', '=', root_bom.id)])
+            if old:
+                print(f"Removing {len(old)} existing branch mappings for BOM {root_bom.id}")
+                old.unlink()
+
+            idx = 0  # start assigning from A
+
+            # DFS
+            def dfs(current_bom):
+                nonlocal idx
+
+                lines = current_bom.bom_line_ids.sorted(key=lambda r: (r.sequence or 0, r.id))
+                print(f"DFS entering BOM {current_bom.id} with {len(lines)} lines")
+
+                for line in lines:
+
+                    if line.child_bom_id:
+
+                        if idx >= len(codes):
+                            raise UserError("No more branch codes available.")
+
+                        code = codes[idx]
+                        idx += 1
+
+                        # UNIQUE ID for this occurrence
+                        path_uid = uuid.uuid4().hex
+
+                        # 📌 LOCATION CREATION ADDED HERE (same as old code)
+                        project_parent = self._find_project_parent_location()
+                        loc = self.env['stock.location'].create({
+                            'name': code,  # OR f"{root_bom.display_name}-{code}"
+                            'location_id': project_parent.id,
+                            'usage': 'internal',
+                        })
+
+                        # 📌 CREATE branch mapping WITH LOCATION
+                        Branch.create({
+                            'bom_id': root_bom.id,
+                            'bom_line_id': line.id,
+                            'branch_name': code,
+                            'sequence': idx,
+                            'path_uid': path_uid,
+                            'location_id': loc.id,  # <--- 🔥 THIS WAS MISSING IN YOUR NEW CODE
+                        })
+
+                        print(f"  CREATE mapping line={line.id} -> {code} (loc={loc.id}) path={path_uid}")
+
+                        # now go deeper
+                        dfs(line.child_bom_id)
+
+                    else:
+                        print(f"  Leaf line {line.id} → no mapping")
+
+            dfs(root_bom)
+
+            total_assigned = Branch.search_count([('bom_id', '=', root_bom.id)])
+            print(f"=== DONE assigning branches for root BOM {root_bom.id}. total_assigned={total_assigned} ===\n")
+
+        return True
+
+    def _dfs_assign(self, root_bom, bom, branch_letter, path_uid):
+        """Recursive DFS that assigns one branch letter per path."""
+        _logger.info(f"DFS entering BOM {bom.id} ({bom.display_name}) path={path_uid} branch={branch_letter}")
+
+        for line in bom.bom_line_ids:
+
+            # Create new mapping for every path
+            self.env["mrp.bom.line.branch"].create({
+                'bom_id': root_bom.id,
+                'bom_line_id': line.id,
+                'branch_name': branch_letter,
+                'sequence': line.sequence,
+                'path_uid': path_uid,
+            })
+
+            _logger.info(
+                f"  MAPPING: root={root_bom.display_name} | line={line.id} | "
+                f"branch={branch_letter} | product={line.product_id.display_name} | path={path_uid}"
+            )
+
+            # Go deeper if child BOM exists
+            if line.child_bom_id:
+                self._dfs_assign(
+                    root_bom=root_bom,
+                    bom=line.child_bom_id,
+                    branch_letter=branch_letter,
+                    path_uid=path_uid,
+                )
+
+    def action_assign_branches(self):
+        for bom in self:
+            bom._assign_branches_for_bom()
+        return True
+
+    def _find_project_parent_location(self):
+        StockLocation = self.env['stock.location']
+
+        wh_location = StockLocation.search([
+            ('name', '=', 'WH'),
+            ('usage', '=', 'view')
+        ], limit=1)
+
+        if not wh_location:
+            raise UserError("Warehouse (WH) parent location not found!")
+
+        project_location = StockLocation.search([
+            ('name', '=', 'Project Location'),
+            ('usage', '=', 'internal'),
+            ('location_id', '=', wh_location.id)
+        ], limit=1)
+
+        if not project_location:
+            project_location = StockLocation.create({
+                'name': 'Project Location',
+                'usage': 'internal',
+                'location_id': wh_location.id,
+            })
+
+        return project_location
+
+    def _check_all_children_approved(self, bom_line):
+        """
+        Recursively check if all children (sub-BOMs) have approve_to_manufacture = True
+        Only checks lines that have child BOMs
+        """
+        # Get child BOM using _bom_find which returns dict in Odoo 18
+        bom_dict = self.env['mrp.bom']._bom_find(
+            bom_line.product_id,
+            bom_type='normal',
+            company_id=self.company_id.id
+        )
+
+        # Extract actual bom record from dict
+        if isinstance(bom_dict, dict):
+            child_bom = bom_dict.get('bom', False)
+        else:
+            child_bom = bom_dict
+
+        if not child_bom or not isinstance(child_bom, type(self)):
+            # Leaf line (no child BOM) - always approved, no check needed
+            return True
+
+        # Has child BOM - check its approval and all its lines recursively
+        if not bom_line.approve_to_manufacture:
+            return False
+
+        for child_line in child_bom.bom_line_ids:
+            if not self._check_all_children_approved(child_line):
+                return False
+
+        return True
+
+    def action_create_mo_from_overview(self):
+        """
+        Called from BOM overview Manufacture button
+        """
+        if self.is_evr:
+            unapproved_lines = []
+
+            for line in self.bom_line_ids:
+                if not self._check_all_children_approved(line):
+                    unapproved_lines.append(line.product_id.display_name)
+
+            if unapproved_lines:
+                raise ValidationError(
+                    "Cannot create MO. The following BOM lines or their sub-components are not approved for manufacture:\n" +
+                    "\n".join([f"- {name}" for name in unapproved_lines])
+                )
+
+        # Return action to create MO
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'mrp.production',
+            'name': 'Manufacture Orders',
+            'views': [[False, 'form']],
+            'target': 'current',
+            'context': {'default_bom_id': self.id},
+        }
+
+
+    def _get_flattened_totals(self, product, quantity=1, bom_line=False):
+        """Override to pass parent bom line context"""
+        if bom_line and self.is_evr:
+            return super(MrpBom, self.with_context(parent_bom_line_id=bom_line.id))._get_flattened_totals(product,
+                                                                                                          quantity,
+                                                                                                          bom_line)
+        return super()._get_flattened_totals(product, quantity, bom_line)
+
+    def _get_sub_boms(self, product, bom_line=False):
+        """Stop recursion when EVR line is NOT approved."""
+
+        if bom_line:
+            print(
+                f"[SUB-BOM CHECK] bom_line {bom_line.id} | product {bom_line.product_id.id} | approved={bom_line.approve_to_manufacture}")
+
+        # If EVR and bom_line exists and is not approved → DO NOT recurse
+        if bom_line and self.is_evr and not bom_line.approve_to_manufacture:
+            print(f"[SUB-BOM BLOCKED] SKIP recursion for bom_line {bom_line.id}")
+            return []
+
+        print("[SUB-BOM OK] Recursing normally")
+        return super()._get_sub_boms(product, bom_line)
+
+
+
+    def action_create_child_mos_recursive(self, root_bom=None, parent_mo=None, index="0", level=0, parent_qty=1.0):
+        """
+        Create MOs ONLY for BOM lines that have a child BOM.
+        DO NOT create an MO for the main BOM.
+        """
+        Branch = self.env['mrp.bom.line.branch']
+
+        if root_bom is None:
+            root_bom = self
+            if not hasattr(self.__class__, '_branch_assignment_cache'):
+                self.__class__._branch_assignment_cache = {}
+
+            cache_key = f"bom_{root_bom.id}"
+            self.__class__._branch_assignment_cache[cache_key] = {
+                'assignments': {},
+                'seen_paths': []
+            }
+
+        created_mo = None
+
+        for line_idx, line in enumerate(self.bom_line_ids):
+            if not line.child_bom_id:
+                continue
+
+            child_bom = line.child_bom_id
+            child_qty = float(line.product_qty or 1.0) * parent_qty
+            line_index = f"{index}{line_idx}"
+
+            dest_location = False
+            dest_location_name = "Default"
+            branch_name = ""
+
+            branches = Branch.search([
+                ('bom_id', '=', root_bom.id),
+                ('bom_line_id', '=', line.id)
+            ], order='sequence')
+
+            branch_rec = False
+            if branches:
+                if len(branches) == 1:
+                    branch_rec = branches[0]
+                else:
+                    branch_rec = self._get_branch_for_mo_line(
+                        branches=branches,
+                        line=line,
+                        index=line_index,
+                        root_bom_id=root_bom.id
+                    )
+
+            if branch_rec:
+                branch_name = branch_rec.branch_name
+                if branch_rec.location_id:
+                    dest_location = branch_rec.location_id.id
+                    dest_location_name = branch_rec.location_id.display_name
+
+            mo_vals = {
+                'product_id': child_bom.product_tmpl_id.product_variant_id.id,
+                'product_uom_id': child_bom.product_uom_id.id,
+                'product_qty': child_qty,
+                'bom_id': child_bom.id,
+                'root_bom_id': root_bom.id,
+                'parent_mo_id': parent_mo.id if parent_mo else False,
+                'project_id': root_bom.project_id.id,
+                'line': line.id,
+            }
+
+            if dest_location:
+                mo_vals['location_dest_id'] = dest_location
+
+            mo = self.env['mrp.production'].with_context(branch_dest_location=dest_location).create(mo_vals)
+            created_mo = mo
+
+            print(f"[DEBUG] >>> Created MO {mo.name}")
+            print(f"[DEBUG]      Branch: {branch_name if branch_name else 'None'}")
+            print(f"[DEBUG]      Quantity: {child_qty}")
+            print(f"[DEBUG]      dest = {dest_location_name}")
+
+            self.env['bus.bus']._sendone(
+                self.env.user.partner_id,
+                "simple_notification",
+                {
+                    "title": "Manufacturing Order Created",
+                    "message": (
+                        f"MO {mo.name} created for {child_bom.display_name}\n"
+                        f"Branch: {branch_name if branch_name else 'N/A'}\n"
+                        f"Quantity: {child_qty}\n"
+                        f"Destination: {dest_location_name}"
+                    ),
+                    "sticky": False,
+                    "type": "info",
+                }
+            )
+
+            child_bom.action_create_child_mos_recursive(
+                root_bom=root_bom,
+                parent_mo=mo,
+                index=line_index,
+                level=level + 1,
+                parent_qty=child_qty
+            )
+
+        if level == 0 and root_bom == self:
+            cache_key = f"bom_{root_bom.id}"
+            if hasattr(self.__class__, '_branch_assignment_cache'):
+                if cache_key in self.__class__._branch_assignment_cache:
+                    del self.__class__._branch_assignment_cache[cache_key]
+
+        return created_mo
+
+
+    def _get_branch_for_mo_line(self, branches, line, index, root_bom_id):
+        """Determine which branch to use for this MO based on the traversal path."""
+        cache_key = f"bom_{root_bom_id}"
+
+        if not hasattr(self.__class__, '_branch_assignment_cache'):
+            return branches[0]
+
+        cache = self.__class__._branch_assignment_cache.get(cache_key)
+        if not cache:
+            return branches[0]
+
+        path_key = f"{root_bom_id}_{line.id}_{index}"
+
+        if path_key not in cache['seen_paths']:
+            existing_count = len([p for p in cache['seen_paths']
+                                  if p.startswith(f"{root_bom_id}_{line.id}_")])
+
+            if existing_count < len(branches):
+                branch = branches[existing_count]
+            else:
+                branch = branches[-1]
+
+            cache['assignments'][path_key] = branch.id
+            cache['seen_paths'].append(path_key)
+        else:
+            branch_id = cache['assignments'].get(path_key)
+            branch = self.env['mrp.bom.line.branch'].browse(branch_id)
+
+        return branch
+
+
+# cr_mrp_bom_customisation/models/mrp_production.py
+from odoo import models, fields, api
+import logging
+
+from odoo.exceptions import ValidationError, UserError
+
+_logger = logging.getLogger(__name__)
+
+
+class MrpProduction(models.Model):
+    _inherit = "mrp.production"
+
+    branch_mapping_id = fields.Many2one('mrp.bom.line.branch', string='Branch Mapping', help="Branch mapping for this MO (if set, finished goods will go to this branch location)")
+    root_bom_id = fields.Many2one("mrp.bom", string="Root BOM", help="Top-level BOM where the chain started.")
+    parent_mo_id = fields.Many2one("mrp.production", string="Parent Manufacturing Order")
+    can_manufacture = fields.Boolean(
+        string="Approved to Manufacture",
+        compute="_compute_can_manufacture",
+        store=True,
+    )
+    line = fields.Char(string='Line')
+    branch_intermediate_location_id = fields.Many2one(
+        'stock.location',
+        string='Branch Intermediate Location',
+        help='Intermediate branch location before moving to parent'
+    )
+
+    def _compute_can_manufacture(self):
+        for mo in self:
+            # A MO is linked to bom_line via product / child BOM → so:
+            line = self.env['mrp.bom.line'].search([
+                ('child_bom_id', '=', mo.bom_id.id),
+                ('bom_id', '=', mo.root_bom_id.id),
+            ], limit=1)
+
+            mo.can_manufacture = line.approve_to_manufacture if line else False
+
+
+    def action_confirm(self):
+        self._check_approve_to_manufacture()
+
+        res = super().action_confirm()
+
+        for mo in self:
+            # Get the branch destination location from the MO
+            branch_location = mo.location_dest_id
+
+            if branch_location:
+                # Update finished product move lines
+                for move in mo.move_finished_ids:
+                    if move.move_line_ids:
+                        move.move_line_ids.write({
+                            'location_dest_id': branch_location.id
+                        })
+
+                # Update component/raw material move lines
+                for move in mo.move_raw_ids:
+                    if move.move_line_ids:
+                        move.move_line_ids.write({
+                            'location_dest_id': branch_location.id
+                        })
+
+        return res
+
+    def _create_update_move_finished(self):
+        """Override to ensure branch location is applied to finished moves"""
+        moves = super()._create_update_move_finished()
+
+        # Apply branch location if exists
+        branch_location = self.location_dest_id
+        if branch_location and moves:
+            moves.write({
+                'location_dest_id': branch_location.id
+            })
+
+        return moves
+
+
+    def _get_moves_raw_values(self):
+        """Override to set branch location for raw material moves"""
+        moves_raw_values = super()._get_moves_raw_values()
+
+        branch_location = self.location_dest_id
+        if branch_location:
+            for move_vals in moves_raw_values:
+                move_vals['location_dest_id'] = branch_location.id
+
+        return moves_raw_values
+
+    def button_unreserve(self):
+        self._check_approve_to_manufacture()
+        return super().button_unreserve()
+
+    def action_scrap(self):
+        self._check_approve_to_manufacture()
+        return super().action_scrap()
+
+
+    def _check_approve_to_manufacture(self):
+        for mo in self:
+            if mo.root_bom_id and self.line:
+                bom = mo.bom_id
+
+                print("\n==========================")
+                print(f"🔍 Checking approval for MO: {mo.name}")
+                print(f"   BOM: {bom.display_name} (ID {bom.id})")
+                print("==========================")
+
+                line = self.env['mrp.bom.line'].search([
+                                ('product_id', '=', self.product_id.id),
+                                ('id','=',int(self.line))
+                            ], limit=1)
+                # print('bom_id : ', mo.bom_id)
+                print('line : ',line,' ',line.approve_to_manufacture)
+                is_main_allowed = line.approve_to_manufacture if line else False
+                print('is_main_allowed : ', is_main_allowed)
+                if is_main_allowed:
+                    allowed = self._check_descendant_approval(bom)
+
+                    print(f"➡️ Result for MO {mo.name}: allowed = {allowed}")
+
+                    if not allowed:
+                        print(f"❌ Approval FAILED for MO {mo.name}")
+                        raise UserError(
+                            "You cannot perform this operation because not all BOM lines "
+                            "below this MO are approved for manufacture.\n\n"
+                            "Please enable 'Approve to Manufacture' on all child BOM lines."
+                        )
+                else:
+                    raise UserError(
+                        "You cannot perform this operation because not all BOM lines "
+                        "below this MO are approved for manufacture.\n\n"
+                        "Please enable 'Approve to Manufacture' on all child BOM lines."
+                    )
+
+    def _check_descendant_approval(self, bom):
+        """
+        Check approval ONLY for lines that have a child BOM.
+        """
+        print(f"\n   🔎 Checking BOM: {bom.display_name} (ID {bom.id}) for descendant approval...")
+
+        lines = self.env['mrp.bom.line'].search([
+            ('bom_id', '=', bom.id),
+        ])
+
+        for line in lines:
+
+            # Skip lines that do NOT have child BOM
+            if not line.child_bom_id:
+                print(
+                    f"      ➤ Line {line.id} | Product: {line.product_id.display_name} "
+                    f"| No child BOM → SKIP"
+                )
+                continue
+
+            # Only check lines that HAVE child BOM
+            print(
+                f"      ➤ Line {line.id} | Product: {line.product_id.display_name} | "
+                f"Approve? {line.approve_to_manufacture} | "
+                f"Child BOM: {line.child_bom_id.display_name}"
+            )
+
+            # If this line with child BOM is NOT approved → FAIL
+            if not line.approve_to_manufacture:
+                print(f"      ❌ FAILED at BOM line {line.id} → Not approved")
+                return False
+
+            # If approved and has child BOM → go deeper
+            print(f"      🔽 Going deeper into child BOM: {line.child_bom_id.display_name} (ID {line.child_bom_id.id})")
+            if not self._check_descendant_approval(line.child_bom_id):
+                return False
+
+        print(f"   ✅ All child-BOM lines under BOM {bom.display_name} are approved.")
+        return True
+
+    def move_finished_to_branch(self):
+        """Move finished product quantity from production output location to branch location."""
+        for prod in self:
+            if not prod.branch_mapping_id or not prod.branch_mapping_id.location_id:
+                _logger.info("No branch mapping/location set for production %s", prod.name)
+                continue
+
+            dest_location = prod.branch_mapping_id.location_id
+            # Find final moves (finished moves) for this production
+            finished_moves = prod.move_finished_ids.filtered(lambda m: m.state in ('draft','confirmed','waiting') or m.state == 'done')
+            if not finished_moves:
+                # sometimes finished moves are in move_raw_work or move_finished_ids, try move_raw_ids_by_finished or stock pickings
+                finished_moves = prod.move_finished_ids
+
+            if not finished_moves:
+                _logger.warning("No finished moves found for production %s", prod.name)
+                continue
+
+            # For safety, create a transfer of the produced qty from current destination to branch location
+            for mv in finished_moves:
+                # Skip if already at desired location
+                if mv.location_dest_id.id == dest_location.id:
+                    _logger.info("Move %s already has destination %s", mv.id, dest_location.name)
+                    continue
+
+                # Best practice: create a new stock.picking or move to move the quantity
+                # Here we will create a new internal move that moves product from current dest to branch location.
+                try:
+                    move_vals = {
+                        'name': f"Move to branch {prod.branch_mapping_id.branch_name} for {prod.name}",
+                        'product_id': mv.product_id.id,
+                        'product_uom_qty': mv.product_uom_qty,
+                        'product_uom': mv.product_uom.id,
+                        'location_id': mv.location_dest_id.id,
+                        'location_dest_id': dest_location.id,
+                        'company_id': prod.company_id.id,
+                        'origin': prod.name,
+                    }
+                    new_move = self.env['stock.move'].create(move_vals)
+                    # Confirm & assign & done quickly (depends on your workflow)
+                    new_move._action_confirm()
+                    new_move._action_assign()
+                    new_move._action_done()
+                    _logger.info("Moved produced product %s to branch location %s (move %s)", mv.product_id.display_name, dest_location.name, new_move.id)
+                    print(f"Moved produced product to branch {dest_location.name} (move {new_move.id})")
+                except Exception as e:
+                    _logger.exception("Failed to create branch move for production %s: %s", prod.name, e)
+
+    # Example: call move_finished_to_branch after production is marked 'done'.
+    # Hook depends on your exact Odoo version and how you finalize production.
+    # We add an override of button_mark_done if present, but keep it safe.
+    def button_mark_done(self):
+        res = super().button_mark_done()
+        try:
+            self.move_finished_to_branch()
+        except Exception as e:
+            _logger.exception("Error moving finished to branch after mark_done: %s", e)
+        return res
+
+
+    def _get_approved_bom_lines(self, bom):
+        """
+        Get only approved BOM lines (where all children are approved)
+        """
+        approved_lines = self.env['mrp.bom.line']
+
+        for line in bom.bom_line_ids:
+            if bom._check_all_children_approved(line):
+                approved_lines |= line
+
+        return approved_lines
+
+    @api.model
+    def create(self, vals):
+        if vals.get('bom_id'):
+            bom = self.env['mrp.bom'].browse(vals['bom_id'])
+            if bom.is_evr:
+                unapproved_lines = []
+
+                if bom.project_id:
+                    vals['project_id'] = bom.project_id.id
+
+                for line in bom.bom_line_ids:
+                    if not bom._check_all_children_approved(line):
+                        unapproved_lines.append(line.product_id.display_name)
+
+                if unapproved_lines:
+                    raise ValidationError(
+                        "Cannot create MO. The following BOM lines or their sub-components are not approved for manufacture:\n" +
+                        "\n".join([f"- {name}" for name in unapproved_lines])
+                    )
+
+        branch_dest_location = self.env.context.get('branch_dest_location')
+
+        mo = super().create(vals)
+
+        # Update ALL moves (finished + components) with branch location
+        if branch_dest_location:
+            # Finished product moves
+            if mo.move_finished_ids:
+                mo.move_finished_ids.write({
+                    'location_dest_id': branch_dest_location
+                })
+
+            # Raw material/component moves - update source location
+            if mo.move_raw_ids:
+                mo.move_raw_ids.write({
+                    'location_dest_id': branch_dest_location  # Components consumed to branch location
+                })
+
+        return mo
+
+# models/stock_move.py
+from odoo import models, api
+
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    def _action_confirm(self, merge=True, merge_into=False):
+        """Override to maintain branch location when move is confirmed"""
+        res = super()._action_confirm(merge=merge, merge_into=merge_into)
+
+        for move in self:
+            # If this move belongs to an MO with branch location
+            if move.production_id and move.production_id.location_dest_id:
+                branch_location = move.production_id.location_dest_id
+
+                # Update destination for both finished and raw moves
+                if move.location_dest_id != branch_location:
+                    move.location_dest_id = branch_location
+
+            # Also check for raw material consumption (raw_material_production_id)
+            if move.raw_material_production_id and move.raw_material_production_id.location_dest_id:
+                branch_location = move.raw_material_production_id.location_dest_id
+                if move.location_dest_id != branch_location:
+                    move.location_dest_id = branch_location
+
+        return res
+
+    def _create_move_lines(self):
+        """Override to apply branch location to all move lines"""
+        res = super()._create_move_lines()
+
+        for move in self:
+            branch_location = None
+
+            # Check for finished product moves
+            if move.production_id and move.production_id.location_dest_id:
+                branch_location = move.production_id.location_dest_id
+
+            # Check for raw material moves
+            elif move.raw_material_production_id and move.raw_material_production_id.location_dest_id:
+                branch_location = move.raw_material_production_id.location_dest_id
+
+            # Update all move lines (including those with lot/serial) with branch location
+            if branch_location and move.move_line_ids:
+                move.move_line_ids.write({
+                    'location_dest_id': branch_location.id
+                })
+
+        return res
+
+    def _prepare_move_line_vals(self, quantity=None, reserved_quant=None):
+        """Override to set branch location in move line vals during creation"""
+        vals = super()._prepare_move_line_vals(quantity=quantity, reserved_quant=reserved_quant)
+
+        branch_location = None
+
+        # Check for production moves
+        if self.production_id and self.production_id.location_dest_id:
+            branch_location = self.production_id.location_dest_id
+        elif self.raw_material_production_id and self.raw_material_production_id.location_dest_id:
+            branch_location = self.raw_material_production_id.location_dest_id
+
+        if branch_location:
+            vals['location_dest_id'] = branch_location.id
+
+        return vals
+        
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+from odoo import api, fields, models
+
+class StockLocation(models.Model):
+    _inherit = "stock.location"
+
+    location_category = fields.Selection(
+        [("free", "Free Location"), ("project", "Project Location")],
+        string="Location Category",
+    )
+
+    @api.onchange("location_id")
+    def _onchange_location_id(self):
+        """Set default category from parent if empty."""
+        if not self.location_category and self.location_id.location_category:
+            self.location_category = self.location_id.location_category
+
+    @api.model
+    def create(self, vals):
+        if not vals.get("location_category") and vals.get("location_id"):
+            parent = self.browse(vals["location_id"])
+            vals["location_category"] = parent.location_category
+        return super().create(vals)
+
+# cr_mrp_bom_customisation/models/mrp_bom_line_branch.py
+from odoo import models, fields
+
+class MrpBomLineBranch(models.Model):
+    _name = "mrp.bom.line.branch"
+    _description = "Branch mapping per BOM per path"
+
+    bom_id = fields.Many2one('mrp.bom', string='BOM', required=True, ondelete='cascade', index=True)
+    bom_line_id = fields.Many2one('mrp.bom.line', string='BOM Line', ondelete='cascade', index=True)
+    branch_name = fields.Char(string='Branch', required=True, index=True)
+    sequence = fields.Integer(string='Sequence', default=0)
+    path_uid = fields.Char(string='Path UID', index=True)
+    location_id = fields.Many2one('stock.location', string='Branch Location', ondelete='set null')
+
+    _sql_constraints = [
+        ('bom_branch_unique', 'unique(bom_id, branch_name)', 'Branch name must be unique per BOM.'),
+        # note: removed unique(bom_id, bom_line_id)
+    ]
+
+    def name_get(self):
+        res = []
+        for r in self:
+            name = f"{r.bom_id.display_name}/{r.branch_name}"
+            if r.bom_line_id and r.bom_line_id.product_id:
+                name += f" - {r.bom_line_id.product_id.display_name}"
+            res.append((r.id, name))
+        return res
+
+# models/mrp_bom_line.py
+from odoo import models, api,fields
+import logging
+
+_logger = logging.getLogger(__name__)
+class MrpBomLine(models.Model):
+    _inherit = "mrp.bom.line"
+
+    approve_to_manufacture = fields.Boolean(
+        string='Approve to Manufacture',
+        default=False,
+        help="If checked, MO will be created for this BOM line"
+    )
+
+    to_order = fields.Float(
+        string='To Order',
+        compute='_compute_purchase_fields',
+        store=False
+    )
+
+    to_order_cfe = fields.Float(
+        string='To Order CFE',
+        compute='_compute_purchase_fields',
+        store=False
+    )
+
+    ordered = fields.Float(
+        string='Ordered',
+        compute='_compute_purchase_fields',
+        store=False
+    )
+
+    ordered_cfe = fields.Float(
+        string='Ordered CFE',
+        compute='_compute_purchase_fields',
+        store=False
+    )
+
+    to_transfer = fields.Float(
+        string='To Transfer',
+        compute='_compute_purchase_fields',
+        store=False
+    )
+
+    to_transfer_cfe = fields.Float(
+        string='To Transfer CFE',
+        compute='_compute_purchase_fields',
+        store=False
+    )
+
+    transferred = fields.Float(
+        string='Transferred',
+        compute='_compute_purchase_fields',
+        store=False
+    )
+
+    transferred_cfe = fields.Float(
+        string='Transferred CFE',
+        compute='_compute_purchase_fields',
+        store=False
+    )
+
+    used = fields.Float(
+        string='Used',
+        compute='_compute_purchase_fields',
+        store=False
+    )
+
+    free_to_use = fields.Float(
+        string='Free to Use',
+        compute='_compute_free_to_use',
+    )
+
+    customer_ref = fields.Char(string='Customer ref')
+
+    @api.depends('approval_1', 'approval_2', 'lli', 'product_id', 'cfe_quantity')
+    def _compute_purchase_fields(self):
+        for line in self:
+            if line.approval_1 and line.approval_2:
+                line.to_order = 0.0
+                line.to_order_cfe = 0.0
+                line.ordered = 0.0
+                line.ordered_cfe = 0.0
+                line.to_transfer = 0.0
+                line.to_transfer_cfe = 0.0
+                line.transferred = 0.0
+                line.transferred_cfe = 0.0
+                line.used = 0.0
+            else:
+                line.to_order = False
+                line.to_order_cfe = False
+                line.ordered = False
+                line.ordered_cfe = False
+                line.to_transfer = False
+                line.to_transfer_cfe = False
+                line.transferred = False
+                line.transferred_cfe = False
+                line.used = False
+
+   @api.depends('product_id', 'product_id.stock_quant_ids', 'product_id.stock_quant_ids.quantity',
+                 'product_id.stock_quant_ids.location_id', 'product_id.stock_quant_ids.location_id.location_category')
+    def _compute_free_to_use(self):
+        if not self:
+            return
+
+        self.env.cr.execute("""
+                SELECT id FROM stock_location 
+                WHERE location_category = 'free' 
+                AND usage = 'internal'
+            """)
+        free_location_ids = [row[0] for row in self.env.cr.fetchall()]
+
+        if not free_location_ids:
+            self.update({'free_to_use': 0.0})
+            return
+
+        product_ids = self.mapped('product_id').ids
+        if not product_ids:
+            self.update({'free_to_use': 0.0})
+            return
+
+        self.env.cr.execute("""
+                SELECT product_id, SUM(quantity) as total_qty
+                FROM stock_quant
+                WHERE product_id IN %s
+                AND location_id IN %s
+                GROUP BY product_id
+            """, (tuple(product_ids), tuple(free_location_ids)))
+
+        qty_map = {row[0]: row[1] for row in self.env.cr.fetchall()}
+
+        for line in self:
+            line.free_to_use = qty_map.get(line.product_id.id, 0.0) if line.product_id else 0.0
+
+    def _collect_affected_root_boms(self):
+        """
+        For this recordset of bom.lines return a set of root BOMs that must be
+        recalculated. This covers:
+          - the immediate containing BOMs (line.bom_id) and their ancestors (roots)
+          - if the line has child_bom_id (i.e., it *is* a parent), then also
+            include roots of that child BOM (because child structure changed)
+        """
+        helpers = self.env['cr.mrp.bom.helpers']
+        affected_roots = set()
+
+        for line in self:
+            # 1) roots for the containing BOM of this line
+            if line.bom_id:
+                roots = helpers.get_root_boms_for_bom(line.bom_id)
+                for r in roots:
+                    affected_roots.add(r.id)
+
+            # 2) if this line itself points to a child BOM, include roots for that child
+            if line.child_bom_id:
+                roots_child = helpers.get_root_boms_for_bom(line.child_bom_id)
+                for r in roots_child:
+                    affected_roots.add(r.id)
+
+        # return browse recordset of root BOMs
+        return self.env['mrp.bom'].browse(list(affected_roots))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        lines = super().create(vals_list)
+        roots = lines._collect_affected_root_boms()
+        # call assign on each root (avoid recursion contexts)
+        print('create : ')
+        print('roots : ', roots)
+        for root in roots:
+            try:
+                root._assign_branches_for_bom()
+                # root.with_context(skip_branch_recompute=True)._assign_branches_for_bom()
+            except Exception:
+                # log and continue; do not block create
+                _logger.exception("Error assigning branches for root BOM %s after create", root.id)
+        return lines
+
+    def write(self, vals):
+        # collect roots BEFORE write for lines whose bom_id may change
+        pre_roots = self._collect_affected_root_boms()
+        res = super().write(vals)
+        # collect roots AFTER write (for new relations)
+        post_roots = self._collect_affected_root_boms()
+        # union
+        roots = (pre_roots | post_roots)
+        print('write : ',roots)
+        print('roots : ',roots)
+        for root in roots:
+            try:
+                root._assign_branches_for_bom()
+                # root.with_context(skip_branch_recompute=True)._assign_branches_for_bom()
+            except Exception:
+                _logger.exception("Error assigning branches for root BOM %s after write", root.id)
+
+        return res
+
+    def unlink(self):
+        # collect roots BEFORE unlink (we can't after)
+        roots = self._collect_affected_root_boms()
+        res = super().unlink()
+        for root in roots:
+            try:
+                root._assign_branches_for_bom()
+                # root.with_context(skip_branch_recompute=True)._assign_branches_for_bom()
+            except Exception:
+                _logger.exception("Error assigning branches for root BOM %s after unlink", root.id)
+        return res
+
+    def _skip_bom_line(self, product, never_attribute_values=False):
+        """Override to pass context when exploding child BOMs"""
+        result = super()._skip_bom_line(product,never_attribute_values)
+
+        if result and self.bom_id.is_evr:
+            # Pass this line's ID in context for child BOM explosion
+            return result.with_context(parent_bom_line_id=self.id)
+
+        return result
+
+# models/_bom_helpers.py
+from odoo import models, api
+
+class MrpBomHelpers(models.AbstractModel):
+    _name = "cr.mrp.bom.helpers"
+    _description = "Helper: find ancestor/root BOMs"
+
+    @api.model
+    def _get_parent_bom_lines(self, bom):
+        """
+        Find bom.line records whose child_bom_id == bom.id.
+        Cannot search child_bom_id directly → filter in Python.
+        """
+        BomLine = self.env["mrp.bom.line"]
+
+        # Step 1: Get all BOM lines whose product might trigger this BOM
+        possible_lines = BomLine.search([
+            ("product_id.product_tmpl_id", "=", bom.product_tmpl_id.id)
+        ])
+
+        # Step 2: Filter by actual child_bom_id relation
+        parent_lines = possible_lines.filtered(
+            lambda l: l.child_bom_id and l.child_bom_id.id == bom.id
+        )
+
+        return parent_lines
+
+    @api.model
+    
+    def get_root_boms_for_bom(self, start_bom):
+        """
+        BFS upwards until we reach BOMs with no parents.
+        """
+        visited = set()
+        roots = set()
+        queue = [start_bom]
+
+        while queue:
+            bom = queue.pop(0)
+            if not bom or bom.id in visited:
+                continue
+
+            visited.add(bom.id)
+
+            # Use the SAFE parent finder (no search on child_bom_id)
+            parent_lines = self._get_parent_bom_lines(bom)
+
+            if not parent_lines:
+                # No parents ⇒ this is a root BOM
+                roots.add(bom)
+                continue
+
+            # Add all parent BOMs to queue
+            for line in parent_lines:
+                parent_bom = line.bom_id
+                if parent_bom and parent_bom.id not in visited:
+                    queue.append(parent_bom)
+
+        return list(roots)
+
+
+
+Currently the destination location is set to branch location not parent branch location but i saiid that what i want , only give me the code in which i need dto change no give whole code again plz 
+
+
+
+def action_create_child_mos_recursive(self, root_bom=None, parent_mo=None, index="0", level=0, parent_qty=1.0, parent_branch_location=None):
+    """
+    Create MOs ONLY for BOM lines that have a child BOM.
+    Each MO will have:
+    1. Components: WH/Stock → Virtual/Production
+    2. Finished Product: Virtual/Production → Own Branch Location → Parent Branch Location
+    """
+    Branch = self.env['mrp.bom.line.branch']
+
+    if root_bom is None:
+        root_bom = self
+        if not hasattr(self.__class__, '_branch_assignment_cache'):
+            self.__class__._branch_assignment_cache = {}
+
+        cache_key = f"bom_{root_bom.id}"
+        self.__class__._branch_assignment_cache[cache_key] = {
+            'assignments': {},
+            'seen_paths': []
+        }
+
+    created_mo = None
+    warehouse = self.env['stock.warehouse'].search([('company_id', '=', self.env.company.id)], limit=1)
+    stock_location = warehouse.lot_stock_id if warehouse else False
+
+    for line_idx, line in enumerate(self.bom_line_ids):
+        if not line.child_bom_id:
+            continue
+
+        child_bom = line.child_bom_id
+        child_qty = float(line.product_qty or 1.0) * parent_qty
+        line_index = f"{index}{line_idx}"
+
+        branches = Branch.search([
+            ('bom_id', '=', root_bom.id),
+            ('bom_line_id', '=', line.id)
+        ], order='sequence')
+
+        branch_rec = False
+        if branches:
+            if len(branches) == 1:
+                branch_rec = branches[0]
+            else:
+                branch_rec = self._get_branch_for_mo_line(
+                    branches=branches,
+                    line=line,
+                    index=line_index,
+                    root_bom_id=root_bom.id
+                )
+
+        current_branch_location = False
+        branch_name = ""
+        
+        if branch_rec and branch_rec.location_id:
+            current_branch_location = branch_rec.location_id.id
+            branch_name = branch_rec.branch_name
+
+        # Determine final destination (parent's branch location or project location)
+        final_dest_location = parent_branch_location if parent_branch_location else current_branch_location
+
+        mo_vals = {
+            'product_id': child_bom.product_tmpl_id.product_variant_id.id,
+            'product_uom_id': child_bom.product_uom_id.id,
+            'product_qty': child_qty,
+            'bom_id': child_bom.id,
+            'root_bom_id': root_bom.id,
+            'parent_mo_id': parent_mo.id if parent_mo else False,
+            'project_id': root_bom.project_id.id,
+            'line': line.id,
+            'location_src_id': stock_location.id if stock_location else False,
+            'location_dest_id': final_dest_location if final_dest_location else False,
+        }
+
+        # Pass context for stock move customization
+        mo = self.env['mrp.production'].with_context(
+            branch_intermediate_location=current_branch_location,
+            branch_final_location=final_dest_location
+        ).create(mo_vals)
+        
+        created_mo = mo
+
+        src_name = stock_location.display_name if stock_location else "WH/Stock"
+        intermediate_name = self.env['stock.location'].browse(current_branch_location).display_name if current_branch_location else "N/A"
+        final_name = self.env['stock.location'].browse(final_dest_location).display_name if final_dest_location else "N/A"
+
+        print(f"[DEBUG] >>> Created MO {mo.name}")
+        print(f"[DEBUG]      Branch: {branch_name}")
+        print(f"[DEBUG]      Quantity: {child_qty}")
+        print(f"[DEBUG]      Flow: {src_name} → {intermediate_name} → {final_name}")
+
+        self.env['bus.bus']._sendone(
+            self.env.user.partner_id,
+            "simple_notification",
+            {
+                "title": "Manufacturing Order Created",
+                "message": (
+                    f"MO {mo.name} created for {child_bom.display_name}\n"
+                    f"Branch: {branch_name}\n"
+                    f"Quantity: {child_qty}\n"
+                    f"Flow: {src_name} → {intermediate_name} → {final_name}"
+                ),
+                "sticky": False,
+                "type": "info",
+            }
+        )
+
+        # Recurse: pass current branch location as parent for children
+        child_bom.action_create_child_mos_recursive(
+            root_bom=root_bom,
+            parent_mo=mo,
+            index=line_index,
+            level=level + 1,
+            parent_qty=child_qty,
+            parent_branch_location=current_branch_location
+        )
+
+    if level == 0 and root_bom == self:
+        cache_key = f"bom_{root_bom.id}"
+        if hasattr(self.__class__, '_branch_assignment_cache'):
+            if cache_key in self.__class__._branch_assignment_cache:
+                del self.__class__._branch_assignment_cache[cache_key]
+
+    return created_mo
+
+
+def _get_branch_for_mo_line(self, branches, line, index, root_bom_id):
+    """Determine which branch to use for this MO based on the traversal path."""
+    cache_key = f"bom_{root_bom_id}"
+
+    if not hasattr(self.__class__, '_branch_assignment_cache'):
+        return branches[0]
+
+    cache = self.__class__._branch_assignment_cache.get(cache_key)
+    if not cache:
+        return branches[0]
+
+    path_key = f"{root_bom_id}_{line.id}_{index}"
+
+    if path_key not in cache['seen_paths']:
+        existing_count = len([p for p in cache['seen_paths']
+                              if p.startswith(f"{root_bom_id}_{line.id}_")])
+
+        if existing_count < len(branches):
+            branch = branches[existing_count]
+        else:
+            branch = branches[-1]
+
+        cache['assignments'][path_key] = branch.id
+        cache['seen_paths'].append(path_key)
+    else:
+        branch_id = cache['assignments'].get(path_key)
+        branch = self.env['mrp.bom.line.branch'].browse(branch_id)
+
+    return branch
+    
+    
+    
+# models/mrp_production.py
+from odoo import models, api, fields
+
+class MrpProduction(models.Model):
+    _inherit = 'mrp.production'
+
+    branch_intermediate_location_id = fields.Many2one(
+        'stock.location',
+        string='Branch Intermediate Location',
+        help='Intermediate branch location before moving to parent'
+    )
+
+    @api.model
+    def create(self, vals):
+        branch_intermediate_location = self.env.context.get('branch_intermediate_location')
+        branch_final_location = self.env.context.get('branch_final_location')
+        
+        # Store intermediate location
+        if branch_intermediate_location:
+            vals['branch_intermediate_location_id'] = branch_intermediate_location
+        
+        mo = super().create(vals)
+        
+        # Create two-step move for finished product if intermediate location exists
+        if branch_intermediate_location and branch_final_location and branch_intermediate_location != branch_final_location:
+            mo._create_branch_transfer_move(branch_intermediate_location, branch_final_location)
+        
+        return mo
+
+    def _create_branch_transfer_move(self, intermediate_loc_id, final_loc_id):
+        """
+        Create additional move: Branch Intermediate → Parent Branch (Final)
+        This is executed after the production move (Virtual/Production → Branch Intermediate)
+        """
+        self.ensure_one()
+        
+        StockMove = self.env['stock.move']
+        
+        # Create transfer move
+        move_vals = {
+            'name': f'Branch Transfer: {self.name}',
+            'product_id': self.product_id.id,
+            'product_uom': self.product_uom_id.id,
+            'product_uom_qty': self.product_qty,
+            'location_id': intermediate_loc_id,
+            'location_dest_id': final_loc_id,
+            'production_id': self.id,
+            'origin': self.name,
+            'company_id': self.company_id.id,
+            'warehouse_id': self.location_dest_id.warehouse_id.id,
+            'sequence': 1000,  # Execute after production moves
+        }
+        
+        transfer_move = StockMove.create(move_vals)
+        
+        print(f"[DEBUG] Created branch transfer move for MO {self.name}")
+        print(f"[DEBUG]   From: {self.env['stock.location'].browse(intermediate_loc_id).display_name}")
+        print(f"[DEBUG]   To: {self.env['stock.location'].browse(final_loc_id).display_name}")
+        
+        return transfer_move
+
+    def _create_update_move_finished(self, values=None):
+        """Override to set intermediate branch location for finished product"""
+        moves = super()._create_update_move_finished(values=values)
+        
+        # Update finished move to go to intermediate location first
+        if self.branch_intermediate_location_id and moves:
+            moves.write({
+                'location_dest_id': self.branch_intermediate_location_id.id
+            })
+        
+        return moves
+
+    def button_mark_done(self):
+        """Override to auto-validate branch transfer moves"""
+        res = super().button_mark_done()
+        
+        for mo in self:
+            # Find and process branch transfer moves
+            transfer_moves = self.env['stock.move'].search([
+                ('production_id', '=', mo.id),
+                ('location_id', '=', mo.branch_intermediate_location_id.id),
+                ('state', 'not in', ['done', 'cancel'])
+            ])
+            
+            if transfer_moves:
+                # Confirm and assign
+                transfer_moves._action_confirm()
+                transfer_moves._action_assign()
+                
+                # Set quantity done
+                for move in transfer_moves:
+                    for move_line in move.move_line_ids:
+                        move_line.quantity = move_line.product_uom_qty
+                
+                # Validate
+                transfer_moves._action_done()
+                
+                print(f"[DEBUG] Auto-validated {len(transfer_moves)} branch transfer moves for MO {mo.name}")
+        
+        return res	
+        
+        
+# models/stock_move.py
+from odoo import models, api
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    def _prepare_move_line_vals(self, quantity=None, reserved_quant=None):
+        """Set branch locations in move line vals during creation"""
+        vals = super()._prepare_move_line_vals(quantity=quantity, reserved_quant=reserved_quant)
+        
+        # For finished products going to intermediate branch location
+        if self.production_id and self.production_id.branch_intermediate_location_id:
+            if self.location_dest_id == self.production_id.branch_intermediate_location_id:
+                vals['location_dest_id'] = self.production_id.branch_intermediate_location_id.id
+        
+        return vals
+        
+        
+I use this code bcoz previous cloudai give me this code but in that i got issue when i click produce all button in MO
+and also make sure all related stock.move and stock.move.line also we have to manage
+
+-----------
+RPC_ERROR
+
+Odoo Server Error
+
+Occured on localhost:8045 on model mrp.production on 2025-11-26 10:46:37 GMT
+
+Traceback (most recent call last):
+  File "/home/aashruti/Documents/odoo18/odoo/models.py", line 6269, in ensure_one
+    _id, = self._ids
+ValueError: too many values to unpack (expected 1)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/aashruti/Documents/odoo18/odoo/http.py", line 2166, in _transactioning
+    return service_model.retrying(func, env=self.env)
+  File "/home/aashruti/Documents/odoo18/odoo/service/model.py", line 156, in retrying
+    result = func()
+  File "/home/aashruti/Documents/odoo18/odoo/http.py", line 2133, in _serve_ir_http
+    response = self.dispatcher.dispatch(rule.endpoint, args)
+  File "/home/aashruti/Documents/odoo18/odoo/http.py", line 2381, in dispatch
+    result = self.request.registry['ir.http']._dispatch(endpoint)
+  File "/home/aashruti/Documents/odoo18/odoo/addons/base/models/ir_http.py", line 333, in _dispatch
+    result = endpoint(**request.params)
+  File "/home/aashruti/Documents/odoo18/odoo/http.py", line 754, in route_wrapper
+    result = endpoint(self, *args, **params_ok)
+  File "/home/aashruti/Documents/odoo18/addons/web/controllers/dataset.py", line 42, in call_button
+    action = call_kw(request.env[model], method, args, kwargs)
+  File "/home/aashruti/Documents/odoo18/odoo/api.py", line 535, in call_kw
+    result = getattr(recs, name)(*args, **kwargs)
+  File "/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Everest/cr_mrp_bom_evr_customisation/models/mrp_production.py", line 263, in button_mark_done
+    res = super().button_mark_done()
+  File "/home/aashruti/Documents/odoo18/addons/mrp/models/mrp_production.py", line 2078, in button_mark_done
+    productions_not_to_backorder._post_inventory(cancel_backorder=True)
+  File "/home/aashruti/Documents/odoo18/addons/mrp_account/models/mrp_production.py", line 109, in _post_inventory
+    res = super()._post_inventory(cancel_backorder=cancel_backorder)
+  File "/home/aashruti/Documents/odoo18/addons/mrp/models/mrp_production.py", line 1787, in _post_inventory
+    order._cal_price(moves_to_do_by_order[order.id])
+  File "/home/aashruti/Documents/odoo18/addons/mrp_subcontracting_account/models/mrp_production.py", line 16, in _cal_price
+    return super()._cal_price(consumed_moves=consumed_moves)
+  File "/home/aashruti/Documents/odoo18/addons/mrp_account/models/mrp_production.py", line 48, in _cal_price
+    finished_move.ensure_one()
+  File "/home/aashruti/Documents/odoo18/odoo/models.py", line 6272, in ensure_one
+    raise ValueError("Expected singleton: %s" % self)
+ValueError: Expected singleton: stock.move(669, 670)
+
+The above server error caused the following client error:
+RPC_ERROR: Odoo Server Error
+    RPC_ERROR
+        at makeErrorFromResponse (http://localhost:8045/web/assets/da63d63/web.assets_web.min.js:3163:165)
+        at XMLHttpRequest.<anonymous> (http://localhost:8045/web/assets/da63d63/web.assets_web.min.js:3168:13)
+----------------
+
+and in stock.move we have to location
+
+location_id = fields.Many2one(
+        'stock.location', 'Source Location',
+        help='The operation takes and suggests products from this location.',
+        auto_join=True, index=True, required=True,
+        compute='_compute_location_id', store=True, precompute=True, readonly=False,
+        check_company=True)
+    location_dest_id = fields.Many2one(
+        'stock.location', 'Intermediate Location', required=True,
+        help='The operations brings product to this location', readonly=False,
+        index=True, store=True, compute='_compute_location_dest_id', precompute=True, inverse='_set_location_dest_id')
+    location_final_id = fields.Many2one(
+        'stock.location', 'Final Location',
+        readonly=False, store=True,
+        help="The operation brings the products to the intermediate location."
+        "But this operation is part of a chain of operations targeting the final location.",
+        auto_join=True, index=True, check_company=True)
+
+
+
+I want 
+
+Flow Summary:
+
+Branch H: WH/Stock → WH/Project Location/H → WH/Project Location/F
+Branch G: WH/Stock → WH/Project Location/G → WH/Project Location/F
+Branch E: WH/Stock → WH/Project Location/E → WH/Project Location/D
+Branch D: WH/Stock → WH/Project Location/D → WH/Project Location/A
+Branch C: WH/Stock → WH/Project Location/C → WH/Project Location/B
+Branch B: WH/Stock → WH/Project Location/B → WH/Project Location/A
+
+Virtual/Production should not come in any stock.move or in stock.move.line also 
+
+
+
+The main mo product for which the mo is create it's move's source location should be branch_location and destination location shold be parent's branch location
+
+and it's move_raw_ids moves , source_location as it is and in destination location is branch location
+
+
+Main BOM
+supoose  A is one cpmponent and it is also one BOM it self
+A has three components
+	-c1 (also one BOM B)
+	-c2
+	-c3
+	
+now as per our flow when for BOM B the MO is create and manufacture then it goes to A's branch location so at the time of manufacturing of BOM B we already send the c1 at the BOM A's branch location 
+
+
+now when it's turn for BOM-A'S manufacturing then what hapapen c1 is it's component so for that stock.move create from wh/sh to A's branch location but in the manufacturing process of BOM B already we move c1's stock so what we should dod in this case?
+

@@ -1,0 +1,56 @@
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies
+{
+    "name": "Subcontracting in Work Orders | Subcontracting in Operations | Subcontracting Management | Subcontracting",
+    "summary": """Subcontracting in Work Orders""",
+    "description": """
+        Subcontracting in Work Orders,
+        Subcontracting in Operations,
+        Subcontracting Management,
+        Subcontracting,
+        Subcontracting in Work Orders in Odoo,
+        Subcontracting in Operations in Odoo,
+        Subcontracting Management in Odoo,
+        Subcontracting in Odoo,
+        Work Order wise Subcontracting in Odoo,
+        Work Order wise Subcontracting,
+        Operation-wise Subcontracting,
+        Operation-wise Subcontracting in Odoo,
+        Various Subcontracting Configuration,
+        Various Subcontracting Configuration in Odoo,
+        Subcontracting Configuration in Odoo,
+        Work Order Subcontracting Configuration,
+        Work Order Subcontracting Configuration in Odoo,
+        Operation Subcontracting Configuration,
+        Operation Subcontracting Configuration in Odoo,
+    """,
+    "category": "Manufacturing",
+    "author": "Creyox Technologies",
+    "website": "https://creyox.com",
+    "depends": ["base", "mrp", "purchase", "sale_management","stock"],
+    "vesion": "18.0",
+    "price": "50.0",
+    "currency": "USD",
+    "license": "OPL-1",
+    "images": ["static/description/banner.png"],
+    "data": [
+        "views/res_config_settings_view.xml",
+        "views/purchase_order_view.xml",
+        "views/stock_picking_view.xml",
+        "views/mrp_routing_workcenter_view.xml",
+        "views/mrp_workorder_view.xml",
+        "views/mrp_production.xml",
+        "views/stock_lot.xml",
+        "views/stock_quant.xml"
+    ],
+'assets': {
+        'web.assets_backend': [
+            'cr_subcontracting_workorder/static/src/**/*.js',
+            'cr_subcontracting_workorder/static/src/**/*.xml',
+        ],
+
+    },
+    "installable": True,
+    "application": True,
+    "auto_install": False,
+}

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_bigcommerce_shipping_method_form" model="ir.ui.view">
+        <field name="name">bigcommerce.shipping.method.form</field>
+        <field name="model">bigcommerce.shipping.method</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_refresh_shipping_method"
+                            type="object"
+                            string="Update from BigCommerce"
+                            class="btn-primary"/>
+                    <button name="action_export_shipping_method"
+                            type="object"
+                            string="Update to BigCommerce"
+                            class="btn-primary"/>
+                    <button name="action_delete_shipping_method"
+                            type="object"
+                            string="Delete from BigCommerce"
+                            class="btn-danger"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="store_id"/>
+                            <field name="zone_id"/>
+                            <field name="bc_method_id"/>
+                            <field name="name"/>
+                            <field name="type"/>
+
+                        </group>
+                        <group>
+                            <field name="enabled"/>
+                            <field name="fixed_surcharge"/>
+                            <field name="is_fallback"/>
+                            <field name="channel_ids_text"/>
+                        </group>
+
+                    </group>
+                    <group>
+                        <group string="settings">
+                            <field name="minimum_sub_total"/>
+                            <field name="exclude_fixed_shipping_products"/>
+                            <field name="use_discounted_sub_total"/>
+                            <field name="rate"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+    <record id="view_bigcommerce_shipping_method_tree" model="ir.ui.view">
+        <field name="name">bigcommerce.shipping.method.tree</field>
+        <field name="model">bigcommerce.shipping.method</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="bc_method_id"/>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="enabled"/>
+                <field name="fixed_surcharge"/>
+                <field name="is_fallback"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_bigcommerce_shipping_method" model="ir.actions.act_window">
+        <field name="name">Shipping Methods</field>
+        <field name="res_model">bigcommerce.shipping.method</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_bigcommerce_shipping_methods"
+              name="Shipping Methods"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+              action="action_bigcommerce_shipping_method"/>
+
+
+</odoo>

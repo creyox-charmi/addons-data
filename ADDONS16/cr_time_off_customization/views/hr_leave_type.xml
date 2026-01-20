@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="cr_hr_leave_type_form" model="ir.ui.view">
+        <field name="name">cr.hr.time.off.form</field>
+        <field name="model">hr.leave.type</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form" />
+        <field name="arch" type="xml">
+            <!--ANALYTIC ACCOUNT FIELD-->
+            <xpath expr="//group[@name='allocation_validation']/field[@name='allocation_validation_type']" position = "after">
+                    <field name='leave_type'></field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

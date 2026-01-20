@@ -1,0 +1,1401 @@
+my module functionality i am telling you what i have to do is
+New Field:- Add is_evr boolean field in BOM overview
+Customize in BOM module - EVEREST
+
+
+1. EVR Flag on BOM
+New Field:- Add is_evr boolean field in BOM overview
+Filed should be by default True when BOM main product internal ref star with EVR
+BOM project_id field should not visible when is_evr boolean field is False
+
+
+The Flow below works when is_evr boolean is Ture 
+
+2. Customer Furnished Equipment (CFE)
+New Field:- Add cfe_quantity Char field BOM overview line. 
+The field is visible when is_evr boolean is True.
+Can only be set for child items, not for BOM headers.
+Represents the quantity to be supplied by the customer.
+Acts as a special purchase order from the customer, with zero price in the PO lines (free of charge).
+Items are directed to a dedicated project location defined in the BOM.
+
+3. LLI Field
+New Field:- Add lli boolean field BOM overview line. 
+The field is visible when is_evr boolean is True.
+Can only be set for child items, not for BOM headers.
+If any row in the BOM tree has lli = True:
+The system immediately creates a draft PO to the vendor as soon as Approval 1 & 2 are both checked.
+On Manufacture button click, no additional PO is created for LLI-marked items (since they already have POs).
+
+
+4. Approval Workflow
+New Field:- Add approval_1 & approval_2 boolean field BOM overview line. 
+The field is visible when is_evr boolean is True.
+Can only be set for child items, not for BOM headers.
+When both fields are Ture then customer PO and main vendor po will create on click of manufacturing button.
+
+ 5. PO Creation flow on manufacturing button.
+When the Manufacture button is clicked for an EVR BOM system, scan all the lines of the BOM.
+Execution Conditions:
+The line is not marked with LLI = True.
+Both approval fields (Approval 1 and Approval 2) are set to True.
+For lines that meet the conditions:
+A Purchase Order (PO) is generated for the customer for every item with a value in the CFE column, using that quantity, with zero price, and routed to the project’s dedicated location.
+For custom PO we will take the customer name from the project_id.partner_id
+What should happen when we don't find a customer name in a project during the creation of a customer PO?
+A second PO is created for the main vendor defined on the product card, with a quantity equal to
+ (Required Quantity – CFE Quantity).
+The PO is created in draft state. The user will manually confirm the PO to take component stock.
+Lines that do not meet the conditions (LLI = True or missing approvals) are skipped and excluded from the procurement/production flow.
+
+
+
+ 
+The PO will be created based on the condition above when we click on the manufacturing button from the BOM overview, right? Correct, except the line the LLE is TRUE, and it will the PO will be created by what I’ve mentioned above  (satisfied)
+
+When some bom have a child bom at that case we have to do the same process for the child bom as well right? What do you mean? (I mean what should be happen for child MO) Again, these changes will be only for the components
+The MO for the components, how are BOM will be created after a Manufacturing button is clicked
+Only the Creation of the POs will depend on the new booleans
+
+case - 1
+------------------
+LLE -> True
+Approval-1 -> True
+Approval-2 -> True
+Should I Create PO? ->  It will create it immediately (Once all the boolean are True)
+
+
+case - 2
+----------------------
+LLE -> True
+Approval-1 -> True
+Approval-2 -> False
+Should I Create PO? ->  No
+
+case - 3
+----------------------
+LLE -> True
+Approval-1 -> False
+Approval-2 -> True
+Should I Create PO? ->  No
+
+case - 4
+----------------------
+LLE -> False
+Approval-1 -> True
+Approval-2 -> True
+Should I Create PO? ->  If the cfe is with values or the product is defined to be purched The Po will be created after push the Manufacture button
+
+
+
+condition -1 ]if their related line purchase order is not create then move to second condition
+condition -2 ]if cfe quantity is greater then zero then move to third condition
+condition -3 ]if  *(Required Quantity – CFE Quantity) is positive then before creating that two ,customer and vendor po must check
+		- relatated project_id.partner_id is must set if not set then give validation
+		- *the main vendor defined on the product card exist or not , if not exist then give validation
+		- if all condition are satidfied then and then only create that two po
+condition -3]else  *(Required Quantity – CFE Quantity) is not positive then before creating that customer po must check
+		- relatated project_id.partner_id is must set if not set then give validation
+		- if project_id.partner_id is set then and then only create customer po
+	
+
+		
+and above all condition is true then and then onl MO shold be create when click on 'manufacture' button
+
+6]
+Manufacturer & Manufacturer Part Number (MPN):
+We will add one field called mo_internal_ref inside the bom line.
+Users can select only from existing values on the product card.
+No creation of new manufacturers/vendors via the BOM tree.
+When the PO is created for this BOM, the manufacturer in the PO will be the chosen manufacturer 
+
+
+
+and my current code also i provide you:
+
+# models/mrp_bom.py
+from odoo import models, fields, api
+
+
+class MrpBom(models.Model):
+    _inherit = 'mrp.bom'
+
+    is_evr = fields.Boolean(
+        string='Is EVR',
+        default=False,
+        help="Indicates if this BOM is for EVR products"
+    )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to set is_evr based on product default_code"""
+        for vals in vals_list:
+            if 'product_tmpl_id' in vals or 'product_id' in vals:
+                self._set_is_evr_from_product(vals)
+        return super().create(vals_list)
+
+    def write(self, vals):
+        """Override write to update is_evr when product changes"""
+        if 'product_tmpl_id' in vals or 'product_id' in vals:
+            self._set_is_evr_from_product(vals)
+        return super().write(vals)
+
+    def _set_is_evr_from_product(self, vals):
+        """Set is_evr based on product internal reference"""
+        product = None
+
+        if 'product_id' in vals and vals['product_id']:
+            product = self.env['product.product'].browse(vals['product_id'])
+        elif 'product_tmpl_id' in vals and vals['product_tmpl_id']:
+            product_tmpl = self.env['product.template'].browse(vals['product_tmpl_id'])
+            if product_tmpl.product_variant_count == 1:
+                product = product_tmpl.product_variant_ids[0]
+
+        if product and product.default_code:
+            vals['is_evr'] = product.default_code.startswith('EVR')
+        else:
+            vals['is_evr'] = False
+
+    @api.onchange('product_tmpl_id', 'product_id')
+    def _onchange_product_set_is_evr(self):
+        """Update is_evr when product is changed in the form"""
+        product = self.product_id or (
+            self.product_tmpl_id.product_variant_ids[0]
+            if self.product_tmpl_id and self.product_tmpl_id.product_variant_count == 1
+            else None
+        )
+
+        if product and product.default_code:
+            self.is_evr = product.default_code.startswith('EVR')
+        else:
+            self.is_evr = False
+            
+# models/mrp_bom_context.py - Updated version
+from odoo import models, fields, api
+
+
+class MrpBomContext(models.Model):
+    _name = 'mrp.bom.context'
+    _description = 'BOM Context Data for EVR functionality'
+    _rec_name = 'display_name'
+
+    root_bom_id = fields.Many2one('mrp.bom', required=True, ondelete='cascade')
+    bom_line_id = fields.Many2one('mrp.bom.line', required=True, ondelete='cascade')
+    product_id = fields.Many2one('product.product', required=True)
+
+    # NEW: Add session tracking
+    session_id = fields.Char(
+        string='Session ID',
+        help="Unique identifier for each BOM usage session"
+    )
+    is_active_session = fields.Boolean(
+        string='Active Session',
+        default=True,
+        help="Whether this context belongs to the current active session"
+    )
+
+    cfe_quantity = fields.Char(string='CFE Quantity')
+    lli = fields.Boolean(string='LLI', default=False)
+    approval_1 = fields.Boolean(string='Approval 1', default=False)
+    approval_2 = fields.Boolean(string='Approval 2', default=False)
+    po_created = fields.Boolean(string='PO Created', default=False)
+
+    display_name = fields.Char(compute='_compute_display_name', store=True)
+
+    # Updated constraint to include session_id
+    _sql_constraints = [
+        ('unique_root_bom_line_session',
+         'unique(root_bom_id, bom_line_id, session_id)',
+         'Only one context record per BOM line per session allowed!')
+    ]
+
+    related_mo_id = fields.Many2one('mrp.production', string='Related MO', ondelete='set null')
+    mo_internal_ref = fields.Many2one(
+        'res.partner',
+        string='Selected Vendor',
+        help="The vendor/manufacturer selected for this BOM line."
+    )
+
+    @api.model
+    def get_or_create_session_id(self, root_bom_id):
+        """Get current active session or create a new one"""
+        # Check if there's an active session without related_mo_id
+        active_session = self.search([
+            ('root_bom_id', '=', root_bom_id),
+            ('is_active_session', '=', True),
+            ('related_mo_id', '=', False)
+        ], limit=1)
+
+        if active_session:
+            return active_session.session_id
+
+        # Create new session ID
+        import uuid
+        new_session_id = str(uuid.uuid4())
+        return new_session_id
+
+    @api.model
+    def reset_context_values(self, root_bom_id, mo_id):
+        """Reset context values ONLY for current active session"""
+        print(f"🔵 [reset_context_values] root_bom_id={root_bom_id}, mo_id={mo_id}")
+
+        # Find contexts that belong to active session (no related_mo_id)
+        active_contexts = self.search([
+            ('root_bom_id', '=', root_bom_id),
+            ('is_active_session', '=', True),
+            ('related_mo_id', '=', False)
+        ])
+
+        print(f"   Found {len(active_contexts)} active session contexts to update")
+
+        for context in active_contexts:
+            context.write({
+                'cfe_quantity': '',
+                'lli': False,
+                'approval_1': False,
+                'approval_2': False,
+                'mo_internal_ref': False,
+                # Keep po_created to prevent duplicate POs
+                'related_mo_id': mo_id,
+                'is_active_session': False  # Mark as processed
+            })
+
+        print(f"   ✅ Updated {len(active_contexts)} contexts with mo_id={mo_id}")
+
+    @api.model
+    def reset_for_new_cycle(self, root_bom_id):
+        """Reset all values including po_created for a completely new cycle"""
+        contexts = self.search([('root_bom_id', '=', root_bom_id)])
+        contexts.write({
+            'cfe_quantity': '',
+            'lli': False,
+            'approval_1': False,
+            'approval_2': False,
+            'po_created': False,
+            'related_mo_id': False,
+            'is_active_session': True,
+            'session_id': self.get_or_create_session_id(root_bom_id)
+        })
+
+    @api.model
+    def mark_pos_created_for_bom(self, root_bom_id):
+        """Mark ONLY active session contexts as having POs created"""
+        active_contexts = self.search([
+            ('root_bom_id', '=', root_bom_id),
+            ('is_active_session', '=', True),
+            ('related_mo_id', '=', False)
+        ])
+        active_contexts.write({'po_created': True})
+        print(f"   ✅ Marked {len(active_contexts)} active contexts as PO created")
+
+    @api.depends('root_bom_id', 'bom_line_id', 'product_id', 'session_id')
+    def _compute_display_name(self):
+        for rec in self:
+            session_part = f" (Session: {rec.session_id[:8]}...)" if rec.session_id else ""
+            rec.display_name = f"{rec.root_bom_id.display_name} - {rec.product_id.display_name}{session_part}"
+
+    @api.model
+    def get_context_data(self, root_bom_id, bom_line_id):
+        """Get context data for active session only"""
+        # First try to find active session context
+        context = self.search([
+            ('root_bom_id', '=', root_bom_id),
+            ('bom_line_id', '=', bom_line_id),
+            ('is_active_session', '=', True),
+            ('related_mo_id', '=', False)
+        ], limit=1)
+
+        if context:
+            return {
+                'cfe_quantity': context.cfe_quantity or '',
+                'lli': context.lli,
+                'approval_1': context.approval_1,
+                'approval_2': context.approval_2,
+                'po_created': context.po_created,
+                'mo_internal_ref': context.mo_internal_ref.id if context.mo_internal_ref else False,
+            }
+
+        # Return defaults for new session
+        return {
+            'cfe_quantity': '',
+            'lli': False,
+            'approval_1': False,
+            'approval_2': False,
+            'po_created': False,
+            'mo_internal_ref': False,
+        }
+
+    @api.model
+    def set_context_data(self, root_bom_id, bom_line_id, product_id, field_name, value):
+        """Set context data for active session"""
+        print(f"🔵 [set_context_data] root_bom_id={root_bom_id}, bom_line_id={bom_line_id}")
+
+        # Get or create session ID
+        session_id = self.get_or_create_session_id(root_bom_id)
+        print(f"   Session ID: {session_id}")
+
+        # Look for active session context
+        context = self.search([
+            ('root_bom_id', '=', root_bom_id),
+            ('bom_line_id', '=', bom_line_id),
+            ('is_active_session', '=', True),
+            ('related_mo_id', '=', False)
+        ], limit=1)
+
+        if not context:
+            print('   Creating new context for active session')
+            context = self.create({
+                'root_bom_id': root_bom_id,
+                'bom_line_id': bom_line_id,
+                'product_id': product_id,
+                'session_id': session_id,
+                'is_active_session': True,
+                field_name: value
+            })
+        else:
+            print('   Updating existing active session context')
+            if field_name == "mo_internal_ref" and value:
+                value = int(value)
+                value = self.env['res.partner'].browse(value).id
+
+            context.write({field_name: value})
+
+        print(f'   ✅ Context updated: {context.id}')
+        return context
+        
+        
+# models/mrp_bom_line.py
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+
+
+class MrpBomLine(models.Model):
+    _inherit = 'mrp.bom.line'
+
+    cfe_quantity = fields.Char(
+        string='CFE Quantity',
+        help="Customer Furnished Equipment quantity - supplied by customer at zero cost"
+    )
+    lli = fields.Boolean(string='LLI', default=False)
+    approval_1 = fields.Boolean(string='Approval 1', default=False)
+    approval_2 = fields.Boolean(string='Approval 2', default=False)
+    po_created = fields.Boolean(string='PO Created', default=False)
+    mo_internal_ref = fields.Many2one(
+        comodel_name="product.supplierinfo",
+        string="Preferred Manufacturer",
+        domain="[('product_tmpl_id', '=', product_tmpl_id)]",
+        help="Select the manufacturer/vendor defined on the product card."
+    )
+
+
+    @api.depends('bom_id.is_evr')
+    def _compute_show_cfe_quantity(self):
+        """Compute whether CFE quantity and new fields should be shown"""
+        for line in self:
+            show = line.bom_id.is_evr
+            line.show_cfe_quantity = show
+            line.show_lli = show
+            line.show_approval_1 = show
+            line.show_approval_2 = show
+            line.show_mo_internal_ref = show
+
+    show_cfe_quantity = fields.Boolean(
+        string='Show CFE Quantity',
+        compute='_compute_show_cfe_quantity',
+        store=True,
+        help="Technical field to control CFE quantity visibility"
+    )
+    show_lli = fields.Boolean(compute='_compute_show_cfe_quantity', store=True)
+    show_approval_1 = fields.Boolean(compute='_compute_show_cfe_quantity', store=True)
+    show_approval_2 = fields.Boolean(compute='_compute_show_cfe_quantity', store=True)
+    show_mo_internal_ref = fields.Boolean(compute='_compute_show_cfe_quantity', store=True)
+
+
+    def _create_instant_pos_with_context(self, root_bom_id, bom_line):
+        """Create both customer and vendor POs instantly using context data"""
+        context_data = self.env['mrp.bom.context'].get_context_data(root_bom_id, bom_line.id)
+        cfe_qty = float(context_data['cfe_quantity'] or '0')
+
+        print("🔵 [_create_instant_pos_with_context] Creating Instant POs for qty:", cfe_qty)
+
+        # Get root BOM for project partner and origin formatting
+        root_bom = self.env['mrp.bom'].browse(root_bom_id)
+        project_partner = root_bom.project_id.partner_id if root_bom.project_id else None
+
+        if not project_partner:
+            raise ValidationError("⚠️ Project not set on root BOM or missing project partner.")
+
+        # Get product codes for proper origin formatting
+        product_code = root_bom.product_id.default_code or root_bom.product_tmpl_id.default_code or ''
+        product_name = root_bom.product_id.name or root_bom.product_tmpl_id.name or ''
+
+        # Customer PO with proper origin
+        customer_po_vals = {
+            'partner_id': project_partner.id,
+            'origin': f"EVR-Manufacture - [{product_code}] {product_name}",
+            'state': 'draft',
+            'order_line': [(0, 0, {
+                'product_id': bom_line.product_id.id,
+                'product_qty': cfe_qty,
+                'product_uom': bom_line.product_id.uom_po_id.id,
+                'price_unit': 0.0,
+                'date_planned': fields.Datetime.now(),
+                'name': f"CFE - {bom_line.product_id.display_name}",
+            })]
+        }
+        po = self.env['purchase.order'].create(customer_po_vals)
+        print("🟢 Customer Instant PO Created:", po.id, po.name)
+
+        # Vendor PO
+        required_qty = bom_line.product_qty
+        remaining_qty = required_qty - cfe_qty
+
+        if remaining_qty > 0:
+            print("🔎 Vendor PO required, checking vendor...")
+
+            vendor_partner_id = context_data.get("mo_internal_ref")  # 👈 new field from context
+            vendor = False
+
+            if vendor_partner_id:
+                # Ensure it's still a valid vendor for this product
+                seller = bom_line.product_id.seller_ids.filtered(lambda s: s.partner_id.id == vendor_partner_id)
+                if seller:
+                    vendor = seller[0]
+                    print(f"   ✅ Using selected vendor from context: {vendor.display_name}")
+                else:
+                    print("   ⚠️ Selected vendor not valid anymore for this product, falling back...")
+
+            # Fallback if no valid context vendor
+            if not vendor:
+                main_vendor = bom_line.product_id.seller_ids.filtered(lambda s: s.main_vendor)
+                vendor = main_vendor[0] if main_vendor else bom_line.product_id._select_seller()
+                print(f"   🔄 Fallback vendor used: {vendor.partner_id.display_name if vendor else 'None'}")
+
+            if not vendor:
+                raise ValidationError(f"⚠️ No vendor found for product '{bom_line.product_id.display_name}'.")
+
+            vendor_po_vals = {
+                'partner_id': vendor.partner_id.id,
+                'origin': f"BOM [{product_code}] {product_name}",  # Updated origin format
+                'state': 'draft',
+                'order_line': [(0, 0, {
+                    'product_id': bom_line.product_id.id,
+                    'product_qty': remaining_qty,
+                    'product_uom': bom_line.product_id.uom_po_id.id,
+                    'price_unit': vendor.price or 0.0,
+                    'date_planned': fields.Datetime.now(),
+                    'name': f"Vendor - {bom_line.product_id.display_name}",
+                })]
+            }
+            po = self.env['purchase.order'].create(vendor_po_vals)
+            self.env['mrp.bom.context'].mark_pos_created_for_bom(bom_line.bom_id.id)
+            print("🟢 Vendor Instant PO Created:", po.id, po.name)
+
+        # Mark PO as created in context - keep this True to prevent MTO duplicates
+        self.env['mrp.bom.context'].set_context_data(
+            root_bom_id, bom_line.id, bom_line.product_id.id, 'po_created', True
+        )
+
+    # Also update the validation method to not reset po_created after instant PO creation
+    def validate_third_boolean(self, vals):
+        """
+        Check rules before allowing the 3rd boolean to be ticked.
+        Now uses context data for validation.
+        """
+        root_bom_id = self.env.context.get('root_bom_id') or self.bom_id.id
+
+        for line in self:
+            # Get context data for validation
+            context_data = self.env['mrp.bom.context'].get_context_data(root_bom_id, line.id)
+
+            lli = vals.get("lli", context_data['lli'])
+            a1 = vals.get("approval_1", context_data['approval_1'])
+            a2 = vals.get("approval_2", context_data['approval_2'])
+            cfe_quantity = vals.get("cfe_quantity", context_data['cfe_quantity'])
+
+            print(f"🔎 [validate_third_boolean] BOM Line {line.id} - Root BOM: {root_bom_id}")
+            print(f"   Context Data -> LLI={lli}, A1={a1}, A2={a2}, CFE={cfe_quantity}")
+
+            # Only if all three would become True
+            if lli and a1 and a2:
+                print("✅ All three flags would be TRUE → checking rules...")
+
+                # # Check if PO already created for this context
+                # if context_data.get('po_created'):
+                #     print("⏩ PO already created for this context → allow")
+                #     continue
+
+                if not cfe_quantity or float(cfe_quantity or 0) <= 0:
+                    print("❌ CFE quantity missing or <= 0")
+                    raise ValidationError("⚠️ CFE Quantity must be > 0 before enabling all 3 flags.")
+
+                # Get root BOM for project validation
+                root_bom = self.env['mrp.bom'].browse(root_bom_id)
+                if not root_bom.project_id or not root_bom.project_id.partner_id:
+                    print("❌ Missing project partner on root BOM")
+                    raise ValidationError("⚠️ Project Partner must be set on root BOM before enabling all 3 flags.")
+
+                # Vendor check
+                main_vendor = line.product_id.seller_ids.filtered(lambda s: s.main_vendor)
+                vendor = main_vendor[0] if main_vendor else line.product_id._select_seller()
+                print(f"   🔎 Vendor found: {vendor.partner_id.name if vendor else 'None'}")
+
+                if not vendor:
+                    print("❌ No vendor defined on product")
+                    raise ValidationError(
+                        f"⚠️ No vendor defined for {line.product_id.display_name}. Please configure at least one vendor."
+                    )
+
+                # If validation passes, create POs immediately
+                print("✅ Validation passed, creating instant POs...")
+                self._create_instant_pos_with_context(root_bom_id, line)
+                # Note: po_created is set to True inside _create_instant_pos_with_context
+                # and should NOT be reset to prevent MTO duplicates
+
+            else:
+                print("⏩ Not all three flags are TRUE → no validation triggered")
+
+        return True
+
+# models/mrp_production.py
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+
+
+class MrpProduction(models.Model):
+    _inherit = 'mrp.production'
+
+    @api.model
+    def create(self, vals):
+        print("🔵 [create] vals:", vals)
+        production = super().create(vals)
+        print("🟢 [create] Created Production:", production.id, production.name)
+
+        # Reset context values if this MO was created from EVR BOM
+        if production.bom_id and production.bom_id.is_evr:
+            print("✅ EVR BOM detected, calling session-aware reset")
+            self.env['mrp.bom.context'].reset_context_values(production.bom_id.id, production.id)
+
+        if self.env.context.get('create_case2_pos'):
+            print("⚡ Context has 'create_case2_pos'")
+            if production.bom_id and production.bom_id.is_evr:
+                print("✅ BOM is EVR, calling create_manufacture_pos()")
+                production.create_manufacture_pos()
+            else:
+                print("❌ BOM missing or not EVR")
+        else:
+            print("⏩ Context does not have 'create_case2_pos'")
+
+        return production
+
+    def create_manufacture_pos(self):
+        """Create POs when Manufacture button is clicked (Case 2) - Updated for context model"""
+        print("🔵 [create_manufacture_pos] Called for MO:", self.id, self.name)
+
+        if not self.bom_id or not self.bom_id.is_evr:
+            print("❌ No BOM or BOM is not EVR -> Skipping")
+            return
+
+        # Get root BOM ID
+        root_bom_id = self.bom_id.id
+
+        project_partner = None
+        if hasattr(self, 'project_id') and self.project_id:
+            project_partner = self.project_id.partner_id
+            print("🟢 Project Partner found:", project_partner.id, project_partner.name)
+        else:
+            raise ValidationError(
+                f"⚠️ Manufacture Order {self.name} has no project or no customer linked. "
+                f"Set a Project with a customer before creating POs."
+            )
+
+        customer_po_lines = []
+        vendor_po_data = {}
+
+        for move in self.move_raw_ids:
+            bom_line = move.bom_line_id
+            print("➡️ Processing Move:", move.id, move.product_id.name)
+
+            if not bom_line:
+                print("⏩ Skipping move, no BOM line")
+                continue
+
+            # Get context data instead of BOM line fields
+            context_data = self.env['mrp.bom.context'].get_context_data(root_bom_id, bom_line.id)
+
+            print(f"   Context Data (LLI={context_data['lli']}, "
+                  f"A1={context_data['approval_1']}, A2={context_data['approval_2']}, "
+                  f"CFE Qty={context_data['cfe_quantity']})")
+
+            # Only process Case 2: LLI=False, Approval1=True, Approval2=True
+            if (not context_data['lli'] and
+                    context_data['approval_1'] and
+                    context_data['approval_2'] and
+                    context_data['cfe_quantity']):
+
+                try:
+                    cfe_qty = float(context_data['cfe_quantity'])
+                except (ValueError, TypeError):
+                    print("❌ Invalid CFE Quantity")
+                    continue
+
+                if cfe_qty <= 0:
+                    print("❌ CFE Quantity <= 0, skipping")
+                    continue
+
+                required_qty = move.product_uom_qty
+                remaining_qty = required_qty - cfe_qty
+
+                print(f"   ✅ Case 2 Match -> Required: {required_qty}, "
+                      f"CFE Qty: {cfe_qty}, Remaining: {remaining_qty}")
+
+                # Customer PO line
+                if not project_partner:
+                    raise ValidationError(
+                        f"⚠️ No customer found for Project in MO {self.name}. "
+                        f"Cannot create Customer PO for product {move.product_id.display_name}."
+                    )
+
+                line_vals = {
+                    'product_id': move.product_id.id,
+                    'product_qty': cfe_qty,
+                    'product_uom': move.product_id.uom_po_id.id,
+                    'price_unit': 0.0,
+                    'date_planned': fields.Datetime.now(),
+                    'name': f"CFE - {move.product_id.name}",
+                }
+                customer_po_lines.append((0, 0, line_vals))
+                print("   🟢 Added Customer PO line:", line_vals)
+
+                # Vendor PO lines
+                if remaining_qty > 0:
+                    vendor = move.product_id._select_seller()
+                    if not vendor:
+                        raise ValidationError(
+                            f"⚠️ No vendor found for product '{move.product_id.display_name}' "
+                            f"in MO {self.name}. Please configure a vendor in product supplier info."
+                        )
+
+                    vendor_id = vendor.partner_id.id
+                    if vendor_id not in vendor_po_data:
+                        vendor_po_data[vendor_id] = {
+                            'partner_id': vendor_id,
+                            'origin': f"MO - {self.name}",
+                            'order_line': []
+                        }
+                        print("   🆕 Vendor found, creating PO dict for:", vendor_id)
+
+                    vendor_line_vals = {
+                        'product_id': move.product_id.id,
+                        'product_qty': remaining_qty,
+                        'product_uom': move.product_id.uom_po_id.id,
+                        'price_unit': vendor.price if vendor else 0.0,
+                        'date_planned': fields.Datetime.now(),
+                        'name': f"Vendor - {move.product_id.name}",
+                    }
+                    vendor_po_data[vendor_id]['order_line'].append((0, 0, vendor_line_vals))
+                    print("   🟢 Added Vendor PO line:", vendor_line_vals)
+
+        # Create customer PO
+        if customer_po_lines and project_partner:
+            customer_po_vals = {
+                'partner_id': project_partner.id,
+                'origin': f"CFE-Manufacture - {self.name}",
+                'state': 'draft',
+                'order_line': customer_po_lines,
+            }
+            self.env['purchase.order'].create(customer_po_vals)
+            print("🟢 Customer PO Created:", customer_po_vals)
+        else:
+            print("⏩ No Customer PO created")
+
+        # Create vendor POs
+        for vendor_data in vendor_po_data.values():
+            if vendor_data['order_line']:
+                vendor_data['state'] = 'draft'
+                self.env['purchase.order'].create(vendor_data)
+                print("🟢 Vendor PO Created:", vendor_data)
+            else:
+                print("⏩ Vendor PO has no lines, skipped")
+
+
+
+    @api.model
+    def action_validate_and_create_mo(self, bom_id):
+        print("🟢 [action_validate_and_create_mo] called with bom_id:", bom_id)
+
+        bom = self.env["mrp.bom"].browse(bom_id)
+        print("🔎 BOM record:", bom, "is_evr:", bom.is_evr)
+
+        if not bom or not bom.is_evr:
+            print("❌ Invalid BOM or not EVR")
+            raise ValidationError("❌ Invalid or non-EVR BOM.")
+
+        project = bom.project_id if hasattr(bom, "project_id") else None
+        print("🔎 Project found:", project)
+
+        if not project or not project.partner_id:
+            print("❌ Project missing or partner not set")
+            raise ValidationError("⚠️ Project and Customer must be set before Manufacture.")
+
+        # Use root BOM ID for context data
+        root_bom_id = bom.id
+        print("🟢 Starting BOM line loop...")
+
+        # 🔹 Get mo_internal_ref from BOM (or fallback from context later if you want)
+        mo_internal_ref = getattr(bom, "mo_internal_ref", False)
+        print("📌 mo_internal_ref:", mo_internal_ref)
+
+        for line in bom.bom_line_ids:
+            # Get context data instead of BOM line fields
+            context_data = self.env['mrp.bom.context'].get_context_data(root_bom_id, line.id)
+
+            print(f"➡️ Processing line {line.id} - {line.product_id.display_name}, "
+                  f"Context LLI={context_data['lli']}, A1={context_data['approval_1']}, "
+                  f"A2={context_data['approval_2']}, CFE={context_data['cfe_quantity']}")
+
+            if not (context_data['approval_1'] and context_data['approval_2']):
+                print("⏩ Skipping line, approvals not satisfied in context")
+                continue
+
+            required_qty = line.product_qty
+            cfe_qty = float(context_data['cfe_quantity'] or 0)
+            remaining_qty = required_qty - cfe_qty
+            print(f"   Required={required_qty}, CFE={cfe_qty}, Remaining={remaining_qty}")
+
+            # Case 4: LLI False + approvals True (from context)
+            if not context_data['lli'] and context_data['approval_1'] and context_data['approval_2']:
+                print("✅ Case 4 matched")
+
+                # --------------------------
+                # Customer PO -> per line
+                # --------------------------
+                if cfe_qty > 0:
+                    customer_po_vals = {
+                        "partner_id": project.partner_id.id,
+                        "origin": f"EVR-Manufacture - {bom.display_name}",
+                        "order_line": [(0, 0, {
+                            "product_id": line.product_id.id,
+                            "product_qty": cfe_qty,
+                            "product_uom": line.product_id.uom_po_id.id,
+                            "price_unit": 0.0,
+                            "date_planned": fields.Datetime.now(),
+                            "name": f"CFE - {line.product_id.display_name}",
+                        })],
+                    }
+                    # 🔹 Add mo_internal_ref if available
+                    if mo_internal_ref:
+                        customer_po_vals["mo_internal_ref"] = mo_internal_ref
+
+                    self.env["purchase.order"].create(customer_po_vals)
+                    print("🟢 Customer PO Created (per line):", customer_po_vals)
+
+                # --------------------------
+                # Vendor PO -> per line
+                # --------------------------
+                if remaining_qty > 0:
+                    print("🔎 Vendor PO required, checking vendor...")
+
+                    # Look for main vendor first
+                    main_vendor = line.product_id.seller_ids.filtered(lambda s: s.main_vendor)
+                    vendor = main_vendor[0] if main_vendor else line.product_id._select_seller()
+
+                    print("   Vendor found:", vendor)
+
+                    if not vendor:
+                        print("❌ No vendor configured for product", line.product_id.display_name)
+                        raise ValidationError(
+                            f"⚠️ No vendor found for product '{line.product_id.display_name}'. "
+                            f"Please configure a vendor."
+                        )
+
+                    vendor_po_vals = {
+                        "partner_id": vendor.partner_id.id,
+                        "origin": f"BOM {bom.display_name}",
+                        "order_line": [(0, 0, {
+                            "product_id": line.product_id.id,
+                            "product_qty": remaining_qty,
+                            "product_uom": line.product_id.uom_po_id.id,
+                            "price_unit": vendor.price or line.product_id.list_price,
+                            "date_planned": fields.Datetime.now(),
+                            "name": f"Vendor - {line.product_id.display_name}",
+                        })],
+                    }
+                    # 🔹 Add mo_internal_ref if available
+                    if mo_internal_ref:
+                        vendor_po_vals["mo_internal_ref"] = mo_internal_ref
+
+                    self.env["purchase.order"].create(vendor_po_vals)
+                    print("🟢 Vendor PO Created (per line):", vendor_po_vals)
+                    self.env['mrp.bom.context'].mark_pos_created_for_bom(bom_id)
+
+                    self.env['mrp.bom.context'].set_context_data(
+                        root_bom_id, line.id, line.product_id.id, 'po_created', True
+                    )
+
+        print("✅ Finished BOM line loop")
+
+        # Finally create MO
+        action = {
+            "res_model": "mrp.production",
+            "name": "Manufacture Orders",
+            "type": "ir.actions.act_window",
+            "views": [[False, "form"]],
+            "target": "current",
+            "context": {"default_bom_id": bom.id},
+        }
+        print("🟢 Returning Manufacture action:", action)
+        return action
+
+from odoo import models
+
+class StockMove(models.Model):
+    _inherit = "stock.move"
+
+    def _prepare_procurement_values(self):
+        values = super()._prepare_procurement_values()
+        print(f"\n🔵 [_prepare_procurement_values] called for Move ID {self.id}")
+        print(f"   • Product: {self.product_id.display_name} (ID {self.product_id.id})")
+        print(f"   • From MO: {self.raw_material_production_id.display_name if self.raw_material_production_id else 'N/A'}")
+        print(f"   • BOM Line: {self.bom_line_id.display_name if self.bom_line_id else 'N/A'}")
+
+        if self.bom_line_id and self.raw_material_production_id:
+            values.update({
+                "bom_id": self.raw_material_production_id.bom_id.id,
+                "bom_line_id": self.bom_line_id.id,
+            })
+            print(f"   ✅ Injected BOM Info → bom_id={values['bom_id']}, bom_line_id={values['bom_line_id']}")
+        else:
+            print("   ⚠️ No BOM info found → Skipping injection")
+
+        print(f"   🔎 Final values dict: {values}")
+        return values
+
+from odoo import models, api
+import logging
+
+_logger = logging.getLogger(__name__)
+
+class StockRule(models.Model):
+    _inherit = 'stock.rule'
+
+    @api.model
+    def _run_buy(self, procurements):
+        print("🟢 [Custom _run_buy] called with procurements:", len(procurements))
+
+        filtered_procurements = []
+
+        for procurement, rule in procurements:
+            product = procurement.product_id
+            values = procurement.values
+
+            print(f"➡️ Processing Procurement: Product={product.display_name}, ID={product.id}")
+
+            bom_id = values.get("bom_id")
+            bom_line_id = values.get("bom_line_id")
+            print("   🔎 bom_id:", bom_id, "| bom_line_id:", bom_line_id)
+
+            skip_procurement = False
+
+            if bom_id and bom_line_id:
+                # Check if active session context has po_created=True
+                active_ctx = self.env["mrp.bom.context"].search([
+                    ("root_bom_id", "=", bom_id),
+                    ("bom_line_id", "=", bom_line_id),
+                    ("is_active_session", "=", True),
+                    ("related_mo_id", "=", False)
+                ], limit=1)
+
+                if active_ctx and active_ctx.po_created:
+                    print("   ✅ Active session context shows PO already created")
+                    skip_procurement = True
+                else:
+                    # Also check for existing EVR POs
+                    existing_pos = self._check_existing_evr_pos(product, bom_id)
+                    if existing_pos:
+                        print(f"   📌 Found existing EVR POs: {len(existing_pos)}")
+                        skip_procurement = True
+                        # Update active context to reflect PO exists
+                        if active_ctx:
+                            active_ctx.po_created = True
+
+            if skip_procurement:
+                print("   ⏩ Skipping procurement → PO already exists")
+                continue
+
+            filtered_procurements.append((procurement, rule))
+
+        if filtered_procurements:
+            print(f"🚀 Passing remaining procurements to super()._run_buy → {len(filtered_procurements)}")
+            return super()._run_buy(filtered_procurements)
+
+        print("✅ No procurements left to process → all were skipped (already handled)")
+        return True
+
+    def _check_existing_evr_pos(self, product, bom_id):
+        """Check if POs already exist for this product from EVR flows"""
+        bom = self.env['mrp.bom'].browse(bom_id)
+        if not bom.exists():
+            return False
+
+        # Get BOM product info for origin matching
+        product_code = bom.product_id.default_code or bom.product_tmpl_id.default_code or ''
+        product_name = bom.product_id.name or bom.product_tmpl_id.name or ''
+
+        # Check for vendor POs
+        vendor_pos = self.env['purchase.order'].search([
+            ('order_line.product_id', '=', product.id),
+            ('state', 'in', ['draft', 'sent', 'to approve', 'purchase']),
+            '|',  # OR condition
+            ('origin', 'like', f'BOM [{product_code}] {product_name}'),
+            ('origin', 'like', f'Vendor-Instant - {product_name}'),
+        ])
+
+
+        return vendor_pos
+
+
+## models/report_mrp_bom_structure.py
+from odoo import models
+
+
+class ReportBomStructure(models.AbstractModel):
+    _inherit = 'report.mrp.report_bom_structure'
+
+    def _get_bom_data(self, bom, warehouse, product=False, line_qty=False, bom_line=False, level=0, parent_bom=False,
+                      parent_product=False, index=0, product_info=False, ignore_stock=False,
+                      simulated_leaves_per_workcenter=False):
+        data = super()._get_bom_data(
+            bom, warehouse, product, line_qty, bom_line, level,
+            parent_bom, parent_product, index, product_info, ignore_stock, simulated_leaves_per_workcenter
+        )
+
+        # Get root BOM from context or current BOM
+        root_bom_id = self.env.context.get("root_bom_id")
+        if not root_bom_id:
+            root_bom_id = bom.id if bom else (parent_bom.id if parent_bom else False)
+
+        root_bom = self.env['mrp.bom'].browse(root_bom_id) if root_bom_id else False
+
+        data['is_evr'] = bool(root_bom and root_bom.is_evr)
+        data['bom_id'] = bom.id if bom else False
+        data['root_bom_id'] = root_bom_id
+        data['root_is_evr'] = data['is_evr']
+
+        return data
+
+
+
+    def _get_component_data(self, parent_bom, parent_product, warehouse, bom_line,
+                            line_quantity, level, index, product_info, ignore_stock=False):
+
+        data = super()._get_component_data(
+            parent_bom, parent_product, warehouse, bom_line,
+            line_quantity, level, index, product_info, ignore_stock
+        )
+
+        root_bom_id = self.env.context.get("root_bom_id")
+        root_bom = self.env['mrp.bom'].browse(root_bom_id) if root_bom_id else False
+
+        if bom_line and root_bom_id:
+            # Context-specific data
+            context_data = self.env['mrp.bom.context'].get_context_data(root_bom_id, bom_line.id)
+
+            data['cfe_quantity'] = context_data['cfe_quantity']
+            data['has_cfe_quantity'] = bool(context_data['cfe_quantity'])
+            data['bom_line_id'] = bom_line.id
+            data['lli'] = context_data['lli']
+            data['approval_1'] = context_data['approval_1']
+            data['approval_2'] = context_data['approval_2']
+
+            child_bom = self.env['mrp.bom']._bom_find(bom_line.product_id, bom_type='normal')
+            data['cfe_editable'] = not bool(child_bom)
+            data['lli_editable'] = not bool(child_bom)
+            data['approval_1_editable'] = not bool(child_bom)
+            data['approval_2_editable'] = not bool(child_bom)
+            data['mo_internal_ref_editable'] = not bool(child_bom)
+            data['has_mo_internal_ref'] = bool(context_data['mo_internal_ref'])
+
+
+
+            # -------------------------------
+            # ✅ New: Available Vendors + Selected Vendor
+            # -------------------------------
+            available_vendors = [
+                {
+                    'id': seller.id,
+                    'partner_id': seller.partner_id.id,
+                    'display_name': seller.partner_id.display_name,
+                }
+                for seller in bom_line.product_id.seller_ids
+            ]
+
+            data['available_vendors'] = available_vendors
+            print('>> ',context_data['mo_internal_ref'])
+            partner = self.env['res.partner'].browse(context_data['mo_internal_ref'])
+            print('>>>>>> ',partner)
+            data['mo_internal_ref'] = partner.id if partner else False
+            data['mo_internal_ref_name'] = partner.display_name if partner else ''
+
+            # data['mo_internal_ref'] = context_data['mo_internal_ref'] if context_data['mo_internal_ref'] else False
+        else:
+            # Defaults
+            data.update({
+                'cfe_quantity': '',
+                'has_cfe_quantity': False,
+                'cfe_editable': False,
+                'bom_line_id': False,
+                'lli': False,
+                'approval_1': False,
+                'approval_2': False,
+                'lli_editable': False,
+                'approval_1_editable': False,
+                'approval_2_editable': False,
+                'available_vendors': [],
+                'mo_internal_ref': False,
+            })
+
+        data['is_evr'] = bool(root_bom and root_bom.is_evr)
+        data['root_bom_id'] = root_bom_id
+        print('data : ',data)
+        return data
+
+    def _get_report_data(self, bom_id, searchQty=0, searchVariant=False):
+        # Set root BOM context for the entire report
+        self = self.with_context(root_bom_id=bom_id)
+        return super()._get_report_data(bom_id, searchQty, searchVariant)
+        
+-------------
+/home/aashruti/Documents/odoo18/custom/addons/cr_mrp_bom_customisation/static/src/components/bom_overview_control_panel/mrp_bom_overview_control_panel.js
+--------------------
+/** @odoo-module **/
+
+import { BomOverviewControlPanel } from "@mrp/components/bom_overview_control_panel/mrp_bom_overview_control_panel";
+import { patch } from "@web/core/utils/patch";
+import { useService } from "@web/core/utils/hooks";
+
+// Update static/src/components/bom_overview_control_panel/mrp_bom_overview_control_panel.js
+patch(BomOverviewControlPanel.prototype, {
+    setup() {
+        console.log("🟢 setup() called");
+        super.setup();
+        this.orm = useService("orm");
+        this.notification = useService("notification");
+        this.action = useService("action");
+        console.log("🟢 ORM + Notification + Action services set");
+    },
+
+    async manufactureFromBoM() {
+        console.log("🟢 manufactureFromBoM() called with props:", this.props);
+
+        if (this.props.data.is_evr) {
+            console.log("✅ EVR BOM detected, calling action_validate_and_create_mo RPC");
+            try {
+                const action = await this.orm.call(
+                    "mrp.production",
+                    "action_validate_and_create_mo",
+                    [this.props.data.bom_id]
+                );
+                console.log("🟢 RPC success, action:", action);
+
+                // Remove the window.location.reload() - let Odoo handle navigation
+                return this.action.doAction(action);
+            } catch (e) {
+                console.log("❌ RPC failed:", e);
+
+                const msg =
+                    (e && e.data && e.data.message) ||
+                    e.message ||
+                    "Validation failed before Manufacture.";
+
+                this.notification.add(msg, {
+                    title: "Purchase Order Validation",
+                    type: "danger",
+                    sticky: true,
+                });
+                return;
+            }
+        }
+
+        console.log("⏩ Non-EVR BOM → using default Manufacture action");
+        const action = {
+            res_model: "mrp.production",
+            name: "Manufacture Orders",
+            type: "ir.actions.act_window",
+            views: [[false, "form"]],
+            target: "current",
+            context: { default_bom_id: this.props.data.bom_id },
+        };
+        console.log("🟢 Returning default action:", action);
+        return this.action.doAction(action);
+    },
+});
+
+-----------------------
+/home/aashruti/Documents/odoo18/custom/addons/cr_mrp_bom_customisation/static/src/components/bom_overview_line/mrp_bom_overview_line.xml
+-----------------------------
+<?xml version="1.0" encoding="utf-8" ?>
+<templates xml:space="preserve">
+    <t t-inherit="mrp.BomOverviewLine" t-inherit-mode="extension" t-name="BomOverviewComponentsBlockCustom">
+        <xpath expr="//td[@name='td_mrp_bom']" position="after">
+            <td t-if="data.is_evr" class="text-center">
+                <input t-if="data.cfe_editable"
+                       type="text"
+                       class="form-control form-control-sm cfe-quantity-input"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-model="data.cfe_quantity"
+                       placeholder="CFE Qty"
+                       style="width: 80px; margin: 0 auto;"
+                       t-on-blur="onCfeQuantityChange"/>
+                <span t-elif="data.has_cfe_quantity"
+                      class="badge badge-info bg-info text-white">
+                      CFE: <t t-esc="data.cfe_quantity"/>
+                </span>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+        </xpath>
+
+        <xpath expr="//td[@t-if='showUom']" position="after">
+        <td t-if="data.is_evr" class="text-center">
+            <select t-if="data.mo_internal_ref_editable"
+        class="form-select form-select-sm"
+        t-att-data-bom-line-id="data.bom_line_id"
+        t-model="data.mo_internal_ref"
+        t-on-change="onMoInternalRefChange">
+    <option value="">Select Vendor</option>
+    <t t-foreach="data.available_vendors" t-as="vendor" t-key="vendor.id">
+        <option t-att-value="vendor.partner_id">
+            <t t-esc="vendor.display_name"/>
+        </option>
+    </t>
+</select>
+
+            <span t-else="" class="text-muted">-</span>
+        </td>
+</xpath>
+
+
+        <xpath expr="//td[@t-if='showLeadTimes'][2]" position="after">
+             <td t-if="data.is_evr" class="text-center">
+                <input t-if="data.lli_editable"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.lli"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onLliChange"/>
+                 <span t-elif="data.lli"
+                       class="badge badge-success bg-success text-white">
+                      ✓ LLI
+                </span>
+                 <span t-else="" class="text-muted">-</span>
+            </td>
+
+            <td t-if="data.is_evr" class="text-center">
+                <input t-if="data.approval_1_editable"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.approval_1"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onApproval1Change"/>
+                <span t-elif="data.approval_1"
+                      class="badge badge-success bg-success text-white">
+                      ✓ App1
+                </span>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+
+            <td t-if="data.is_evr" class="text-center">
+                <input t-if="data.approval_2_editable"
+                       type="checkbox"
+                       class="form-check-input"
+                       t-model="data.approval_2"
+                       t-att-data-bom-line-id="data.bom_line_id"
+                       t-on-change="onApproval2Change"/>
+                <span t-elif="data.approval_2"
+                      class="badge badge-success bg-success text-white">
+                      ✓ App2
+                </span>
+                <span t-else="" class="text-muted">-</span>
+            </td>
+        </xpath>
+    </t>
+</templates>
+-----------------------------
+/home/aashruti/Documents/odoo18/custom/addons/cr_mrp_bom_customisation/static/src/components/bom_overview_line/mrp_bom_overview_line.js
+--------------------------------
+/** @odoo-module **/
+
+import { BomOverviewLine } from "@mrp/components/bom_overview_line/mrp_bom_overview_line";
+import { useService } from "@web/core/utils/hooks";
+import { patch } from "@web/core/utils/patch";
+
+patch(BomOverviewLine.prototype, {
+
+    setup() {
+        super.setup();
+        this.ormService = useService("orm");
+        this.notification = useService("notification");
+    },
+
+    async onCfeQuantityChange(event) {
+        const bomLineId = parseInt(event.target.getAttribute('data-bom-line-id'));
+        const newValue = event.target.value;
+        const rootBomId = this.props.data.root_bom_id;
+        const productId = this.props.data.product_id;
+
+        if (bomLineId && rootBomId) {
+            await this.ormService.call("mrp.bom.context", "set_context_data", [
+                rootBomId, bomLineId, productId, 'cfe_quantity', newValue
+            ]);
+
+            this.props.data.cfe_quantity = newValue;
+            this.props.data.has_cfe_quantity = !!newValue;
+        }
+    },
+
+    _tryToggle: async function (bomLineId, field, newValue, event) {
+        const rootBomId = this.props.data.root_bom_id;
+        const productId = this.props.data.product_id;
+
+        if (!bomLineId || !rootBomId) return;
+
+        const contextData = await this.ormService.call(
+            "mrp.bom.context", "get_context_data", [rootBomId, bomLineId]
+        );
+
+        const updated = {
+            ...contextData,
+            [field]: newValue
+        };
+
+        try {
+            if (updated.lli && updated.approval_1 && updated.approval_2) {
+                // Pass root_bom_id in context for validation
+                await this.ormService.call(
+                    "mrp.bom.line", "validate_third_boolean",
+                    [[bomLineId], updated],
+                    { context: { root_bom_id: rootBomId } }
+                );
+            }
+
+            await this.ormService.call("mrp.bom.context", "set_context_data", [
+                rootBomId, bomLineId, productId, field, newValue
+            ]);
+
+            this.props.data[field] = newValue;
+
+        } catch (err) {
+            const msg = (err && err.data && err.data.message) || (err && err.message) || "Validation failed";
+            this.notification.add(msg, { type: "danger" });
+
+            if (event && event.target) {
+                event.target.checked = !newValue;
+            }
+        }
+    },
+
+    onLliChange: async function (event) {
+        const bomLineId = parseInt(event.target.getAttribute("data-bom-line-id"));
+        const isChecked = event.target.checked;
+        await this._tryToggle(bomLineId, "lli", isChecked, event);
+    },
+
+    onApproval1Change: async function (event) {
+        const bomLineId = parseInt(event.target.getAttribute("data-bom-line-id"));
+        const isChecked = event.target.checked;
+        await this._tryToggle(bomLineId, "approval_1", isChecked, event);
+    },
+
+    onApproval2Change: async function (event) {
+        const bomLineId = parseInt(event.target.getAttribute("data-bom-line-id"));
+        const isChecked = event.target.checked;
+        await this._tryToggle(bomLineId, "approval_2", isChecked, event);
+    },
+   async onMoInternalRefChange(event) {
+    const bomLineId = parseInt(event.target.getAttribute("data-bom-line-id"));
+    const selectedValue = event.target.value;   // this is the vendor id (supplierinfo.id)
+    const rootBomId = this.props.data.root_bom_id;
+    const productId = this.props.data.product_id;
+
+    console.log("🟢 onMoInternalRefChange triggered");
+    console.log("➡️ bomLineId:", bomLineId);
+    console.log("➡️ rootBomId:", rootBomId);
+    console.log("➡️ productId:", productId);
+    console.log("➡️ selectedValue (vendor id):", selectedValue);
+
+    if (bomLineId && rootBomId) {
+        try {
+            // Save in transient context for UI
+            console.log("📌 Saving in transient context...");
+            await this.ormService.call("mrp.bom.context", "set_context_data", [
+                rootBomId, bomLineId, productId, "mo_internal_ref", selectedValue
+            ]);
+            console.log("✅ Transient context saved");
+
+            // Persist on BOM Line
+            console.log("📌 Writing directly to BOM Line...");
+            // Find the selected vendor partner_id
+            const partnerId = selectedVendor ? selectedVendor.partner_id : false;
+
+            // Update reactive data for UI
+            this.props.data.mo_internal_ref = partnerId;   // <-- must be partner_id
+            this.props.data.has_mo_internal_ref = !!partnerId;
+
+            console.log("🔄 props.data.mo_internal_ref updated:", this.props.data.mo_internal_ref);
+
+
+
+        } catch (err) {
+            const msg = (err?.data?.message) || (err?.message) || "Failed to save Vendor";
+            this.notification.add(msg, { type: "danger" });
+        }
+    }
+},
+
+
+});
+------------------
+/home/aashruti/Documents/odoo18/custom/addons/cr_mrp_bom_customisation/static/src/components/bom_overview_table/mrp_bom_overview_table.xml
+-------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mrp.BomOverviewTable" t-inherit-mode="extension" t-name="BomOverviewTableCustom">
+    <xpath expr="//h6[@t-if='data.bom_code']" position="after">
+        <div>
+            <h2>
+                Is EVR:
+                <i t-if="data.is_evr" class="fa fa-check-square text-success"/>
+                <i t-if="!data.is_evr" class="fa fa-square-o text-muted"/>
+            </h2>
+        </div>
+    </xpath>
+        <xpath expr="//th[@name='th_mrp_bom_h']" position="after">
+                <th t-if="data.is_evr" class="text-center" title="Customer Furnished Equipment">CFE Quantity</th>
+    </xpath>
+        <xpath expr="//th[@t-if='showAvailabilities'][1]" position="before">
+                <th t-if="data.is_evr" class="text-center" title="Customer Furnished Equipment">mo_internal_ref</th>
+    </xpath>
+    <xpath expr="//thead/tr/th[normalize-space(text())='Route']" position="after">
+        <th t-if="data.is_evr" class="text-center">LLI</th>
+        <th t-if="data.is_evr" class="text-center">Approval 1</th>
+        <th t-if="data.is_evr" class="text-center">Approval 2</th>
+    </xpath>
+    </t>
+</templates>
+
+
+all points are work well
+now i have only one question i don't understand what i have to do in that
+
+2. Customer Furnished Equipment (CFE)
+New Field:- Add cfe_quantity Char field BOM overview line. 
+The field is visible when is_evr boolean is True.
+Can only be set for child items, not for BOM headers.
+Represents the quantity to be supplied by the customer.
+Acts as a special purchase order from the customer, with zero price in the PO lines (free of charge).
+Items are directed to a dedicated project location defined in the BOM.
+
+in this point i can't understand below point
+"Items are directed to a dedicated project location defined in the BOM."
+
+can you give me suggestion what i have to do in that???

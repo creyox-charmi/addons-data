@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="view_task_form_inherit" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.timer</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <!-- Invisible fields to control button visibility -->
+                <field name="display_start" invisible="1" />
+                <field
+                    name="display_stop" invisible="1" />
+                <field name="display_pause" invisible="1" />
+                <field
+                    name="display_resume" invisible="1" />
+                <field name="active_user_working_status"
+                    invisible="1" />
+                <field name="is_current_user_assigned"
+                    invisible="1" />
+
+                <button name="start_task" type="object" title="Start Timer"
+                    class="btn custom-start-button"
+                    string="Start"
+                    attrs="{'invisible': ['|', ('display_start', '=', False), ('is_current_user_assigned', '=', False)]}" />
+
+                <button name="pause_timer" type="object" title="Pause Timer"
+                    class="btn custom-pause-button"
+                    string="Pause"
+                    attrs="{'invisible': [('display_pause', '=', False)]}" />
+
+                <button name="unpause_timer" type="object" title="Resume Timer"
+                    class="btn custom-resume-button "
+                    string="Resume"
+                    attrs="{'invisible': [('display_resume', '=', False)]}" />
+
+                <button name="stop_timer" type="object" title="Stop Timer"
+                    class="btn custom-stop-button"
+                    string="Stop"
+                    attrs="{'invisible': [('display_stop', '=', False)]}" />
+
+
+            </xpath>
+
+            <xpath expr="//header/field[@name='stage_id']" position="before">
+                <field name="time_count" class="text-center" widget="task_time_counter"
+                    style="margin-top:5px" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_inherit_project_task_kanban_view" model="ir.ui.view">
+        <field name="name">view.inherit.project.task.kanban.view</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban" />
+        <field name="arch" type="xml">
+            <!-- Add hidden fields before 'color' -->
+            <xpath expr="//field[@name='color']" position="before">
+                <field name="display_start" invisible="1" />
+                <field name="display_stop" invisible="1" />
+                <field name="display_pause" invisible="1" />
+                <field name="display_resume" invisible="1" />
+                <field name="active_user_working_status" invisible="1" />
+                <field name="is_current_user_assigned"
+                    invisible="1" />
+            </xpath>
+
+            <!-- Add task operation buttons in Kanban card -->
+            <xpath expr="//div[hasclass('o_kanban_record_bottom')]" position="after">
+                <button name="start_task" type="object" title="Start Timer"
+                    class="btn text-success fa fa-play"
+                   attrs="{'invisible': ['|', ('display_start', '=', False), ('is_current_user_assigned', '=', False)]}" />
+
+                <button name="pause_timer" type="object" title="Pause Timer"
+                    class="btn text-success fa fa-pause"
+                    attrs="{'invisible': [('display_pause', '=', False)]}" />
+
+                <button name="unpause_timer" type="object" title="Resume Timer"
+                    class="btn text-info fa fa-forward"
+                    attrs="{'invisible': [('display_resume', '=', False)]}" />
+
+                <button name="stop_timer" type="object" title="Stop Timer"
+                    class="btn text-danger fa fa-stop"
+                    attrs="{'invisible': [('display_stop', '=', False)]}" />
+
+                <!-- Display Timer -->
+                <field name="time_count" class="text-center" widget="task_time_counter"
+                    style="margin-top:10px" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

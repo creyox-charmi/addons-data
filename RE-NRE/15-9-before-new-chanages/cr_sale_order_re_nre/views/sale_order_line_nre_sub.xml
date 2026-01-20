@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_nre_sub_line_tree" model="ir.ui.view">
+        <field name="name">sale.order.line.nre.sub.tree</field>
+        <field name="model">sale.order.line.nre.sub</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="everest_pn"/>
+                <field name="product_id"/>
+                <field name="updated_delivery_date"/>
+                <field name="required_delivery_date"/>
+                <field name="billing_percentage"/>
+                <field name="sub_line_description"/>
+                <field name="sub_line_code"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_nre_sub_line_form" model="ir.ui.view">
+        <field name="name">sale.order.line.nre.sub.form</field>
+        <field name="model">sale.order.line.nre.sub</field>
+        <field name="arch" type="xml">
+            <form string="NRE Sub Line">
+                <sheet>
+                    <group>
+                        <field name="everest_pn"/>
+                        <field name="product_id"/>
+                    </group>
+                    <group>
+                        <field name="billing_percentage"/>
+                    </group>
+                    <group>
+                        <field name="sub_line_code"/>
+                        <field name="sub_line_description"/>
+                    </group>
+                    <group>
+                        <field name="required_delivery_date"/>
+                        <field name="updated_delivery_date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

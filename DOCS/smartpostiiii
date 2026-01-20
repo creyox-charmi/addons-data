@@ -1,0 +1,2526 @@
+/odoo17/custom/addons/cr_smartposti_shipping_integration/controller/__init__.py
+------------------
+from . import main
+
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/controller/main.py
+------------------
+# -*- coding: utf-8 -*-
+
+from odoo import http
+from odoo.http import request
+
+
+class SmartPostiController(http.Controller):
+
+    @http.route('/shop/smartposti/set_service_type', type='json', auth='public', website=True)
+    def set_service_type(self, service_type='pudo', **kwargs):
+        """Store selected service type in session"""
+        request.session['smartposti_service_type'] = service_type
+        return {'success': True}
+
+    @http.route('/shop/smartposti/set_place', type='json', auth='public', website=True)
+    def set_place(self, place_id=None, **kwargs):
+        """Store selected pickup place in order"""
+        order = request.website.sale_get_order()
+
+        if order and place_id:
+            place = request.env['smartposti.place'].sudo().browse(int(place_id))
+            if place.exists():
+                order.sudo().write({
+                    'smartposti_place_id': place.id
+                })
+                return {'success': True, 'place_name': place.name}
+
+        return {'success': False}
+        
+        
+/odoo17/custom/addons/cr_smartposti_shipping_integration/data/delivery_carrier_data.xml
+------------------        
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Demo SmartPosti Carrier -->
+        <record id="smartposti_carrier_demo" model="delivery.carrier">
+            <field name="name">SmartPosti</field>
+            <field name="delivery_type">smartposti</field>
+            <field name="product_id" ref="delivery.product_product_delivery"/>
+        </record>
+    </data>
+</odoo>
+
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/models/__init__.py
+------------------
+# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+from . import res_company
+from . import delivery_carrier
+from . import smartposti_place
+from . import stock_picking
+from . import smartposti_client
+from . import sale_order
+from . import smartposti_country_price
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/models/delivery_carrier.py
+------------------
+# -*- coding: utf-8 -*-
+"""SmartPosti Delivery Carrier Integration"""
+
+import base64
+import json
+import logging
+from odoo.http import request
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+from .smartposti_client import SmartPostiClient
+
+_logger = logging.getLogger(__name__)
+
+
+class DeliveryCarrier(models.Model):
+    _inherit = "delivery.carrier"
+
+    delivery_type = fields.Selection(
+        selection_add=[("smartposti", "SmartPosti")],
+        ondelete={"smartposti": "set default"},
+    )
+
+    def _get_smartposti_client(self):
+        """Initialize and return SmartPosti API client"""
+        self.ensure_one()
+        if self.delivery_type != "smartposti":
+            raise UserError(_("This method is only available for SmartPosti carriers"))
+
+        company = self.env.company
+
+        if not company.smartposti_base_url:
+            raise UserError(
+                _("SmartPosti API Base URL is not configured in Company settings")
+            )
+
+        if not company.smartposti_api_key or not company.smartposti_gateway_secret:
+            raise UserError(
+                _("SmartPosti API credentials are not configured in Company settings")
+            )
+
+        return SmartPostiClient(
+            base_url=company.smartposti_base_url,
+            api_key=company.smartposti_api_key,
+            gateway_secret=company.smartposti_gateway_secret,
+        )
+
+    def _get_smartposti_country(self):
+        """Get country for this carrier (carrier override or company default)"""
+        self.ensure_one()
+        return (
+            self.env.company.smartposti_default_country
+            or self.env.company.country_code
+            or "EE"
+        )
+
+    @staticmethod
+    def _clean_phone(phone_str):
+        """Clean and validate phone number
+
+        Args:
+            phone_str: Phone number string to clean
+
+        Returns:
+            int: Cleaned phone number or 0 if invalid
+        """
+        if not phone_str:
+            return 0
+
+        digits = "".join(c for c in str(phone_str) if c.isdigit())
+
+        if len(digits) < 7:
+            _logger.warning(f"Phone number too short: {phone_str}")
+            return 0
+
+        try:
+            return int(digits)
+        except ValueError:
+            _logger.warning(f"Invalid phone number: {phone_str}")
+            return 0
+
+    def _validate_shipment_data(self, picking):
+        """Validate required data before creating shipment
+
+        Args:
+            picking: stock.picking record
+
+        Raises:
+            UserError: If validation fails
+        """
+        partner = picking.partner_id
+        company = self.env.company
+
+        if not partner.name:
+            raise UserError(_("Recipient name is required"))
+        if not (partner.phone or partner.mobile):
+            raise UserError(_("Recipient phone number is required"))
+        if not partner.email:
+            raise UserError(_("Recipient email is required"))
+        if not picking.smartposti_place_id:
+            raise UserError(_("SmartPosti pickup point must be selected"))
+
+        # Additional validation for door code service
+        if company.smartposti_use_door_code:
+            if not company.name:
+                raise UserError(_("Company name is required for door code service"))
+            if not company.phone:
+                raise UserError(_("Company phone is required for door code service"))
+
+    def _prepare_smartposti_order_data(self, picking):
+        """Prepare order payload for SmartPosti API
+
+        Args:
+            picking: stock.picking record
+
+        Returns:
+            dict: API order payload
+        """
+        self.ensure_one()
+        if self.delivery_type != "smartposti":
+            raise UserError(_("This method is only for SmartPosti carriers"))
+
+        # Validate data
+        self._validate_shipment_data(picking)
+
+        partner = picking.partner_id
+        company = self.env.company
+        country = self._get_smartposti_country()
+
+        # Base order item
+        item = {
+            "reference": picking.name or f"OP/{picking.origin or 'N/A'}",
+            "source": {"country": country},
+            "recipient": {
+                "name": partner.name,
+                "phone": self._clean_phone(partner.phone or partner.mobile),
+                "email": partner.email,
+            },
+            "destination": {
+                "country": country,
+                "place_id": picking.smartposti_place_id.place_id,
+            },
+            "additionalservices": {"labelprinted": "true"},
+        }
+
+        # Add sender info if door code service enabled (from company settings)
+        if company.smartposti_use_door_code:
+            item["sender"] = {
+                "name": company.name,
+                "phone": self._clean_phone(company.phone),
+                "email": company.email or "",
+                "address": company.street or "",
+                "city": company.city or "",
+                "postalcode": company.zip or "",
+                "country": company.country_id.code or country,
+            }
+
+            # Add package details (required with sender)
+            item["size"] = (
+                picking.smartposti_size or company.smartposti_default_size or "M"
+            )
+
+            # Calculate weight
+            total_weight = (
+                sum(
+                    line.product_id.weight * line.product_uom_qty
+                    for line in picking.move_lines
+                )
+                or 0.1
+            )
+            item["weight"] = str(round(total_weight, 2))
+
+        # Add additional services from company settings
+        services = item["additionalservices"]
+
+        if company.smartposti_enable_express:
+            services["express"] = "true"
+        if company.smartposti_enable_id_check:
+            services["idcheck"] = "true"
+        if company.smartposti_enable_age_check:
+            services["agecheck"] = "true"
+        if company.smartposti_enable_cod:
+            services["paidbyrecipient"] = "true"
+        if company.smartposti_notification_email:
+            services["notifyemail"] = company.smartposti_notification_email
+        if company.smartposti_notification_phone:
+            services["notifyphone"] = company.smartposti_notification_phone
+        if picking.smartposti_temperature_sensitive:
+            services["temperaturesensitive"] = "true"
+
+        order_data = {"orders": {"item": [item]}}
+
+        return order_data
+
+    def _process_order_response(self, response, picking):
+        """Process API response and update picking
+
+        Args:
+            response: API response dict
+            picking: stock.picking record
+
+        Returns:
+            str: Barcode/tracking number
+        """
+        if response.get("error"):
+            raise ValidationError(_("SmartPosti API Error: %s") % response["error"])
+
+        # Extract order data
+        order_item = response.get("orders", {}).get("item", {})
+        if isinstance(order_item, list):
+            order_item = order_item[0] if order_item else {}
+
+        barcode = order_item.get("barcode")
+        if not barcode:
+            raise ValidationError(_("No tracking barcode received from SmartPosti"))
+
+        # Update picking
+        picking.write({"smartposti_barcode": barcode, "carrier_tracking_ref": barcode})
+
+        # Store door code if available
+        door_code = None
+        if isinstance(order_item.get("sender"), dict):
+            door_code = order_item.get("sender", {}).get("doorcode")
+
+        if door_code:
+            picking.smartposti_door_code = door_code
+            picking.message_post(
+                body=_("SmartPosti Door Code: %s") % door_code,
+                subject=_("Shipment Created"),
+            )
+
+        return barcode
+
+    def _generate_and_attach_label(self, picking, barcode):
+        """Generate shipping label and attach to picking
+
+        Args:
+            picking: stock.picking record
+            barcode: Tracking barcode
+        """
+        try:
+            company = self.env.company
+            client = self._get_smartposti_client()
+
+            # Use company label format setting
+            label_format = company.smartposti_label_format or "A5"
+            label_response = client.get_labels([barcode], label_format)
+
+            if not label_response.get("binary"):
+                raise ValidationError(_("No PDF label in API response"))
+
+            # Create attachment
+            attachment = self.env["ir.attachment"].create(
+                {
+                    "name": f"SmartPosti-Label-{barcode}.pdf",
+                    "type": "binary",
+                    "datas": base64.b64encode(label_response["binary"]),
+                    "res_model": "stock.picking",
+                    "res_id": picking.id,
+                    "mimetype": "application/pdf",
+                    "description": f"SmartPosti label for {picking.name}",
+                }
+            )
+
+            # Post message with label
+            picking.message_post(
+                body=_("SmartPosti shipment created with tracking: %s") % barcode,
+                attachment_ids=[attachment.id],
+            )
+
+        except Exception as e:
+            _logger.warning(f"Label generation failed for {barcode}: {str(e)}")
+            picking.message_post(
+                body=_("Warning: Shipment created but label generation failed: %s")
+                % str(e),
+                subject=_("Label Generation Warning"),
+            )
+
+    def smartposti_send_shipping(self, pickings):
+        """Send shipments to SmartPosti and generate labels
+
+        Args:
+            pickings: stock.picking recordset
+
+        Returns:
+            list: Shipping results
+        """
+        results = []
+        client = self._get_smartposti_client()
+
+        for picking in pickings:
+            try:
+                # Prepare and create order
+                order_data = self._prepare_smartposti_order_data(picking)
+                response = client.create_order(order_data)
+
+                # Process response
+                barcode = self._process_order_response(response, picking)
+
+                # Generate label
+                self._generate_and_attach_label(picking, barcode)
+
+                results.append({"tracking_number": barcode, "exact_price": 0.0})
+
+            except Exception as e:
+                _logger.error(f"Shipment creation failed for {picking.name}: {str(e)}")
+                raise UserError(_("Failed to create shipment: %s") % str(e))
+
+        return results
+
+    def smartposti_get_tracking_link(self, picking):
+        """Generate tracking URL
+
+        Args:
+            picking: stock.picking record
+
+        Returns:
+            str: Tracking URL or False
+        """
+        if not picking.carrier_tracking_ref:
+            return False
+        return f"https://www.smartpost.ee/private/tracking?barcode={picking.carrier_tracking_ref}"
+
+    def smartposti_cancel_shipment(self, picking):
+        """Handle shipment cancellation
+
+        Note: SmartPosti API doesn't provide automated cancellation
+        """
+        picking.message_post(
+            body=_(
+                "SmartPosti cancellation requires manual intervention. Contact SmartPosti support."
+            ),
+            subject=_("Cancellation Required"),
+        )
+        return True
+
+    def smartposti_rate_shipment(self, order):
+        """Rate shipment based on session service type and partner country"""
+        self.ensure_one()
+        company = self.env.company
+
+        # Get partner country
+        partner = order.partner_id
+        partner_country = partner.country_id
+
+        if not partner_country:
+            return {
+                "success": False,
+                "price": 0.0,
+                "error_message": _(
+                    "Partner country is not set. Please update delivery address."
+                ),
+                "warning_message": False,
+            }
+
+        # Check if places exist for partner's country
+        places_exist = self.env["smartposti.place"].search_count(
+            [("country", "=", partner_country.code), ("active", "=", True)], limit=1
+        )
+
+        if not places_exist:
+            return {
+                "success": False,
+                "price": 0.0,
+                "error_message": _("SmartPosti delivery is not available for %s")
+                % partner_country.name,
+                "warning_message": False,
+            }
+
+        # Get service type from session
+        service_type = "courier"  # default
+        if request and hasattr(request, "session"):
+            service_type = request.session.get("smartposti_service_type", "courier")
+
+        # Find country-specific price
+        country_price = self.env["smartposti.country.price"].search(
+            [
+                ("company_id", "=", company.id),
+                ("service_type", "=", service_type),
+                ("country_id", "=", partner_country.id),
+            ],
+            limit=1,
+        )
+        if country_price:
+            price = country_price.price
+        else:
+            if service_type == "courier":
+                price = company.smartposti_courier_price or 0.00
+            else:
+                price = company.smartposti_pudo_price or 0.00
+
+        return {
+            "success": True,
+            "price": price,
+            "error_message": False,
+            "warning_message": False,
+        }
+
+
+    def action_sync_smartposti_places(self):
+        """Sync pickup places - delegate to company action"""
+        self.ensure_one()
+        if self.delivery_type != "smartposti":
+            raise UserError(_("This action is only for SmartPosti carriers"))
+
+        # Use company's sync method
+        return self.env.company.action_sync_smartposti_places()
+
+    # Override base methods
+    def send_shipping(self, pickings):
+        """Override base send_shipping"""
+        if self.delivery_type == "smartposti":
+            return self.smartposti_send_shipping(pickings)
+        return super().send_shipping(pickings)
+
+    def get_tracking_link(self, picking):
+        """Override base get_tracking_link"""
+        if self.delivery_type == "smartposti":
+            return self.smartposti_get_tracking_link(picking)
+        return super().get_tracking_link(picking)
+
+    def cancel_shipment(self, picking):
+        """Override base cancel_shipment"""
+        if self.delivery_type == "smartposti":
+            return self.smartposti_cancel_shipment(picking)
+        return super().cancel_shipment(picking)
+
+        
+/odoo17/custom/addons/cr_smartposti_shipping_integration/models/res_company.py
+------------------
+# -*- coding: utf-8 -*-
+"""SmartPosti Company Configuration"""
+
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
+
+
+class ResCompany(models.Model):
+    _inherit = "res.company"
+
+    # API Configuration
+    smartposti_api_key = fields.Char(
+        string="SmartPosti API Key", help="SmartPosti API authentication key"
+    )
+    smartposti_gateway_secret = fields.Char(
+        string="SmartPosti Gateway Secret",
+        help="SmartPosti gateway secret for API authentication",
+    )
+    smartposti_base_url = fields.Char(
+        string="SmartPosti API Base URL",
+        default="https://gateway.demo.posti.fi/smartpost/api/ext/v1",
+        help="SmartPosti API endpoint URL",
+        store=True,
+    )
+    smartposti_environment = fields.Selection(
+        [("demo", "Demo/Test Environment"), ("live", "Live/Production Environment")],
+        string="SmartPosti Environment",
+        default="demo",
+        help="Select API environment",
+    )
+
+    # Default Service Configuration
+    smartposti_default_country = fields.Selection(
+        [("EE", "Estonia"), ("FI", "Finland"), ("LV", "Latvia"), ("LT", "Lithuania")],
+        string="Default Country",
+        default="EE",
+        help="Default destination country for shipments",
+    )
+    smartposti_use_door_code = fields.Boolean(
+        string="Use Door Code Service",
+        default=False,
+        help="Enable door code service (requires SmartPosti activation)",
+    )
+    smartposti_default_place_type = fields.Selection(
+        [
+            ("apt", "Blue Box"),
+            ("ipb", "White Box"),
+            ("po", "Post Office"),
+            ("pudo", "Parcel Point"),
+        ],
+        string="Default Place Type",
+        default="apt",
+        help="Default pickup point type",
+    )
+    smartposti_default_size = fields.Selection(
+        [
+            ("XS", "Extra Small"),
+            ("S", "Small"),
+            ("M", "Medium"),
+            ("L", "Large"),
+            ("XL", "Extra Large"),
+        ],
+        string="Default Package Size",
+        default="M",
+        help="Default package size for shipments",
+    )
+    smartposti_label_format = fields.Selection(
+        [
+            ("A4/4", "A4/4"),
+            ("A4-4", "A4-4"),
+            ("A4/8", "A4/8"),
+            ("A4-8", "A4-8"),
+            ("A5", "A5"),
+            ("A6", "A6"),
+            ("A7", "A7"),
+        ],
+        string="Label Format",
+        default="A5",
+        help="Default label format for printing",
+    )
+
+    # ==================== NEW: PRICE CONFIGURATION ====================
+    smartposti_pudo_price = fields.Float(
+        string="Parcel Machines Price",
+        default=3.50,
+        help="Fixed delivery price for parcel machines (PUDO)",
+    )
+    smartposti_courier_price = fields.Float(
+        string="Courier Price",
+        default=5.50,
+        help="Fixed delivery price for courier (door-to-door)",
+    )
+
+    # Additional Services
+    smartposti_enable_express = fields.Boolean(
+        string="Enable Express Service",
+        default=False,
+        help="Allow express delivery option",
+    )
+    smartposti_enable_id_check = fields.Boolean(
+        string="Enable ID Check",
+        default=False,
+        help="Require ID verification on delivery",
+    )
+    smartposti_enable_age_check = fields.Boolean(
+        string="Enable Age Check",
+        default=False,
+        help="Require age verification on delivery",
+    )
+    smartposti_enable_cod = fields.Boolean(
+        string="Enable Cash on Delivery", default=False, help="Allow COD payment option"
+    )
+    smartposti_notification_email = fields.Char(
+        string="Notification Email", help="Default email for delivery notifications"
+    )
+    smartposti_notification_phone = fields.Char(
+        string="Notification Phone", help="Default phone for delivery notifications"
+    )
+
+    # Return Configuration
+    smartposti_return_days = fields.Integer(
+        string="Return Days",
+        default=14,
+        help="Days allowed for customer returns (0-90)",
+    )
+    smartposti_enable_returns = fields.Boolean(
+        string="Enable Returns", default=False, help="Allow customer returns"
+    )
+    smartposti_country_price_ids = fields.One2many(
+        "smartposti.country.price", "company_id", string="Country-Based Prices"
+    )
+    smartposti_custom_service_names = fields.Boolean(
+        string="Use Custom Service Names",
+        default=False,
+        help="Enable custom naming for delivery service types",
+    )
+    smartposti_courier_label = fields.Char(
+        string="Courier Service Label",
+        default="Kuller (uksele)",
+        help="Custom label for courier delivery service",
+    )
+    smartposti_pudo_label = fields.Char(
+        string="Parcel Machine Label",
+        default="Pakiautomaadid",
+        help="Custom label for parcel machine service",
+    )
+
+    @api.constrains("smartposti_return_days")
+    def _check_smartposti_return_days(self):
+        """Validate return days within acceptable range"""
+        for company in self:
+            if company.smartposti_enable_returns:
+                if not (0 <= company.smartposti_return_days <= 90):
+                    raise ValidationError(_("Return days must be between 0 and 90"))
+
+    @api.constrains("smartposti_environment")
+    def _onchange_smartposti_environment(self):
+        """Update base URL based on environment"""
+        if self.smartposti_environment == "demo":
+            self.smartposti_base_url = (
+                "https://gateway.demo.posti.fi/smartpost/api/ext/v1"
+            )
+        elif self.smartposti_environment == "live":
+            self.smartposti_base_url = "https://gateway.posti.fi/smartpost/api/ext/v1"
+
+    def action_test_smartposti_connection(self):
+        """Test SmartPosti API credentials"""
+        self.ensure_one()
+
+        if not self.smartposti_api_key or not self.smartposti_gateway_secret:
+            raise ValidationError(
+                _("Please configure SmartPosti API Key and Gateway Secret first.")
+            )
+
+        try:
+            from .smartposti_client import SmartPostiClient
+
+            client = SmartPostiClient(
+                base_url=self.smartposti_base_url,
+                api_key=self.smartposti_api_key,
+                gateway_secret=self.smartposti_gateway_secret,
+            )
+
+            # Test connection by fetching places
+            response = client.get_places(self.smartposti_default_country)
+
+            if response.get("error"):
+                raise ValidationError(_("Connection failed: %s") % response["error"])
+
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": _("Success"),
+                    "message": _("Connection to SmartPosti API successful!"),
+                    "type": "success",
+                    "sticky": False,
+                },
+            }
+
+        except Exception as e:
+            raise ValidationError(_("Connection test failed: %s") % str(e))
+
+    def action_sync_smartposti_places(self):
+        """Sync SmartPosti places for all countries"""
+        self.ensure_one()
+
+        try:
+            Place = self.env["smartposti.place"]
+
+            # All available countries
+            all_countries = ["EE", "FI", "LV", "LT"]
+
+            # Create a temporary carrier-like object for sync
+            class TempCarrier:
+                def __init__(self, company):
+                    self.company = company
+
+                def _get_smartposti_client(self):
+                    from .smartposti_client import SmartPostiClient
+
+                    print(self.company.smartposti_base_url)
+                    return SmartPostiClient(
+                        base_url=self.company.smartposti_base_url,
+                        api_key=self.company.smartposti_api_key,
+                        gateway_secret=self.company.smartposti_gateway_secret,
+                    )
+
+            temp_carrier = TempCarrier(self)
+
+            # Sync all countries
+            total_created = 0
+            total_updated = 0
+            total_synced = 0
+            failed_countries = []
+
+            for country in all_countries:
+                try:
+                    result = Place.sync_places_for_country(country, temp_carrier)
+                    total_created += result["created"]
+                    total_updated += result["updated"]
+                    total_synced += result["total"]
+                except Exception as e:
+                    failed_countries.append(f"{country}: {str(e)}")
+                    continue
+
+            # Prepare result message
+            message_parts = [
+                f"Total Created: {total_created}",
+                f"Total Updated: {total_updated}",
+                f"Total Synced: {total_synced}",
+                f"Countries: {', '.join(all_countries)}",
+            ]
+
+            if failed_countries:
+                message_parts.append(f"\nFailed: {', '.join(failed_countries)}")
+                notification_type = "warning"
+            else:
+                notification_type = "success"
+
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": _("Places Synced"),
+                    "message": "\n".join(message_parts),
+                    "type": notification_type,
+                    "sticky": True,
+                },
+            }
+
+        except Exception as e:
+            raise ValidationError(_("Sync failed: %s") % str(e))
+
+            
+            
+/odoo17/custom/addons/cr_smartposti_shipping_integration/models/sale_order.py
+------------------
+# -*- coding: utf-8 -*-
+
+from odoo import api, models, fields
+from odoo.http import request
+
+
+class SaleOrder(models.Model):
+    _inherit = "sale.order"
+
+    # NEW: Store selected service type
+    smartposti_service_type = fields.Selection(
+        [("pudo", "Parcel Machines"), ("courier", "Courier")],
+        string="SmartPosti Service Type",
+        copy=False,
+    )
+
+    # NEW: Store selected place
+    smartposti_place_id = fields.Many2one(
+        "smartposti.place", string="Selected Pickup Point", copy=False
+    )
+
+    def _action_confirm(self):
+        """Override to transfer SmartPosti data to picking"""
+        result = super(SaleOrder, self)._action_confirm()
+
+        # Transfer SmartPosti data to pickings
+        for order in self:
+            if order.carrier_id and order.carrier_id.delivery_type == "smartposti":
+                pickings = order.picking_ids.filtered(
+                    lambda p: p.picking_type_code == "outgoing"
+                    and not p.smartposti_place_id
+                )
+
+                if pickings and order.smartposti_place_id:
+                    pickings.write(
+                        {"smartposti_place_id": order.smartposti_place_id.id}
+                    )
+
+        return result
+
+    @api.depends(
+        "order_line.price_total",
+        "order_line.price_subtotal",
+        "carrier_id",
+        "partner_id.country_id",
+    )
+    def _compute_amount_delivery(self):
+        """Override to handle SmartPosti dynamic pricing"""
+
+        super(SaleOrder, self)._compute_amount_delivery()
+
+        for order in self.filtered(lambda o: o.website_id and o.carrier_id):
+            if order.carrier_id.delivery_type == "smartposti":
+
+                partner_country = order.partner_id.country_id
+                if not partner_country:
+                    continue
+
+                places_exist = self.env["smartposti.place"].search_count(
+                    [("country", "=", partner_country.code), ("active", "=", True)],
+                    limit=1,
+                )
+
+                if not places_exist:
+                    continue
+
+                service_type = order.smartposti_service_type or "pudo"
+                if request and hasattr(request, "session"):
+                    service_type = request.session.get(
+                        "smartposti_service_type", service_type
+                    )
+                    if service_type != order.smartposti_service_type:
+                        order.smartposti_service_type = service_type
+
+                company = order.company_id
+
+                country_price = self.env["smartposti.country.price"].search(
+                    [
+                        ("company_id", "=", company.id),
+                        ("service_type", "=", service_type),
+                        ("country_id", "=", partner_country.id),
+                    ],
+                    limit=1,
+                )
+
+                if country_price:
+                    target_price = country_price.price
+                else:
+                    if service_type == "courier":
+                        target_price = company.smartposti_courier_price or 0.00
+                    else:
+                        target_price = company.smartposti_pudo_price or 0.00
+
+                delivery_lines = order.order_line.filtered("is_delivery")
+                if delivery_lines:
+                    for line in delivery_lines:
+                        if line.price_unit != target_price:
+                            line.write({"price_unit": target_price})
+
+                        # ADD THIS: Update description with place name
+                        if order.smartposti_place_id and service_type == "pudo":
+                            place = order.smartposti_place_id
+                            new_description = f"Smartposti \nPickup Point: {place.name}\nAddress: {place.address}, {place.city}"
+                            if line.name != new_description:
+                                line.write({"name": new_description})
+
+                    if (
+                        order.website_id.show_line_subtotals_tax_selection
+                        == "tax_excluded"
+                    ):
+                        order.amount_delivery = sum(
+                            delivery_lines.mapped("price_subtotal")
+                        )
+                    else:
+                        order.amount_delivery = sum(
+                            delivery_lines.mapped("price_total")
+                        )
+                        
+                        
+/odoo17/custom/addons/cr_smartposti_shipping_integration/models/smartposti_client.py
+------------------
+# -*- coding: utf-8 -*-
+"""SmartPosti API Client"""
+
+import json
+import logging
+
+import requests
+from requests.exceptions import RequestException, Timeout, ConnectionError
+
+from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
+
+
+class SmartPostiClient:
+    """Client for SmartPosti API communication"""
+
+    def __init__(self, base_url, api_key=None, gateway_secret=None, timeout=30):
+        """Initialize API client
+
+        Args:
+            base_url: SmartPosti API base URL
+            api_key: API authentication key (optional)
+            gateway_secret: Gateway secret (optional)
+            timeout: Request timeout in seconds
+        """
+        if not base_url:
+            raise UserError("SmartPosti API URL not configured")
+
+        self.base_url = base_url.rstrip("/")
+        self.timeout = timeout
+
+        # Setup headers
+        self.headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+
+        if api_key:
+            self.headers["Authorization"] = api_key
+        if gateway_secret:
+            self.headers["X-GATEWAY-SECRET"] = gateway_secret
+
+    def _build_url(self, endpoint):
+        """Build complete API URL
+
+        Args:
+            endpoint: API endpoint path
+
+        Returns:
+            str: Complete URL
+        """
+        return f"{self.base_url}/{endpoint.lstrip('/')}"
+
+    def _handle_error(self, error, operation):
+        """Handle and log API errors
+
+        Args:
+            error: Exception object
+            operation: Operation description
+
+        Raises:
+            UserError: With formatted error message
+        """
+        error_msg = f"SmartPosti API {operation} failed: {str(error)}"
+        _logger.error(error_msg)
+
+        if isinstance(error, Timeout):
+            raise UserError(f"API timeout during {operation}. Please try again.")
+        elif isinstance(error, ConnectionError):
+            raise UserError(
+                f"Cannot connect to SmartPosti API. Check network connection."
+            )
+        else:
+            raise UserError(error_msg)
+
+    def _extract_error_details(self, response):
+        """Extract error details from API response
+
+        Args:
+            response: requests.Response object
+
+        Returns:
+            str: Error details or empty string
+        """
+        try:
+            error_json = response.json()
+            if "error" in error_json:
+                return f"\nAPI Error: {error_json['error']}"
+            elif "errors" in error_json:
+                return f"\nAPI Errors: {error_json['errors']}"
+        except:
+            try:
+                error_text = response.text
+                if error_text:
+                    return f"\nResponse: {error_text[:500]}"
+            except:
+                pass
+        return ""
+
+    def _make_request(self, method, endpoint, params=None, json_data=None):
+        """Make HTTP request to API
+
+        Args:
+            method: HTTP method (GET, POST)
+            endpoint: API endpoint
+            params: Query parameters (optional)
+            json_data: JSON payload (optional)
+
+        Returns:
+            dict or bytes: Response data
+
+        Raises:
+            UserError: On request failure
+        """
+        url = self._build_url(endpoint)
+
+        try:
+            if method.upper() == "GET":
+                response = requests.get(
+                    url, headers=self.headers, params=params, timeout=self.timeout
+                )
+            elif method.upper() == "POST":
+                response = requests.post(
+                    url, headers=self.headers, json=json_data, timeout=self.timeout
+                )
+            else:
+                raise ValueError(f"Unsupported HTTP method: {method}")
+
+            response.raise_for_status()
+
+            # Handle response based on content type
+            content_type = response.headers.get("Content-Type", "").lower()
+
+            if "application/json" in content_type:
+                return response.json()
+            elif "application/pdf" in content_type:
+                return {
+                    "binary": response.content,
+                    "content_type": content_type,
+                    "filename": f"label_{len(response.content)}.pdf",
+                }
+            else:
+                return {"binary": response.content, "content_type": content_type}
+
+        except RequestException as e:
+            error_detail = str(e)
+
+            if hasattr(e, "response") and e.response is not None:
+                error_detail += self._extract_error_details(e.response)
+
+            self._handle_error(Exception(error_detail), f"{method} {endpoint}")
+
+        except json.JSONDecodeError as e:
+            _logger.error(f"Invalid JSON response: {str(e)}")
+            raise UserError("Invalid JSON response from SmartPosti API")
+
+    def get_places(self, country, place_type=None, filter_type=None):
+        """Fetch pickup places/locations
+
+        Args:
+            country: Country code (EE, FI, LV, LT)
+            place_type: Place type filter (optional)
+            filter_type: Additional filter (optional)
+
+        Returns:
+            dict: Places data from API
+        """
+        params = {"country": country}
+        if place_type:
+            params["type"] = place_type
+        if filter_type:
+            params["filter"] = filter_type
+
+        return self._make_request("GET", "places", params=params)
+
+    def create_order(self, order_data):
+        """Create shipment order
+
+        Args:
+            order_data: Order payload dict
+
+        Returns:
+            dict: Order creation response
+        """
+        if not order_data:
+            raise UserError("Order data is required")
+
+        return self._make_request("POST", "orders", json_data=order_data)
+
+    def get_labels(self, barcodes, format_type="A5"):
+        """Fetch shipping labels
+
+        Args:
+            barcodes: Barcode or list of barcodes
+            format_type: Label format (A4/4, A5, etc.)
+
+        Returns:
+            dict: Label data (binary PDF)
+        """
+        if isinstance(barcodes, str):
+            barcodes = [barcodes]
+
+        params = {
+            "format": format_type,
+            "barcode": barcodes[0] if len(barcodes) == 1 else barcodes,
+        }
+
+        return self._make_request("GET", "labels", params=params)
+
+    def track_shipment(self, barcode=None, reference=None):
+        """Track shipment status
+
+        Args:
+            barcode: Tracking barcode (optional)
+            reference: Order reference (optional)
+
+        Returns:
+            dict: Tracking information
+        """
+        if not barcode and not reference:
+            raise UserError("Either barcode or reference is required")
+
+        params = {}
+        if barcode:
+            params["barcode"] = barcode
+        if reference:
+            params["reference"] = reference
+
+        return self._make_request("GET", "tracking", params=params)
+        
+        
+/odoo17/custom/addons/cr_smartposti_shipping_integration/models/smartposti_place.py
+------------------
+# -*- coding: utf-8 -*-
+"""SmartPosti Pickup Places Management"""
+
+import logging
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
+
+
+class SmartPostiPlace(models.Model):
+    _name = "smartposti.place"
+    _description = "SmartPosti Pickup Places"
+    _order = "country, city, name"
+    _rec_name = "display_name"
+
+    place_id = fields.Char(
+        string="Place ID",
+        required=True,
+        index=True,
+        help="Unique place identifier from SmartPosti",
+    )
+    name = fields.Char(string="Name", required=True, index=True)
+    city = fields.Char(string="City", required=True, index=True)
+    address = fields.Char(string="Address", required=True)
+    country = fields.Selection(
+        [("EE", "Estonia"), ("FI", "Finland"), ("LV", "Latvia"), ("LT", "Lithuania")],
+        string="Country",
+        required=True,
+        index=True,
+    )
+    postal_code = fields.Char(string="Postal Code", index=True)
+    routing_code = fields.Char(string="Routing Code")
+    availability = fields.Char(string="Availability")
+    description = fields.Text(string="Description")
+    place_type = fields.Selection(
+        [
+            ("apt", "Blue Box (APT)"),
+            ("ipb", "White Box (IPB)"),
+            ("po", "Post Office"),
+            ("pudo", "Parcel Point"),
+        ],
+        string="Type",
+        required=True,
+        index=True,
+    )
+    latitude = fields.Float(string="Latitude", digits=(10, 6))
+    longitude = fields.Float(string="Longitude", digits=(10, 6))
+    group_id = fields.Integer(string="Group ID")
+    group_name = fields.Char(string="Group Name")
+    group_sort = fields.Integer(string="Group Sort")
+    is_outdoor = fields.Boolean(string="Outdoor Location")
+    is_express = fields.Boolean(string="Express Available")
+    created_date = fields.Datetime(string="Created Date", readonly=True)
+    updated_date = fields.Datetime(string="Updated Date", readonly=True)
+    active = fields.Boolean(string="Active", default=True)
+    display_name = fields.Char(
+        string="Display Name", compute="_compute_display_name", store=True
+    )
+
+    _sql_constraints = [
+        ("unique_place_id", "unique(place_id)", "Place ID must be unique!")
+    ]
+
+    @api.depends("name", "city", "address", "place_type")
+    def _compute_display_name(self):
+        """Generate user-friendly display name"""
+        type_dict = dict(self._fields["place_type"].selection)
+        for place in self:
+            place.display_name = f"{place.name} - {place.city} ({type_dict.get(place.place_type, place.place_type)})"
+
+    @staticmethod
+    def _safe_float(value, default=0.0):
+        """Safely convert value to float
+
+        Args:
+            value: Value to convert
+            default: Default if conversion fails
+
+        Returns:
+            float: Converted value or default
+        """
+        try:
+            if value in ("", None):
+                return default
+            return float(value)
+        except (ValueError, TypeError):
+            return default
+
+    @staticmethod
+    def _safe_int(value, default=0):
+        """Safely convert value to integer"""
+        try:
+            if value in ("", None):
+                return default
+            return int(value)
+        except (ValueError, TypeError):
+            return default
+
+    @staticmethod
+    def _safe_bool(value):
+        """Safely convert value to boolean"""
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, (int, float)):
+            return bool(value)
+        if isinstance(value, str):
+            return value.lower() in ("true", "1", "yes")
+        return False
+
+    def _prepare_place_values(self, place_data, country_code):
+        """Prepare place values from API data
+
+        Args:
+            place_data: Place data dict from API
+            country_code: Country code
+
+        Returns:
+            dict: Values for create/write
+        """
+        values = {
+            "place_id": place_data.get("place_id"),
+            "name": place_data.get("name") or "Unknown",
+            "city": place_data.get("city") or "Unknown",
+            "address": place_data.get("address") or "",
+            "country": (place_data.get("country") or country_code).upper(),
+            "postal_code": place_data.get("postalcode") or "",
+            "routing_code": place_data.get("routingcode") or "",
+            "availability": place_data.get("availability") or "",
+            "description": place_data.get("description") or "",
+            "place_type": (place_data.get("type") or "apt").lower(),
+            "latitude": self._safe_float(place_data.get("lat")),
+            "longitude": self._safe_float(place_data.get("lng")),
+            "group_id": self._safe_int(place_data.get("group_id")),
+            "group_name": place_data.get("group_name") or "",
+            "group_sort": self._safe_int(place_data.get("group_sort")),
+            "is_outdoor": self._safe_bool(place_data.get("is_outdoor")),
+            "is_express": self._safe_bool(place_data.get("is_express")),
+            "active": True,
+        }
+
+        # Parse dates safely
+        for date_field in ("created_date", "updated_date"):
+            if place_data.get(date_field):
+                try:
+                    values[date_field] = fields.Datetime.to_datetime(
+                        place_data[date_field]
+                    )
+                except Exception as e:
+                    _logger.warning(f"Failed to parse {date_field}: {e}")
+
+        return values
+
+    @api.model
+    def sync_places_for_country(self, country_code, carrier=None):
+        """Synchronize places from SmartPosti API
+
+        Args:
+            country_code: Country code (EE, FI, LV, LT)
+            carrier: delivery.carrier record (optional)
+
+        Returns:
+            dict: Sync statistics
+        """
+        # Find carrier if not provided
+        if not carrier:
+            carrier = self.env["delivery.carrier"].search(
+                [
+                    ("delivery_type", "=", "smartposti"),
+                    ("smartposti_country", "=", country_code),
+                ],
+                limit=1,
+            )
+
+            if not carrier:
+                carrier = self.env["delivery.carrier"].search(
+                    [("delivery_type", "=", "smartposti")], limit=1
+                )
+
+        if not carrier:
+            raise UserError(_("No SmartPosti carrier configured"))
+
+        try:
+            # Fetch places from API
+            client = carrier._get_smartposti_client()
+            places_data = client.get_places(country_code)
+
+            if places_data.get("error"):
+                raise UserError(_("API Error: %s") % places_data["error"])
+
+            # Extract places list
+            places_list = places_data.get("places", {}).get("item", [])
+            if not isinstance(places_list, list):
+                places_list = [places_list] if places_list else []
+
+            created_count = updated_count = skipped_count = 0
+
+            # Process each place
+            for place_data in places_list:
+                place_id = place_data.get("place_id")
+
+                # Generate random place_id if missing or empty
+                if not place_id or place_id == "":
+                    import uuid
+
+                    place_id = f"SP_{country_code}_{uuid.uuid4().hex[:12].upper()}"
+                    place_data["place_id"] = place_id
+                    _logger.warning(
+                        f'Generated random place_id for place: {place_data.get("name", "Unknown")} - {place_id}'
+                    )
+
+                try:
+                    existing_place = self.search([("place_id", "=", place_id)], limit=1)
+                    values = self._prepare_place_values(place_data, country_code)
+
+                    if existing_place:
+                        existing_place.write(values)
+                        updated_count += 1
+                    else:
+                        self.create(values)
+                        created_count += 1
+
+                except Exception as e:
+                    _logger.error(f"Failed to process place {place_id}: {str(e)}")
+                    skipped_count += 1
+                    continue
+
+            _logger.info(
+                f"Places sync for {country_code}: "
+                f"{created_count} created, {updated_count} updated, {skipped_count} skipped"
+            )
+
+            return {
+                "created": created_count,
+                "updated": updated_count,
+                "skipped": skipped_count,
+                "total": len(places_list),
+            }
+
+        except Exception as e:
+            _logger.error(f"Places sync failed for {country_code}: {str(e)}")
+            raise UserError(_("Failed to sync places: %s") % str(e))
+
+            
+            
+/odoo17/custom/addons/cr_smartposti_shipping_integration/models/stock_picking.py            
+------------------
+# -*- coding: utf-8 -*-
+"""SmartPosti Stock Picking Extensions"""
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+
+
+class StockPicking(models.Model):
+    _inherit = "stock.picking"
+
+    smartposti_place_id = fields.Many2one(
+        "smartposti.place",
+        string="Pickup Point",
+        help="SmartPosti pickup location",
+        copy=False,
+    )
+    smartposti_door_code = fields.Char(
+        string="Door Code",
+        help="SmartPosti parcel terminal door code",
+        readonly=True,
+        copy=False,
+    )
+    smartposti_size = fields.Selection(
+        [
+            ("XS", "Extra Small"),
+            ("S", "Small"),
+            ("M", "Medium"),
+            ("L", "Large"),
+            ("XL", "Extra Large"),
+        ],
+        string="Package Size",
+        copy=False,
+    )
+    smartposti_express = fields.Boolean(
+        string="Express Delivery", help="Use SmartPosti Express service", copy=False
+    )
+    smartposti_temperature_sensitive = fields.Boolean(
+        string="Temperature Sensitive",
+        help="Package requires temperature control",
+        copy=False,
+    )
+    smartposti_barcode = fields.Char(
+        string="Tracking Barcode",
+        help="SmartPosti tracking number",
+        readonly=True,
+        copy=False,
+    )
+
+    @api.onchange("carrier_id")
+    def _onchange_carrier_smartposti(self):
+        """Set defaults when SmartPosti carrier selected"""
+        if not self.carrier_id or self.carrier_id.delivery_type != "smartposti":
+            return
+
+        # Set default size
+        self.smartposti_size = self.carrier_id.smartposti_default_size
+
+        # Try to find nearby place
+        if not self.smartposti_place_id and self.partner_id:
+            self._set_default_smartposti_place()
+
+    @api.onchange("partner_id")
+    def _onchange_partner_smartposti(self):
+        """Update place when partner changes"""
+        if (
+            self.carrier_id
+            and self.carrier_id.delivery_type == "smartposti"
+            and self.partner_id
+        ):
+            self._set_default_smartposti_place()
+
+    def _set_default_smartposti_place(self):
+        """Find and set default SmartPosti place based on partner location"""
+        if not self.carrier_id or not self.partner_id:
+            return
+
+        domain = [
+            ("country", "=", self.carrier_id.smartposti_country),
+            ("active", "=", True),
+        ]
+
+        # Try to match by postal code first, then city
+        if self.partner_id.zip:
+            domain.append(("postal_code", "=", self.partner_id.zip))
+        elif self.partner_id.city:
+            domain.append(("city", "ilike", self.partner_id.city))
+
+        place = self.env["smartposti.place"].search(domain, limit=1)
+        if place:
+            self.smartposti_place_id = place
+
+    def button_validate(self):
+        """Override validation to create SmartPosti shipment"""
+        res = super(StockPicking, self).button_validate()
+
+        # Process outgoing SmartPosti shipments
+        smartposti_pickings = self.filtered(
+            lambda p: (
+                p.carrier_id
+                and p.carrier_id.delivery_type == "smartposti"
+                and p.picking_type_code == "outgoing"
+                and not p.smartposti_barcode
+            )
+        )
+
+        for picking in smartposti_pickings:
+            try:
+                picking.smartposti_send_shipping()
+            except Exception as e:
+                raise ValidationError(
+                    _("Failed to create SmartPosti shipment: %s") % str(e)
+                )
+
+        return res
+
+    def smartposti_send_shipping(self):
+        """Create SmartPosti shipment using carrier method"""
+        self.ensure_one()
+
+        if not self.carrier_id or self.carrier_id.delivery_type != "smartposti":
+            return
+
+        # Use carrier's send_shipping method
+        result = self.carrier_id.send_shipping(self)
+
+        if result and result[0].get("tracking_number"):
+            # Tracking info already set by carrier method
+            self.message_post(
+                body=_("SmartPosti shipment created successfully"),
+                subject=_("Shipment Created"),
+            )
+
+    def open_website_url(self):
+        """Open tracking URL in browser"""
+        if self.carrier_id and self.carrier_id.delivery_type == "smartposti":
+            if not self.smartposti_barcode:
+                return False
+
+            tracking_url = f"https://www.smartpost.ee/private/tracking?barcode={self.smartposti_barcode.strip()}"
+
+            return {
+                "type": "ir.actions.act_url",
+                "name": _("Shipment Tracking"),
+                "target": "new",
+                "url": tracking_url,
+            }
+
+        return super(StockPicking, self).open_website_url()
+
+    def action_smartposti_track_shipment(self):
+        """Display detailed tracking information"""
+        self.ensure_one()
+
+        if not self.smartposti_barcode:
+            raise UserError(_("No tracking number available"))
+
+        try:
+            client = self.carrier_id._get_smartposti_client()
+            tracking_data = client.track_shipment(barcode=self.smartposti_barcode)
+
+            if tracking_data.get("error"):
+                raise UserError(_("Tracking Error: %s") % tracking_data["error"])
+
+            tracking_info = self._format_tracking_info(tracking_data)
+
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": _("Tracking Information"),
+                    "message": tracking_info,
+                    "type": "info",
+                    "sticky": True,
+                },
+            }
+
+        except Exception as e:
+            raise UserError(_("Failed to retrieve tracking: %s") % str(e))
+
+    def _format_tracking_info(self, tracking_data):
+        """Format tracking data for display
+
+        Args:
+            tracking_data: API tracking response
+
+        Returns:
+            str: Formatted HTML tracking information
+        """
+        item = tracking_data.get("item", [{}])
+        if isinstance(item, list):
+            item = item[0] if item else {}
+
+        events = [
+            ("generated", _("Order generated")),
+            ("sourcein", _("Collected from sender")),
+            ("sourceout", _("Dispatched from origin")),
+            ("termin", _("Arrived at sorting facility")),
+            ("termout", _("Departed from sorting")),
+            ("destinationin", _("Arrived at destination")),
+            ("destinationout", _("Delivered")),
+            ("returnin", _("Return initiated")),
+            ("returnout", _("Return collected")),
+        ]
+
+        tracking_lines = []
+        for event_key, event_desc in events:
+            if item.get(event_key):
+                tracking_lines.append(f"{event_desc}: {item[event_key]}")
+
+        return (
+            "<br/>".join(tracking_lines)
+            if tracking_lines
+            else _("No tracking data available")
+        )
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/models/smartposti_country_price.py
+------------------
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
+
+
+class SmartPostiCountryPrice(models.Model):
+    _name = "smartposti.country.price"
+    _description = "SmartPosti Country-Based Pricing"
+    _order = "company_id, service_type, country_id"
+
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        required=True,
+        default=lambda self: self.env.company,
+        ondelete="cascade",
+    )
+    service_type = fields.Selection(
+        [("pudo", "Parcel Machines"), ("courier", "Courier")],
+        string="Service Type",
+        required=True,
+    )
+    country_id = fields.Many2one(
+        "res.country",
+        string="Country",
+        required=True,
+        domain=[("code", "in", ["EE", "FI", "LV", "LT", "IN"])],
+    )
+    price = fields.Float(string="Price", required=True, digits="Product Price")
+
+    _sql_constraints = [
+        (
+            "unique_company_service_country",
+            "unique(company_id, service_type, country_id)",
+            "A price already exists for this combination of Company, Service Type, and Country!",
+        )
+    ]
+
+    @api.constrains("price")
+    def _check_price(self):
+        for record in self:
+            if record.price < 0:
+                raise ValidationError(_("Price must be positive"))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Auto-assign country to SmartPosti carriers when price record is created"""
+        records = super(SmartPostiCountryPrice, self).create(vals_list)
+
+        for record in records:
+            print("record : ", record)
+            carriers = self.env["delivery.carrier"].search(
+                [("delivery_type", "=", "smartposti")]
+            )
+            print("carriers : ", carriers)
+            for carrier in carriers:
+                if record.country_id not in carrier.country_ids:
+                    carrier.write({"country_ids": [(4, record.country_id.id)]})
+
+        return records
+
+    def write(self, vals):
+        """Handle country update in existing records"""
+        result = super(SmartPostiCountryPrice, self).write(vals)
+        print("vals : ", vals)
+        if "country_id" in vals:
+            for record in self:
+                print("record : ", record)
+                carriers = self.env["delivery.carrier"].search(
+                    [("delivery_type", "=", "smartposti")]
+                )
+                print("carriers : ", carriers)
+
+                for carrier in carriers:
+                    if record.country_id not in carrier.country_ids:
+                        carrier.write({"country_ids": [(4, record.country_id.id)]})
+
+        return result
+
+    def unlink(self):
+        """Remove country from carrier if no other price records exist"""
+        countries_to_check = {}
+
+        for record in self:
+            key = (record.company_id.id, record.country_id.id)
+            countries_to_check[key] = record
+
+        result = super(SmartPostiCountryPrice, self).unlink()
+
+        for (company_id, country_id), record in countries_to_check.items():
+            other_records = self.search(
+                [("company_id", "=", company_id), ("country_id", "=", country_id)],
+                limit=1,
+            )
+
+            if not other_records:
+                carriers = self.env["delivery.carrier"].search(
+                    [("delivery_type", "=", "smartposti")]
+                )
+
+                for carrier in carriers:
+                    carrier.write({"country_ids": [(3, country_id)]})
+
+        return result
+
+    @api.onchange("country_id")
+    def _onchange_country_id(self):
+        """Sync carrier country_ids with available price records"""
+        if self.country_id:
+            # Get all countries from all price records
+            all_price_records = self.search([])
+            available_country_ids = set()
+
+            for record in all_price_records:
+                if record.id != self._origin.id:  # Exclude current record if editing
+                    available_country_ids.add(record.country_id.id)
+
+            # Add the new country being set
+            available_country_ids.add(self.country_id.id)
+
+            # Update all omniva carriers
+            carriers = self.env["delivery.carrier"].search(
+                [("delivery_type", "=", "smartposti")]
+            )
+            for carrier in carriers:
+                carrier.write({"country_ids": [(6, 0, list(available_country_ids))]})
+
+        
+/odoo17/custom/addons/cr_smartposti_shipping_integration/static/src/js/smartposti_delivery.js
+------------------
+/** @odoo-module **/
+
+import publicWidget from "@web/legacy/js/public/public_widget";
+
+publicWidget.registry.websiteSaleDelivery.include({
+
+    events: Object.assign({}, publicWidget.registry.websiteSaleDelivery.prototype.events, {
+        'change .smartposti-type-radio': '_onSmartPostiTypeChange',
+        'change .smartposti-place-select': '_onSmartPostiPlaceChange',
+    }),
+
+    /**
+     * Initialize Select2 on SmartPosti PUDO dropdown
+     */
+    start: function () {
+        const self = this;
+        return this._super.apply(this, arguments).then(function () {
+            self._initializeSmartPostiSelect2();
+        });
+    },
+
+    /**
+     * Initialize Select2 for PUDO locations
+     */
+    _initializeSmartPostiSelect2: function () {
+        this.$('.smartposti-place-select').select2({
+            placeholder: '-- Search and Select Parcel Machine --',
+            allowClear: true,
+            width: '100%',
+            dropdownParent: this.$('.pudo-locations-section'),
+        });
+    },
+
+    /**
+     * Handle SmartPosti service type change (COURIER <-> PUDO)
+     */
+    _onSmartPostiTypeChange: async function (ev) {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        const serviceType = ev.currentTarget.value;
+        const carrierId = parseInt(ev.currentTarget.dataset.carrierId);
+
+        // 1. Update hidden field
+        this.$('.smartposti_service_type').val(serviceType);
+
+        // 2. Toggle location dropdowns
+        if (serviceType === 'courier') {
+            this.$('.pudo-locations-section').hide();
+            this.$('.smartposti-selection-info').hide();
+            this.$('.smartposti-place-select').val(null).trigger('change'); // Clear Select2
+        } else if (serviceType === 'pudo') {
+            this.$('.pudo-locations-section').show();
+            this.$('.smartposti-selection-info').hide();
+            this.$('.smartposti-place-select').val(null).trigger('change');
+        }
+
+        // 3. Update session
+        try {
+            await this.rpc('/shop/smartposti/set_service_type', {
+                'service_type': serviceType,
+            });
+        } catch (error) {
+            console.error('Failed to update session:', error);
+            return;
+        }
+
+        // 4. Trigger carrier update
+        const carrierInput = document.querySelector(`input[name="delivery_type"][value="${carrierId}"]`);
+        if (!carrierInput) return;
+
+        if (carrierInput.checked) {
+            this._showLoading(carrierInput);
+            const result = await this.rpc('/shop/update_carrier', {
+                'carrier_id': carrierId,
+                'no_reset_access_point_address': true,
+            });
+            this._handleCarrierUpdateResultBadge(result);
+
+            if (result.new_amount_delivery !== undefined) {
+                const amountDelivery = document.querySelector('#order_delivery .monetary_field');
+                const amountTotal = document.querySelectorAll('#order_total .monetary_field, #amount_total_summary.monetary_field');
+                if (amountDelivery) amountDelivery.innerHTML = result.new_amount_delivery;
+                amountTotal.forEach(total => total.innerHTML = result.new_amount_total);
+            }
+        } else {
+            this._showLoading(carrierInput);
+            await this._getCarrierRateShipment(carrierInput);
+        }
+    },
+
+        /**
+     * Handle place selection - SAVES TO ORDER
+     */
+    _onSmartPostiPlaceChange: async function (ev) {
+        const select = ev.currentTarget;
+        const $select = $(select);
+
+        // --- 1. Get selected value safely ---
+        const placeId = select.value;
+
+        if (!placeId) {
+            this.$('.smartposti-selection-info').hide();
+            return;
+        }
+
+        // --- 2. Get option data: try native first, then Select2 data ---
+        let locationName = '';
+        let locationAddress = '';
+
+        const selectedIndex = select.selectedIndex;
+        if (selectedIndex >= 0) {
+            const option = select.options[selectedIndex];
+            locationName = option.dataset.name || '';
+            locationAddress = option.dataset.address || '';
+        } else {
+            // --- Fallback: Select2 keeps data in .data('select2').data ---
+            const select2Data = $select.data('select2');
+            if (select2Data && select2Data.data && select2Data.data.length > 0) {
+                const item = select2Data.data[0];
+                locationName = item.name || item.text.split(' - ')[0] || '';
+                locationAddress = item.address || item.text.split(' - ')[1] || '';
+            }
+        }
+
+        // --- 3. Update UI ---
+        this.$('.selected-location-name').text(locationName);
+        this.$('.selected-location-address').text(locationAddress);
+        this.$('.smartposti-selection-info').show();
+
+        // --- 4. Save to order ---
+        try {
+            await this.rpc('/shop/smartposti/set_place', {
+                'place_id': placeId,
+            });
+        } catch (error) {
+            console.error('Failed to save place:', error);
+        }
+    },
+
+    /**
+     * Clean up Select2 when widget is destroyed
+     */
+    destroy: function () {
+        this.$('.smartposti-place-select').select2('destroy');
+        return this._super.apply(this, arguments);
+    },
+});
+
+
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/views/delivery_carrier_views.xml
+------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_delivery_carrier_form_smartposti" model="ir.ui.view">
+        <field name="name">delivery.carrier.form.smartposti</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Minimal SmartPosti configuration -->
+            <xpath expr="//group[@name='delivery_details']" position="after">
+                <group string="SmartPosti Configuration" invisible="delivery_type != 'smartposti'">
+
+                    <div colspan="2" class="alert alert-info mt-3">
+                        <p><i class="fa fa-info-circle"/> <strong>Configuration Location</strong></p>
+                        <p>All SmartPosti settings are managed in:
+                           <strong>Settings → Companies → SmartPosti Configuration</strong>
+                        </p>
+                        <p>This delivery method will use the company-level configuration.</p>
+                    </div>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/views/res_company_views.xml
+------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form_smartposti" model="ir.ui.view">
+        <field name="name">res.company.form.smartposti</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_info']" position="after">
+                <page string="SmartPosti Configuration" name="smartposti_config">
+                    <group>
+                        <group string="API Credentials">
+                            <field name="smartposti_environment" widget="radio"/>
+                            <field name="smartposti_base_url" readonly="1"/>
+                            <field name="smartposti_api_key" password="True"
+                                   placeholder="Enter your SmartPosti API Key"/>
+                            <field name="smartposti_gateway_secret" password="True"
+                                   placeholder="Enter your Gateway Secret"/>
+                        </group>
+                        <group string="Test Connection">
+                            <button name="action_test_smartposti_connection"
+                                    type="object"
+                                    string="Test Connection"
+                                    class="oe_highlight"
+                                    icon="fa-plug"/>
+                        </group>
+                    </group>
+
+                    <separator string="Default Service Configuration"/>
+                    <group>
+                        <group string="Defaults">
+                            <field name="smartposti_default_country"/>
+                            <field name="smartposti_default_place_type"/>
+                            <field name="smartposti_default_size"/>
+                            <field name="smartposti_label_format"/>
+                            <field name="smartposti_use_door_code"/>
+                        </group>
+                        <!-- NEW: PRICE CONFIGURATION -->
+                        <group string="Delivery Prices">
+                            <field name="smartposti_pudo_price"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="smartposti_courier_price"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </group>
+
+                        <group string="Notifications" invisible="not smartposti_use_door_code">
+                            <field name="smartposti_notification_email"
+                                   placeholder="notifications@company.com"/>
+                            <field name="smartposti_notification_phone"
+                                   placeholder="+372xxxxxxxx"/>
+                        </group>
+                    </group>
+
+                    <separator string="Additional Services" invisible="not smartposti_use_door_code"/>
+                    <group invisible="not smartposti_use_door_code">
+                        <group string="Service Options">
+                            <field name="smartposti_enable_express"/>
+                            <field name="smartposti_enable_id_check"/>
+                            <field name="smartposti_enable_age_check"/>
+                            <field name="smartposti_enable_cod"/>
+                        </group>
+                        <group string="Return Configuration">
+                            <field name="smartposti_enable_returns"/>
+                            <field name="smartposti_return_days"
+                                   invisible="not smartposti_enable_returns"
+                                   required="smartposti_enable_returns"/>
+                        </group>
+                    </group>
+
+                    <separator string="Pickup Places Management"/>
+                    <group>
+                        <button name="action_sync_smartposti_places"
+                                type="object"
+                                string="Sync Pickup Places"
+                                class="btn-primary"
+                                icon="fa-refresh"
+                                help="Sync pickup places from SmartPosti API for default country"
+                                confirm="This will sync pickup places for the default country. Proceed?"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/views/smartposti_place_views.xml
+------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- SmartPosti Places Tree View -->
+    <record id="smartposti_place_view_tree" model="ir.ui.view">
+        <field name="name">smartposti.place.tree</field>
+        <field name="model">smartposti.place</field>
+        <field name="arch" type="xml">
+            <tree string="SmartPosti Places" default_order="country,city,name">
+                <field name="place_id"/>
+                <field name="name"/>
+                <field name="city"/>
+                <field name="address"/>
+                <field name="country"/>
+                <field name="place_type"/>
+                <field name="postal_code"/>
+                <field name="is_express" widget="boolean_toggle"/>
+                <field name="is_outdoor" widget="boolean_toggle"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- SmartPosti Places Form View -->
+    <record id="smartposti_place_view_form" model="ir.ui.view">
+        <field name="name">smartposti.place.form</field>
+        <field name="model">smartposti.place</field>
+        <field name="arch" type="xml">
+            <form string="SmartPosti Place">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" required="1"/>
+                        </h1>
+                        <h3>
+                            <field name="place_id" readonly="1"/>
+                        </h3>
+                    </div>
+
+                    <group>
+                        <group name="basic_info" string="Basic Information">
+                            <field name="place_type"/>
+                            <field name="country"/>
+                            <field name="city"/>
+                            <field name="address"/>
+                            <field name="postal_code"/>
+                            <field name="routing_code"/>
+                        </group>
+
+                        <group name="details" string="Details">
+                            <field name="availability"/>
+                            <field name="is_express"/>
+                            <field name="is_outdoor"/>
+                            <field name="group_name"/>
+                            <field name="group_id"/>
+                            <field name="group_sort"/>
+                        </group>
+
+                        <group name="location" string="Location" col="4">
+                            <field name="latitude"/>
+                            <field name="longitude"/>
+                        </group>
+
+                        <group name="dates" string="Sync Information" col="4">
+                            <field name="created_date" readonly="1"/>
+                            <field name="updated_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page name="description" string="Description">
+                            <field name="description" widget="text"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- SmartPosti Places Search View -->
+    <record id="smartposti_place_view_search" model="ir.ui.view">
+        <field name="name">smartposti.place.search</field>
+        <field name="model">smartposti.place</field>
+        <field name="arch" type="xml">
+            <search string="SmartPosti Places">
+                <field name="name"/>
+                <field name="city"/>
+                <field name="place_id"/>
+                <field name="postal_code"/>
+                <field name="address"/>
+
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
+
+                <separator/>
+                <filter name="apt" string="Blue Boxes (APT)" domain="[('place_type', '=', 'apt')]"/>
+                <filter name="ipb" string="White Boxes (IPB)" domain="[('place_type', '=', 'ipb')]"/>
+                <filter name="po" string="Post Offices" domain="[('place_type', '=', 'po')]"/>
+                <filter name="pudo" string="Parcel Points" domain="[('place_type', '=', 'pudo')]"/>
+
+                <separator/>
+                <filter name="express" string="Express Available" domain="[('is_express', '=', True)]"/>
+                <filter name="outdoor" string="Outdoor" domain="[('is_outdoor', '=', True)]"/>
+
+                <group expand="1" string="Group By">
+                    <filter name="group_country" string="Country" context="{'group_by': 'country'}"/>
+                    <filter name="group_city" string="City" context="{'group_by': 'city'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'place_type'}"/>
+                    <filter name="group_group_name" string="Region" context="{'group_by': 'group_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- SmartPosti Places Action -->
+    <record id="smartposti_place_action" model="ir.actions.act_window">
+        <field name="name">SmartPosti Places</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">smartposti.place</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="smartposti_place_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No SmartPosti places found!
+            </p>
+            <p>
+                SmartPosti pickup places are synchronized from the API.
+                Configure a SmartPosti carrier and sync places to populate this list.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="smartposti_place_menu"
+              name="SmartPosti Places"
+              parent="stock.menu_stock_config_settings"
+              action="smartposti_place_action"
+              sequence="50"/>
+</odoo>
+
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/views/stock_picking_views.xml
+------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Stock Picking Form View - SmartPosti Integration -->
+    <record id="stock_picking_form_smartposti" model="ir.ui.view">
+        <field name="name">stock.picking.form.smartposti</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add carrier_id field if not already visible -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="carrier_id"
+                       invisible="picking_type_code != 'outgoing'"
+                       readonly="state in ['cancel', 'done']"
+                       options="{'no_create': True}"/>
+            </xpath>
+
+            <!-- Add SmartPosti options group after carrier -->
+            <xpath expr="//field[@name='carrier_id']" position="after">
+                <group name="smartposti_options"
+                       string="SmartPosti Delivery Options"
+                       colspan="2" col="2" invisible="delivery_type != 'smartposti'">
+
+                    <field name="smartposti_place_id"
+                           string="Pickup Point"
+                           context="{'default_country': carrier_id.smartposti_country}"
+                           options="{'no_create': True, 'no_open': True}"
+                           placeholder="Select a SmartPosti pickup location..."/>
+
+                    <field name="smartposti_size"
+                           string="Package Size"
+                           required="carrier_id.delivery_type == 'smartposti'"/>
+
+                    <field name="smartposti_express"
+                           string="Express Delivery"
+                           invisible="not carrier_id.smartposti_enable_express"/>
+
+                    <field name="smartposti_temperature_sensitive"
+                           string="Temperature Sensitive"/>
+
+                    <field name="smartposti_door_code"
+                           string="Door Code"
+                           readonly="1"
+                           invisible="not smartposti_door_code"/>
+
+                    <field name="smartposti_barcode"
+                           string="Tracking Barcode"
+                           readonly="1"
+                           invisible="not smartposti_barcode"/>
+                </group>
+            </xpath>
+
+            <!-- Add tracking button in header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_smartposti_track_shipment"
+                        string="Track Shipment"
+                        type="object"
+                        class="btn-primary"
+                        invisible="carrier_id.delivery_type != 'smartposti' or not smartposti_barcode"
+                        groups="stock.group_stock_user"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
+
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/views/website_sale_delivery_templates.xml
+------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add sub-options AFTER the base template content -->
+    <template id="payment_delivery_smartposti"
+              name="SmartPosti Sub-Options"
+              inherit_id="website_sale.payment_delivery_methods">
+
+        <xpath expr="//t[@t-if='delivery.website_description']" position="after">
+            <t t-if="delivery.delivery_type == 'smartposti'">
+
+                <t t-set="company" t-value="delivery.env.company"/>
+                <t t-set="partner_country_obj" t-value="order.partner_id.country_id"/>
+                <t t-set="partner_country" t-value="partner_country_obj.code if partner_country_obj else 'EE'"/>
+
+                <!-- Get country-based prices -->
+                <t t-set="courier_price_record" t-value="delivery.env['smartposti.country.price'].search([
+                    ('company_id', '=', company.id),
+                    ('service_type', '=', 'courier'),
+                    ('country_id', '=', partner_country_obj.id if partner_country_obj else False)
+                ], limit=1) if partner_country_obj else False"/>
+
+                <t t-set="pudo_price_record" t-value="delivery.env['smartposti.country.price'].search([
+                    ('company_id', '=', company.id),
+                    ('service_type', '=', 'pudo'),
+                    ('country_id', '=', partner_country_obj.id if partner_country_obj else False)
+                ], limit=1) if partner_country_obj else False"/>
+
+                <!-- Set prices (country-specific or fallback to 0) -->
+                <t t-set="courier_price" t-value="courier_price_record.price if courier_price_record else 0"/>
+                <t t-set="pudo_price" t-value="pudo_price_record.price if pudo_price_record else 0"/>
+
+                <!-- Fetch PUDO places only -->
+                <t t-set="pudo_places" t-value="delivery.env['smartposti.place'].search([
+                    ('place_type', '=', 'pudo'),
+                    ('active', '=', True),
+                    ('country', '=', partner_country)
+                ], order='city, name')"/>
+
+                <div class="o_smartposti_selector mt-3 p-3 bg-light rounded border">
+
+                    <t t-if="courier_price == 0 and pudo_price == 0">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fa fa-exclamation-triangle me-2"/>
+                            <strong>SmartPosti delivery is not available for <t t-esc="partner_country_obj.name if partner_country_obj else 'your country'"/>.</strong>
+                            <p class="mb-0 small">Please contact support or choose a different delivery method.</p>
+                        </div>
+                    </t>
+
+                    <t t-else="">
+                        <!-- Hidden field to track service type -->
+                        <input type="hidden"
+                               name="smartposti_service_type"
+                               class="smartposti_service_type"
+                               t-att-value="'courier' if courier_price != 0 else 'pudo'"/>
+
+                        <!-- Service Type Selection -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Select Delivery Method:</label>
+
+                            <!-- Option 1: Courier -->
+                            <t t-if="courier_price != 0">
+                                <div class="form-check mb-2">
+                                    <input type="radio"
+                                           name="smartposti_type_radio"
+                                           value="courier"
+                                           id="smartposti_courier"
+                                           class="form-check-input smartposti-type-radio"
+                                           t-att-checked="'checked' if pudo_price == 0 else None"
+                                           t-att-data-price="courier_price"
+                                           t-att-data-carrier-id="delivery.id"/>
+                                    <label class="form-check-label" for="smartposti_courier">
+                                        <i class="fa fa-truck me-2 text-success"/>
+                                         <strong>
+                                            <t t-esc="company.smartposti_courier_label if company.smartposti_custom_service_names else 'Kuller (uksele)'"/>
+                                        </strong>
+                                        <span class="badge bg-success ms-2">
+                                            €<t t-esc="'%.2f' % courier_price"/>
+                                        </span>
+                                    </label>
+                                </div>
+                            </t>
+
+                            <!-- Option 2: Parcel Machines -->
+                            <t t-if="pudo_price != 0">
+                                <div class="form-check mb-2">
+                                    <input type="radio"
+                                           name="smartposti_type_radio"
+                                           value="pudo"
+                                           id="smartposti_pudo"
+                                           class="form-check-input smartposti-type-radio"
+                                           t-att-checked="'checked' if courier_price == 0 else None"
+                                           t-att-data-price="pudo_price"
+                                           t-att-data-carrier-id="delivery.id"/>
+                                    <label class="form-check-label" for="smartposti_pudo">
+                                        <i class="fa fa-cube me-2 text-primary"/>
+                                        <strong>
+                                            <t t-esc="company.smartposti_pudo_label if company.smartposti_custom_service_names else 'Pakiautomaadid'"/>
+                                        </strong>
+                                        <span class="badge bg-success ms-2">
+                                            €<t t-esc="'%.2f' % pudo_price"/>
+                                        </span>
+                                    </label>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- PUDO Locations Dropdown -->
+                        <t t-if="pudo_price != 0">
+                            <div class="pudo-locations-section mb-3" t-att-style="'display:none;' if courier_price != 0 else ''">
+                                <label class="form-label small">Select Parcel Machine:</label>
+                                <select name="smartposti_place_id"
+                                        class="form-select form-select-sm smartposti-place-select"
+                                        data-place-type="pudo"
+                                        style="width: 100%;"
+                                        t-if="pudo_places">
+                                    <option value="">-- Select Location --</option>
+                                    <t t-foreach="pudo_places" t-as="place">
+                                        <option t-att-value="place.id"
+                                                t-att-data-name="place.name"
+                                                t-att-data-address="'%s, %s' % (place.address, place.city)">
+                                            <t t-esc="place.name"/> - <t t-esc="place.city"/>
+                                            <t t-if="place.postal_code"> (<t t-esc="place.postal_code"/>)</t>
+                                        </option>
+                                    </t>
+                                </select>
+                                <p t-else="" class="text-muted small mb-0">No parcel machines available for <t t-esc="partner_country_obj.name if partner_country_obj else 'this country'"/></p>
+                            </div>
+
+                            <!-- Selected Location Display -->
+                            <div class="alert alert-info small mb-0 smartposti-selection-info" style="display:none;">
+                                <strong>Selected:</strong>
+                                <span class="selected-location-name"></span>
+                                <br/>
+                                <small class="selected-location-address"></small>
+                            </div>
+                        </t>
+                    </t>
+
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>
+
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/__init__.py
+------------------
+# -*- coding: utf-8 -*-
+
+from . import models
+from . import controller
+
+
+/odoo17/custom/addons/cr_smartposti_shipping_integration/__manifest__.py
+------------------
+{
+    "name": "SmartPosti Delivery Integration | SmartPosti Integration Solutions |SmartPosti Integration |SmartPosti Shipping Integration In Odoo",
+    "version": "17.0.3.0.0",
+    "category": "Inventory/Delivery",
+    "summary": "SmartPosti (Itella/Posti) delivery carrier integration for Odoo 17",
+    "description": """
+SmartPosti Delivery Integration
+===============================
+
+This module provides integration with SmartPosti (Itella/Posti) delivery services:
+
+Features:
+* Create shipments and generate labels
+* Track packages
+* Sync pickup points/places
+* Support for different destination types (APT, IPB, PO, PUDO)
+* COD payment support
+* Multiple additional services (Express, ID check, Age check, etc.)
+* Support for EE, FI, LV, LT destinations
+
+Supported Services:
+* Parcel terminals (Blue boxes - APT, White boxes - IPB)
+* Post offices (PO)
+* Parcel points (PUDO) 
+* Door-to-door delivery
+* Express delivery
+* Temperature sensitive items
+    """,
+    "author": "Creyox Technologies",
+    "website": "https://www.creyox.com",
+    "license": "OPL-1",
+    "depends": [
+        "base",
+        "website",
+        "website_sale",
+        "delivery",
+        "stock",
+        "sale_management",
+        "sale_stock",
+        "stock_delivery",
+    ],
+    "external_dependencies": {"python": ["requests"]},
+    "data": [
+        "security/ir.model.access.csv",
+        "views/res_company_views.xml",
+        "data/delivery_carrier_data.xml",
+        "views/delivery_carrier_views.xml",
+        "views/smartposti_place_views.xml",
+        "views/stock_picking_views.xml",
+        "views/website_sale_delivery_templates.xml",
+        "views/smartposti_country_price.xml",
+    ],
+    "assets": {
+        "web.assets_frontend": [
+            "cr_smartposti_shipping_integration/static/src/css/smartposti_delivery.css",
+            "cr_smartposti_shipping_integration/static/src/js/smartposti_delivery.js",
+        ]
+    },
+    "images": ["static/description/banner.png"],
+    "installable": True,
+    "application": True,
+    "auto_install": False,
+}
+
+
+
+above is my custom module code I want below customisation 
+
+1]
+In this code i want to changes , that the tax that is use in the delivery line in that check the configuration 
+if it is is_base_affected then we have to add tax in the original price and if it is price_include then we don't need to add so for that what change we need in which python method? 
+
+2]
+another requriments is until the delivery method Smartposti is not select then smartposti price should be hide not options price but smart post price should be hide and same for the omniva
+
+3]currently in the smart post we display first courier option and after parcel machine option but it is possible that from backend side we give configuration for order that in which order client want to display option? 
+
+
+
+So give me code for above three requriments only give code which i have to change
+no give whole code
+only give me code which i have to change or i have to add
+no give any description
+
+if you have any doubt then ask me after give me code
+
+
+
+Question 1 (Tax handling):
+
+You mentioned checking is_base_affected and price_include - are these fields on account.tax model?
+When you say "add tax in the original price" - do you mean:
+
+Show price WITH tax included in the badge/display?
+Or adjust the price_unit on the delivery line?
+
+
+Should this tax calculation happen in smartposti_rate_shipment() and omniva_rate_shipment() methods?
+
+ans 1: 
+You mentioned checking is_base_affected and price_include - are these fields on account.tax model? - yes it is base account.tax model's field
+When you say "add tax in the original price" - do you mean:
+i mean here from where price is come in that method plz change
+€<t t-esc="'%.2f' % courier_price"/>
+insort the option price we display in delivery method there , so we need to change in the python method from where price for options is come
+
+
+
+
+Question 2 (Hide price until selected):
+
+Do you mean hide the entire SmartPosti/Omniva delivery option box until the carrier radio button is selected?
+Or just hide the price badges (€3.50, €5.50) until selected?
+
+ans 2: only hide the price of SmartPosti/Omniva delivery method not options ,I repeate not hide the price of options only hide price of the delivery method
+
+
+
+Question 3 (Display order configuration):
+
+Do you want:
+
+A sequence field on delivery.carrier model to set order?
+Or a sequence field on smartposti.country.price and omniva.country.price models?
+Or a new field in res.company to set global display order (e.g., Selection field with options like "Courier First", "Parcel Machine First")?
+
+ans 3: I think it would easy for easy in smartposti.country.price and omniva.country.price models , or else what we easy for us do that
+
+
+
+
+Question 1 (Tax handling clarification):
+
+When you check is_base_affected and price_include on the tax, which tax record should I check?
+
+The tax on the delivery product (delivery.product_id.taxes_id)?
+Or should I look at fiscal position mapped taxes for the order's partner?
+
+ans:delivery.product_id.taxes_id
+
+
+Should I calculate tax for BOTH courier_price and pudo_price in the template, or only for the selected service type?
+
+Question 2 (Hide delivery method price):
+
+You want to hide the main SmartPosti delivery carrier price (shown in the carrier radio button area), correct?
+But keep showing the sub-option prices (€3.50 Courier, €5.50 PUDO) - is this right?
+Should the price appear after the SmartPosti radio is checked?
+
+ans:yes
+
+Question 3 (Display order):
+
+Should I add a sequence field on smartposti.country.price model to control order of "courier" vs "pudo" display?
+For example: courier (sequence=1) appears before pudo (sequence=2)?
+Same for omniva.country.price?
+
+ans: yes

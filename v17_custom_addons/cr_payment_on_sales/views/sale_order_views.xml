@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.view.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <header position="inside">
+                <field name="cr_show_register_payment" invisible="True" />
+                <field name="cr_show_create_invoice" invisible="True" />
+                <button string="Register Payment" name="action_cr_register_payment_on_sale"
+                    type="object" class="oe_highlight" invisible="not cr_show_register_payment" groups="cr_payment_on_sales.enable_advance_payment_on_sale"/>
+            </header>
+
+            <!-- <button id="create_invoice" position="attributes">
+                <attribute name="invisible" separator=" " add="or not cr_show_create_invoice"/>
+            </button> -->
+            <button id="create_invoice_percentage" position="attributes">
+                <attribute name="invisible" separator=" " add="or not cr_show_create_invoice"/>
+            </button>
+
+            <div name="button_box" position="after">
+                <field name="cr_payment_state" invisible="1" />
+                <!-- Payment status for invoices / receipts -->
+                <widget name="web_ribbon" title="Paid"
+                    invisible="cr_payment_state != 'paid' or state in ('draft','cancel')" />
+                <widget name="web_ribbon" title="Partial Paid"
+                    invisible="cr_payment_state != 'partial_paid' or state in ('draft','cancel')" />
+            </div>
+
+            <group class="oe_subtotal_footer" position="inside">
+                <field name="cr_invoice_payments_widget" colspan="2" nolabel="1" widget="td_sale_payment"/>
+                <field name="cr_amount_residual" class="oe_subtotal_footer_separator" invisible="state == 'draft'"/>
+            </group>
+        </field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,22 @@
+odoo16 path
+/odoo/odoo-server/odoo-bin --addons-path /odoo/odoo-server/addons --xmlrpc-port=8072 --limit-time-real=9999
+/odoo15/odoo15-server/odoo-bin --addons-path /odoo15/odoo15-server/addons --xmlrpc-port=8072 --limit-time-real=9999
+cd /odoo15/odoo15-server
+
+python3.10 ./odoo-bin --addons-path /odoo17/odoo17-server/addons,/odoo17/custom/addons/creyox/product/odoo17 --xmlrpc-port=8072 --limit-time-real=9999 
+
+
+ps ax | grep odoo
+kill -9 61143
+sudo su odoo15	
+sudo su postgres
+psql
+alter user odoo15 with password 'odoo15';
+
+----------
+
+python3.10 -m pip install -U X509_V_FLAG_NOTIFY_POLICY
+
+
+
+

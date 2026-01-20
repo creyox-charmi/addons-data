@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="cr_generate_payslip_wizard" model="ir.ui.view">
+        <field name="name">cr.hr.payslip.generate.payslip</field>
+        <field name="model">hr.payslip.employees</field>
+        <field name="inherit_id" ref="bi_hr_payroll.view_hr_payslip_by_employees" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[last()]" position="replace">
+                <group>
+                    <separator string="Employees" colspan="4" />
+                    <newline />
+                    <field name="employee_ids" nolabel="1" domain="[('contract_id', '!=', None)]" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

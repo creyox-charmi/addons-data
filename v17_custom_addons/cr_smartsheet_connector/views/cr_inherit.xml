@@ -1,0 +1,30 @@
+<odoo>
+    <!-- Inherit the res.partner form view -->
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Locate the mobile field and add the new field after it -->
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="cr_smart_sheet_id"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_users_form_inherit_custom" model="ir.ui.view">
+    <field name="name">res.users.form.inherit.custom</field>
+    <field name="model">res.users</field>
+    <field name="inherit_id" ref="base.view_users_form"/>
+    <field name="arch" type="xml">
+        <!-- Locate the "Account Security" page -->
+        <xpath expr="//page[@name='security']" position="after">
+            <!-- Add the new page -->
+            <page string="Smart Sheet " name="Smart_sheet">
+                <group>
+                    <field name="cr_smartsheet_user_id"/>
+                </group>
+            </page>
+        </xpath>
+    </field>
+</record>
+</odoo>

@@ -1,0 +1,3748 @@
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+import uuid
+from ast import literal_eval
+from werkzeug.urls import url_encode
+from odoo import api, exceptions, fields, models, _
+
+
+class PortalMixin(models.AbstractModel):
+    _name = "portal.mixin"
+    _description = 'Portal Mixin'
+
+    access_url = fields.Char(
+        'Portal Access URL', compute='_compute_access_url',
+        help='Customer Portal URL')
+    access_token = fields.Char('Security Token', copy=False)
+
+    # to display the warning from specific model
+    access_warning = fields.Text("Access warning", compute="_compute_access_warning")
+
+    def _compute_access_warning(self):
+        for mixin in self:
+            mixin.access_warning = ''
+
+    def _compute_access_url(self):
+        for record in self:
+            record.access_url = '#'
+
+    def _portal_ensure_token(self):
+        """ Get the current record access token """
+        if not self.access_token:
+            # we use a `write` to force the cache clearing otherwise `return self.access_token` will return False
+            self.sudo().write({'access_token': str(uuid.uuid4())})
+        return self.access_token
+
+    def _get_share_url(self, redirect=False, signup_partner=False, pid=None, share_token=True):
+        """
+        Build the url of the record  that will be sent by mail and adds additional parameters such as
+        access_token to bypass the recipient's rights,
+        signup_partner to allows the user to create easily an account,
+        hash token to allow the user to be authenticated in the chatter of the record portal view, if applicable
+        :param redirect : Send the redirect url instead of the direct portal share url
+        :param signup_partner: allows the user to create an account with pre-filled fields.
+        :param pid: = partner_id - when given, a hash is generated to allow the user to be authenticated
+            in the portal chatter, if any in the target page,
+            if the user is redirected to the portal instead of the backend.
+        :return: the url of the record with access parameters, if any.
+        """
+        self.ensure_one()
+        if redirect:
+            # model / res_id used by mail/view to check access on record
+            params = {
+                'model': self._name,
+                'res_id': self.id,
+            }
+        else:
+            params = {}
+        if share_token and hasattr(self, 'access_token'):
+            params['access_token'] = self._portal_ensure_token()
+        if pid:
+            params['pid'] = pid
+            params['hash'] = self._sign_token(pid)
+        if signup_partner and hasattr(self, 'partner_id') and self.partner_id:
+            params.update(self.partner_id.signup_get_auth_param()[self.partner_id.id])
+
+        return '%s?%s' % ('/mail/view' if redirect else self.access_url, url_encode(params))
+
+    def _get_access_action(self, access_uid=None, force_website=False):
+        """ Instead of the classic form view, redirect to the online document for
+        portal users or if force_website=True. """
+        self.ensure_one()
+
+        user, record = self.env.user, self
+        if access_uid:
+            try:
+                record.check_access('read')
+            except exceptions.AccessError:
+                return super(PortalMixin, self)._get_access_action(
+                    access_uid=access_uid, force_website=force_website
+                )
+            user = self.env['res.users'].sudo().browse(access_uid)
+            record = self.with_user(user)
+        if user.share or force_website:
+            try:
+                record.check_access('read')
+            except exceptions.AccessError:
+                if force_website:
+                    return {
+                        'type': 'ir.actions.act_url',
+                        'url': record.access_url,
+                        'target': 'self',
+                        'res_id': record.id,
+                    }
+                else:
+                    pass
+            else:
+                return {
+                    'type': 'ir.actions.act_url',
+                    'url': record._get_share_url(),
+                    'target': 'self',
+                    'res_id': record.id,
+                }
+        return super(PortalMixin, self)._get_access_action(
+            access_uid=access_uid, force_website=force_website
+        )
+
+    @api.model
+    def action_share(self):
+        action = self.env["ir.actions.actions"]._for_xml_id("portal.portal_share_action")
+        action['context'] = {'active_id': self.env.context['active_id'],
+                             'active_model': self.env.context['active_model'],
+                             **literal_eval(action['context'])}
+        return action
+
+    def get_portal_url(self, suffix=None, report_type=None, download=None, query_string=None, anchor=None):
+        """
+            Get a portal url for this model, including access_token.
+            The associated route must handle the flags for them to have any effect.
+            - suffix: string to append to the url, before the query string
+            - report_type: report_type query string, often one of: html, pdf, text
+            - download: set the download query string to true
+            - query_string: additional query string
+            - anchor: string to append after the anchor #
+        """
+        self.ensure_one()
+        url = self.access_url + '%s?access_token=%s%s%s%s%s' % (
+            suffix if suffix else '',
+            self._portal_ensure_token(),
+            '&report_type=%s' % report_type if report_type else '',
+            '&download=true' if download else '',
+            query_string if query_string else '',
+            '#%s' % anchor if anchor else ''
+        )
+        return url
+
+
+
+above is the base code for get_portal_url and below is my custom module code can you plz give verify it , it is right or not ? bcoz when the portal user open the report then it can't see , maybe access token issue is in this i will share you my whole module code can you give me suggesion what is the issue?
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/controller/__init__.py
+---------------------
+from . import main
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/controller/main.py
+---------------------
+# -*- coding: utf-8 -*-
+from odoo import http
+from odoo.http import request
+from odoo.addons.account.controllers.portal import PortalAccount
+from odoo.exceptions import AccessError, MissingError
+from odoo.tools import consteq
+
+
+class CustomPortalAccount(PortalAccount):
+
+    @http.route([
+        '/my/invoices/<int:invoice_id>/report/html'
+    ], type='http', auth="public", website=True, sitemap=False)
+    def portal_my_invoice_report_html(self, invoice_id, access_token=None, **kw):
+        """Render custom HTML report for invoice"""
+        try:
+            invoice_sudo = self._document_check_access('account.move', invoice_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        return request.render('cr_custom_sale_report.custom_invoice_report_template', {
+            'invoice': invoice_sudo,
+            'doc': invoice_sudo,
+            'docs': invoice_sudo,
+            'company': invoice_sudo.company_id,
+        })
+        
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/models/__init__.py
+---------------------------
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+
+from . import res_company
+from . import custom_sale_report
+from . import custom_account_move
+from . import custom_stock_picking
+from . import custom_receipt
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/models/custom_account_move.py
+-----------------------
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+
+from odoo import _, api, fields, models
+import pytz
+from datetime import datetime
+from odoo import http
+from odoo.http import request
+
+
+class CustomInvoiceReport(models.Model):
+    _inherit = "account.move"
+
+    page_number = fields.Integer(string="Page Number", compute="_compute_page_number")
+    total_pages = fields.Integer(string="Total Pages", compute="_compute_total_pages")
+
+    @api.depends("create_date")
+    def _compute_page_number(self):
+        sorted_invoices = self.sorted(key=lambda r: r.create_date)
+        for i, invoice in enumerate(sorted_invoices):
+            invoice.page_number = i + 1
+
+    @api.depends("create_date")
+    def _compute_total_pages(self):
+        page_size = 140
+        total_invoices = self.search_count(
+            [("move_type", "in", ["out_invoice", "out_refund"])]
+        )
+        total_pages = (total_invoices // page_size) + (
+            1 if total_invoices % page_size > 0 else 0
+        )
+        for invoice in self:
+            invoice.total_pages = total_pages
+
+    @api.model
+    def get_current_time_with_timezone(self, timezone=True):
+        user_tz = timezone or self.env.user.tz or "Asia/Jerusalem"
+        tz = pytz.timezone(user_tz)
+        now = datetime.now(pytz.utc).astimezone(tz)
+        return now.strftime("%H:%M:%S")
+
+        def get_portal_url(
+            self, suffix=None, report_type=None, download=None,
+            query_string=None, anchor=None
+    ):
+        self.ensure_one()
+
+        # Only handle HTML report type
+        if report_type == "html":
+            # Return custom controller URL
+            url = f"/my/invoices/{self.id}/report/html?access_token={self._portal_ensure_token()}"
+            if query_string:
+                url += f"&{query_string.lstrip('&?')}"
+            if anchor:
+                url += f"#{anchor}"
+            return url
+
+        # For everything else (including PDF), use default behavior
+        return super().get_portal_url(
+            suffix=suffix,
+            report_type=report_type,
+            download=download,
+            query_string=query_string,
+            anchor=anchor,
+        )
+
+class InvoiceController(http.Controller):
+
+    @http.route("/account/invoices", auth="public", website=True)
+    def invoices(self, **kw):
+        invoices = request.env["account.move"].search(
+            [("move_type", "in", ["out_invoice", "out_refund"])]
+        )
+        return http.request.render(
+            "cr_custom_sale_report.report_custom_invoice",
+            {
+                "docs": invoices,
+            },
+        )
+
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/models/custom_receipt.py
+------------------------------
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+
+from odoo import _, api, fields, models
+import pytz
+from datetime import datetime
+from odoo import http
+from odoo.http import request
+
+
+class CustomReceiptReport(models.Model):
+    _inherit = "lyg.account.receipt"
+
+    page_number = fields.Integer(string="Page Number", compute="_compute_page_number")
+    total_pages = fields.Integer(string="Total Pages", compute="_compute_total_pages")
+
+    @api.depends("create_date")
+    def _compute_page_number(self):
+        sorted_receipts = self.sorted(key=lambda r: r.create_date)
+        for i, receipt in enumerate(sorted_receipts):
+            receipt.page_number = i + 1
+
+    @api.depends("create_date")
+    def _compute_total_pages(self):
+        page_size = 140
+        total_receipts = self.search_count([])
+        total_pages = (total_receipts // page_size) + (
+            1 if total_receipts % page_size > 0 else 0
+        )
+        for receipt in self:
+            receipt.total_pages = total_pages
+
+    @api.model
+    def get_current_time_with_timezone(self, timezone=True):
+        user_tz = timezone or self.env.user.tz or "Asia/Jerusalem"
+        tz = pytz.timezone(user_tz)
+        now = datetime.now(pytz.utc).astimezone(tz)
+        return now.strftime("%H:%M:%S")
+
+    def get_portal_url(
+        self,
+        suffix=None,
+        report_type=None,
+        download=None,
+        query_string=None,
+        anchor=None,
+    ):
+        print("type invoice:", report_type)
+        self.ensure_one()
+        if report_type == "pdf":
+            report = self.env.ref(
+                "cr_custom_sale_report.action_custom_receipt_report",
+                raise_if_not_found=False,
+            )
+            if not report:
+                return super(CustomReceiptReport, self).get_portal_url(
+                    suffix=suffix,
+                    report_type=report_type,
+                    download=download,
+                    query_string=query_string,
+                    anchor=anchor,
+                )
+            url = f"/report/pdf/cr_custom_sale_report.action_custom_receipt_report/{self.id}?access_token={self._portal_ensure_token()}"
+            if download is True:
+                url += "&download=true"
+            if query_string:
+                url += query_string
+            if anchor:
+                url += f"#{anchor}"
+            return url
+        elif report_type == "html":
+            report = self.env.ref(
+                "cr_custom_sale_report.action_custom_receipt_report_html",
+                raise_if_not_found=False,
+            )
+            if not report:
+                return super(CustomReceiptReport, self).get_portal_url(
+                    suffix=suffix,
+                    report_type=report_type,
+                    download=download,
+                    query_string=query_string,
+                    anchor=anchor,
+                )
+            url = f"/report/html/cr_custom_sale_report.action_custom_receipt_report_html/{self.id}?access_token={self._portal_ensure_token()}"
+            if query_string:
+                url += query_string
+            if anchor:
+                url += f"#{anchor}"
+            return url
+
+        return super(CustomReceiptReport, self).get_portal_url(
+            suffix=suffix,
+            report_type=report_type,
+            download=download,
+            query_string=query_string,
+            anchor=anchor,
+        )
+
+
+class ReceiptController(http.Controller):
+
+    @http.route("/account/receipts", auth="public", website=True)
+    def receipts(self, **kw):
+        receipts = request.env["lyg.account.receipt"].search([])
+        return http.request.render(
+            "cr_custom_sale_report.report_custom_receipt",
+            {
+                "docs": receipts,
+            },
+        )
+
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/models/custom_sale_report.py
+--------------------------
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+
+from odoo import _, api, fields, models
+import pytz
+from datetime import datetime
+from odoo import http
+from odoo.http import request
+
+
+class CustomReport(models.Model):
+    _inherit = "sale.order"
+
+    page_number = fields.Integer(string="Page Number", compute="_compute_page_number")
+    total_pages = fields.Integer(string="Total Pages", compute="_compute_total_pages")
+
+    @api.depends("create_date")
+    def _compute_page_number(self):
+        sorted_orders = self.sorted(key=lambda r: r.create_date)
+        for i, order in enumerate(sorted_orders):
+            order.page_number = i + 1
+
+    @api.depends("create_date")
+    def _compute_total_pages(self):
+        page_size = 140
+        total_orders = self.search_count([])
+        total_pages = (total_orders // page_size) + (
+            1 if total_orders % page_size > 0 else 0
+        )
+
+        for order in self:
+            order.total_pages = total_pages
+
+    @api.model
+    def get_current_time_with_timezone(self, timezone=True):
+        user_tz = timezone or self.env.user.tz or "Asia/Jerusalem"
+        tz = pytz.timezone(user_tz)
+        now = datetime.now(pytz.utc).astimezone(tz)
+        return now.strftime("%H:%M:%S")
+
+    def get_portal_url(
+        self,
+        suffix=None,
+        report_type=None,
+        download=None,
+        query_string=None,
+        anchor=None,
+    ):
+        self.ensure_one()
+        if report_type == "pdf":
+            report = self.env.ref(
+                "cr_custom_sale_report.action_custom_sale_report",
+                raise_if_not_found=False,
+            )
+            if report:
+                url = f"/report/pdf/cr_custom_sale_report.action_custom_sale_report/{self.id}?access_token={self._portal_ensure_token()}"
+                if download:
+                    url += "&download=true"
+                if query_string:
+                    url += query_string
+                if anchor:
+                    url += f"#{anchor}"
+                return url
+        # Fallback to the default URL for the portal view
+        url = self.access_url + "%s?access_token=%s%s%s%s%s" % (
+            suffix if suffix else "",
+            self._portal_ensure_token(),
+            "&report_type=%s" % report_type if report_type else "",
+            "&download=true" if download else "",
+            query_string if query_string else "",
+            "#%s" % anchor if anchor else "",
+        )
+        return url
+
+    def action_preview_sale_order(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_url",
+            "target": "self",
+            "url": self.get_portal_url(),
+        }
+
+
+class SaleOrderController(http.Controller):
+
+    @http.route("/sale/orders", auth="public", website=True)
+    def sale_orders(self, **kw):
+        sale_orders = request.env["sale.order"].search([])
+        return http.request.render(
+            "cr_custom_sale_report.custom_sale_report_template",
+            {
+                "docs": sale_orders,
+            },
+        )
+        
+        
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/models/custom_stock_picking.py
+--------------------------
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+
+from odoo import api, fields, models
+import pytz
+from datetime import datetime
+from odoo import http
+from odoo.http import request
+
+
+class CustomDeliverySlipReport(models.Model):
+    _inherit = "stock.picking"
+
+    page_number = fields.Integer(string="Page Number", compute="_compute_page_number")
+    total_pages = fields.Integer(string="Total Pages", compute="_compute_total_pages")
+
+    @api.depends("create_date")
+    def _compute_page_number(self):
+        sorted_pickings = self.sorted(key=lambda r: r.create_date)
+        for i, picking in enumerate(sorted_pickings):
+            picking.page_number = i + 1
+
+    @api.depends("create_date")
+    def _compute_total_pages(self):
+        page_size = 140
+        total_pickings = self.search_count([])
+        total_pages = (total_pickings // page_size) + (
+            1 if total_pickings % page_size > 0 else 0
+        )
+        for picking in self:
+            picking.total_pages = total_pages
+
+    @api.model
+    def get_current_time_with_timezone(self, timezone=True):
+        user_tz = timezone or self.env.user.tz or "Asia/Jerusalem"
+        tz = pytz.timezone(user_tz)
+        now = datetime.now(pytz.utc).astimezone(tz)
+        return now.strftime("%H:%M:%S")
+
+
+class DeliverySlipController(http.Controller):
+
+    @http.route("/stock/pickings", auth="public", website=True)
+    def pickings(self, **kw):
+        pickings = request.env["stock.picking"].search([])
+        return http.request.render(
+            "cr_custom_sale_report.report_custom_delivery_slip",
+            {
+                "docs": pickings,
+            },
+        )
+
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/models/res_company.py
+------------
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+
+from odoo import _, api, fields, models
+
+
+class ResCompany(models.Model):
+    _inherit = "res.company"
+
+    english_company_name = fields.Char(string="English Company Name")
+    official_number = fields.Char(string="Official number")
+    english_street = fields.Char(string="Street", translate=True)
+    english_city = fields.Char(string="City", translate=True)
+    footer_text = fields.Text(string="Footer Text")
+    footer_image = fields.Binary(string="Footer Image")
+
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/reports/custom_delivery_report_template.xml
+-----------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_delivery_slip_report_template">
+        <t t-call="web.html_container">
+
+            <t t-set="picking" t-value="picking.with_context(lang=picking.partner_id.lang)"/>
+
+
+            <!-- Call the external layout -->
+
+            <t t-call="cr_custom_sale_report.custom_sale_external_layout_pdf"/>
+
+
+            <!-- Main content wrapper with custom font applied -->
+
+            <div class="page ps-5 pe-5 report-content">
+
+                <!-- Embed Calibri font and apply it -->
+
+                <style>
+
+                    @font-face {
+
+                    font-family: 'CalibriCustom';
+
+                    src: url('/cr_custom_sale_report/static/fonts/calibri.ttf') format('truetype');
+
+                    font-weight: normal;
+
+                    font-style: normal;
+
+                    }
+
+                    .report-content, .report-content * {
+
+                    font-family: 'CalibriCustom', Arial, sans-serif !important;
+
+                    }
+
+                </style>
+
+
+                <!-- Header section: Delivery details -->
+
+                <table style="width: 90%; font-size: 15px; font-weight: bold; direction: rtl; border-collapse: collapse;">
+
+                    <tr>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span style="white-space: nowrap;">
+
+                                <span t-if="picking.picking_type_code == 'incoming'">קַבָּלָה:</span>
+
+                                <span t-if="picking.picking_type_code == 'outgoing'">מְסִירָה:</span>
+
+                                <span t-if="picking.picking_type_code not in ['incoming', 'outgoing']">לְהַעֲבִיר:
+
+                                </span>
+
+                                <span style="margin-right: 5px;" t-esc="picking.name"/>
+
+                            </span>
+
+                        </td>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span style="white-space: nowrap;">
+
+                                <span>תאריך אספקה:</span>
+
+                                <span style="margin-right: 5px;"
+                                      t-esc="picking.date_done.strftime('%Y-%m-%d') if picking.date_done else ''"/>
+
+                            </span>
+
+                        </td>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span>מְקוֹרִי</span>
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+
+                <hr style="height: 1px; background-color: #000;"/>
+
+
+                <!-- Partner details section -->
+
+                <div style="font-size: 13px; direction: rtl;">
+
+                    <table style="width: 100%; border-collapse: collapse;">
+
+                        <tr style="font-size: 13px;">
+
+                            <!-- First column: rightmost section -->
+
+                            <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 10px;">
+
+                                <p style="font-weight: bold;">:שם השותף</p>
+
+                                <p>
+
+                                    <t t-esc="picking.partner_id.name"/>
+
+                                </p>
+
+                                <p>
+
+                                    <t t-esc="picking.partner_id.email"/>
+
+                                </p>
+
+                                <p>
+
+                                    <t t-esc="picking.partner_id.street"/>
+
+                                </p>
+
+                                <p>
+
+                                    <t t-esc="picking.partner_id.city"/>
+
+                                </p>
+
+                            </td>
+
+                            <!-- Second column: center section -->
+
+                            <td style="width: 25%; text-align: center; vertical-align: top;">
+
+                                <p>טלפון:
+
+                                    <t t-esc="picking.partner_id.phone"/>
+
+                                </p>
+
+                                <p>רְחוֹב:
+
+                                    <t t-esc="picking.partner_id.street"/>
+
+                                </p>
+
+                                <p>
+
+                                    <t t-esc="picking.partner_id.phone"/>
+
+                                </p>
+
+                                <p>מע"מ/ת.ז:
+
+                                    <t t-esc="picking.partner_id.vat"/>
+
+                                </p>
+
+                            </td>
+
+                            <!-- Third column: leftmost section -->
+
+                            <td style="width: 25%; text-align: center; vertical-align: top;">
+
+                                <p>מספר לקוח:
+
+                                    <t t-esc="picking.partner_id.id"/>
+
+                                </p>
+
+                                <p>כתובת למשלוח:</p>
+
+                                <p>
+
+                                    <t t-esc="', '.join(filter(None, [picking.partner_id.street, picking.partner_id.city, picking.partner_id.country_id.name]))"/>
+
+
+                                </p>
+
+                                <p>
+
+                                    <t t-esc="picking.partner_id.phone"/>
+
+                                </p>
+
+                            </td>
+
+                            <!-- Fourth column: additional information -->
+
+                            <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 30px;">
+
+                                <p style="font-weight: bold;">תאריך הדפסה:
+
+                                    <t t-esc="time.strftime('%Y-%m-%d')"/>
+
+                                </p>
+
+                                <p style="font-weight: bold;">שעה:
+
+                                    <t t-esc="picking.get_current_time_with_timezone(user.tz)"/>
+
+                                </p>
+
+                                <p style="font-weight: bold;">תאריך אספקה:
+
+                                    <t t-esc="picking.date_done.strftime('%Y-%m-%d') if picking.date_done else ''"/>
+
+                                </p>
+
+                                <p style="font-weight: bold;">
+
+                                    <t t-esc="'דף: %s מתוך %s' % (picking.page_number, picking.total_pages)"/>
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <hr style="height: 1px; background-color: #000;"/>
+
+
+                <!-- Delivery items section: Product table -->
+
+                <table cellpadding="5" style="width: 100%; font-size: 13px;">
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;"
+                                t-if="any(move.sale_line_id for move in picking.move_ids)">סה"כ מחיר
+
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;"
+                                t-if="any(move.sale_line_id for move in picking.move_ids)">דִיסקוֹנט
+
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;"
+                                t-if="any(move.sale_line_id for move in picking.move_ids)">יחידת מחיר
+
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">כַּמוּת</th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">כמות מוצר</th>
+
+                            <th style="text-align: right; width: 30%; border-bottom: 1px solid;">שם המוצר</th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">ר"פ פנימי של הגרסה</th>
+
+                            <th style="text-align: right; width: 5%; border-bottom: 1px solid;">#</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        <t t-set="printed_lines" t-value="[]"/>
+                        <t t-set="line_index" t-value="0"/>
+
+                        <t t-foreach="picking.move_ids" t-as="move">
+                            <t t-if="move.sale_line_id and move.sale_line_id.product_id.is_kits and move.sale_line_id.id not in printed_lines">
+                                <t t-set="printed_lines" t-value="printed_lines + [move.sale_line_id.id]"/>
+                                <t t-set="line_index" t-value="line_index + 1"/>
+
+                                <!-- MAIN KIT PRODUCT -->
+                                <tr>
+                                    <td style="text-align: right; width: 8%; font-weight: bold;">
+                                        <t t-esc="'{:,}'.format(move.sale_line_id.price_subtotal) if move.sale_line_id.price_subtotal else 0.00"/>
+                                    </td>
+                                    <td style="text-align: right; width: 8%; font-weight: bold;">
+                                        <t t-esc="'{:,}'.format(move.sale_line_id.discount) if move.sale_line_id.discount else 0.00"/>
+                                    </td>
+                                    <td style="text-align: right; width: 8%; font-weight: bold;">
+                                        <t t-esc="'{:,}'.format(move.sale_line_id.price_unit) if move.sale_line_id.price_unit else 0.00"/>
+                                    </td>
+                                    <td style="text-align: right; width: 8%;">
+                                        <t t-esc="'{:,}'.format(move.quantity) if move.product_uom_qty else 0"/>
+                                    </td>
+                                    <td style="text-align: right; width: 8%;">
+                                        <t t-esc="'{:,}'.format(move.product_uom_qty) if move.product_uom_qty else 0"/>
+                                    </td>
+                                    <td style="text-align: right; width: 30%;">
+                                        <t t-esc="move.sale_line_id.product_id.display_name"/>
+                                    </td>
+                                    <td style="text-align: right; width: 8%;">
+                                        <t t-esc="move.product_id.default_code"/>
+                                    </td>
+                                    <td style="text-align: right; width: 5%;">
+                                        <t t-esc="line_index"/>
+                                    </td>
+                                </tr>
+
+                                <!-- COMPONENTS -->
+                                <t t-foreach="move.sale_line_id.move_ids" t-as="comp">
+                                    <t t-set="line_index" t-value="line_index + 1"/>
+                                    <tr>
+                                        <td style="text-align: right; width: 8%; font-weight: bold;"></td>
+                                        <td style="text-align: right; width: 8%; font-weight: bold;">
+                                            <t t-esc="'{:,}'.format(move.sale_line_id.discount) if move.sale_line_id.discount else 0.00"/>
+                                        </td>
+                                        <td style="text-align: right; width: 8%; font-weight: bold;"></td>
+                                        <td style="text-align: right; width: 8%;">
+                                            <t t-esc="'{:,}'.format(comp.quantity) if comp.quantity else 0"/>
+                                        </td>
+                                        <td style="text-align: right; width: 8%;">
+                                            <t t-esc="'{:,}'.format(comp.product_uom_qty) if comp.product_uom_qty else 0"/>
+                                        </td>
+                                        <td style="text-align: right; width: 30%;">
+                                            <t t-esc="comp.name.replace('[' + (comp.product_id.default_code or '') + ']', '').strip() if comp.product_id and comp.product_id.default_code else comp.name"/>
+                                        </td>
+                                        <td style="text-align: right; width: 8%;">
+                                            <t t-esc="comp.product_id.default_code"/>
+                                        </td>
+                                        <td style="text-align: right; width: 5%;">
+                                            <t t-esc="line_index"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+
+                            <!-- NORMAL PRODUCT -->
+                            <t t-if="not (move.sale_line_id and move.sale_line_id.product_id.is_kits)">
+                                <t t-set="line_index" t-value="line_index + 1"/>
+                                <tr>
+                                    <td style="text-align: right; width: 8%; font-weight: bold;"
+                                        t-if="move.sale_line_id">
+                                        <t t-esc="'{:,}'.format(move.sale_line_id.price_subtotal) if move.sale_line_id.price_subtotal else 0.00"/>
+                                    </td>
+                                    <td style="text-align: right; width: 8%; font-weight: bold;"
+                                        t-if="move.sale_line_id">
+                                        <t t-esc="'{:,}'.format(move.sale_line_id.discount) if move.sale_line_id.discount else 0.00"/>
+                                    </td>
+                                    <td style="text-align: right; width: 8%; font-weight: bold;"
+                                        t-if="move.sale_line_id">
+                                        <t t-esc="'{:,}'.format(move.sale_line_id.price_unit) if move.sale_line_id.price_unit else 0.00"/>
+                                    </td>
+                                    <td style="text-align: right; width: 8%;">
+                                        <t t-esc="'{:,}'.format(move.quantity) if move.quantity else 0"/>
+                                    </td>
+                                    <td style="text-align: right; width: 8%;">
+                                        <t t-esc="'{:,}'.format(move.product_uom_qty) if move.product_uom_qty else 0"/>
+                                    </td>
+                                    <td style="text-align: right; width: 30%;">
+                                        <t t-esc="move.name.replace('[' + (move.product_id.default_code or '') + ']', '').strip() if move.product_id and move.product_id.default_code else move.name"/>
+                                    </td>
+                                    <td style="text-align: right; width: 8%;">
+                                        <t t-esc="move.product_id.default_code"/>
+                                    </td>
+                                    <td style="text-align: right; width: 5%;">
+                                        <t t-esc="line_index"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+
+                </table>
+
+                <!-- Serial Numbers Section -->
+
+                <t t-if="picking.move_line_ids.filtered(lambda l: l.lot_id)">
+
+                    <div style="font-size: 13px; direction: rtl; margin-top: 30px;">
+
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px;" cellpadding="5">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th colspan="4"
+                                        style="text-align: right; font-weight: bold; font-size: 14px; text-decoration: underline; padding-bottom: 10px;">
+
+                                        מספרים סידוריים
+
+                                    </th>
+
+                                </tr>
+
+                                <tr style="font-size: 13px;">
+
+                                    <th style="text-align: right; border-bottom: 1px solid;">מק"ט</th>
+
+                                    <th style="text-align: right; border-bottom: 1px solid;">שם מוצר</th>
+
+                                    <th style="text-align: right; border-bottom: 1px solid;">מספר סידורי</th>
+
+                                    <th style="text-align: right; border-bottom: 1px solid;">כמות</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <t t-foreach="picking.move_line_ids.filtered(lambda l: l.lot_id)" t-as="line">
+
+                                    <tr style="font-size: 13px;">
+
+                                        <td style="text-align: right;">
+
+                                            <t t-esc="line.product_id.default_code"/>
+
+                                        </td>
+
+                                        <td style="text-align: right;">
+
+                                            <t t-esc="line.product_id.name"/>
+
+                                        </td>
+
+                                        <td style="text-align: right;">
+
+                                            <t t-esc="line.lot_id.name"/>
+
+                                        </td>
+
+                                        <td style="text-align: right;">
+
+                                            <t t-esc="'{:,}'.format(line.qty_done)"/>
+
+                                        </td>
+
+                                    </tr>
+
+                                </t>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </t>
+
+
+                <hr style="height: 1px; background-color: #000; width: 98%;"/>
+
+
+                <!-- Notes section -->
+
+                <div style="font-size: 13px; direction: rtl; position: relative;">
+
+                    <table style="width: 100%; border-collapse: collapse;">
+
+                        <tr style="font-size: 13px;">
+
+                            <!-- First column: rightmost section -->
+
+                            <td style="width: 80%; text-align: right; vertical-align: top; padding-right: 10px; padding-top: 30px; font-weight: bold;">
+
+                                <p>
+
+                                    <t t-esc="picking.note"/>
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <t t-if="picking.signature">
+
+                    <div style="margin-top: 40px; direction: rtl; font-size: 13px;">
+
+                        <p style="font-weight: bold; text-decoration: underline;">חתימת מקבל הסחורה</p>
+
+                        <!--<div style="border: 1px solid #000; width: 300px; height: 100px; padding: 5px;">-->
+
+                        <img t-att-src="image_data_uri(picking.signature)" style="max-height: 4cm; max-width: 8cm;"/>
+
+
+                        <!--style="max-width: 100%; max-height: 90px; object-fit: contain;"/>-->
+
+                        <!--</div>-->
+
+                    </div>
+
+                </t>
+
+
+            </div>
+
+        </t>
+    </template>
+
+    <template id="report_custom_delivery_slip">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="picking">
+                <t t-call="cr_custom_sale_report.custom_delivery_slip_report_template"
+                   t-lang="picking.partner_id.lang"/>
+                <t t-call="cr_custom_sale_report.custom_footer_pdf"
+                   t-lang="picking.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/reports/custom_invoice_report_template.xml
+------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_invoice_report_template">
+        <t t-call="web.html_container">
+
+            <t t-set="invoice" t-value="invoice.with_context(lang=invoice.partner_id.lang)"/>
+
+            <t t-call="cr_custom_sale_report.custom_sale_external_layout"/>
+
+
+            <div class="page ps-5 pe-5 report-content">
+
+                <style>
+
+                    @font-face {
+
+                    font-family: 'CalibriCustom';
+
+                    src: url('/cr_custom_sale_report/static/fonts/calibri.ttf') format('truetype');
+
+                    font-weight: normal;
+
+                    font-style: normal;
+
+                    }
+
+                    .report-content, .report-content * {
+
+                    font-family: 'CalibriCustom', Arial, sans-serif !important;
+
+                    }
+
+                </style>
+
+
+                <!-- Header -->
+
+                <table style="width: 90%; font-size: 15px; font-weight: bold; direction: rtl; border-collapse: collapse;">
+
+                    <tr>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span t-if="invoice.move_type == 'out_refund'">תעודת אשראי</span>
+
+                            <span t-else="">חֶשׁבּוֹנִית</span>
+
+                        </td>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span>מספר:</span>
+
+                            <span style="margin-right: 5px;" t-esc="invoice.display_name"/>
+
+                        </td>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span>מְקוֹרִי</span>
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+                <hr style="height: 1px; background-color: #000;"/>
+
+
+                <!-- Customer info -->
+
+                <div style="font-size: 13px; direction: rtl;">
+
+                    <table style="width: 100%; border-collapse: collapse;">
+
+                        <tr style="font-size: 13px;">
+
+                            <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 10px;">
+
+                                <p style="font-weight: bold;">:לכבוד</p>
+
+                                <p>
+                                    <t t-esc="invoice.partner_id.name"/>
+                                </p>
+
+                                <p>
+                                    <t t-esc="invoice.partner_id.street"/>
+                                </p>
+
+                                <p>
+                                    <t t-esc="invoice.partner_id.city"/>
+                                </p>
+
+                            </td>
+
+                            <td style="width: 25%; text-align: center; vertical-align: top;">
+
+                                <p>טלפון:
+                                    <t t-esc="invoice.partner_id.phone"/>
+                                </p>
+
+                                <p>מע"מ/ת.ז:
+                                    <t t-esc="invoice.partner_id.vat"/>
+                                </p>
+
+                            </td>
+
+                            <td style="width: 25%; text-align: left; vertical-align: top; padding-left: 50px;">
+
+                                <p>מספר לקוח:
+                                    <t t-esc="invoice.partner_id.id"/>
+                                </p>
+
+                            </td>
+
+                            <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 30px; line-height: 0.8;">
+
+                                <p style="font-weight: bold;">תאריך החשבונית:
+
+                                    <t t-esc="invoice.invoice_date.strftime('%d-%m-%y') if invoice.invoice_date else ''"/>
+
+                                </p>
+
+                                <p style="font-weight: bold;">
+
+                                    <t t-esc="'דף: %s מתוך %s' % (invoice.page_number, invoice.total_pages)"/>
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <hr style="height: 1px; background-color: #000;"/>
+
+
+                <!-- Invoice lines -->
+
+                <table dir="rtl" cellpadding="5" style="width: 100%; font-size: 13px; direction: rtl;">
+
+                    <thead>
+
+                        <tr style="direction: rtl;">
+
+                            <th style="width: 5%; border-bottom: 1px solid; text-align: right;">#</th>
+
+                            <th style="width: 8%; border-bottom: 1px solid; text-align: right;">מס' פריט</th>
+
+                            <th style="width: 30%; border-bottom: 1px solid; text-align: right;">תאור פריט</th>
+
+                            <th style="width: 8%; border-bottom: 1px solid; text-align: right;">כמות</th>
+
+                            <th style="width: 8%; border-bottom: 1px solid; text-align: right;">ש''ח ליחידה</th>
+
+                            <th style="width: 8%; border-bottom: 1px solid; text-align: right;">דִיסקוֹנט</th>
+
+                            <th style="width: 8%; border-bottom: 1px solid; text-align: right;">סה''כ ש''ח</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <t t-foreach="invoice" t-as="item">
+
+                            <t t-foreach="item.invoice_line_ids" t-as="line" t-idx="line_index">
+
+                                <tr>
+
+                                    <td>
+                                        <t t-if="line.product_id" t-esc="line_index + 1"/>
+                                    </td>
+
+                                    <td>
+                                        <t t-if="line.product_id" t-esc="line.product_id.default_code"/>
+                                    </td>
+
+                                    <td>
+                                        <t t-esc="line.name.replace('[' + (line.product_id.default_code or '') + ']', '').strip() if line.product_id and line.product_id.default_code else line.name"/>
+                                    </td>
+
+                                    <td>
+                                        <t t-esc="'{:,}'.format(line.quantity) if line.quantity else 0"/>
+                                    </td>
+
+                                    <td>
+                                        <t t-esc="'{:,}'.format(line.price_unit) if line.price_unit else 0.00"/>
+                                    </td>
+
+                                    <td>
+                                        <t t-esc="'{:,}'.format(line.discount) if line.discount else 0.00"/>
+                                    </td>
+
+                                    <td>
+                                        <t t-esc="'{:,}'.format(line.price_subtotal) if line.price_subtotal else 0.00"/>
+                                    </td>
+
+                                </tr>
+
+                            </t>
+
+                        </t>
+
+                    </tbody>
+
+                </table>
+
+                <hr style="height: 1px; background-color: #000; width: 98%;"/>
+
+
+                <!-- Totals and SN/LN section -->
+
+                <t t-set="lot_values" t-value="invoice._get_invoiced_lot_values()"/>
+
+                <div style="display: flex; direction: rtl; justify-content: space-between; margin-top: 20px;">
+
+
+                    <!-- Right side: SN/LN or terms -->
+
+                    <div style="width: 48%; font-size: 13px;">
+
+                        <t t-if="lot_values">
+
+
+                            <table class="table table-sm" style="width: 100%; border-collapse: collapse;">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th style="text-align: right; border: 1px solid #000;">מוצר</th>
+
+                                        <th style="text-align: right; border: 1px solid #000;">כמות</th>
+
+                                        <th style="text-align: right; border: 1px solid #000;">SN/LN</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <tr t-foreach="lot_values" t-as="snln_line">
+
+                                        <td style="border: 1px solid #000;">
+                                            <t t-esc="snln_line['product_name']"/>
+                                        </td>
+
+                                        <td style="border: 1px solid #000; text-align: right;">
+
+                                            <t t-esc="snln_line['quantity']"/>
+
+                                            <t t-esc="snln_line['uom_name']" groups="uom.group_uom"/>
+
+                                        </td>
+
+                                        <td style="border: 1px solid #000; text-align: right;">
+                                            <t t-esc="snln_line['lot_name']"/>
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </t>
+
+                        <t t-else="">
+
+                            <p style="font-weight: bold; margin: 0;">תנאי תשלום:
+
+                                <t t-if="invoice.invoice_payment_term_id">
+
+                                    <span t-esc="invoice.invoice_payment_term_id.name"/>
+
+                                </t>
+
+                                <t t-else="">ללא תנאים</t>
+
+                            </p>
+
+                            <p style="font-weight: bold; margin: 0;">
+
+                                תנאים והגבלות:
+
+                                <p style="margin: 0;">
+
+                                    <t t-esc="invoice.narration"/>
+
+                                </p>
+
+                            </p>
+
+                        </t>
+
+                    </div>
+
+
+                    <!-- Left side: totals -->
+
+                    <div style="width: 48%;">
+
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; font-weight: bold;">
+
+                            <tr>
+
+                                <td style="padding: 5px;">סה"כ לפני מע"מ:</td>
+
+                                <td style="padding: 5px; text-align: left;">
+                                    <t t-esc="'{:,}'.format(invoice.amount_untaxed) if invoice.amount_untaxed else 0.00"/>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td style="padding: 5px;">הנחה כוללת:</td>
+
+                                <td style="padding: 5px; text-align: left;">
+
+                                    <t t-set="total_discount"
+                                       t-value="sum(line.price_unit * line.quantity * (line.discount / 100) for line in invoice.invoice_line_ids if line.discount)"/>
+
+                                    <t t-if="total_discount &gt; 0">
+
+                                        <span t-esc="'{:,}'.format(total_discount)"/>
+
+                                    </t>
+
+                                    <t t-else="">0.00</t>
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td style="padding: 5px;">סה"כ לאחר הנחה:</td>
+
+                                <td style="padding: 5px; text-align: left;">
+                                    <t t-esc="'{:,}'.format(invoice.amount_untaxed)"/>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td style="padding: 5px;">מע"מ:</td>
+
+                                <td style="padding: 5px; text-align: left;">
+                                    <t t-esc="'{:,}'.format(invoice.amount_tax)"/>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td style="padding: 5px;">סכום כולל מע"מ:</td>
+
+                                <td style="padding: 5px; text-align: left;">
+                                    <t t-esc="'{:,}'.format(invoice.amount_total)"/>
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+
+                </div>
+
+                <div>
+
+                    <t t-if="lot_values">
+
+                        <div id="right-elements" style="font-size: 13px; direction: rtl; margin-bottom: 10px;">
+
+                            <p style="font-weight: bold; margin: 0;">
+
+                                <span>תנאי תשלום:</span>
+
+                                <t t-if="invoice.invoice_payment_term_id">
+
+                                    <span t-esc="invoice.invoice_payment_term_id.name"/>
+
+                                </t>
+
+                                <t t-else="">
+
+                                    <span>ללא תנאים</span>
+
+                                </t>
+
+                                <td style="width: 65%; padding-right: 10px; font-weight: bold;">
+
+                                    <p style="margin: 0;">
+
+                                        <t t-esc="invoice.narration"/>
+
+                                    </p>
+
+                                </td>
+
+                            </p>
+
+                        </div>
+
+                    </t>
+
+                    <t t-else="">
+
+                    </t>
+
+                </div>
+
+            </div>
+
+        </t>
+    </template>
+
+    <template id="report_custom_invoice">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="invoice">
+                <t t-call="cr_custom_sale_report.custom_invoice_report_template"
+                   t-lang="invoice.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="custom_invoice_report_template_pdf">
+        <t t-call="web.html_container">
+            <t t-set="invoice" t-value="invoice.with_context(lang=invoice.partner_id.lang)"/>
+            <t t-call="cr_custom_sale_report.custom_sale_external_layout_pdf"/>
+            <div class="page ps-5 pe-5 report-content">
+                <style>
+                    @font-face {
+                    font-family: 'CalibriCustom';
+                    src: url('/cr_custom_sale_report/static/fonts/calibri.ttf')
+                    format('truetype');
+                    font-weight: normal;
+                    font-style: normal;
+                    }
+                    .report-content, .report-content * {
+                    font-family: 'CalibriCustom', Arial, sans-serif !important;
+                    }
+                </style>
+
+                <!-- Header section -->
+
+                <table style="width: 90%; font-size: 15px; font-weight: bold; direction: rtl; border-collapse: collapse;">
+                    <tr>
+                        <td style="text-align: right; width: 33%;">
+                            <span t-if="invoice.move_type == 'out_refund'">
+                                תעודת אשראי
+                            </span>
+                            <span t-else="">חֶשׁבּוֹנִית</span>
+                        </td>
+                        <td style="text-align: right; width: 33%;">
+                            <span style="white-space: nowrap;">
+                                <span>מספר:</span>
+                                <span style="margin-right: 5px;" t-esc="invoice.display_name"/>
+                            </span>
+                        </td>
+                        <td style="text-align: right; width: 33%;">
+                            <span>מְקוֹרִי</span>
+                        </td>
+                    </tr>
+                </table>
+                <hr style="height: 1px; background-color: #000;"/>
+
+                <!-- Customer Details -->
+                <div style="font-size: 13px; direction: rtl;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="font-size: 13px;">
+                            <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 10px;">
+                                <p style="font-weight: bold;">:לכבוד</p>
+                                <p>
+                                    <t t-esc="invoice.partner_id.name"/>
+                                </p>
+                                <p>
+                                    <t t-esc="invoice.partner_id.street"/>
+                                </p>
+                                <p>
+                                    <t t-esc="invoice.partner_id.city"/>
+                                </p>
+                            </td>
+                            <td style="width: 25%; text-align: center; vertical-align: top;">
+                                <p>טלפון:
+                                    <t t-esc="invoice.partner_id.phone"/>
+                                </p>
+                                <p>מע"מ/ת.ז:
+                                    <t t-esc="invoice.partner_id.vat"/>
+                                </p>
+                                <t t-if="invoice.rt_confirmation_number">
+                                    <p style="margin: 0;">מספר הקצאה:
+                                        <t t-esc="invoice.rt_confirmation_number[-18:]"/>
+                                    </p>
+                                </t>
+                            </td>
+                            <td style="width: 25%; text-align: left; vertical-align: top; padding-left: 50px;">
+                                <p>מספר לקוח:
+                                    <t t-esc="invoice.partner_id.id"/>
+                                </p>
+                            </td>
+                            <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 30px; line-height: 0.8;">
+                                <p style="font-weight: bold;">תאריך:
+                                    <t t-esc="invoice.invoice_date.strftime('%d-%m-%y') if invoice.invoice_date else ''"/>
+                                </p>
+                                <p style="font-weight: bold;">
+                                    <t t-esc="'דף: %s מתוך %s' % (invoice.page_number, invoice.total_pages)"/>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <hr style="height: 1px; background-color: #000;"/>
+                <!-- Invoice Lines -->
+                <table dir="rtl" cellpadding="5" style="width: 100%; font-size: 13px; direction: rtl;">
+                    <thead>
+                        <tr style="direction: rtl;">
+                            <th style="width: 5%; border-bottom: 1px solid; text-align: right;">
+                                #
+                            </th>
+                            <th style="width: 8%; border-bottom: 1px solid; text-align: right;">
+                                מס' פריט
+                            </th>
+                            <th style="width: 30%; border-bottom: 1px solid; text-align: right;">
+                                תאור פריט
+                            </th>
+                            <th style="width: 8%; border-bottom: 1px solid; text-align: right;">
+                                כמות
+                            </th>
+                            <th style="width: 8%; border-bottom: 1px solid; text-align: right;">
+                                ש"ח ליחידה
+                            </th>
+                            <th style="width: 8%; border-bottom: 1px solid; text-align: right;">
+                                דִיסקוֹנט
+                            </th>
+                            <th style="width: 8%; border-bottom: 1px solid; text-align: right;">
+                                סה"כ ש"ח
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="invoice.invoice_line_ids" t-as="line" t-idx="line_index">
+                            <tr t-attf-style="direction: rtl; #{'background-color: #f0f0f0;' if line.display_type == 'line_section' else ''}">
+                                <!-- Serial Number -->
+                                <td style="text-align: right; width: 5%;">
+                                    <t t-if="line.display_type not in ['line_section', 'line_note'] and line.product_id">
+                                        <t t-esc="line_index + 1"/>
+                                    </t>
+                                </td>
+                                <!-- Product Code -->
+                                <td style="text-align: right; width: 8%;">
+                                    <t t-esc="line.product_id.default_code or ''"/>
+                                </td>
+                                <!-- Description -->
+                                <td style="text-align: right; width: 30%;">
+                                    <t t-if="line.display_type in ['line_section', 'line_note']">
+                                        <t t-esc="line.name"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-esc="line.name.replace('[' + (line.product_id.default_code or '') + ']', '').strip() if line.product_id and line.product_id.default_code else line.name"/>
+                                    </t>
+                                </td>
+                                <!-- Quantity -->
+                                <td style="text-align: right; width: 8%;">
+                                    <t t-if="line.display_type not in ['line_section', 'line_note'] and line.product_id">
+                                        <t t-esc="'{:,}'.format(line.quantity or 0)"/>
+                                    </t>
+                                </td>
+                                <!-- Unit Price -->
+                                <td style="text-align: right; width: 8%; font-weight: bold;">
+                                    <t t-if="line.display_type not in ['line_section', 'line_note'] and line.product_id">
+                                        <t t-esc="'{:,}'.format(line.price_unit or 0.00)"/>
+                                    </t>
+                                </td>
+                                <!-- Discount -->
+                                <td style="text-align: right; width: 8%; font-weight: bold;">
+                                    <t t-if="line.display_type not in ['line_section', 'line_note'] and line.product_id">
+                                        <t t-esc="'{:,}'.format(line.discount or 0.00)"/>
+                                    </t>
+                                </td>
+                                <!-- Subtotal -->
+                                <td style="text-align: right; width: 8%; font-weight: bold;">
+                                    <t t-if="line.display_type not in ['line_section', 'line_note'] and line.product_id">
+                                        <t t-esc="'{:,}'.format(line.price_subtotal or 0.00)"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <hr style="height: 1px; background-color: #000; width: 98%;"/>
+                <!-- Totals and SN/LN or Terms side-by-side -->
+                <t t-set="lot_values" t-value="invoice._get_invoiced_lot_values()"/>
+                <div style="display: table; width: 100%; direction: rtl; table-layout: fixed; margin-top: 20px;">
+                    <!-- Right Side (SN/LN or Terms) -->
+                    <div style="display: table-cell; width: 50%; vertical-align: top; padding-left: 20px; min-height: 200px;">
+                        <t t-if="lot_values">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                                <thead>
+                                    <tr>
+                                        <th style="border: 1px solid black; text-align: right;">
+                                            מוצר
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: right;">
+                                            כמות
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: right;">
+                                            SN/LN
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="lot_values" t-as="snln_line">
+                                        <td style="border: 1px solid black;">
+                                            <t t-esc="snln_line['product_name']"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: right;">
+                                            <t t-esc="snln_line['quantity']"/>
+                                            <t t-esc="snln_line['uom_name']"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: right;">
+                                            <t t-esc="snln_line['lot_name']"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-else="">
+                            <div style="font-size: 13px; font-weight: bold;">
+                                <p style="margin: 0;">תנאי תשלום:
+                                    <t t-if="invoice.invoice_payment_term_id">
+                                        <span t-esc="invoice.invoice_payment_term_id.name"/>
+                                    </t>
+                                    <t t-else="">ללא תנאים</t>
+                                </p>
+                                <p style="margin: 0;">תנאים והגבלות:</p>
+                                <p style="margin: 0;">
+                                    <t t-esc="invoice.narration"/>
+                                </p>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Left Side (Totals) -->
+                    <div style="display: table-cell; width: 50%; vertical-align: top; padding-right: 20px;">
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; font-size: 13px; font-weight: bold;">
+                            <tr>
+                                <td style="padding: 5px;">סה"כ לפני מע"מ:</td>
+                                <td style="padding: 5px; text-align: left;">
+                                    <t t-esc="'{:,}'.format(invoice.amount_untaxed or 0.00)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px;">הנחה כוללת:</td>
+                                <td style="padding: 5px; text-align: left;">
+                                    <t t-set="total_discount"
+                                       t-value="sum(line.price_unit * line.quantity * (line.discount / 100) for line in invoice.invoice_line_ids if line.discount)"/>
+                                    <t t-if="total_discount &gt; 0">
+                                        <span t-esc="'{:,}'.format(total_discount)"/>
+                                    </t>
+                                    <t t-else="">0.00</t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px;">סה"כ לאחר הנחה:</td>
+                                <td style="padding: 5px; text-align: left;">
+                                    <t t-esc="'{:,}'.format(invoice.amount_untaxed or 0.00)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px;">מע"מ:</td>
+                                <td style="padding: 5px; text-align: left;">
+                                    <t t-esc="'{:,}'.format(invoice.amount_tax or 0.00)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px;">סכום כולל מע"מ:</td>
+                                <td style="padding: 5px; text-align: left;">
+                                    <t t-esc="'{:,}'.format(invoice.amount_total or 0.00)"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <t t-if="lot_values">
+                        <div id="right-elements" style="font-size: 13px; direction: rtl; margin-bottom: 10px;">
+                            <p/>
+                            <p style="font-weight: bold; margin: 0;">
+                                <span>תנאי תשלום:</span>
+                                <t t-if="invoice.invoice_payment_term_id">
+                                    <span t-esc="invoice.invoice_payment_term_id.name"/>
+                                </t>
+                                <t t-else="">
+                                    <span>ללא תנאים</span>
+                                </t>
+                                <td style="width: 65%; padding-right: 10px; font-weight: bold;">
+                                    <p style="margin: 0;">
+                                        <t t-esc="invoice.narration"/>
+                                    </p>
+                                </td>
+                            </p>
+                        </div>
+                    </t>
+                    <t t-else="">
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_custom_invoice_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="invoice">
+                <t t-call="cr_custom_sale_report.custom_invoice_report_template_pdf"
+                   t-lang="invoice.partner_id.lang"/>
+                <t t-call="cr_custom_sale_report.custom_footer_pdf"
+                   t-lang="invoice.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/reports/custom_receipt_report_template.xml
+----------------------------
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="custom_receipt_report_template">
+        <t t-call="web.html_container">
+            <t t-if="not receipt or receipt._name != 'lyg.account.receipt'">
+                <div style="color: red; font-weight: bold;">
+                    Error: Invalid or missing receipt record.
+                </div>
+            </t>
+            <t t-else="">
+                <t t-set="receipt"
+                   t-value="receipt.with_context(lang=receipt.partner_id.lang if receipt.partner_id else 'en_US')"/>
+
+                <!-- Call the external layout -->
+                <t t-call="cr_custom_sale_report.custom_sale_external_layout"/>
+
+                <!-- Main content wrapper with custom font applied -->
+                <div class="page report-content" style="padding-left: 5px; padding-right: 5px;">
+                    <!-- Embed Calibri font and apply it -->
+                    <style>
+                        @font-face {
+                        font-family: 'CalibriCustom';
+                        src: url('/cr_custom_sale_report/static/fonts/calibri.ttf') format('truetype');
+                        font-weight: normal;
+                        font-style: normal;
+                        }
+                        .report-content, .report-content * {
+                        font-family: 'CalibriCustom', Arial, sans-serif !important;
+                        }
+                    </style>
+
+                    <!-- Header section: Receipt details -->
+                    <table style="width: 90%; font-size: 15px; font-weight: bold; direction: rtl; border-collapse: collapse;">
+                        <tr>
+                            <td style="text-align: right; width: 50%;">
+                                <span>קַבָּלָה</span>
+                            </td>
+                            <td style="text-align: right; width: 50%;">
+                                <span style="white-space: nowrap;">
+                                    <span>מִספָּר</span>
+                                    <span style="margin-right: 5px;">:</span>
+                                    <span t-esc="receipt.name or ''"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <hr style="height: 1px; background-color: #000;"/>
+
+                    <!-- Customer details section -->
+                    <div style="font-size: 13px; direction: rtl;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr style="font-size: 13px;">
+                                <!-- First column: rightmost section -->
+                                <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 10px;">
+                                    <p style="font-weight: bold;">:לכבוד</p>
+                                    <p>
+                                        <t t-esc="receipt.partner_id.name or ''"/>
+                                    </p>
+                                    <p>
+                                        <t t-esc="receipt.partner_id.street or ''"/>
+                                    </p>
+                                    <p>
+                                        <t t-esc="receipt.partner_id.city or ''"/>
+                                    </p>
+                                </td>
+                                <!-- Second column: center section -->
+                                <td style="width: 25%; text-align: center; vertical-align: top;">
+                                    <p>טלפון:
+                                        <t t-esc="receipt.partner_id.phone or ''"/>
+                                    </p>
+                                    <p>כתובת למשלוח:
+                                        <t t-esc="', '.join(filter(None, [receipt.partner_id.street or '', receipt.partner_id.city or '', receipt.partner_id.country_id.name or '']))"/>
+                                    </p>
+                                    <p>
+                                        <t t-esc="receipt.partner_id.phone or ''"/>
+                                    </p>
+                                    <p>מע"מ/ת.ז:
+                                        <t t-esc="receipt.partner_id.vat or ''"/>
+                                    </p>
+                                </td>
+                                <!-- Third column: leftmost section -->
+                                <td style="width: 25%; text-align: left; vertical-align: top; padding-left: 50px;">
+                                    <p>מספר לקוח:
+                                        <t t-esc="receipt.partner_id.id or ''"/>
+                                    </p>
+                                </td>
+                                <!-- Fourth column: additional information -->
+                                <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 30px;">
+                                    <p style="font-weight: bold;">תאריך הדפסה:
+                                        <t t-esc="time.strftime('%Y-%m-%d')"/>
+                                    </p>
+                                    <p style="font-weight: bold;">שעה:
+                                        <t t-esc="time.strftime('%H:%M:%S')"/>
+                                    </p>
+                                    <p style="font-weight: bold;">
+                                        <t t-esc="'דף: %s מתוך %s' % (page, pages)"/>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <hr style="height: 1px; background-color: #000;"/>
+
+                    <!-- Receipt lines section: Transaction table -->
+                    <table dir="rtl" style="width: 100%; font-size: 13px; direction: rtl; table-layout: fixed;">
+                        <thead>
+                            <tr style="direction: rtl;">
+                                <th style="width: 5%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    #
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    יומן
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    סוג
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    שם חשבונית
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    ענף
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    בנק
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    מספר שובר/צ'ק
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    תאריך תוקף
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    סכום ניכוי
+                                </th>
+                                <th style="width: 15%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    סכום
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="receipt.receipt_line_ids" t-as="line" t-idx="line_index">
+                                <tr style="direction: rtl;">
+                                    <td style="width: 5%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line_index + 1"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.journal_id.name if line.journal_id else ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.type or ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.invoice_id.name if line.invoice_id else ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.branch or ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.bank_id.name if line.bank_id else ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.voucher_check_no or ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.validity_date.strftime('%Y-%m-%d') if line.validity_date else ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="'{:,}'.format(line.withholding_amount) if line.withholding_amount else 0.00"/>
+                                    </td>
+                                    <td style="width: 15%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="'{:,}'.format(line.amount) if line.amount else 0.00"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <hr style="height: 1px; background-color: #000; width: 98%;"/>
+
+                    <!-- Total amount section -->
+                    <div style="font-size: 15px; direction: rtl; text-align: right; padding-top: 10px; font-weight: bold;">
+                        <p>
+                            <span>סכום השכר הכולל:</span>
+                            <span t-esc="'{:,}'.format(receipt.total_pay_amount) if receipt.total_pay_amount else 0.00"/>
+                        </p>
+                    </div>
+
+                    <!-- Notes section -->
+                    <div style="font-size: 10px; direction: rtl; position: relative;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr style="font-size: 13px;">
+                                <td style="width: 80%; text-align: right; vertical-align: top; padding-right: 10px; padding-top: 30px; font-weight: bold;">
+                                    <p>
+                                        <t t-esc="receipt.note if receipt.note else ''"/>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Main Report Template -->
+    <template id="report_custom_receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="receipt">
+                <t t-call="cr_custom_sale_report.custom_receipt_report_template"
+                   t-lang="receipt.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="custom_receipt_report_template_pdf">
+        <t t-call="web.html_container">
+            <t t-if="not receipt or receipt._name != 'lyg.account.receipt'">
+                <div style="color: red; font-weight: bold;">
+                    Error: Invalid or missing receipt record.
+                </div>
+            </t>
+            <t t-else="">
+                <t t-set="receipt"
+                   t-value="receipt.with_context(lang=receipt.partner_id.lang if receipt.partner_id else 'en_US')"/>
+                <!-- Call the external layout -->
+                <t t-call="cr_custom_sale_report.custom_sale_external_layout_pdf"/>
+                <!-- Main content wrapper with custom font applied -->
+                <div class="page report-content" style="padding-left: 5px; padding-right: 5px;">
+                    <!-- Embed Calibri font and apply it -->
+                    <style>
+                        @font-face {
+                        font-family: 'CalibriCustom';
+                        src: url('/cr_custom_sale_report/static/fonts/calibri.ttf') format('truetype');
+                        font-weight: normal;
+                        font-style: normal;
+                        }
+                        .report-content, .report-content * {
+                        font-family: 'CalibriCustom', Arial, sans-serif !important;
+                        }
+                    </style>
+
+                    <!-- Header section: Receipt details -->
+                    <table style="width: 90%; font-size: 15px; font-weight: bold; direction: rtl; border-collapse: collapse;">
+                        <tr>
+                            <td style="text-align: right; width: 50%;">
+                                <span>קַבָּלָה</span>
+                            </td>
+                            <td style="text-align: right; width: 50%;">
+                                <span style="white-space: nowrap;">
+                                    <span>מִספָּר</span>
+                                    <span style="margin-right: 5px;">:</span>
+                                    <span t-esc="receipt.name or ''"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <hr style="height: 1px; background-color: #000;"/>
+                    <!-- Customer details section -->
+                    <div style="font-size: 13px; direction: rtl;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr style="font-size: 13px;">
+                                <!-- First column: rightmost section -->
+                                <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 10px;">
+                                    <p style="font-weight: bold;">:לכבוד</p>
+                                    <p>
+
+                                        <t t-esc="receipt.partner_id.name or ''"/>
+                                    </p>
+                                    <p>
+                                        <t t-esc="receipt.partner_id.street or ''"/>
+                                    </p>
+                                    <p>
+                                        <t t-esc="receipt.partner_id.city or ''"/>
+                                    </p>
+                                </td>
+                                <!-- Second column: center section -->
+                                <td style="width: 25%; text-align: center; vertical-align: top;">
+                                    <p>טלפון:
+                                        <t t-esc="receipt.partner_id.phone or ''"/>
+                                    </p>
+                                    <p>כתובת למשלוח:
+
+                                        <t t-esc="', '.join(filter(None, [receipt.partner_id.street or '', receipt.partner_id.city or '', receipt.partner_id.country_id.name or '']))"/>
+                                    </p>
+                                    <p>
+                                        <t t-esc="receipt.partner_id.phone or ''"/>
+                                    </p>
+                                    <p>מע"מ/ת.ז:
+                                        <t t-esc="receipt.partner_id.vat or ''"/>
+                                    </p>
+                                </td>
+                                <!-- Third column: leftmost section -->
+                                <td style="width: 25%; text-align: left; vertical-align: top; padding-left: 50px;">
+                                    <p>מספר לקוח:
+                                        <t t-esc="receipt.partner_id.id or ''"/>
+                                    </p>
+                                </td>
+                                <!-- Fourth column: additional information -->
+                                <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 30px;">
+                                    <p style="font-weight: bold;">תאריך קבלה:
+                                        <t t-esc="receipt.date.strftime('%Y-%m-%d')"/>
+                                    </p>
+                                    <p style="font-weight: bold;">שעה:
+                                        <t t-esc="time.strftime('%H:%M:%S')"/>
+                                    </p>
+                                    <!--<p style="font-weight: bold;">-->
+                                    <!--    <t t-esc="'דף: %s מתוך %s' % (page, pages)"/>-->
+                                    <!--</p>-->
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <hr style="height: 1px; background-color: #000;"/>
+
+                    <!-- Receipt lines section: Transaction table -->
+                    <table dir="rtl" style="width: 100%; font-size: 13px; direction: rtl; table-layout: fixed;">
+                        <thead>
+                            <tr style="direction: rtl;">
+                                <th style="width: 5%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    #
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    יומן
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    סוג
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    שם חשבונית
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    ענף
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    בנק
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    מספר שובר/צ'ק
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    תאריך תוקף
+                                </th>
+                                <th style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    סכום ניכוי
+                                </th>
+                                <th style="width: 15%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px; border-bottom: 1px solid black;">
+                                    סכום
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="receipt.receipt_line_ids" t-as="line" t-idx="line_index">
+                                <tr style="direction: rtl;">
+                                    <td style="width: 5%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line_index + 1"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.journal_id.name if line.journal_id else ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.type or ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.invoice_id.name if line.invoice_id else ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.branch or ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.bank_id.name if line.bank_id else ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.voucher_check_no or ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="line.validity_date.strftime('%Y-%m-%d') if line.validity_date else ''"/>
+                                    </td>
+                                    <td style="width: 10%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="'{:,}'.format(line.withholding_amount) if line.withholding_amount else 0.00"/>
+                                    </td>
+                                    <td style="width: 15%; direction: rtl; text-align: right; unicode-bidi: embed; padding: 5px;">
+                                        <t t-esc="'{:,}'.format(line.amount) if line.amount else 0.00"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <hr style="height: 1px; background-color: #000; width: 98%;"/>
+
+                    <!-- Total amount section -->
+                    <div style="font-size: 15px; direction: rtl; text-align: right; padding-top: 10px; font-weight: bold;">
+                        <p>
+                            <span>סכום השכר הכולל:</span>
+                            <span t-esc="'{:,}'.format(receipt.total_pay_amount) if receipt.total_pay_amount else 0.00"/>
+                        </p>
+                    </div>
+                    <!-- Notes section -->
+                    <div style="font-size: 13px; direction: rtl; position: relative;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr style="font-size: 13px;">
+                                <td style="width: 80%; text-align: right; vertical-align: top; padding-right: 10px; padding-top: 30px; font-weight: bold;">
+                                    <p>
+                                        <t t-esc="receipt.note if receipt.note else ''"/>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Main Report Template -->
+    <template id="report_custom_receipt_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="receipt">
+                <t t-call="cr_custom_sale_report.custom_receipt_report_template_pdf"
+                   t-lang="receipt.partner_id.lang"/>
+                <t t-call="cr_custom_sale_report.custom_footer_pdf"
+                   t-lang="receipt.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/reports/custom_sale_report_action.xml
+-------------------------
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="paperformat_report_custom_saleorder" model="report.paperformat">
+        <field name="name">Custom Sale Report Paperformat</field>
+        <field name="default" eval="False"/>
+        <field name="disable_shrinking" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">32</field>
+        <field name="margin_left">8</field>
+        <field name="margin_right">8</field>
+        <field name="dpi">96</field>
+    </record>
+    <record id="action_custom_sale_report" model="ir.actions.report">
+        <field name="name">Custom Sale Report</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="paperformat_id" ref="paperformat_report_custom_saleorder"/>
+        <field name="report_name">cr_custom_sale_report.report_custom_sale_pdf</field>
+        <field name="report_file">cr_custom_sale_report.report_custom_sale_pdf</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+    <record id="action_custom_sale_report_html" model="ir.actions.report">
+        <field name="name">Custom Sale Report(HTML)</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-html</field>
+        <field name="paperformat_id" ref="paperformat_report_custom_saleorder"/>
+        <field name="report_name">cr_custom_sale_report.report_custom_sale</field>
+        <field name="report_file">cr_custom_sale_report.report_custom_sale</field>
+        <field name="binding_type">report</field>
+    </record>
+    <record id="action_custom_invoice_report" model="ir.actions.report">
+        <field name="name">Custom Invoice Report</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="paperformat_id" ref="paperformat_report_custom_saleorder"/>
+        <field name="report_name">cr_custom_sale_report.report_custom_invoice_pdf</field>
+        <field name="report_file">cr_custom_sale_report.report_custom_invoice_pdf</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+    <record id="action_custom_invoice_report_html" model="ir.actions.report">
+        <field name="name">Custom Invoice Report (HTML)</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="paperformat_id" ref="paperformat_report_custom_saleorder"/>
+        <field name="report_name">cr_custom_sale_report.report_custom_invoice</field>
+        <field name="report_file">cr_custom_sale_report.report_custom_invoice</field>
+        <field name="binding_type">report</field>
+    </record>
+    <record id="action_custom_delivery_slip_report" model="ir.actions.report">
+        <field name="name">Custom Delivery Slip</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="paperformat_id" ref="paperformat_report_custom_saleorder"/>
+        <field name="report_name">cr_custom_sale_report.report_custom_delivery_slip</field>
+        <field name="report_file">cr_custom_sale_report.report_custom_delivery_slip</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain">[('picking_type_code', '=', 'outgoing')]</field>
+    </record>
+
+    <!-- Report Action for lyg.account.receipt -->
+    <record id="action_custom_receipt_report" model="ir.actions.report">
+        <field name="name">Custom Receipt Report</field>
+        <field name="model">lyg.account.receipt</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="paperformat_id" ref="paperformat_report_custom_saleorder"/>
+        <field name="report_name">cr_custom_sale_report.report_custom_receipt_pdf</field>
+        <field name="report_file">cr_custom_sale_report.report_custom_receipt_pdf</field>
+        <field name="binding_model_id" ref="lyg_receipt.model_lyg_account_receipt"/>
+        <field name="binding_type">report</field>
+    </record>
+    <record id="action_custom_receipt_report_html" model="ir.actions.report">
+        <field name="name">Custom Receipt Report (HTML)</field>
+        <field name="model">lyg.account.receipt</field>
+        <field name="report_type">qweb-html</field>
+        <field name="paperformat_id" ref="paperformat_report_custom_saleorder"/>
+        <field name="report_name">cr_custom_sale_report.report_custom_receipt</field>
+        <field name="report_file">cr_custom_sale_report.report_custom_receipt</field>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
+
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/reports/custom_sale_report_header_template.xml
+--------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_sale_external_layout_standard">
+        <!-- Embed Calibri font and apply it -->
+         <style>
+            @font-face {
+            font-family: 'CalibriCustom';
+            src: url('/cr_custom_sale_report/static/fonts/calibri.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            }
+            .report-container {
+            font-family: 'CalibriCustom', Arial, sans-serif !important;
+            display: flex;
+            width: 100%;
+            margin-bottom: 20px;
+            }
+            .report-section {
+            flex: 1;
+            max-width: 33%;
+            box-sizing: border-box;
+            }
+            .english-section {
+            direction: ltr !important;
+            text-align: left !important;
+            padding-left: 10px;
+            }
+            .logo-section {
+            text-align: center;
+            }
+            .hebrew-section {
+            direction: rtl !important;
+            text-align: right !important;
+            padding-right: 10px;
+            }
+            .hebrew-section .label {
+            display: inline-block;
+            white-space: nowrap;
+            margin-left: 5px;
+            font-weight: bold;
+            }
+            .hebrew-section .value {
+            display: inline-block;
+            white-space: normal;
+            word-wrap: break-word;
+            font-weight: bold;
+            }
+            /* Adjust flex direction based on language */
+            <t t-if="lang and lang.startswith('he')">
+                .report-container {
+                flex-direction: row-reverse;
+                }
+            </t>
+            <t t-else="">
+                .report-container {
+                flex-direction: row;
+                }
+            </t>
+        </style>
+        <div class="report-container">
+            <!-- Left section: English details -->
+            <div class="report-section english-section">
+                <div style="font-size: 13px; font-weight: bold;">
+                    <t t-esc="company.english_company_name"/>
+                </div>
+                <div style="font-size: 13px; font-weight: bold;">
+                    <t t-esc="company.vat"/>
+                </div>
+                <div style="font-size: 13px; font-weight: bold;">
+                    <t t-esc="(company.english_street or '') + ', ' + (company.english_city or '')"/>
+                </div>
+                <div style="font-size: 13px; font-weight: bold;">
+                    <t t-esc="company.phone"/>
+                </div>
+                <div style="font-size: 13px; font-weight: bold;">
+                    <t t-esc="company.email"/>
+                </div>
+            </div>
+
+            <!-- Center section: Logo -->
+            <div class="report-section logo-section">
+                <img t-if="company.logo" t-att-src="image_data_uri(company.logo)"
+                     style="max-height: 250px; max-width: 250px;" alt="Logo"/>
+            </div>
+
+            <!-- Right section: Hebrew details -->
+            <div class="report-section hebrew-section">
+                 <div style="font-size: 13px;">
+                    <!--<span class="label">:חֶברָה</span>-->
+                    <span class="value">
+                        <t t-esc="company.name"/>
+                    </span>
+                </div>
+                <div style="font-size: 13px;">
+                    <!--<span class="label">:ח.פ</span>-->
+                    <span class="value">
+                        <t t-esc="company.vat"/>
+                    </span>
+                </div>
+                <div style="font-size: 13px;">
+                    <!--<span class="label">:רְחוֹב</span>-->
+                    <span class="value">
+                        <t t-esc="company.street + ', ' + company.city"/>
+                    </span>
+                </div>
+                <div style="font-size: 13px;">
+                    <!--<span class="label">:טֵלֵפוֹן</span>-->
+                    <span class="value">
+                        <t t-esc="company.phone"/>
+                    </span>
+                </div>
+                <div style="font-size: 13px;">
+                    <!--<span class="label">:אֶלֶקטרוֹנִי</span>-->
+                    <span class="value">
+                        <t t-esc="company.email"/>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <hr style="height: 1px; background-color: #000; margin-top: 20px;"/>
+    </template>
+
+    <template id="custom_sale_external_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t t-call="cr_custom_sale_report.custom_sale_external_layout_standard">
+            <t t-out="0"/>
+        </t>
+    </template>
+
+
+    <template id="custom_sale_external_layout_standard_pdf">
+        <!-- Embed Calibri font and apply it -->
+        <style>
+            @font-face {
+            font-family: 'CalibriCustom';
+            src: url('/cr_custom_sale_report/static/fonts/calibri.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            }
+            .report-container, .report-container * {
+            font-family: 'CalibriCustom', Arial, sans-serif !important;
+            font-weight: bold;
+            }
+        </style>
+        <table class="report-container" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr>
+                <!-- Left section: English details -->
+                <td style="vertical-align: top; text-align: left; width: 33%; padding-left: 10px;">
+                    <div style="font-size: 14px;">
+                        <t t-esc="company.english_company_name"/>
+                    </div>
+                    <div style="font-size: 12px;">
+                        <t t-esc="company.vat"/>
+                    </div>
+                    <div style="font-size: 12px;">
+                        <t t-esc="(company.english_street or '') + ' ' + (company.english_city or '')"/>
+                    </div>
+                    <div style="font-size: 12px;">
+                        <t t-esc="company.phone"/>
+                    </div>
+                    <div style="font-size: 12px;">
+                        <t t-esc="company.email"/>
+                    </div>
+                </td>
+
+                <!-- Center section: Logo -->
+                <td style="vertical-align: top; text-align: center; width: 33%;">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)"
+                         style="max-height: 250px; max-width: 250px;" alt="Logo"/>
+                </td>
+
+                <!-- Right section: Hebrew details -->
+                <td style="vertical-align: top; width: 33%; text-align: right; direction: rtl; padding-right: 10px;">
+                    <table style="width: 100%; border-collapse: collapse; direction: ltr; font-size: 12px;">
+                        <tr>
+                            <td style="text-align: right; vertical-align: top; font-size: 13px;">
+                                <span style="display: inline; direction: ltr; margin-right: 5px; white-space: normal; word-wrap: break-word;">
+                                    <t t-esc="company.name"/>
+                                </span>
+<!--                                <span style="text-align: right; white-space: nowrap;">-->
+<!--                                    :חֶברָה-->
+<!--                                </span>-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; vertical-align: top;">
+                                <span style="display: inline; direction: ltr; margin-right: 5px; white-space: normal; word-wrap: break-word;">
+                                    <t t-esc="company.vat"/>
+                                </span>
+<!--                                <span style="text-align: right; white-space: nowrap;">-->
+<!--                                    :ח.פ-->
+<!--                                </span>-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; vertical-align: top;">
+                                <span style="display: inline; direction: ltr; margin-right: 5px; white-space: normal; word-wrap: break-word;">
+                                    <t t-esc="company.street + ' ' + company.city"/>
+                                </span>
+<!--                                <span style="text-align: right; white-space: nowrap;">-->
+<!--                                    :רְחוֹב-->
+<!--                                </span>-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; vertical-align: top;">
+                                <span style="display: inline; direction: ltr; margin-right: 5px; white-space: normal; word-wrap: break-word;">
+                                    <t t-esc="company.phone"/>
+                                </span>
+<!--                                <span style="text-align: right; white-space: nowrap;">-->
+<!--                                    :טֵלֵפוֹן-->
+<!--                                </span>-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; vertical-align: top;">
+                                <span style="display: inline; direction: ltr; margin-right: 5px; white-space: normal; word-wrap: break-word;">
+                                    <t t-esc="company.email"/>
+                                </span>
+<!--                                <span style="text-align: right; white-space: nowrap;">-->
+<!--                                    :אֶלֶקטרוֹנִי-->
+<!--                                </span>-->
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <hr style="height: 1px; background-color: #000; margin-top: 20px;"/>
+    </template>
+
+    <template id="custom_sale_external_layout_pdf">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t t-call="cr_custom_sale_report.custom_sale_external_layout_standard_pdf">
+            <t t-out="0"/>
+        </t>
+    </template>
+
+
+    <template id="custom_footer_pdf">
+        <t t-set="company" t-value="order.company_id if order and 'company_id' in order else env.user.company_id"/>
+
+        <!-- Define the footer in the layout -->
+        <div class="footer">
+            <hr style="height: 1px; background-color: #000; margin-bottom: 10px;"/>
+            <div style="font-size: 10px; direction: ltr; text-align: left; padding: 10px;">
+                <div style="display: flex; flex-direction: column; align-items: flex-start; max-width: 30%;">
+                    <!-- Footer Text -->
+                    <div style="font-weight: bold; margin-bottom: 5px; margin-left: 20px;">
+                        <t t-esc="company.footer_text if company else 'No footer text provided'"/>
+                    </div>
+                    <!-- Footer Image -->
+                    <t t-if="company and company.footer_image">
+                        <img t-att-src="image_data_uri(company.footer_image)"
+                             style="max-height: 100px; max-width: 130px;"/>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
+
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/reports/custom_sale_report_template.xml
+-----------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_sale_report_template">
+        <t t-call="web.html_container">
+
+            <t t-set="order"
+               t-value="order.with_context(lang=order.partner_id.lang)"/>
+
+            <t t-call="cr_custom_sale_report.custom_sale_external_layout"/>
+
+
+            <!-- Main content wrapper with custom font applied -->
+
+            <div class="page ps-5 pe-5 report-content">
+
+                <!-- Embed Calibri font and apply it -->
+
+                <style>
+
+                    @font-face {
+
+                    font-family: 'CalibriCustom';
+
+                    src: url('/cr_custom_sale_report/static/fonts/calibri.ttf')
+                    format('truetype');
+
+                    font-weight: normal;
+
+                    font-style: normal;
+
+                    }
+
+                    .report-content, .report-content * {
+
+                    font-family: 'CalibriCustom', Arial, sans-serif !important;
+
+                    }
+
+                </style>
+
+
+                <!-- Header section: Order details -->
+
+                <table style="width: 90%; font-size: 15px; font-weight: bold; direction: rtl; border-collapse: collapse;">
+
+                    <tr>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span t-if="order.state != 'sale'">ציטוט</span>
+
+                            <span t-if="order.state == 'sale'">מְכִירָה</span>
+
+                        </td>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span style="white-space: nowrap;">
+
+                                <span>מספר:</span>
+
+                                <span style="margin-right: 5px;"
+                                      t-esc="order.name"/>
+
+                            </span>
+
+                        </td>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span>מְקוֹרִי</span>
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+                <hr style="height: 1px; background-color: #000;"/>
+
+
+                <!-- Customer details section -->
+
+                <div style="font-size: 13px; direction: rtl;">
+
+                    <table style="width: 100%; border-collapse: collapse;">
+
+                        <tr style="font-size: 13px;">
+
+                            <!-- First column: rightmost section -->
+
+                            <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 10px;">
+
+                                <p style="font-weight: bold;">:לכבוד</p>
+
+                                <p>
+
+                                    <t t-esc="order.partner_id.name"/>
+
+                                </p>
+
+                                <p>
+
+                                    <t t-esc="order.partner_id.street"/>
+
+                                </p>
+
+                                <p>
+
+                                    <t t-esc="order.partner_id.city"/>
+
+                                </p>
+
+                            </td>
+
+                            <!-- Second column: center section -->
+
+                            <td style="width: 25%; text-align: center; vertical-align: top;">
+
+                                <p>טלפון:
+
+                                    <t t-esc="order.partner_id.phone"/>
+
+                                </p>
+
+                                <p>מע"מ/ת.ז:
+
+                                    <t t-esc="order.partner_id.vat"/>
+
+                                </p>
+
+                            </td>
+
+                            <!-- Third column: leftmost section -->
+
+                            <td style="width: 25%; text-align: left; vertical-align: top; padding-left: 50px;">
+
+                                <p>מספר לקוח:
+
+                                    <t t-esc="order.partner_id.id"/>
+
+                                </p>
+
+                                <p>מספר הזמנה:
+
+                                    <t t-esc="order.client_order_ref"/>
+
+                                </p>
+
+                            </td>
+
+                            <!-- Fourth column: additional information -->
+
+                            <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 30px;">
+
+                                <t t-if="order.state != 'sale'">
+
+                                    <p style="font-weight: bold; font-size: 12px;">
+
+                                        תאריך ההצעה:
+
+                                        <t t-esc="order.date_order.strftime('%d-%m-%y')"/>
+
+                                    </p>
+
+                                </t>
+
+                                <t t-else="">
+
+                                    <p style="font-weight: bold; font-size: 12px;">
+
+                                        תאריך הזמנה:
+
+                                        <t t-esc="order.date_order.strftime('%d-%m-%y')"/>
+
+                                    </p>
+
+                                </t>
+
+
+                                <p style="font-weight: bold;">
+
+                                    <t t-esc="'דף: %s מתוך %s' % (order.page_number, order.total_pages)"/>
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <hr style="height: 1px; background-color: #000;"/>
+
+
+                <!-- Order lines section: Product table -->
+
+                <table dir="rtl" cellpadding="5"
+                       style="width: 100%; font-size: 13px; direction: rtl;">
+
+                    <thead>
+
+                        <tr style="direction: rtl;">
+
+                            <th style="text-align: right; width: 5%; border-bottom: 1px solid;">
+                                #
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">
+                                מס' פריט
+                            </th>
+
+                            <th style="text-align: right; width: 30%; border-bottom: 1px solid;">
+                                תאור פריט
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">
+                                כמות
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">
+                                ש''ח ליחידה
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">
+                                דִיסקוֹנט
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">
+                                סה''כ ש''ח
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <t t-foreach="order" t-as="item" t-idx="order_index">
+
+                            <t t-foreach="item.order_line" t-as="line"
+                               t-idx="line_index">
+
+                                <tr style="direction: rtl;">
+
+                                    <td style="text-align: right; width: 5%;">
+
+                                        <t t-if="line.product_id">
+
+                                            <t t-esc="line_index + 1"/>
+
+                                        </t>
+
+                                    </td>
+
+                                    <td style="text-align: right; width: 8%;">
+
+                                        <t t-esc="line.product_id.default_code"/>
+
+                                    </td>
+
+                                    <td style="text-align: right; width: 30%;">
+
+                                        <t t-if="line.display_type == 'section'">
+
+                                            <t t-esc="line.name"/>
+
+                                        </t>
+
+                                        <t t-if="line.display_type == 'line_note'">
+
+                                            <t t-esc="line.name"/>
+
+                                        </t>
+
+                                        <t t-if="line.display_type == 'line_section'">
+
+                                            <t t-esc="line.name"/>
+
+                                        </t>
+
+                                        <t t-else="">
+
+                                            <t t-esc="line.name.replace('[' + line.product_id.default_code + ']', '').strip() if line.product_id and line.product_id.default_code else line.name"/>
+
+                                        </t>
+
+                                    </td>
+
+                                    <td style="text-align: right; width: 8%;">
+
+                                        <t t-if="line.product_id">
+
+                                            <t t-esc="'{:,}'.format(line.product_uom_qty) if line.product_uom_qty else 0"/>
+
+                                        </t>
+
+                                    </td>
+
+                                    <td style="text-align: right; width: 8%; font-weight: bold;">
+
+                                        <t t-if="line.product_id">
+
+                                            <t t-esc="'{:,}'.format(line.price_unit) if line.price_unit else 0.00"/>
+
+                                        </t>
+
+                                    </td>
+
+                                    <td style="text-align: right; width: 8%; font-weight: bold;">
+
+                                        <t t-if="line.product_id">
+
+                                            <t t-esc="'{:,}'.format(line.discount) if line.discount else 0.00"/>
+
+                                        </t>
+
+                                    </td>
+
+                                    <td style="text-align: right; width: 8%; font-weight: bold;">
+
+                                        <t t-if="line.product_id">
+
+                                            <t t-esc="'{:,}'.format(line.price_subtotal) if line.price_subtotal else 0.00"/>
+
+                                        </t>
+
+                                    </td>
+
+                                </tr>
+
+                            </t>
+
+                        </t>
+
+                    </tbody>
+
+                </table>
+
+
+                <hr style="height: 1px; background-color: #000; width: 98%;"/>
+
+
+                <!-- Totals and notes section -->
+
+                <div style="font-size: 13px; direction: rtl; position: relative;">
+
+                    <table style="width: 100%; border-collapse: collapse;">
+
+                        <tr style="font-size: 13px;">
+
+                            <!-- Notes Section -->
+
+                            <td style="width: 70%; text-align: right; vertical-align: top; padding-right: 10px; padding-top: 30px; font-weight: bold;">
+
+                                <p>
+
+                                    <t t-esc="order.note or 'No notes'"/>
+
+                                </p>
+
+                            </td>
+
+
+                            <!-- Totals Section -->
+
+                            <td style="width: 30%; text-align: right; vertical-align: top; padding-left: 10px;">
+
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; font-size: 13px;">
+
+                                    <tr>
+
+                                        <td style="text-align: right; padding: 5px; font-weight: bold;">
+                                            סך הכל לפני
+
+                                            מס:
+
+                                        </td>
+
+                                        <td style="text-align: left; padding: 5px; font-weight: bold;">
+
+                                            <t t-esc="'{:,}'.format(order.amount_untaxed) if order.amount_untaxed else 0.00"/>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td style="text-align: right; padding: 5px; font-weight: bold;">
+                                            הנחה כוללת:
+                                        </td>
+
+                                        <td style="text-align: left; padding: 5px; font-weight: bold;">
+
+                                            <t t-if="order.amount_undiscounted &gt; order.amount_untaxed">
+
+                                                <t t-esc="'{:,}'.format(order.amount_undiscounted - order.amount_untaxed) if order.amount_undiscounted - order.amount_untaxed else 0.00"/>
+
+                                            </t>
+
+                                            <t t-else="">
+
+                                                <t t-esc="'0.00'"/>
+
+                                            </t>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td style="text-align: right; padding: 5px; font-weight: bold;">
+                                            סך הכל לאחר
+
+                                            הנחה:
+
+                                        </td>
+
+                                        <td style="text-align: left; padding: 5px; font-weight: bold;">
+
+                                            <t t-esc="'{:,}'.format(order.amount_untaxed) if order.amount_untaxed else 0.00"/>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td style="text-align: right; padding: 5px; font-weight: bold;">
+                                            מיסים:
+                                        </td>
+
+                                        <td style="text-align: left; padding: 5px; font-weight: bold;">
+
+                                            <t t-esc="'{:,}'.format(order.amount_tax) if order.amount_tax else 0.00"/>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td style="text-align: right; padding: 5px; border-top: 1px solid #000; font-weight: bold;">
+
+                                            סכום מס כולל:
+
+                                        </td>
+
+                                        <td style="text-align: left; padding: 5px; border-top: 1px solid #000; font-weight: bold;">
+
+                                            <t t-esc="'{:,}'.format(order.amount_total) if order.amount_total else 0.00"/>
+
+                                        </td>
+
+                                    </tr>
+
+                                </table>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Signature section -->
+
+                <div style="font-size: 13px; text-align: right; padding-top: 80px; font-weight: bold;">
+
+                    <p>
+
+                        <span>חתום על ידי:</span>
+
+                        <span t-esc="order.signed_by"/>
+
+                        <span t-if="not order.signed_by">-</span>
+
+                        <span>חֲתִימָה:</span>
+
+                        <t t-if="order.signature and order.signature != False">
+
+                            <img t-att-src="image_data_uri(order.signature)"
+                                 style="max-height: 6rem; max-width: 100%;"/>
+
+                        </t>
+
+                        <t t-else="">
+
+                            <span>-</span>
+
+                        </t>
+
+                        <span>תאריך החתימה:</span>
+
+                        <span t-if="order.signed_on"
+                              t-esc="order.signed_on.strftime('%Y-%m-%d')"/>
+
+                        <span t-if="not order.signed_on">-</span>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </t>
+    </template>
+
+    <template id="report_custom_sale">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="order">
+                <t t-call="cr_custom_sale_report.custom_sale_report_template"
+                   t-lang="order.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="custom_sale_report_template_pdf">
+        <t t-call="web.html_container">
+
+            <t t-set="order"
+               t-value="order.with_context(lang=order.partner_id.lang)"/>
+
+            <t t-set="company"
+               t-value="order.company_id if order and 'company_id' in order else env.user.company_id"/>
+
+            <t t-call="cr_custom_sale_report.custom_sale_external_layout_pdf"/>
+
+
+            <!-- Main content wrapper with custom font applied -->
+
+            <div class="page ps-5 pe-5 report-content"
+                 style="margin-bottom: 50px;">
+
+                <!-- Embed Calibri font and apply it -->
+
+                <style>
+
+                    @font-face {
+
+                    font-family: 'CalibriCustom';
+
+                    src: url('/cr_custom_sale_report/static/fonts/calibri.ttf')
+                    format('truetype');
+
+                    font-weight: normal;
+
+                    font-style: normal;
+
+                    }
+
+                    .report-content, .report-content * {
+
+                    font-family: 'CalibriCustom', Arial, sans-serif !important;
+
+                    }
+
+                </style>
+
+
+                <!-- Header section: Order details -->
+
+                <table style="width: 90%; font-size: 15px; font-weight: bold; direction: rtl; border-collapse: collapse;">
+
+                    <tr>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span t-if="order.state != 'sale'">ציטוט</span>
+
+                            <span t-if="order.state == 'sale'">מְכִירָה</span>
+
+                        </td>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span style="white-space: nowrap;">
+
+                                <span>מספר:</span>
+
+                                <span style="margin-right: 5px;"
+                                      t-esc="order.name"/>
+
+                            </span>
+
+                        </td>
+
+                        <td style="text-align: right; width: 33%;">
+
+                            <span>מְקוֹרִי</span>
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+                <hr style="height: 1px; background-color: #000;"/>
+
+
+                <!-- Customer details section -->
+
+                <div style="font-size: 13px; direction: rtl;">
+
+                    <table style="width: 100%; border-collapse: collapse;">
+
+                        <tr style="font-size: 13px;">
+
+                            <!-- First column: rightmost section -->
+
+                            <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 10px;">
+
+                                <p style="font-weight: bold;">:לכבוד</p>
+
+                                <p>
+
+                                    <t t-esc="order.partner_id.name"/>
+
+                                </p>
+
+                                <p>
+
+                                    <t t-esc="order.partner_id.street"/>
+
+                                </p>
+
+                                <p>
+
+                                    <t t-esc="order.partner_id.city"/>
+
+                                </p>
+
+                            </td>
+
+                            <!-- Second column: center section -->
+
+                            <td style="width: 25%; text-align: center; vertical-align: top;">
+
+                                <p>טלפון:
+
+                                    <t t-esc="order.partner_id.phone"/>
+
+                                </p>
+
+                                <p>מע"מ/ת.ז:
+
+                                    <t t-esc="order.partner_id.vat"/>
+
+                                </p>
+
+                            </td>
+
+                            <!-- Third column: leftmost section -->
+
+                            <td style="width: 25%; text-align: left; vertical-align: top; padding-left: 50px;">
+
+                                <p style="font-weight: bold;">מספר לקוח:
+
+                                    <t t-esc="order.partner_id.id"/>
+
+                                </p>
+
+                                <p>מספר הזמנת לקוח:
+
+                                    <t t-esc="order.client_order_ref"/>
+
+                                </p>
+
+                            </td>
+
+                            <!-- Fourth column: additional information -->
+
+                            <td style="width: 25%; text-align: right; vertical-align: top; padding-right: 30px;">
+
+                                <t t-if="order.state != 'sale'">
+
+
+                                    <p style="font-weight: bold; font-size: 12px;">
+
+
+                                        תאריך ההצעה:
+
+
+                                        <t t-esc="order.date_order.strftime('%d-%m-%y')"/>
+
+
+                                    </p>
+
+
+                                </t>
+
+
+                                <t t-else="">
+
+
+                                    <p style="font-weight: bold; font-size: 12px;">
+
+
+                                        תאריך הזמנה:
+
+
+                                        <t t-esc="order.date_order.strftime('%d-%m-%y')"/>
+
+
+                                    </p>
+
+
+                                </t>
+
+
+                                <p style="font-weight: bold;">
+
+                                    <t t-esc="'דף: %s מתוך %s' % (order.page_number, order.total_pages)"/>
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <hr style="height: 1px; background-color: #000;"/>
+
+
+                <!-- Order lines section: Product table -->
+
+                <table dir="rtl" cellpadding="5"
+                       style="width: 100%; font-size: 13px; direction: rtl;">
+
+                    <thead>
+
+                        <tr style="direction: rtl;">
+
+                            <th style="text-align: right; width: 5%; border-bottom: 1px solid;">
+                                #
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">
+                                מס' פריט
+                            </th>
+
+                            <th style="text-align: right; width: 30%; border-bottom: 1px solid;">
+                                תאור פריט
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">
+                                כמות
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">
+                                ש''ח ליחידה
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">
+                                דִיסקוֹנט
+                            </th>
+
+                            <th style="text-align: right; width: 8%; border-bottom: 1px solid;">
+                                סה''כ ש''ח
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        <t t-foreach="order" t-as="item" t-idx="order_index">
+                            <t t-foreach="item.order_line" t-as="line" t-idx="line_index">
+                                <tr t-attf-style="direction: rtl; #{'background-color: #f0f0f0;' if line.display_type == 'line_section' else ''}">
+                                    <td style="text-align: right; width: 5%;">
+                                        <t t-if="line.product_id">
+                                            <t t-esc="line_index + 1"/>
+                                        </t>
+                                    </td>
+
+                                    <td style="text-align: right; width: 8%;">
+                                        <t t-esc="line.product_id.default_code"/>
+                                    </td>
+
+                                    <td style="text-align: right; width: 30%;">
+                                        <t t-if="line.display_type in ['section', 'line_note', 'line_section']">
+                                            <t t-esc="line.name"/>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-esc="line.name.replace('[' + line.product_id.default_code + ']', '').strip() if line.product_id and line.product_id.default_code else line.name"/>
+                                        </t>
+                                    </td>
+
+                                    <td style="text-align: right; width: 8%;">
+                                        <t t-if="line.product_id">
+                                            <t t-esc="'{:,}'.format(line.product_uom_qty) if line.product_uom_qty else 0"/>
+                                        </t>
+                                    </td>
+
+                                    <td style="text-align: right; width: 8%; font-weight: bold;">
+                                        <t t-if="line.product_id">
+                                            <t t-esc="'{:,}'.format(line.price_unit) if line.price_unit else 0.00"/>
+                                        </t>
+                                    </td>
+
+                                    <td style="text-align: right; width: 8%; font-weight: bold;">
+                                        <t t-if="line.product_id">
+                                            <t t-esc="'{:,}'.format(line.discount) if line.discount else 0.00"/>
+                                        </t>
+                                    </td>
+
+                                    <td style="text-align: right; width: 8%; font-weight: bold;">
+                                        <t t-if="line.product_id">
+                                            <t t-esc="'{:,}'.format(line.price_subtotal) if line.price_subtotal else 0.00"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+
+
+                <hr style="height: 1px; background-color: #000; width: 98%;"/>
+
+
+                <!-- Totals and notes section -->
+
+                <div style="font-size: 13px; direction: rtl; position: relative;">
+
+                    <table style="width: 100%; border-collapse: collapse;">
+
+                        <tr style="font-size: 13px;">
+
+                            <!-- Notes Section -->
+
+                            <td style="width: 70%; text-align: right; vertical-align: top; padding-right: 10px; padding-top: 30px; font-weight: bold;">
+
+                                <p>
+
+                                    <t t-esc="order.note or 'No notes'"/>
+
+                                </p>
+
+                            </td>
+
+
+                            <!-- Totals Section -->
+
+                            <td style="width: 30%; text-align: right; vertical-align: top; padding-left: 10px;">
+
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; font-size: 13px;">
+
+                                    <tr>
+
+                                        <td style="text-align: right; padding: 5px; font-weight: bold;">
+                                            סך הכל לפני
+
+                                            מס:
+
+                                        </td>
+
+                                        <td style="text-align: left; padding: 5px; font-weight: bold;">
+
+                                            <t t-esc="'{:,}'.format(order.amount_untaxed) if order.amount_untaxed else 0.00"/>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td style="text-align: right; padding: 5px; font-weight: bold;">
+                                            הנחה כוללת:
+                                        </td>
+
+                                        <td style="text-align: left; padding: 5px; font-weight: bold;">
+
+                                            <t t-if="order.amount_undiscounted &gt; order.amount_untaxed">
+
+                                                <t t-esc="'{:,}'.format(order.amount_undiscounted - order.amount_untaxed) if order.amount_undiscounted - order.amount_untaxed else 0.00"/>
+
+                                            </t>
+
+                                            <t t-else="">
+
+                                                <t t-esc="'0.00'"/>
+
+                                            </t>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td style="text-align: right; padding: 5px; font-weight: bold;">
+                                            סך הכל לאחר
+
+                                            הנחה:
+
+                                        </td>
+
+                                        <td style="text-align: left; padding: 5px; font-weight: bold;">
+
+                                            <t t-esc="'{:,}'.format(order.amount_untaxed) if order.amount_untaxed else 0.00"/>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td style="text-align: right; padding: 5px; font-weight: bold;">
+                                            מיסים:
+                                        </td>
+
+                                        <td style="text-align: left; padding: 5px; font-weight: bold;">
+
+                                            <t t-esc="'{:,}'.format(order.amount_tax) if order.amount_tax else 0.00"/>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td style="text-align: right; padding: 5px; border-top: 1px solid #000; font-weight: bold;">
+
+                                            סכום מס כולל:
+
+                                        </td>
+
+                                        <td style="text-align: left; padding: 5px; border-top: 1px solid #000; font-weight: bold;">
+
+                                            <t t-esc="'{:,}'.format(order.amount_total) if order.amount_total else 0.00"/>
+
+                                        </td>
+
+                                    </tr>
+
+                                </table>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Signature section -->
+
+                <div style="font-size: 13px; text-align: right; padding-top: 80px; font-weight: bold;">
+
+                    <p>
+
+                        <span>חתום על ידי:</span>
+
+                        <span t-esc="order.signed_by"/>
+
+                        <span t-if="not order.signed_by">-</span>
+
+                        <span>חֲתִימָה:</span>
+
+                        <t t-if="order.signature and order.signature != False">
+
+                            <img t-att-src="image_data_uri(order.signature)"
+                                 style="max-height: 6rem; max-width: 100%;"/>
+
+                        </t>
+
+                        <t t-else="">
+
+                            <span>-</span>
+
+                        </t>
+
+                        <span>תאריך החתימה:</span>
+
+                        <span t-if="order.signed_on"
+                              t-esc="order.signed_on.strftime('%Y-%m-%d')"/>
+
+                        <span t-if="not order.signed_on">-</span>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </t>
+    </template>
+
+
+    <template id="report_custom_sale_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="order">
+                <t t-call="cr_custom_sale_report.custom_sale_report_template_pdf"
+                   t-lang="order.partner_id.lang"/>
+                <t t-call="cr_custom_sale_report.custom_footer_pdf"
+                   t-lang="order.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/views/account_move_portal.xml
+-------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_portal_invoice" inherit_id="account.portal_invoice_page" priority="20">
+        <!-- Replace the portal_sale_content div with custom report -->
+        <xpath expr="//iframe[@id='invoice_html']" position="replace">
+            <iframe id="invoice_html"
+                    class="position-relative d-block"
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+                    scrolling="no"
+                    t-att-src="invoice.get_portal_url(report_type='html')"/>
+        </xpath>
+    </template>
+</odoo>
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/views/res_company_view.xml
+-------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_company_view_form" model="ir.ui.view">
+        <field name="name">res.company.form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="english_company_name"/>
+                <field name="official_number"/>
+                <field name="footer_text"/>
+                <field name="footer_image"/>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="before">
+                <field name="english_street"/>
+                <field name="english_city"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/views/sale_portal_view.xml
+-------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_portal_sale_order" inherit_id="sale.sale_order_portal_template" priority="20">
+        <!-- Replace the portal_sale_content div with custom report -->
+        <xpath expr="//div[@id='quote_content']/div[@id='portal_sale_content']" position="replace">
+            <div class="custom-html-report-container">
+                <t t-call="cr_custom_sale_report.custom_sale_report_template">
+                    <t t-set="order" t-value="sale_order"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+</odoo>
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/__init__.py
+-------------------------
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+
+from . import models
+from . import controller
+
+/home/aashruti/Documents/odoo18/custom/addons/Bizzup/Haifa-Med/cr_custom_sale_report/__manifest__.py
+-------------------------
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies.
+
+{
+    "name": "Custom Sale Report",
+    "summary": """
+        This module will generate Custome Sale Report for sale orders 
+        """,
+    "version": "18.3",
+    "license": "AGPL-3",
+    "author": "Lilach Gilliam/Anthony Darwesh",
+    "website": "https://www.bizzup.app",
+    "depends": ["base", "sale_management", "lyg_receipt", "account", "stock"],
+    "data": [
+        "reports/custom_sale_report_action.xml",
+        "reports/custom_sale_report_header_template.xml",
+        "reports/custom_sale_report_template.xml",
+        "reports/custom_invoice_report_template.xml",
+        "reports/custom_delivery_report_template.xml",
+        "reports/custom_receipt_report_template.xml",
+        "views/res_company_view.xml",
+        "views/sale_portal_view.xml",
+        "views/account_move_portal.xml",
+    ],
+    "application": True,
+    "installable": True,
+}
+
+when click on 'view Invoice'
+for below url template is open for portal user which is not login
+https://haifa-med-15jan-22551628.dev.odoo.com/en/my/invoices/313?access_token=feb99ade-6fc8-45e2-b9df-b4a27dfeb075&hash=3ed44afc1c3fc770be3f646c0a08043ab21b77897d1dbbeaad62b3ee93d800a5&pid=7729
+
+
+when click on 'Invoice Preview'
+for below url template is not open for portal user which is not login
+https://haifa-med-15jan-22551628.dev.odoo.com/en/my/invoices/313?access_token=False
+
+
+for the new record this url not work why???? https://haifa-med-15jan-22551628.dev.odoo.com/en/my/invoices/313?access_token=False
+

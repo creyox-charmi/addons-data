@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_overhead_master,access_overhead_master,model_cr_overhead_master,,1,1,1,1
+access_overhead_data,access_overhead_data,model_cr_overhead_data,,1,1,1,1
+access_production_data,access_production_data,model_cr_production_data,,1,1,1,1
+
+
+

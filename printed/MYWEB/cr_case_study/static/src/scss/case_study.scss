@@ -1,0 +1,455 @@
+/* Updated CSS with Fixes */
+
+#cr_odoo_case_study {
+    .sh_image_box {
+        height: 400px;
+        width: 90%;
+        margin: 0px auto 60px;
+        box-shadow: 0 20px 70px rgba(38, 42, 76, 0.2);
+        border-radius: 10px;
+    }
+    
+    .sh_image_box img {
+        height: 100%;
+        width: 100%;
+        border-radius: 10px;
+    }
+    
+    .container {
+        width: 100%;
+        padding-right: var(--gutter-x, 15px);
+        padding-left: var(--gutter-x, 15px);
+        margin-right: auto;
+        margin-left: auto;
+    }
+    
+    .cr_odoo_case_study .row {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 1; /* Ensures row visibility */
+    }
+    
+    .col-xxl-6 {
+        padding: 0 !important;
+    }
+    
+    .align-self-center {
+        align-self: center !important;
+    }
+    
+    .sh_service_content {
+        width: 100%;
+        margin: 0px auto 60px;
+        padding: 0px 29px;
+    }
+    
+    .sh_service_content h2.sh_box_title, .sh_service_content .sh_box_title.h2 {
+        font-size: 34px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: black;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
+    
+    .sh_service_content div.sh_text {
+        font-size: 18px;
+        font-weight: 400;
+        color: #445781;
+        line-height: 1.6;
+        margin: 10px 0 0;
+        text-align: justify;
+    }
+    
+    p {
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+
+
+    /* Ensure sections are scrollable */
+    .cr_odoo_case_study {
+        padding: 80px 0;
+        min-height: 100vh; /* Reduce height for better trigger */
+    }
+
+    /* Ensure images and text blocks have space */
+    .sh_service_content, .sh_image_box {
+        min-height: 300px; /* Prevents collapsing of elements */
+    }
+}
+
+#odoo_service_call_to_action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    padding: 50px 0px;
+    background: rgb(255, 255, 255);
+}
+
+#odoo_service_call_to_action {
+    .container, .o_container_small, .container-fluid, .container-xxl, .container-xl, .container-lg, .container-md, .container-sm {
+        width: 100%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .sh_call_action_box .sh_title_heading {
+        font-size: 34px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: black;
+        margin-bottom: 20px;
+        position: relative;
+        left: -60px;
+        text-transform: uppercase;
+    }
+
+    .sh_call_action_box {
+        width: 60%;
+        text-align: center;
+        margin: 0px auto;
+    }
+}
+
+/*  Section Background Styling */
+.client_reviews {
+    padding: 60px 20px;
+}
+
+/* Section Title Styling */
+.client_reviews .section-title {
+    font-size: 34px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+    padding-bottom: 12px;
+    color: #333;
+}
+
+/* Border Under Title */
+.client_reviews .section-title::after {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 4px;
+    background: #007bff;
+    margin: 12px auto 0;
+    border-radius: 6px;
+}
+.client_reviews .section-title:hover::after {
+    width: 140px; /* Expands on hover */
+}
+/* Review Card Enhancements */
+.client_reviews .review-section {
+    padding: 30px;
+    position: relative;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.client_reviews .review-section:hover {
+    transform: translateY(-12px); /* Perfect Zoom Effect */
+    background: #f0f8ff; /* Light blue background */
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Quote Icon */
+.client_reviews .review-section .quote-icon {
+    margin-left: 5px;
+    position: absolute;
+    font-size: 30px;
+    color: #808080;
+}
+
+/* Review Content Styling */
+.client_reviews .review-content {
+    margin-top: 10px;
+    margin-left: 50px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Author Name Styling */
+.client_reviews .review-author {
+    font-weight: bold;
+    margin-top: 15px;
+    font-size: 20px;
+    color: #222;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.client_reviews .review-author::before {
+    content: "★";
+    color: #808080;
+    margin-right: 5px;
+    font-size: 18px;
+}
+
+#cr_contact_us_button {
+    background: url('/cr_case_study/static/img/13.png') center/cover no-repeat;
+    backdrop-filter: blur(10px);
+    padding: 60px 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    margin-top: 0px;
+    margin-bottom: 30px;
+    margin-left: 83px;
+    margin-right: 83px;
+}
+/* Hover Effect */
+#cr_contact_us_button:hover {
+    transform: translateY(-12px); /* Perfect Zoom Effect */
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+.cr_call_action_contact_us {
+    display: inline-block;
+    padding: 15px 40px;
+    margin-top: 20px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+.cr_call_action_contact_us1 {
+    font-size: 20px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    line-height: 1.6;
+}
+.cr_call_action_contact_us a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease-in-out;
+}
+
+.cr_call_action_contact_us:hover {
+    transform: translateY(-5px);
+    background: Grey;
+}
+
+.cr_call_action_contact_us:hover a {
+    color: #ffffff;
+}
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+    .mobile-reverse {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+#odoo_service_call_to_action {
+    padding: 20px 0px;
+    .container, .o_container_small, .container-fluid, .container-xxl, .container-xl, .container-lg, .container-md, .container-sm {
+        width: 100%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .sh_call_action_box .sh_title_heading {
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: black;
+        margin-bottom: 20px;
+        position: relative;
+        left: 0px;
+        text-transform: uppercase;
+    }
+
+    .sh_call_action_box {
+        width: 60%;
+        text-align: center;
+        margin: 0px auto;
+    }
+}
+#cr_odoo_case_study {
+    .sh_image_box {
+        height: 100px;
+        width: 90%;
+        margin: 0px auto 40px;
+        box-shadow: 0 20px 70px rgba(38, 42, 76, 0.2);
+        border-radius: 10px;
+    }
+
+    .sh_image_box img {
+        height: 100%;
+        width: 100%;
+        border-radius: 10px;
+    }
+
+    .sh_service_content {
+        width: 100%;
+        margin: 0px auto -39px;
+        padding: 0px 19px;
+        text-align: justify;
+    }
+
+    .sh_service_content h2.sh_box_title, .sh_service_content .sh_box_title.h2 {
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: black;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+    }
+
+    .sh_service_content div.sh_text {
+        font-size: 9px;
+        font-weight: 400;
+        color: #445781;
+        line-height: 1.6;
+        margin: 10px 0 0;
+        text-align: justify;
+    }
+
+    p {
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+
+
+    /* Ensure sections are scrollable */
+    .cr_odoo_case_study {
+        padding: 80px 0;
+        min-height: 100vh; /* Reduce height for better trigger */
+    }
+
+    /* Ensure images and text blocks have space */
+    .sh_service_content, .sh_image_box {
+        min-height: 300px; /* Prevents collapsing of elements */
+    }
+}
+.client_reviews {
+        padding: 40px 15px !important;
+
+.section-title {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+    padding-bottom: 10px;
+    color: #333;
+}
+
+/* Border Under Title */
+.section-title::after {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 4px;
+    background: #007bff;
+    margin: 12px auto 0;
+    border-radius: 6px;
+}
+ .section-title:hover::after {
+    width: 140px; /* Expands on hover */
+}
+/* Review Card Enhancements */
+.review-section {
+    padding: 10px;
+    position: relative;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.review-section:hover {
+    transform: translateY(-12px); /* Perfect Zoom Effect */
+    background: #f0f8ff; /* Light blue background */
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Quote Icon */
+.review-section .quote-icon {
+    margin-left:2px;
+    position: absolute;
+    font-size: 5px;
+    color: #808080;
+}
+
+/* Review Content Styling */
+.review-content {
+    padding-top: 0px;
+    margin-left: 12px;
+    font-size: 9px;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Author Name Styling */
+.review-author {
+    font-weight: bold;
+    margin-top: 15px;
+    font-size: 10px;
+    color: #222;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.review-author::before {
+    content: "★";
+    color: #808080;
+    margin-right: 5px;
+    font-size: 18px;
+}
+    }
+#cr_contact_us_button {
+        padding: 40px 15px;
+        margin-top: 0px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+
+        .cr_call_action_contact_us {
+            margin-top:20px;
+        padding: 10px 30px;
+        font-size: 9px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .cr_call_action_contact_us a {
+        font-size: 10px;
+    }
+.cr_call_action_contact_us1 {
+        font-size: 9px;
+        text-align: justify;
+    }
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+

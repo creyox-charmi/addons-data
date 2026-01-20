@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="cr_hr_attendance_tree" model="ir.ui.view">
+        <field name="name">cr.inherit.tree.hr.attendance</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']" position='after'>
+                <field name="late_reason"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

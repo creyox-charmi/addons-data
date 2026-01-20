@@ -1,0 +1,56 @@
+"name": "Payment Cash Register | Cash Register for Payments | Cash Register Payment System | Cash Register on Transactions",
+
+"summary": """With the help of this app, your accounting staff can generate a direct cash register line, 
+                or cash statement line of payment, for a customer or vendor who has a cash register or not.""",
+                
+"description": """
+    The accounting app allows users to efficiently manage cash transactions by providing two distinct methods for 
+    creating cash statement lines.
+
+    Using Cash Register: When processing payments from customer invoices or vendor bills, users can opt to utilize 
+    an existing cash register. By selecting a pre-generated cash register, the system automatically creates a cash 
+    statement line linked to that register.
+    
+    Without Using Cash Register: Alternatively, users can create cash statement lines without linking to a cash register. 
+    This option is useful for situations where a cash register ID is not needed or when transactions need to be recorded independently. 
+    The system will directly generate a cash statement line, simplifying the process for users who prefer not to use a cash register.
+    
+    Payment Cash Register
+    Cash Register for Payments
+    Cash Register Payment System
+    Cash Register on Transactions
+    Payments Cash Register
+    Cash Register On Payments
+    Payment Cash Register in odoo
+    Cash Register for Payments in odoo
+    Cash Register Payment System in odoo
+    Cash Register on Transactions in odoo
+    Payments Cash Register in odoo
+    Cash Register On Payments in odoo
+    """,
+    
+Payment Cash Register
+Cash Register for Payments
+Cash Register Payment System
+Cash Register on Transactions
+Payments Cash Register
+Cash Register On Payments
+Payment Cash Register in odoo
+Cash Register for Payments in odoo
+Cash Register Payment System in odoo
+Cash Register on Transactions in odoo
+Payments Cash Register in odoo
+Cash Register On Payments in odoo
+
+
+When processing payments from customer invoices or vendor bills, users can opt to utilize 
+an existing cash register. By selecting a pre-generated cash register, the system automatically creates a cash 
+statement line linked to that register.
+
+Also provides the option for users can create cash statement lines without linking to a cash register. 
+This option is useful for situations where a cash register ID is not needed or when transactions need to be recorded independently. 
+The system will directly generate a cash statement line, simplifying the process for users who prefer not to use a cash register.
+
+User can select already generated cash register and the cash register line will be created under that cash register , if you are use the "Using Cash Register" option.
+
+System will directly create a cash register line (without linking the cash register) , if you are use the "Without Using Cash Register" option.

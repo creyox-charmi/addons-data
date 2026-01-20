@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="case_study_page" name="Case Studies">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <div class="row">
+                    <t t-foreach="case_studies" t-as="case">
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-sm">
+                                <img t-att-src="case['case_study_main_page_banner']" class="card-img-top" style="height: 200px; object-fit: cover;"/>
+                                <div class="card-body">
+                                    <h5 class="card-title" t-esc="case['case_study_name']"/>
+                                    <p class="card-text" t-raw="case['case_study_short_description']"/>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <a t-att-href="'/case_study/%s' % case['id']" class="btn btn-primary">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="case_study_detail" name="Case Study Detail">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <div class="card">
+                    <img t-att-src="case_study['case_study_main_page_banner']" class="card-img-top" style="height: 300px; object-fit: cover;"/>
+                    <div class="card-body">
+                        <h2 class="card-title" t-esc="case_study['case_study_name']"/>
+                        <p class="card-text" t-raw="case_study['case_study_detail_description']"/>
+                    </div>
+                    <div class="card-footer">
+                        <h4>Client Challenges</h4>
+                        <img t-att-src="case_study['client_challenges_img']" class="img-fluid mb-3" style="max-height: 200px; object-fit: cover;"/>
+                        <p t-raw="case_study['client_challenges']"/>
+
+                        <h4>Our Solution</h4>
+                        <img t-att-src="case_study['our_solution_img']" class="img-fluid mb-3" style="max-height: 200px; object-fit: cover;"/>
+                        <p t-raw="case_study['our_solution']"/>
+
+                        <h4>Impact</h4>
+                        <img t-att-src="case_study['impact_img']" class="img-fluid mb-3" style="max-height: 200px; object-fit: cover;"/>
+                        <p t-raw="case_study['impact']"/>
+
+                        <h4>Client Review</h4>
+                        <p t-raw="case_study['client_review']"/>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

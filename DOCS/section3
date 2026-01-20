@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="expert_snippet_template" name="section-3">
+        <section class="py-5 cr_font odoo-expertise-section">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6 order-2 order-lg-1">
+                        <div class="visual-wrapper">
+                            <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+                                <defs>
+                                    <linearGradient id="mainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                                    </linearGradient>
+                                    <linearGradient id="accentGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                    </linearGradient>
+                                    <linearGradient id="accentGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+                                    </linearGradient>
+                                    <linearGradient id="accentGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+                                    </linearGradient>
+                                    
+                                    <filter id="softGlow">
+                                        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                    
+                                    <clipPath id="screenClip">
+                                        <rect x="120" y="100" width="360" height="280" rx="8"/>
+                                    </clipPath>
+                                </defs>
+
+                                <!-- Laptop Base -->
+                                <g opacity="0">
+                                    <animate attributeName="opacity" from="0" to="1" dur="0.5s" fill="freeze"/>
+                                    
+                                    <!-- Screen -->
+                                    <rect x="110" y="90" width="380" height="300" rx="12" fill="#1e293b" stroke="#475569" stroke-width="3"/>
+                                    <rect x="120" y="100" width="360" height="280" rx="8" fill="#0f172a"/>
+                                    
+                                    <!-- Keyboard Base -->
+                                    <path d="M 80 390 L 520 390 L 500 430 L 100 430 Z" fill="#334155" stroke="#475569" stroke-width="2"/>
+                                    <ellipse cx="300" cy="430" rx="220" ry="8" fill="#1e293b"/>
+                                </g>
+
+                                <!-- Screen Content -->
+                                <g clip-path="url(#screenClip)">
+                                    <!-- Dashboard Header -->
+                                    <g opacity="0">
+                                        <animate attributeName="opacity" from="0" to="1" begin="0.5s" dur="0.4s" fill="freeze"/>
+                                        <rect x="130" y="110" width="340" height="40" rx="6" fill="url(#mainGrad)"/>
+                                        <text x="150" y="135" fill="white" font-size="14" font-weight="700">Odoo Dashboard</text>
+                                        <circle cx="450" cy="130" r="8" fill="white" opacity="0.3"/>
+                                        <circle cx="470" cy="130" r="8" fill="white" opacity="0.3"/>
+                                    </g>
+
+                                    <!-- Stat Cards Row -->
+                                    <g opacity="0">
+                                        <animate attributeName="opacity" from="0" to="1" begin="0.8s" dur="0.4s" fill="freeze"/>
+                                        <animateTransform attributeName="transform" type="translate" from="0,-20" to="0,0" begin="0.8s" dur="0.5s" fill="freeze"/>
+                                        
+                                        <!-- Card 1 -->
+                                        <rect x="135" y="165" width="100" height="70" rx="8" fill="white" opacity="0.95"/>
+                                        <rect x="140" y="170" width="30" height="30" rx="6" fill="url(#accentGrad1)" opacity="0.2"/>
+                                        <text x="145" y="188" font-size="16" fill="#06b6d4" font-weight="700">📊</text>
+                                        <text x="145" y="215" font-size="11" fill="#64748b" font-weight="600">Sales</text>
+                                        <text x="145" y="228" font-size="14" fill="#0f172a" font-weight="800">$94K</text>
+                                        
+                                        <!-- Card 2 -->
+                                        <rect x="250" y="165" width="100" height="70" rx="8" fill="white" opacity="0.95"/>
+                                        <rect x="255" y="170" width="30" height="30" rx="6" fill="url(#accentGrad2)" opacity="0.2"/>
+                                        <text x="260" y="188" font-size="16" fill="#10b981" font-weight="700">📦</text>
+                                        <text x="260" y="215" font-size="11" fill="#64748b" font-weight="600">Orders</text>
+                                        <text x="260" y="228" font-size="14" fill="#0f172a" font-weight="800">3.8K</text>
+                                        
+                                        <!-- Card 3 -->
+                                        <rect x="365" y="165" width="100" height="70" rx="8" fill="white" opacity="0.95"/>
+                                        <rect x="370" y="170" width="30" height="30" rx="6" fill="url(#accentGrad3)" opacity="0.2"/>
+                                        <text x="375" y="188" font-size="16" fill="#f59e0b" font-weight="700">👥</text>
+                                        <text x="375" y="215" font-size="11" fill="#64748b" font-weight="600">Users</text>
+                                        <text x="375" y="228" font-size="14" fill="#0f172a" font-weight="800">12.5K</text>
+                                    </g>
+
+                                    <!-- Chart Area -->
+                                    <g opacity="0">
+                                        <animate attributeName="opacity" from="0" to="1" begin="1.1s" dur="0.4s" fill="freeze"/>
+                                        <animateTransform attributeName="transform" type="translate" from="0,-20" to="0,0" begin="1.1s" dur="0.5s" fill="freeze"/>
+                                        
+                                        <rect x="135" y="250" width="330" height="115" rx="8" fill="white" opacity="0.95"/>
+                                        <text x="150" y="270" font-size="12" fill="#64748b" font-weight="600">Analytics Overview</text>
+                                        
+                                        <!-- Chart Bars -->
+                                        <rect x="155" y="320" width="35" height="30" rx="4" fill="url(#accentGrad1)" opacity="0.7">
+                                            <animate attributeName="height" from="0" to="30" begin="1.4s" dur="0.6s" fill="freeze"/>
+                                            <animate attributeName="y" from="350" to="320" begin="1.4s" dur="0.6s" fill="freeze"/>
+                                        </rect>
+                                        <rect x="205" y="305" width="35" height="45" rx="4" fill="url(#accentGrad2)" opacity="0.7">
+                                            <animate attributeName="height" from="0" to="45" begin="1.5s" dur="0.6s" fill="freeze"/>
+                                            <animate attributeName="y" from="350" to="305" begin="1.5s" dur="0.6s" fill="freeze"/>
+                                        </rect>
+                                        <rect x="255" y="295" width="35" height="55" rx="4" fill="url(#accentGrad3)" opacity="0.7">
+                                            <animate attributeName="height" from="0" to="55" begin="1.6s" dur="0.6s" fill="freeze"/>
+                                            <animate attributeName="y" from="350" to="295" begin="1.6s" dur="0.6s" fill="freeze"/>
+                                        </rect>
+                                        <rect x="305" y="310" width="35" height="40" rx="4" fill="url(#mainGrad)" opacity="0.7">
+                                            <animate attributeName="height" from="0" to="40" begin="1.7s" dur="0.6s" fill="freeze"/>
+                                            <animate attributeName="y" from="350" to="310" begin="1.7s" dur="0.6s" fill="freeze"/>
+                                        </rect>
+                                        <rect x="355" y="290" width="35" height="60" rx="4" fill="url(#accentGrad1)" opacity="0.7">
+                                            <animate attributeName="height" from="0" to="60" begin="1.8s" dur="0.6s" fill="freeze"/>
+                                            <animate attributeName="y" from="350" to="290" begin="1.8s" dur="0.6s" fill="freeze"/>
+                                        </rect>
+                                        <rect x="405" y="300" width="35" height="50" rx="4" fill="url(#accentGrad2)" opacity="0.7">
+                                            <animate attributeName="height" from="0" to="50" begin="1.9s" dur="0.6s" fill="freeze"/>
+                                            <animate attributeName="y" from="350" to="300" begin="1.9s" dur="0.6s" fill="freeze"/>
+                                        </rect>
+                                        
+                                        <line x1="150" y1="350" x2="450" y2="350" stroke="#e2e8f0" stroke-width="2"/>
+                                    </g>
+                                </g>
+
+                                <!-- Floating Icons -->
+                                <g opacity="0">
+                                    <animate attributeName="opacity" from="0" to="1" begin="2s" dur="0.5s" fill="freeze"/>
+                                    
+                                    <!-- Icon 1 -->
+                                    <circle cx="80" cy="200" r="28" fill="white" filter="url(#softGlow)">
+                                        <animate attributeName="cy" values="200;190;200" dur="3s" repeatCount="indefinite"/>
+                                    </circle>
+                                    <text x="80" y="210" text-anchor="middle" font-size="24">🔧</text>
+                                    
+                                    <!-- Icon 2 -->
+                                    <circle cx="540" cy="180" r="25" fill="white" filter="url(#softGlow)">
+                                        <animate attributeName="cy" values="180;170;180" dur="3.5s" repeatCount="indefinite"/>
+                                    </circle>
+                                    <text x="540" y="188" text-anchor="middle" font-size="20">⚡</text>
+                                    
+                                    <!-- Icon 3 -->
+                                    <circle cx="60" cy="320" r="22" fill="white" filter="url(#softGlow)">
+                                        <animate attributeName="cy" values="320;310;320" dur="2.8s" repeatCount="indefinite"/>
+                                    </circle>
+                                    <text x="60" y="328" text-anchor="middle" font-size="18">🎯</text>
+                                    
+                                    <!-- Icon 4 -->
+                                    <circle cx="535" cy="310" r="26" fill="white" filter="url(#softGlow)">
+                                        <animate attributeName="cy" values="310;300;310" dur="3.2s" repeatCount="indefinite"/>
+                                    </circle>
+                                    <text x="535" y="319" text-anchor="middle" font-size="22">📈</text>
+                                </g>
+
+                                <!-- Decorative Elements -->
+                                <g opacity="0.2">
+                                    <circle cx="100" cy="480" r="40" fill="url(#mainGrad)">
+                                        <animate attributeName="r" values="40;45;40" dur="4s" repeatCount="indefinite"/>
+                                    </circle>
+                                    <circle cx="500" cy="500" r="35" fill="url(#accentGrad1)">
+                                        <animate attributeName="r" values="35;40;35" dur="3.5s" repeatCount="indefinite"/>
+                                    </circle>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 order-1 order-lg-2">
+                        <div class="content-box">
+                            <div class="badge-label mb-3">
+                                <i class="fas fa-award me-2"></i>Certified Odoo Partner
+                            </div>
+                            <h2 class="section-title mb-4">Professional Odoo<br/><span class="gradient-text">Development Partner</span></h2>
+                            <p class="section-desc mb-4">Transform your business operations with enterprise-grade Odoo solutions built by certified experts.</p>
+                            
+                            <div class="stats-grid mb-4">
+                                <div class="stat-box">
+                                    <div class="stat-number">100+</div>
+                                    <div class="stat-label">Projects</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">5+</div>
+                                    <div class="stat-label">Years</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">15+</div>
+                                    <div class="stat-label">Countries</div>
+                                </div>
+                            </div>
+
+                            <div class="features-list">
+                                <div class="feature-row">
+                                    <div class="feat-item">
+                                        <i class="fas fa-code"></i>
+                                        <span>Expert Development</span>
+                                    </div>
+                                    <div class="feat-item">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <span>Secure Solutions</span>
+                                    </div>
+                                </div>
+                                <div class="feature-row">
+                                    <div class="feat-item">
+                                        <i class="fas fa-headset"></i>
+                                        <span>24/7 Support</span>
+                                    </div>
+                                    <div class="feat-item">
+                                        <i class="fas fa-rocket"></i>
+                                        <span>Fast Delivery</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <style>
+            .odoo-expertise-section {
+                background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .visual-wrapper {
+                position: relative;
+                padding: 20px;
+            }
+
+            .content-box {
+                padding: 20px;
+            }
+
+            .badge-label {
+                display: inline-flex;
+                align-items: center;
+                padding: 8px 20px;
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                color: white;
+                border-radius: 50px;
+                font-size: 14px;
+                font-weight: 600;
+                box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+                font-weight: 800;
+                color: #0f172a;
+                line-height: 1.2;
+            }
+
+            .gradient-text {
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .section-desc {
+                font-size: 1.1rem;
+                color: #64748b;
+                line-height: 1.7;
+            }
+
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+
+            .stat-box {
+                text-align: center;
+                padding: 20px;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                transition: transform 0.3s ease;
+            }
+
+            .stat-box:hover {
+                transform: translateY(-5px);
+            }
+
+            .stat-number {
+                font-size: 2rem;
+                font-weight: 800;
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+                color: #64748b;
+                font-weight: 600;
+                margin-top: 5px;
+            }
+
+            .features-list {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .feature-row {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .feat-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 15px 20px;
+                background: white;
+                border-radius: 10px;
+                border-left: 4px solid #6366f1;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                transition: all 0.3s ease;
+            }
+
+            .feat-item:hover {
+                transform: translateX(5px);
+                box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+            }
+
+            .feat-item i {
+                font-size: 1.3rem;
+                color: #6366f1;
+            }
+
+            .feat-item span {
+                font-weight: 600;
+                color: #0f172a;
+                font-size: 0.95rem;
+            }
+
+            @media (max-width: 768px) {
+                .section-title {
+                    font-size: 2rem;
+                }
+                .stats-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 10px;
+                }
+                .stat-box {
+                    padding: 15px 10px;
+                }
+                .stat-number {
+                    font-size: 1.5rem;
+                }
+                .feature-row {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </template>
+</odoo>

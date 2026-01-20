@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_cr_terms_and_condition_sale_order_form" model="ir.ui.view">
+        <field name="name">cr.terms.and.condition.sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="cr_sale_order_terms_and_condition" domain="[('cr_model_reference', '=', 'sales')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="cr_sale_order_terms_and_condition_action" model="ir.actions.act_window">
+        <field name="name">Terms and Conditions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cr.terms.and.condition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="cr_sale_order_terms_and_condition_menu"
+              name="Terms and Conditions"
+              parent="sale.menu_sale_config"
+              action="cr_sale_order_terms_and_condition_action"
+              sequence="9999"/>
+</odoo>

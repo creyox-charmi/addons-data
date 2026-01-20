@@ -1,0 +1,31 @@
+<odoo>
+    <template id="cr_product_description_info" inherit_id="website_sale.product">
+        <xpath expr="//div[@id='product_detail_main']" position="after">
+            <t t-call="cr_website_product_variant_description.change_description"/>
+        </xpath>
+    </template>
+
+    <template id="change_description">
+        <t t-set="p_description" t-value="product_variant.get_des()"/>
+        <t t-if="p_description == 1">
+            <div id="cr_product_description" style="border: 1px solid #000000;">
+
+                <div id="heading_to_display" style="height: 30%; background-color: dimgray;margin: 0px 20px 10px 20px;">
+                    <h5>DESCRIPTION</h5>
+                </div>
+
+                <div id="description_for_product_variant" style="margin: 10px 20px 10px 20px;">
+                    <div class="row" id="row1">
+                        <div class="col-6">
+                            <t t-esc="product_variant.cr_description"/>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </t>
+        <t t-else="">
+        </t>
+
+    </template>
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="cr_random_blogs" name="Pick Random BLogs">
+        <section class="cr_random_blogs">
+            <div class="container-fluid">
+
+                <div class="cr-related-post-wrap">
+                    <div class="yarpp yarpp-related yarpp-related-shortcode yarpp-template-yarpp-template-example">
+                        <div class="related-blog-wrap">
+                            <p class="related_article text-center">Related Articles</p>
+                            <hr class="post_line"/>
+                            <div class="cr-section">
+                                <div class="cr-section-paper">
+                                    <div class="row justify-content-center" id="random-blogs"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </template>
+
+
+    <template id="cr_random_blogs_options" inherit_id="website.snippet_options">
+        <xpath expr="." position="inside">
+            <div data-js="DisplayRandomBLogs" data-selector=".cr_random_blogs">
+            </div>
+        </xpath>
+    </template>
+
+
+    <record id="cr_website_blog_customisation.cr_random_blogs_000_scss" model="ir.asset">
+        <field name="name">Blogs 000 SCSS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_website_blog_customisation/static/src/snippets/cr_random_blogs/000.scss</field>
+    </record>
+
+    <record id="cr_website_blog_customisation.cr_random_blogs_000_js" model="ir.asset">
+        <field name="name">Blogs 000 JS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_website_blog_customisation/static/src/snippets/cr_random_blogs/000.js</field>
+    </record>
+
+
+</odoo>

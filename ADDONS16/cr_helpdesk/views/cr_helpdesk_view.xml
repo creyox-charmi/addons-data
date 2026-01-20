@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="cr_helpdesk_view_tree" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.view.tree</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="contact_name" groups="cr_helpdesk.group_admin_helpdesk"/>
+                <field name="ticket_type"/>
+                <field name="module_tech_name"/>
+                <field name="version"/>
+                <field name="message"/>
+                <field name="user_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="cr_helpdesk_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.view.form</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable':1}"/>
+                </header>
+                <sheet>
+                    <div>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="contact_name" groups="cr_helpdesk.group_admin_helpdesk"/>
+                            <field name="ticket_type"/>
+                            <field name="module_tech_name"/>
+                            <field name="app_id" invisible="1"/>
+                            <field name="edition"/>
+                            <field name="skype" groups="cr_helpdesk.group_admin_helpdesk"/>
+                        </group>
+                        <group>
+                            <field name="email" groups="cr_helpdesk.group_admin_helpdesk"/>
+                            <field name="so_number"/>
+                            <field name="version"/>
+                            <field name="odoo_platform"/>
+                            <field name="mobile" groups="cr_helpdesk.group_admin_helpdesk"/>
+                            <field name="user_id"/>
+                            <field name="priority" widget="priority"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Message">
+                            <field name="message"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!--Chatter-->
+                <div class="oe_chatter">
+                    <field name="activity_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_view_kanban" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.view.kanban</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="o_kanban_small_column o_helpdesk_ticket_kanban"
+                    quick_create_view="cr_helpdesk_view_form"
+                    archivable="false" sample="1" js_class="helpdesk_kanban">
+                <field name="stage_id" options='{"group_by_tooltip": {"name": "Name"}}'/>
+                <field name="user_id"/>
+                <field name="contact_name" groups="cr_helpdesk.group_admin_helpdesk"/>
+                <field name="ticket_type"/>
+                <field name="so_number"/>
+                <field name="activity_summary"/>
+                <field name="activity_state"/>
+                <field name="activity_ids"/>
+                <progressbar field="activity_state"
+                             colors='{"planned": "success", "today": "warning", "overdue": "danger"}'
+                             help="This bar allows to filter the tickets based on scheduled activities."/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{!selection_mode ? '' : ''} oe_kanban_global_click oe_kanban_card d-flex flex-column">
+                            <div class="o_dropdown_kanban dropdown">
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-bs-toggle="dropdown"
+                                   data-bs-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <t t-if="widget.editable">
+                                        <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                    </t>
+                                    <t t-if="widget.deletable">
+                                        <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                    </t>
+                                    <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_content flex-grow-1">
+                                <div class="o_kanban_record_title oe_kanban_details">
+                                    <h5 style="font-weight: 900;">
+                                        <field name="name"/>
+                                    </h5>
+                                </div>
+                                <div groups="cr_helpdesk.group_admin_helpdesk">
+                                    <span class="o_text_overflow" t-if="record.contact_name.value"
+                                          t-esc="record.contact_name.value"/>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_content flex-grow-1">
+                                <div class="o_kanban_record_title oe_kanban_details">
+                                    <field name="ticket_type"/>
+                                </div>
+                                <div class="o_kanban_record_title oe_kanban_details">
+                                    <field name="module_tech_name"/>
+                                </div>
+                                <div class="o_kanban_record_title oe_kanban_details">
+                                    <field name="edition"/>
+                                </div>
+                                <div class="o_kanban_record_title oe_kanban_details">
+                                    <field name="odoo_platform"/>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_content flex-grow-1">
+                                <div class="o_kanban_record_title oe_kanban_details">
+                                    <field name="priority" widget="priority"/>
+                                </div>
+                            </div>
+
+                            <div class="oe_kanban_footer">
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="activity_ids" widget="kanban_activity"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="user_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_view_search" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.view.search</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="contact_name"/>
+                <field name="email"/>
+                <field name="so_number"/>
+                <field name="ticket_type"/>
+                <field name="module_tech_name"/>
+                <field name="version"/>
+                <field name="edition"/>
+                <field name="odoo_platform"/>
+                <field name="skype"/>
+                <field name="mobile"/>
+                <field name="user_id"/>
+                <filter string="My Tickets" name="user_id" domain="[('user_id', '=', uid)]"/>
+                <separator string="stage_id"/>
+                <filter string="Draft" name="stage_id" domain="[('stage_id', '=', 1)]"/>
+                <filter string="In Progress" name="stage_id" domain="[('stage_id', '=', 2)]"/>
+                <filter string="Testing" name="stage_id" domain="[('stage_id', '=', 3)]"/>
+                <filter string="Submitted" name="stage_id" domain="[('stage_id', '=', 4)]"/>
+                <filter string="Done" name="stage_id" domain="[('stage_id', '=', 5)]"/>
+                <filter string="Cancel" name="stage_id" domain="[('stage_id', '=', 6)]"/>
+                <separator string="Platform"/>
+                <filter string="Enterprise" name="edition" domain="[('edition', '=', 'enterprise')]"/>
+                <filter string="Community" name="edition" domain="[('edition', '=', 'community')]"/>
+                <separator string="Ticket Type"/>
+                <filter string="Customization" name="ticket_type" domain="[('ticket_type', '=', 'customize')]"/>
+                <filter string="Migration" name="ticket_type" domain="[('ticket_type', '=', 'migrate')]"/>
+                <filter string="Demo Request" name="ticket_type" domain="[('ticket_type', '=', 'demo_request')]"/>
+                <filter string="Technical Support on Purchased App" name="ticket_type"
+                        domain="[('ticket_type', '=', 'technical')]"/>
+                <filter string="Enquiry" name="ticket_type" domain="[('ticket_type', '=', 'enquiry')]"/>
+                <group expand="0">
+                    <filter name="name" context="{'group_by': 'name'}"/>
+                    <filter name="contact_name" context="{'group_by': 'contact_name'}"/>
+                    <filter name="ticket_type" context="{'group_by': 'ticket_type'}"/>
+                    <filter name="module_tech_name" context="{'group_by': 'module_tech_name'}"/>
+                    <filter name="version" context="{'group_by': 'version'}"/>
+                    <filter name="user_id" context="{'group_by': 'user_id'}"/>
+                    <filter name="stage_id" context="{'group_by': 'stage_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="cr_helpdesk_views" model="ir.actions.act_window">
+        <field name="name">Helpdesk</field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="view_mode">kanban,form,list,search</field>
+    </record>
+
+    <menuitem name="Helpdesk"
+              id="helpdesk_menu_root"
+              action="cr_helpdesk_views"
+              sequence="20"/>
+
+    <menuitem name="Tickets"
+              id="helpdesk_menu_1"
+              parent="helpdesk_menu_root"
+              action="cr_helpdesk_views"
+              sequence="22"/>
+
+</odoo>

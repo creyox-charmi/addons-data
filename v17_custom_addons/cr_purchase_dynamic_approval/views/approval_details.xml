@@ -1,0 +1,24 @@
+<odoo>
+    <record id="cr_approval_details_view_form" model="ir.ui.view">
+        <field name="name">cr.approval.details.Wizard.view.form</field>
+        <field name="model">approval.details</field>
+        <field name="arch" type="xml">
+            <form string="Approval Details">
+                <sheet>
+                    <group>
+                        <field name="approved_process_by"/>
+                        <field name="level"/>
+                        <field name="approved_id" invisible="1"/>
+                        <field name="group_id" invisible = "approved_process_by == 'user'"/>
+                    </group>
+                    <field name="user_id"  invisible = "approved_process_by == 'group'"/>
+                </sheet>
+
+                <footer>
+                    <button special="save" type="object" string="Save" class="oe_highlight"/>
+                    <button special="cancel" type="object" string="Discard" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

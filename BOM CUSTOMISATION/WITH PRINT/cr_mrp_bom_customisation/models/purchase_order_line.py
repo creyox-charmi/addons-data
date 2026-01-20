@@ -1,0 +1,17 @@
+from odoo import models
+
+class PurchaseOrderLine(models.Model):
+    _inherit = 'purchase.order.line'
+
+    def _prepare_stock_moves(self, picking):
+        moves = super()._prepare_stock_moves(picking)
+
+        for move_vals in moves:
+            # Check if PO has a CFE project location
+            print('move_vals  : ',move_vals)
+            cfe_location = self.order_id.cfe_project_location_id
+            if cfe_location:
+                move_vals['location_dest_id'] = cfe_location.id
+                print(f"✅ Setting destination location from PO: {cfe_location.name} ({cfe_location.id})")
+
+        return moves

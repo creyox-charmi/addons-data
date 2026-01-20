@@ -1,0 +1,80 @@
+/** @odoo-module **/
+
+import { Message } from "@mail/core/common/message";
+import { messageActionsRegistry } from "@mail/core/common/message_actions";
+import { patch } from "@web/core/utils/patch";
+import { _t } from "@web/core/l10n/translation";
+
+// Store original conditions
+const editAction = messageActionsRegistry.get("edit");
+const deleteAction = messageActionsRegistry.get("delete");
+const originalEditCondition = editAction.condition;
+const originalDeleteCondition = deleteAction.condition;
+
+// Add cancel action
+messageActionsRegistry.add("cancel", {
+    condition: (component) => component.props.message.editable && !component.props.message.is_cancelled,
+    icon: "fa fa-ban",
+    title: _t("Cancel"),
+    onClick: async (component) => {
+        await component.onClickCancelMessage();
+    },
+    sequence: 85,
+});
+
+// Patch edit action
+patch(editAction, {
+    condition(component) {
+        if (component.props.message.is_cancelled) {
+            return false;
+        }
+        return typeof originalEditCondition === 'function'
+            ? originalEditCondition(component)
+            : true;
+    },
+});
+
+// Patch delete action
+patch(deleteAction, {
+    condition(component) {
+        if (component.props.message.is_cancelled) {
+            return false;
+        }
+        return typeof originalDeleteCondition === 'function'
+            ? originalDeleteCondition(component)
+            : true;
+    },
+});
+
+// Add cancel method to Message component
+patch(Message.prototype, {
+    async onClickCancelMessage() {
+        const result = await this.env.services.orm.call(
+            'mail.message',
+            'action_cancel_message',
+            [[this.props.message.id]]
+        );
+
+        if (result) {
+            this.props.message.is_cancelled = true;
+        }
+    }
+});
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="mail.Message" t-inherit="mail.Message" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o-mail-Message-header')]" position="after">
+            <t t-if="props.message.is_cancelled">
+                <span class="badge bg-secondary ms-2">Cancelled</span>
+            </t>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o-mail-Message-content')]" position="attributes">
+            <attribute name="t-attf-class">o-mail-Message-content o-min-width-0 {{props.message.is_cancelled ? 'o-message-cancelled' : ''}}</attribute>
+        </xpath>
+    </t>
+
+</templates>

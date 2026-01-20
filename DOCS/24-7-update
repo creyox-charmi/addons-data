@@ -1,0 +1,272 @@
+
+>>Website Building
+work on section-4 service_snippet_template css
+
+>>cr_advanced_website_searchbar
+work on issue: if there are multiple products , like i have 5 product in which canada words appear in their website_description then only one product is come when we search canada 
+debug the code why the issue is come , issue is come from the  mixins 
+try different different ways to solve the issue
+changes in mixins _search_fetch 
+set — uses base domain + dynamic OR clauses 
+str — uses super() for initial matching + enhanced field-loop sorting 
+Removed any limit check or cutoff 
+Properly handles dot notation in fields like company_id.description, tags.name, etc.
+Skips rechecking already matched records for speed 
+test with the multiple test cases like,
+change in the weight for multiple field and test the search
+try search with the different - different product
+
+
+update
+>>Restrict chatter in crm
+- Find the template and js from where we can drag and drop when click on'send msg' or 'logger' button
+- Patch the method , find the model refrence and add restiction for crm
+- test in crm and other module , check that it is work ok or not
+-add alert in tree view of re subtable
+>>Customize in BOM module  - Everest
+- work creating customer po and vendor po
+- solve the issues that come during develop the method and handle below cases
+case - 1
+------------------
+LLE -> True
+Approval-1 -> True
+Approval-2 -> True
+Should I Create PO? ->  It will create it immediately (Once all the boolean are True)
+
+
+case - 2
+----------------------
+LLE -> True
+Approval-1 -> True
+Approval-2 -> False
+Should I Create PO? ->  No
+
+case - 3
+----------------------
+LLE -> True
+Approval-1 -> False
+Approval-2 -> True
+Should I Create PO? ->  No
+
+case - 4
+----------------------
+LLE -> False
+Approval-1 -> True
+Approval-2 -> True
+Should I Create PO? ->  If the cfe is with values or the product is defined to be purched The Po will be created after push the Manufacture button
+
+
+-------------------------------------------------------------------------------------------------
+
+my module functionality i am telling you what i have to do is
+New Field:- Add is_evr boolean field in BOM overview
+Customize in BOM module - EVEREST
+
+
+1. EVR Flag on BOM
+New Field:- Add is_evr boolean field in BOM overview
+Filed should be by default True when BOM main product internal ref star with EVR
+BOM project_id field should not visible when is_evr boolean field is False
+
+
+The Flow below works when is_evr boolean is Ture 
+
+2. Customer Furnished Equipment (CFE)
+New Field:- Add cfe_quantity Char field BOM overview line. 
+The field is visible when is_evr boolean is True.
+Can only be set for child items, not for BOM headers.
+Represents the quantity to be supplied by the customer.
+Acts as a special purchase order from the customer, with zero price in the PO lines (free of charge).
+Items are directed to a dedicated project location defined in the BOM.
+
+3. LLI Field
+New Field:- Add lli boolean field BOM overview line. 
+The field is visible when is_evr boolean is True.
+Can only be set for child items, not for BOM headers.
+If any row in the BOM tree has lli = True:
+The system immediately creates a draft PO to the vendor as soon as Approval 1 & 2 are both checked.
+On Manufacture button click, no additional PO is created for LLI-marked items (since they already have POs).
+
+
+4. Approval Workflow
+New Field:- Add approval_1 & approval_2 boolean field BOM overview line. 
+The field is visible when is_evr boolean is True.
+Can only be set for child items, not for BOM headers.
+When both fields are Ture then customer PO and main vendor po will create on click of manufacturing button.
+
+ 5. PO Creation flow on manufacturing button.
+When the Manufacture button is clicked for an EVR BOM system, scan all the lines of the BOM.
+Execution Conditions:
+The line is not marked with LLI = True.
+Both approval fields (Approval 1 and Approval 2) are set to True.
+For lines that meet the conditions:
+A Purchase Order (PO) is generated for the customer for every item with a value in the CFE column, using that quantity, with zero price, and routed to the project’s dedicated location.
+For custom PO we will take the customer name from the project_id.partner_id
+What should happen when we don't find a customer name in a project during the creation of a customer PO?
+A second PO is created for the main vendor defined on the product card, with a quantity equal to
+ (Required Quantity – CFE Quantity).
+The PO is created in draft state. The user will manually confirm the PO to take component stock.
+Lines that do not meet the conditions (LLI = True or missing approvals) are skipped and excluded from the procurement/production flow.
+
+
+
+ 
+The PO will be created based on the condition above when we click on the manufacturing button from the BOM overview, right? Correct, except the line the LLE is TRUE, and it will the PO will be created by what I’ve mentioned above  (satisfied)
+
+When some bom have a child bom at that case we have to do the same process for the child bom as well right? What do you mean? (I mean what should be happen for child MO) Again, these changes will be only for the components
+The MO for the components, how are BOM will be created after a Manufacturing button is clicked
+Only the Creation of the POs will depend on the new booleans
+
+case - 1
+------------------
+LLE -> True
+Approval-1 -> True
+Approval-2 -> True
+Should I Create PO? ->  It will create it immediately (Once all the boolean are True)
+
+
+case - 2
+----------------------
+LLE -> True
+Approval-1 -> True
+Approval-2 -> False
+Should I Create PO? ->  No
+
+case - 3
+----------------------
+LLE -> True
+Approval-1 -> False
+Approval-2 -> True
+Should I Create PO? ->  No
+
+case - 4
+----------------------
+LLE -> False
+Approval-1 -> True
+Approval-2 -> True
+Should I Create PO? ->  If the cfe is with values or the product is defined to be purched The Po will be created after push the Manufacture button
+
+
+
+condition -1 ]if their related line purchase order is not create then move to second condition
+condition -2 ]if cfe quantity is greater then zero then move to third condition
+condition -3 ]if  *(Required Quantity – CFE Quantity) is positive then before creating that two ,customer and vendor po must check
+		- relatated project_id.partner_id is must set if not set then give validation
+		- *the main vendor defined on the product card exist or not , if not exist then give validation
+		- if all condition are satidfied then and then only create that two po
+condition -3]else  *(Required Quantity – CFE Quantity) is not positive then before creating that customer po must check
+		- relatated project_id.partner_id is must set if not set then give validation
+		- if project_id.partner_id is set then and then only create customer po
+	
+
+		
+and above all condition is true then and then onl MO shold be create when click on 'manufacture' button
+
+6]
+Manufacturer & Manufacturer Part Number (MPN):
+We will add one field called mo_internal_ref inside the bom line.
+Users can select only from existing values on the product card.
+No creation of new manufacturers/vendors via the BOM tree.
+When the PO is created for this BOM, the manufacturer in the PO will be the chosen manufacturer 
+
+
+
+
+in this i face one problem 
+
+suppose 
+
+I have 4 BOM
+
+b1 - 4 compoment
+b2 - 2 component
+b3 - 4 component
+b4 - 5 component
+
+b1 have 4 compoment
+component 1 - c1 and they have no child component
+component 2 - c2 and they have no child component
+component 3 - c3 and they have child component it means they are also act as a other bom
+component 4 - c4 and they have no child component
+
+when i go to bom overview and enter value in component it is ok
+
+now 
+b2 have 2 compoment
+component 1 - c1 and they have no child component
+component 2 - c2 and they have child component it means they are also act as a other bom
+and this c2 is suppose b1 
+
+when we open the bom overview for b1 at that time we already add value right?
+so when we open b2 bom overview then that value is come here in b2 component so for that what we have to do??
+
+
+- folder structurre of s3
+	-creyox-sire
+	-esire-datas
+	-proof-of-receipt
+	-sire-confirmed
+- 4 cron of move data to s3, 
+	- auto upload record of import
+	- auto upload record of comparison
+	- auto dlt record of import
+	- auto dlt record of compasrion
+- Practical perform auto-import process,
+- Auto-comparison process. 
+- Received From API Menu Overview.
+
+
+
+>>cr_mrp_bom_evr_customisation
+- In MO creation location_src_id , location_dest_id and branch_intermediate_location_id is override from somewhere so find it and solve the  isuue
+- Validate project and customer on EVR BOM creation and updates
+- Update MO quantities when BOM line quantities change
+- Update locations in branches, components, and MOs when project location changes
+- Create branches/components/MOs when new lines are added to existing EVR BOMs
+- When quantity changes in BOM line, all three locations (src, intermediate, dest) are updated in MOs
+- Finished product moves are also updated with correct branch locations
+- MOs created from write have components (not skipped)
+- All child MOs get quantity and location updates recursively
+
+
+
+
+>>cr_mrp_bom_evr_customisation
+when Bom is already created and after any change made in location , old component quantity ,or new line added after then also below should work ok 
+- When you add a new line that is a BOM
+- MO is created for that line
+- MOs are created for ALL its children that are also BOMs
+- ALL grandchildren BOMs also get MOs
+- Continues recursively to N-depth
+- Proper parent-child MO relationships
+- Correct branch location assignments
+- test all possible test cases 
+- when internal trasfer is create then it goes in ready state
+- and test the all internal trasfer test cases
+- solve the issue of internal transfer source location
+- solve the issue of in po receipt product goes in it's branch location
+- solve the issue of internal transfer qty reduce based on cfe or normal qty
+
+
+
+>>cr_mrp_bom_evr_customisation
+- remove the po line based on qty change
+- Check all draft PO lines for the component
+- If required_qty is 0, remove the entire line (and PO if empty)
+-  If required_qty is less than current PO quantity, reduce it
+- Send notifications for all changes
+- for free stock use available qty instead of on hand qty
+- testing for below points
+- branch and location should create or update any time we change in bom and bom line 
+- in internal trasfer source locatin should come right
+- if in one stock sufficient stock is not availble , in different - different location stock is available then create more then one internal transfer
+- po qty should add and minus based on cfe qty change
+- in transfered , to_transfer , ordered , to_order , free_stock value should come right
+
+>>cr_sale_order_mto_multi_mo_bom
+- read the doc and understand the requriments
+- add one custom field part_number in mo
+- inherite the method which is responsible for mo creation when 'MTO' and 'Manufacture' route is enable
+- add the logic based on requriments for creating multiple mo and bom
+- solve the error that come during development
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="cr_inventory_supplier_view_form" model="ir.ui.view">
+        <field name="name">cr.supplier.view.form</field>
+        <field name="model">cr.inventory.supplier</field>
+        <field name="arch" type="xml">
+            <form string="Supplier">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="contact_info"/>
+                        <field name="state_id"/>
+                        <field name="country_id"/>
+                        <field name="product_ids"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="cr_inventory_supplier_view_tree" model="ir.ui.view">
+        <field name="name">cr.supplier.view.tree</field>
+        <field name="model">cr.inventory.supplier</field>
+        <field name="arch" type="xml">
+            <tree string="Supplier">
+                <field name="name"/>
+                <field name="contact_info"/>
+                <field name="state_id"/>
+                <field name="country_id"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="cr_inventory_supplier_action" model="ir.actions.act_window">
+        <field name="name">Supplier</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cr.inventory.supplier</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="cr_inventory_management_menu"
+              name="Inventory Management"
+              sequence="999"/>
+
+    <menuitem id="cr_inventory_supplier_menu"
+              name="Supplier"
+              parent="cr_inventory_management_menu"
+              action="cr_inventory_supplier_action"
+              sequence="1"/>
+</odoo>

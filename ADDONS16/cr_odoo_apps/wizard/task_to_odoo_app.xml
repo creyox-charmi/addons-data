@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="view_odoo_app_wizard_form" model="ir.ui.view">
+        <field name="name">odoo.app.wizard.form</field>
+        <field name="model">odoo.app.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Move to Odoo Apps">
+                <group>
+                    <field name="name"/>
+                    <field name="tech_name"/>
+                    <field name="version_ids" widget='many2many_tags'/>
+                    <field name="non_migrated_version_ids" widget='many2many_tags'/>
+                    <field name="category_id"/>
+                </group>
+                <footer>
+                    <button string="Save" type="object" name="action_create_app" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_odoo_app_wizard" model="ir.actions.act_window">
+        <field name="name">Move to Odoo Apps Wizard</field>
+        <field name="res_model">odoo.app.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_odoo_app_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

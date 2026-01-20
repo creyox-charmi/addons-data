@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="cr_project_task_form_inherit" model="ir.ui.view">
+        <field name="name">cr.form.inherit.project.task</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+
+            <!-- FIELDS OF TASK -->
+            <field name='user_ids' position="after">
+                <field name='cr_approved_hours' groups="base.group_system"></field>
+                <label for='cr_total_amount' string="Total Amount" groups="base.group_system"/>
+                <div class="o_row" groups="base.group_system">
+                    <field name='cr_total_amount' class="o_inline"/>
+                    <field name='cr_client_currency_id' class="o_inline"/>
+                </div>
+                <field name='cr_task_payment_status' groups="base.group_system"></field>
+            </field>
+
+            <!-- PAYMENT RIBBON -->
+            <xpath expr="//widget" position='after'>
+                <widget name="web_ribbon" title="Paid"
+                        attrs="{'invisible': [('cr_task_payment_status', '!=', 'paid')]}" groups="base.group_system"/>
+                <widget name="web_ribbon" title="Partial" bg_color="bg-primary"
+                        attrs="{'invisible': [('cr_task_payment_status', '!=', 'partial')]}"
+                        groups="base.group_system"/>
+                <widget name="web_ribbon" title="Not Paid" bg_color="bg-danger"
+                        attrs="{'invisible': [('cr_task_payment_status', '!=', 'not_paid')]}"
+                        groups="base.group_system"/>
+            </xpath>
+
+            <!-- CREATE BILL BUTTON-->
+            <xpath expr="//header/button" position='before'>
+                <button class="oe_stat_button" name="create_bill" string="Create Bill" type='object'
+                        groups="base.group_system"/>
+                <button class="oe_stat_button" name="create_invoice" string="Create Invoice"
+                        type='object' groups="base.group_system"/>
+            </xpath>
+
+            <!--FIELDS OF DEVELOPERS ASSIGNEES LINE  -->
+            <xpath expr="//notebook/page[last()]" position='after'>
+                <page name="cr_developer_assignees_line" string="Developers" groups="base.group_system">
+                    <field name='cr_developer_assignees_line'>
+                        <tree editable='bottom'>
+                            <field name='name'/>
+                            <field name='cr_developer_amount'/>
+                            <field name='cr_currency_id'/>
+                            <field name='cr_assignees_analytic_account_id'/>
+                            <field name='cr_developer_payment_status' widget="badge"
+                                   decoration-warning="cr_developer_payment_status == 'partial'"
+                                   decoration-success="cr_developer_payment_status == 'paid'"
+                                   decoration-danger="cr_developer_payment_status == 'not_paid'"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+            <!-- SMART BUTTON FOR SHOWING BILLS OF DEVELOPER ASSIGNEES -->
+            <xpath expr="//div[@class = 'oe_button_box']/button[@name = 'action_open_ratings']"
+                   position='after'>
+                <button name="action_show_all_bills" type="object" class="oe_stat_button"
+                        icon="fa-credit-card-alt icon" groups="base.group_system"
+                        attrs="{'invisible': [('cr_count_no_of_bills', '=', 0)]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">
+                            <field name='cr_count_no_of_bills'/>
+                            Bill
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+
+            <!-- SMART BUTTON FOR SHOWING INVOICE OF CLIENT -->
+            <xpath expr="//div[@class = 'oe_button_box']/button[@name = 'action_open_ratings']"
+                   position='after'>
+                <button name="action_show_invoice" type="object" class="oe_stat_button"
+                        icon="fa-money icon" groups="base.group_system"
+                        attrs="{'invisible': [('cr_count_no_of_invoices', '=', 0)]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">
+                            <field name='cr_count_no_of_invoices'/>
+                            Invoice
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Task search view -->
+    <record id="unpaid_filter_task_search_view" model="ir.ui.view">
+        <field name="name">unpaid.filter.task.search.view</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/filter[@name='unassigned']" position="after">
+                <separator/>
+                <filter name="paid" string="Paid"
+                        domain="[('cr_developer_assignees_line.cr_developer_payment_status', '=', 'paid'), ('cr_developer_assignees_line.name.is_freelancer', '=', True)]"
+                        groups="base.group_system"/>
+                <filter name="partial" string="Partial Paid"
+                        domain="[('cr_developer_assignees_line.cr_developer_payment_status', '=', 'partial'), ('cr_developer_assignees_line.name.is_freelancer', '=', True)]"
+                        groups="base.group_system"/>
+                <filter name="not_paid" string="Not Paid"
+                        domain="[('cr_developer_assignees_line.cr_developer_payment_status', '=', 'not_paid'), ('cr_developer_assignees_line.name.is_freelancer', '=', True)]"
+                        groups="base.group_system"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- server actions for creating bill -->
+    <record id="server_action_creating_bill" model="ir.actions.server">
+        <field name="name">Create Bills</field>
+        <field name="model_id" ref="cr_project_task_customization.model_project_task"/>
+        <field name="binding_model_id" ref="project.model_project_task"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = records.merge_bill_wizard_server_action()</field>
+    </record>
+
+    <!-- server actions for creating invoice -->
+    <record id="action_create_invoice_project" model="ir.actions.server">
+        <field name="name">Create Invoices</field>
+        <field name="model_id" ref="cr_project_task_customization.model_project_task"/>
+        <field name="binding_model_id" ref="project.model_project_task"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.merge_invoice_wizard_server_action()
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_department">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="main">
+
+                            <h2>
+                                <span>Department # </span>
+                                <span t-field="doc.num">SO0000</span>
+                            </h2>
+
+                            <div class="row mt-4 mb-2">
+                                <div class="col-auto col-3 mw-100 mb-2">
+                                    <strong>Name : </strong>
+                                    <span t-field="doc.name"/>
+                                </div>
+                                 <div class="col-auto col-3 mw-100 mb-2">
+                                    <strong>hod_id : </strong>
+                                    <span t-field="doc.hod_id"/>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4 mb-2">
+                                <div class="col-auto col-3 mw-100 mb-2">
+                                    <strong>Code : </strong>
+                                    <span t-field="doc.code"/>
+                                </div>
+                                 <div class="col-auto col-3 mw-100 mb-2">
+                                    <strong>Notes : </strong>
+                                    <span t-field="doc.notes"/>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4 mb-2">
+                                <div class="col-auto col-3 mw-100 mb-2">
+                                    <strong>No of students : </strong>
+                                    <span t-field="doc.no_of_students"/>
+                                </div>
+                                 <div class="col-auto col-3 mw-100 mb-2">
+                                    <strong>Active : </strong>
+                                    <span t-field="doc.active"/>
+                                </div>
+                            </div>
+
+                            <t t-set="lines_to_report" t-value="doc.student_ids"/>
+
+
+
+                            <table class="table mt-4">
+
+                                <thead style="display: table-row-group">
+                                    <tr>
+                                        <th name="th_name" >Name</th>
+                                        <th name="th_birth">Birth-date</th>
+                                        <th name="th_email">email</th>
+                                        <th name="th_mobile">mobile</th>
+                                        <th name="th_is_cr">
+                                            <span>Is CR</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="sale_tbody">
+
+
+
+                                    <t t-foreach="lines_to_report" t-as="line">
+
+
+                                        <tr t-att-class="'bg-200 fw-bold o_line_section'">
+                                            <t>
+                                                <td name="td_name"><span t-field="line.name"/></td>
+                                                <td name="td_birth"> <span t-field="line.birthdate"/> </td>
+                                                <td name="td_email"> <span t-field="line.email"/> </td>
+                                                <td name="td_mobile"> <span t-field="line.mobile"/> </td>
+                                                <td name="td_is_cr"> <span t-field="line.is_cr"/> </td>
+
+                                            </t>
+                                        </tr>
+
+                                    </t>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <record id="action_report_of_department" model="ir.actions.report">
+        <field name="name">Print</field>
+        <field name="model">cr.department.department</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">cr_department_management.report_department</field>
+        <field name="report_file">cr_department_management.report_department</field>
+        <field name="print_report_name">'Department Report'</field>
+        <field name="binding_model_id" ref="model_cr_department_department"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="custom_header_footer">
+        <div class="header">
+            <div class="text-center" style="border-bottom:1px solid black;">
+                <div class="row mt-4 mb-2">
+                    <div class="col-auto col-6 mb-2 text-left">
+                        <h2 t-field="doc.name"/>
+                    </div>
+                    <div class="col-auto col-6 mw-100 mb-2 text-right">
+                        <span t-field="doc.code"/><br/>
+                        <span t-field="doc.hod_id.name"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--        without this div class anything in the report will not display-->
+        <div class="article o_report_layout_standard">
+            <t t-out="0"/>
+        </div>
+
+        <div class="footer o_standard_footer">
+            <div class="text-center" style="border-top:1px solid black;">
+                <h1>custom footer</h1>
+            </div>
+        </div>
+
+    </template>
+    <template id="custom_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="cr_department_management.custom_header_footer">
+                    <div class="page">
+                        <div class="oe_structure">
+
+                            <div class="row text-center">
+                                <p t-field="doc.name" style="border-bottom:1px solid black;"/>
+                            </div>
+
+                            <div class="row mt-4 mb-2">
+                                <div class="col-auto col-6 mw-100 mb-2">
+                                    <strong>Name : </strong>
+                                    <span t-field="doc.name"/>
+                                </div>
+                                <div class="col-auto col-6 mw-100 mb-2">
+                                    <strong>Code : </strong>
+                                    <span t-field="doc.code"/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+   <record id="action_custom_report" model="ir.actions.report">
+        <field name="name">Print custom report</field>
+        <field name="model">cr.department.department</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">cr_department_management.custom_report</field>
+        <field name="report_file">cr_department_management.custom_report</field>
+        <field name="print_report_name">'Custom Report'</field>
+        <field name="binding_model_id" ref="model_cr_department_department"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

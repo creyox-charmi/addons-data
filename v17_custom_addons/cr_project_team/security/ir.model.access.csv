@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_project_team,access_project_team,model_project_team,,1,1,1,1
+access_project_task,access_project_task,model_project_task,,1,1,1,1
+access_project_team_member,access_project_team_member,model_project_team_member,,1,1,1,1
+access_task_assignment_wizard,access_task_assignment_wizard,model_task_assignment_wizard,,1,1,1,1

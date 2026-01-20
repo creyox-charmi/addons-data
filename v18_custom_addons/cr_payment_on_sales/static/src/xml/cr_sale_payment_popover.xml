@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+    <t t-name="cr_payment_on_sales.TdSalePaymentPopOver" t-inherit="account.AccountPaymentPopOver" t-inherit-mode="primary">
+        <xpath expr="//button[hasclass('js_unreconcile_payment')]" position="attributes">
+            <attribute name="t-if">props.is_td_reconciled</attribute>
+            <attribute name="t-on-click">() =&gt; props._onTdRemoveMoveReconcile(props.move_id, props.partial_ids)</attribute>
+        </xpath>
+        <table position="inside">
+            <tr t-if="props.cr_payment_state">
+                <td><strong>Status: </strong></td>
+                <td><t t-out="props.cr_payment_state"/></td>
+            </tr>
+        </table>
+    </t>
+</templates>

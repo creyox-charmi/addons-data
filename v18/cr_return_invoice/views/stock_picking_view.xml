@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="cre_view_stock_return_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_button_box']" position='inside'>
+                <button name="action_view_credit_note"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file-text">
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_text">Credit Note</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='backorder_id']" position='after'>
+                <field name="credit_note_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

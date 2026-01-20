@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_delivery_carrier_form_inherit_bigcommerce" model="ir.ui.view">
+        <field name="name">delivery.carrier.form.inherit.bigcommerce</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header attrs="{'invisible': [('bc_method_id', '=', False)]}">
+                    <button name="action_refresh_shipping_method"
+                            type="object"
+                            string="Update from BigCommerce"
+                            class="btn-primary"/>
+                    <button name="action_export_shipping_method"
+                            type="object"
+                            string="Update to BigCommerce"
+                            class="btn-primary"/>
+                    <button name="action_delete_shipping_method"
+                            type="object"
+                            string="Delete from BigCommerce"
+                            class="btn-danger"/>
+                </header>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="BigCommerce" attrs="{'invisible': [('bc_method_id', '=', False)]}">
+                    <group>
+                        <group string="General">
+                            <field name="bc_method_id" readonly="1"/>
+                            <field name="name"/>
+                            <field name="type"/>
+                            <field name="enabled"/>
+                            <field name="rate"/>
+                            <field name="fixed_surcharge"/>
+                        </group>
+
+
+                        <group string="Associations">
+                            <field name="store_id"/>
+                            <field name="zone_id"/>
+                            <field name="channel_ids_text"/>
+                        </group>
+
+                        <group string="Conditions">
+                            <field name="minimum_sub_total"/>
+                            <field name="exclude_fixed_shipping_products"/>
+                            <field name="use_discounted_sub_total"/>
+                            <field name="is_fallback"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bigcommerce_delivery_carriers" model="ir.actions.act_window">
+        <field name="name">BigCommerce Delivery Methods</field>
+        <field name="res_model">delivery.carrier</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('delivery_type', '=', 'bigcommerce')]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="menu_bigcommerce_delivery_carriers"
+              name="Shipping Methods"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+              action="action_bigcommerce_delivery_carriers"/>
+
+
+    <record id="action_bulk_refresh_shipping_methods" model="ir.actions.server">
+        <field name="name">Update Shipping Method from BigCommerce</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_delivery_carrier"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_delivery_carrier"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_refresh_shipping_methods()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+    <record id="action_bulk_export_shipping_methods" model="ir.actions.server">
+        <field name="name">Update Shipping Methods to BigCommerce</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_delivery_carrier"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_delivery_carrier"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_export_shipping_methods()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+</odoo>

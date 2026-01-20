@@ -1,0 +1,2945 @@
+# -*- coding: utf-8 -*-
+import base64, logging
+import re
+import json
+from odoo import exceptions, http
+from odoo.http import request
+from .portal import CustomerPortalBlogs as portal
+
+_logger = logging.getLogger(__name__)
+
+
+class CustomerPortalBlogsController(http.Controller):
+    _items_per_page = 10
+
+    @http.route(['/blog/tag/<model("blog.tag"):tag>'], type='http', auth="public", website=True)
+    def blog_filter_by_tag(self, tag, **kwargs):
+        BlogPost = request.env['blog.post'].sudo()
+        posts = BlogPost.search([('tag_ids', 'in', tag.ids)])
+        values = {
+            'tag': tag,
+            'posts': posts,
+        }
+        return request.render("website_blog.blog_post_short", values)
+
+    @http.route(['/my/blogs', '/my/blogs/page/<int:page>'], auth='user', website=True)
+    def myBlogsListView(self, page=1, **kw):
+        partner = request.env.user.partner_id.id
+        blog_blog_id = self._get_community_id()
+        blog_posts = request.env['blog.post'].sudo().search(portal._get_blogs_domain(self, partner)).filtered(
+            lambda x: x.blog_id.id == blog_blog_id.id)
+
+        pager = request.website.pager(
+            url='/my/blogs',
+            total=len(blog_posts),
+            page=page,
+            step=self._items_per_page,
+            scope=7
+        )
+
+        return request.render("wb_portal_blogs.portal_my_blogs_list_view", {
+            'blog_posts': blog_posts[pager['offset']:pager['offset'] + self._items_per_page],
+            'pager': pager,
+            'page_name': 'my_blogs',
+            'breadcrumb': [('/my/home', 'Inicio'), ('/my/blogs', 'Mis Blogs')],
+        })
+
+    @http.route('/my/blog/edit/<int:blog_id>', type='http', auth="user", website=True, csrf=True,
+                methods=['GET', 'POST'])
+    def portal_blog_edit_profile(self, blog_id, **kwargs):
+        print('yesss...')
+        BlogPost = request.env['blog.post'].sudo()
+        blog_blog_id = self._get_community_id()
+
+        blog_entry = BlogPost.browse(blog_id)
+        partner = request.env.user.partner_id
+        blog_posts = blog_entry or BlogPost.search(portal._get_blogs_domain(self, partner.id)).filtered(
+            lambda x: x.blog_id.id == blog_blog_id.id
+        )
+
+        # if blog_posts:
+        #     blog_entry = blog_posts[0]
+        #     blog_id = blog_posts[0].id
+
+        # if blog_id == 0:
+        if not blog_posts:
+            # if request.httprequest.method == 'POST':
+            vals = {
+                'blog_id': blog_blog_id.id,
+                'name': kwargs.get('name') or request.env.user.partner_id.name,
+                'subtitle': '',
+                'content': '',
+                'is_published': False,
+            }
+            blog_entry = BlogPost.create(vals)
+            blog_id = blog_entry.id
+            # else:
+            #     blog_entry = BlogPost.new({
+            #         'blog_id': blog_blog_id.id,
+            #         'name': kwargs.get('name') or request.env.user.partner_id.name,
+            #     })
+
+        if blog_entry.create_uid.partner_id != request.env.user.partner_id:
+            return request.redirect('/my/blogs')
+
+        # Manejar el envío del formulario (POST)
+        if request.httprequest.method == 'POST':
+            try:
+                # Procesar categorías
+                tag_ids = [int(value) for key, value in kwargs.items() if key.startswith("category-")]
+
+                # Lista para las tuplas de comandos de actualización del one2many
+                multimedia_updates = []
+
+                # Obtener todos los índices de los campos de multimedia del formulario
+                multimedia_indices = sorted(
+                    # list(set(re.findall(r"multimedia_ids\[(-?\d+)\]\.id", ' '.join(kwargs.keys())))), key=int)
+                    list(set(re.findall(r"multimedia_ids\[(-?\d+)]\.id", ' '.join(kwargs.keys())))), key=int)
+
+                # Itera sobre los índices para procesar los campos de multimedia de forma segura
+                for multimedia_index in multimedia_indices:
+                    multimedia_id = int(kwargs.get('multimedia_ids[%s].id' % multimedia_index))
+                    multimedia_type = kwargs.get('multimedia_ids[%s].content_type' % multimedia_index)
+                    multimedia_url = kwargs.get('multimedia_ids[%s].content_url' % multimedia_index)
+
+                    multimedia_file = request.httprequest.files.get(
+                        'multimedia_ids[%s].content_file' % multimedia_index)
+
+                    file_data = False
+                    filename = kwargs.get('multimedia_ids[%s].content_file_filename' % multimedia_index)
+                    mimetype = kwargs.get('multimedia_ids[%s].content_file_mimetype' % multimedia_index)
+
+                    if multimedia_file and multimedia_file.filename:
+                        file_data = base64.b64encode(multimedia_file.read())
+                        filename = multimedia_file.filename
+                        mimetype = multimedia_file.content_type
+
+                    multimedia_vals = {
+                        'content_type': multimedia_type,
+                        'content_url': multimedia_url,
+                    }
+                    if file_data:
+                        multimedia_vals['content_file'] = file_data
+                        multimedia_vals['content_file_filename'] = filename
+                        multimedia_vals['content_file_mimetype'] = mimetype
+
+                    if multimedia_id > 0:
+                        multimedia_updates.append((1, multimedia_id, multimedia_vals))
+                    elif file_data or multimedia_url:
+                        multimedia_updates.append((0, 0, multimedia_vals))
+
+                current_multimedia_ids = blog_entry.multimedia_ids.ids
+                submitted_multimedia_ids = [m[1] for m in multimedia_updates if m[0] == 1]
+                multimedia_to_remove = list(set(current_multimedia_ids) - set(submitted_multimedia_ids))
+                for multimedia_id in multimedia_to_remove:
+                    multimedia_updates.append((2, multimedia_id))
+
+                vals = {
+                    'name': kwargs.get('name'),
+                    'subtitle': kwargs.get('subtitle'),
+                    'is_published': kwargs.get('is_published') == '1',
+                    'only_text_content': kwargs.get('only_text_content'),
+                    # 'content': kwargs.get('content'),
+                    # 'content': multimedia_html,
+                    'website_meta_title': kwargs.get('website_meta_title'),
+                    'website_meta_description': kwargs.get('website_meta_description'),
+                    'website_meta_keywords': kwargs.get('website_meta_keywords'),
+                    'tag_ids': [(6, 0, tag_ids)],
+                    'cover_properties': self._get_background_json(
+                        kwargs.get('bg-img') or f'/web/image/blog.post/{blog_entry.id}/blog_entry_html'),
+                    'multimedia_ids': multimedia_updates,
+                }
+
+                # Manejo de imágenes de cabecera de forma segura
+                blog_entry_html_file = request.httprequest.files.get('blog_entry_html')
+                if blog_entry_html_file and blog_entry_html_file.filename:
+                    vals['blog_entry_html'] = base64.b64encode(blog_entry_html_file.read())
+
+                main_image_file = request.httprequest.files.get('main_image')
+                if main_image_file and main_image_file.filename:
+                    vals['main_image'] = base64.b64encode(main_image_file.read())
+
+                social_media_fields = [
+                    'facebook_url',
+                    'instagram_url',
+                    'linkedin_url',
+                    'twitter_url',
+                    'youtube_url',
+                    'github_url'
+                ]
+
+                # Creamos un diccionario para almacenar los valores que se van a actualizar
+                author_vals = {}
+                for field in social_media_fields:
+                    url = kwargs.get(field, False)
+                    # if url:
+                    # Agregamos el campo y su URL al diccionario
+                    author_vals[field] = url
+
+                # Si hay URLs para actualizar, usamos el método 'write' en el registro del autor
+                if author_vals:
+                    blog_entry.author_id.write(author_vals)
+
+                blog_entry.sudo().write(vals)
+
+                multimedia_html = request.env['ir.ui.view']._render_template(
+                    "wb_portal_blogs.portal_blog_multimedia_html",
+                    {
+                        'dynamic_text_content': blog_entry.only_text_content or '',
+                        'id': blog_entry.id,  # Pasar el objeto blog_entry completo
+                        'multimedia_items': blog_entry.multimedia_ids,
+                    }
+                )
+
+                vals = {
+                    'content': multimedia_html,
+                }
+
+                blog_entry.sudo().write(vals)
+
+                return request.redirect('/my/blog/edit/%s?success=1' % blog_id)
+                # vals['success'] = True
+                # return request.render("wb_portal_blogs.portal_my_blogs_form_view_edit", vals)
+            except exceptions.UserError as e:
+                _logger.exception(e)
+                return request.redirect('/my/blog/edit/%s?error=1' % blog_id)
+                # return request.render("wb_portal_blogs.portal_my_blogs_form_view_edit", {'error': True})
+            except Exception as e:
+                _logger.exception(e)
+                return request.redirect('/my/blog/edit/%s?error=1' % blog_id)
+                # return request.render("wb_portal_blogs.portal_my_blogs_form_view_edit", {'error': True})
+
+        # Manejar la carga de la página (GET)
+        multimedia_items = blog_entry.multimedia_ids or request.env['blog.post.multimedia'].sudo()
+
+        multimedia_html = request.env['ir.ui.view']._render_template(
+            "wb_portal_blogs.portal_blog_multimedia_html",
+            {
+                'dynamic_text_content': blog_entry.only_text_content or '',
+                'id': blog_entry.id,  # Pasar el objeto blog_entry completo
+                'multimedia_items': multimedia_items,
+            }
+        )
+
+        full_content = multimedia_html
+
+        values = {
+            'action': 'edit' if blog_id > 0 else 'new',
+            'page_name': 'blog_edit',
+            'blog_entry': blog_entry,
+            'blog_entry_html': self._extract_image_html(blog_entry.cover_properties),
+            'blog_ids': blog_blog_id,
+            'tag_ids': request.env['blog.tag'].search([]),
+            'full_content': full_content,
+        }
+
+        if kwargs.get('success'):
+            values['error'] = False
+        if kwargs.get('error'):
+            values['error'] = True
+
+        return request.render("wb_portal_blogs.portal_my_blogs_form_view_edit", values)
+
+    def _get_background_json(self, val):
+        # Se espera recibir el HTML en el parámetro "html_string"
+        html_string = val
+
+        # Buscamos la etiqueta <img> y extraemos lo que esté dentro de src=""
+        # match = re.search(r'<img[^>]+src="([^"]+)"', html_string)
+        match = val or False
+        if match:
+            # image_src = match.group(1)
+            image_src = val
+            # Se define el JSON actualizado para el caso en que se encuentra una imagen:
+            result_data = {
+                "background-image": "url(" + image_src + ")",
+                "background_color_class": "o_cc3 o_cc",  # Puedes ajustar este valor según tus necesidades
+                "background_color_style": "",
+                "opacity": "0.2",
+                "resize_class": "o_half_screen_height o_record_has_cover",
+                # Igual puedes modificarlo según tus requerimientos
+                "text_align_class": ""
+            }
+        else:
+            # Si no se encontró ninguna ruta, se utiliza el JSON por defecto
+            result_data = {
+                "background-image": "none",
+                "background_color_class": "o_cc3 o_cc",
+                "background_color_style": "",
+                "opacity": "0.2",
+                "resize_class": "cover_auto",
+                "text_align_class": ""
+            }
+
+        # Odoo se encargará de serializar el diccionario a JSON automáticamente
+        return json.dumps(result_data)
+
+    def _extract_image_html(self, json_str):
+        """
+        Recibe una cadena JSON con la siguiente estructura:
+          {
+            "background-image": "url(/web/image/1216-bfc69190/EMCOOP-7.jpg)",
+            "background_color_class": "o_cc3 o_cc",
+            "background_color_style": "",
+            "opacity": "0.2",
+            "resize_class": "o_half_screen_height o_record_has_cover",
+            "text_align_class": ""
+          }
+
+        Si se encuentra la URL en el campo "background-image", se retorna un HTML con ese formato:
+          <p><img src="/web/image/1216-bfc69190/EMCOOP-7.jpg" class="img img-fluid o_we_custom_image" style="width: 50%;"><br></p>
+
+        Si no se encuentra la URL, se devuelve por defecto:
+          <p><img src="/web/image/1360-f72d89e1/marvin-meyer-SYTO3xs06fU-unsplash.jpg" class="img img-fluid o_we_custom_image" style="width: 50%;"><br></p>
+        """
+        # HTML por defecto a usar si la URL no se encuentra o si ocurre un error al parsear
+        default_html = (
+            '                                <p><img src="/web/image/1360-f72d89e1/marvin-meyer-SYTO3xs06fU-unsplash.jpg" '
+            'class="img img-fluid o_we_custom_image" style="width: 50%;"><br></p>\n'
+        )
+
+        try:
+            data = json.loads(json_str.strip())
+        except Exception as e:
+            # Si falla el parseo del JSON, devolvemos el HTML por defecto
+            print("Error al parsear el JSON:", e)
+            return default_html
+
+        # Extraemos el valor de "background-image"
+        bg_image = data.get("background-image", "")
+
+        # Extraemos la URL que se encuentre dentro de url(...)
+        match = re.search(r'url\((.*?)\)', bg_image)
+        if match:
+            image_url = match.group(1)
+            html = (
+                '<p><img src="{}" class="img img-fluid o_we_custom_image" style="width: 50%;"><br></p>'
+            ).format(image_url)
+            return html
+        else:
+            # Si no se encuentra el patrón, devolvemos el HTML por defecto
+            return default_html
+
+    def _get_community_id(self):
+        BlogPost = request.env['blog.post'].sudo()
+        return BlogPost.blog_id.search([('name', 'ilike', 'comunidad')], limit=1)
+
+    def portal_blog_edit(self, action, blog_id, **kwargs):
+        values = {}
+        try:
+            BlogPost = request.env['blog.post'].sudo()
+            blog_entry = BlogPost.browse(blog_id)
+            # Verificar que el usuario actual es el autor de la entrada.
+            # if blog_entry.author_id != request.env.user.partner_id:
+            #     return request.render('http_routing.404')
+
+            # Si el método es POST, se actualizan los datos
+            if request.httprequest.method == 'POST' and kwargs:
+                # Actualiza los campos de la entrada
+                # vals = {
+                #     'name': kwargs.get('name'),
+                #     'content': kwargs.get('content'),
+                # }
+                vals = {
+                    'is_published': kwargs.get('is_published') == '1',
+                    'blog_id': int(kwargs.get('blog_id_edit')) if kwargs.get('blog_id_edit') else False,
+                    'name': kwargs.get('name'),
+                    'subtitle': kwargs.get('subtitle', ''),
+                    # Para el campo Many2many "tag_ids", se espera un comando (6, 0, [ids])
+                    # Suponiendo que 'tag_id' viene como una cadena con los IDs separados por comas,
+                    # se parsea y se monta la lista; si ya es una lista, adapta según corresponda.
+                    'tag_ids': [(6, 0, [int(value) for key, value in kwargs.items() if key.startswith("category-")])],
+                    # if kwargs.get('tag_id') else [],
+                    'cover_properties': self._get_background_json(kwargs.get('bg-img')),
+                    'content': kwargs.get('content'),
+                    'website_meta_title': kwargs.get('website_meta_title', ''),
+                    'website_meta_description': kwargs.get('website_meta_description', ''),
+                    'website_meta_keywords': kwargs.get('website_meta_keywords', ''),
+                }
+                if action == 'new':
+                    resp = BlogPost.create(vals)
+                    action = 'complete'
+                elif action == 'edit':
+                    blog_entry.sudo().write(vals)
+                # Redirige tras la actualización
+                # return request.redirect('/my/blogs')
+
+                values['error'] = False
+            if action == 'new':
+                values.update({
+                    'action': action,
+                    'page_name': 'blog_edit',
+                    'blog_entry': BlogPost,
+                    'blog_entry_html': self._extract_image_html(''),
+                    'blog_ids': blog_entry.blog_id.search([('name', 'ilike', 'comunidad')], limit=1),
+                    # BlogPost.blog_id.search([]),
+                    'tag_ids': BlogPost.tag_ids.search([])
+                })
+            elif action == 'edit':
+                values.update({
+                    'action': action,
+                    'page_name': 'blog_edit',
+                    'blog_entry': blog_entry,
+                    'blog_entry_html': self._extract_image_html(blog_entry.cover_properties),
+                    'blog_ids': blog_entry.blog_id.search([('name', 'ilike', 'comunidad')], limit=1),
+                    # blog_entry.blog_id.search([]),
+                    'tag_ids': blog_entry.tag_ids.search([])
+                })
+        except Exception as exc:
+            values.update({
+                'error': True,
+                'page_name': 'blog_edit',
+                'blog_entry': blog_entry if blog_entry else BlogPost,
+            })
+        return request.render("wb_portal_blogs.portal_my_blogs_form_view_edit", values)
+
+    # ───────────────────────────────────────────────────────────────
+    # 📬 REGIÓN: Lógica relacionada con mensajes y comunicación
+    # Aquí se agrupan todas las operaciones de lectura, agrupación,
+    # y conteo de mensajes de usuarios (portal u otros).
+    # ───────────────────────────────────────────────────────────────
+
+    @http.route(['/my/messages', '/my/messages/page/<int:page>'], auth='user', website=True)
+    def myMessagesListView(self, page=1, **kw):
+        partner = request.env.user.partner_id.id
+        blog_blog_id = self._get_community_id()
+        # blog_posts = request.env['blog.post'].sudo().search(portal._get_blogs_domain(self, partner)).filtered(
+        blog_posts_messages = request.env['blog.post'].sudo().search([]).filtered(lambda x:
+                                                                                  x.blog_id.id == blog_blog_id.id
+                                                                                  and x.message_ids
+                                                                                  )
+        # blog_posts_messages = blog_posts.filtered(lambda blog_id: blog_id.message_ids)
+
+        message_ids = list()
+        for bpm in blog_posts_messages:
+            author_ids = bpm.message_ids.filtered(lambda x: x.author_id.id != partner).author_id
+            for a in author_ids:
+                message_id = request.env['mail.message'].sudo()
+                message_id |= bpm.message_ids.filtered(lambda x: x.author_id.id == a.id)
+                message_ids.append({
+                    'blog_id': bpm,
+                    'message_id': message_id,
+                    'count_message': len(message_id)
+                })
+
+        pager = request.website.pager(
+            url='/my/messages',
+            total=len(message_ids),
+            page=page,
+            step=self._items_per_page,
+            scope=7
+        )
+
+        return request.render("wb_portal_blogs.portal_my_messages_list_view", {
+            'message_ids': message_ids[pager['offset']:pager['offset'] + self._items_per_page],
+            'pager': pager,
+            'page_name': 'my_messages',
+            'breadcrumb': [('/my/home', 'Inicio'), ('/my/messages', 'Mis Mensajes')],
+        })
+
+    @http.route(['/my/messages/thread/partner/<int:partner_id>/blog/<int:blog_id>'], type='http', auth="user",
+                website=True, csrf=True)
+    def portal_messages_profile(self, partner_id, blog_id, **kwargs):
+        values = {}
+        try:
+            blog_entry = partner = filtered_messages = None
+
+            if blog_id and partner_id:
+                blog_entry = request.env['blog.post'].sudo().browse(int(blog_id))
+                partner = request.env['res.partner'].sudo().browse(int(partner_id))
+
+                # filtered_messages = blog_entry.message_ids.filtered(
+                #     lambda m: m.author_id.id in [partner.id] and m.message_type == 'comment' or not m.parent_id
+                # )
+                #
+                # blog_entry.message_ids = filtered_messages
+            values = {
+                'blog_entry': blog_entry,
+                'partner': partner,
+            }
+        except Exception as exc:
+            values.update({
+                'error': True,
+                # 'page_name': 'blog_edit',
+            })
+        return request.render("wb_portal_blogs.portal_my_messages_form_view", values)
+        
+# -*- coding: utf-8 -*-
+from odoo import SUPERUSER_ID
+from odoo.http import request
+
+from odoo.addons.portal.controllers.portal import CustomerPortal, pager
+
+
+class CustomerPortalBlogs(CustomerPortal):
+
+    def _get_blogs_domain(self, partner_id):
+        return [
+            '|', '|',
+            ('author_id', 'in', [partner_id, SUPERUSER_ID]),
+            ('create_uid', 'in', [partner_id, SUPERUSER_ID]),
+            ('write_uid', 'in', [partner_id, SUPERUSER_ID])
+        ]
+
+    def _prepare_home_portal_values(self, counters):
+        """ Add subscription details to main account page """
+        values = super()._prepare_home_portal_values(counters)
+        if 'blogs_count' in counters:
+            #     if request.env['sale.order'].check_access_rights('read', raise_exception=False):
+            partner = request.env.user.partner_id.id
+            BlogPost = request.env['blog.post'].sudo()
+            blog_blog_id = BlogPost.blog_id.search([('name', 'ilike', 'comunidad')], limit=1)
+            values['blogs_count'] = len(
+                request.env['blog.post'].sudo().search(self._get_blogs_domain(partner)).filtered(
+                    lambda x: x.blog_id.id == blog_blog_id.id
+                )
+            )
+        if 'message_count' in counters:
+            partner = request.env.user.partner_id.id
+            BlogPost = request.env['blog.post'].sudo()
+            blog_blog_id = BlogPost.blog_id.search([('name', 'ilike', 'comunidad')], limit=1)
+            blog_post_ids = request.env['blog.post'].sudo().search(self._get_blogs_domain(partner)).filtered(
+                lambda x: x.blog_id.id == blog_blog_id.id
+            )
+
+            values['message_count'] = len(
+                blog_post_ids.message_ids
+            )
+        return values
+        
+# -*- coding: utf-8 -*-
+# Extiende el modelo de entradas de blog para añadir campos de contenido multimedia.
+
+from odoo import fields, models
+
+
+# 1. Creamos un nuevo modelo para el contenido multimedia.
+class BlogPostMultimedia(models.Model):
+    _name = 'blog.post.multimedia'
+    _description = 'Contenido Multimedia para Entradas de Blog'
+
+    # Campos para el tipo de contenido y el valor (archivo o URL)
+    content_type = fields.Selection([
+        ('none', 'Ninguno'),
+        ('image', 'Imagen'),
+        ('file', 'Archivo'),
+        ('videoMp4', 'Video'),
+        ('video', 'Video (URL)')
+    ], string='Tipo de Contenido', default='none', required=True)
+    content_file = fields.Binary(string="Archivo", attachment=True)
+    content_url = fields.Char(string="Enlace URL")
+    # Campos para el nombre y el tipo de archivo (se llenan automáticamente)
+    content_file_filename = fields.Char(string='Nombre del Archivo')
+    content_file_mimetype = fields.Char(string='Tipo de Archivo')
+
+    # Campo para la relación con la entrada de blog.
+    blog_post_id = fields.Many2one('blog.post', string='Entrada de Blog', ondelete='cascade')
+
+from odoo import models, api, _
+from markupsafe import Markup, escape
+
+
+class ContactInherit(models.AbstractModel):
+    _inherit = 'ir.qweb.field.contact'  # Hereda de la clase original
+
+    @api.model
+    def value_to_html(self, value, options):
+        if not value:
+            return ''
+
+        opf = options.get('fields') or ["name", "address", "phone", "mobile", "email"]
+        sep = options.get('separator')
+        if sep:
+            opsep = escape(sep)
+        elif options.get('no_tag_br'):
+            # escaped joiners will auto-escape joined params
+            opsep = escape(', ')
+        else:
+            opsep = Markup('<br/>')
+
+        value = value.sudo().with_context(show_address=True)
+        name_get = value.name_get()[0][1]
+        # Avoid having something like:
+        # name_get = 'Foo\n  \n' -> This is a res.partner with a name and no address
+        # That would return markup('<br/>') as address. But there is no address set.
+        if any(elem.strip() for elem in name_get.split("\n")[1:]):
+            address = opsep.join(name_get.split("\n")[1:]).strip()
+        else:
+            address = ''
+        val = {
+            'name': name_get.split("\n")[0],
+            'address': address,
+            'phone': value.phone,
+            'mobile': value.mobile,
+            'city': value.city,
+            'state_id': value.state_id.name,
+            'country_id': value.country_id.display_name,
+            'website': value.website,
+            'email': value.email,
+            'vat': value.vat,
+            'vat_label': value.country_id.vat_label or _('VAT'),
+            'fields': opf,
+            'object': value,
+            'options': options
+        }
+        return self.env['ir.qweb']._render('base.contact', val, minimal_qcontext=True)
+
+# -*- coding: utf-8 -*-
+from odoo import models, fields
+
+class Partner(models.Model):
+    _inherit = 'res.partner'
+
+    # Campos para redes sociales
+    facebook_url = fields.Char(string='Facebook')
+    instagram_url = fields.Char(string='Instagram')
+    linkedin_url = fields.Char(string='LinkedIn')
+    twitter_url = fields.Char(string='X')
+    youtube_url = fields.Char(string='YouTube')
+    github_url = fields.Char(string='GitHub')
+    
+from odoo import api, models, fields
+from odoo.addons.http_routing.models.ir_http import unslug
+
+
+class BlogPostExtension(models.Model):
+    _inherit = 'blog.post'
+
+    # Campo One2many que relaciona esta entrada de blog con el nuevo modelo de multimedia.
+    # El primer argumento es el nombre del modelo con el que se relaciona.
+    # El segundo es el nombre del campo en ese otro modelo que hace la relación (blog_post_id).
+    multimedia_ids = fields.One2many('blog.post.multimedia', 'blog_post_id', string='Elementos Multimedia')
+
+    only_text_content = fields.Html('Contenido Principal')
+    main_image = fields.Binary('Imagen Principal', attachment=True)
+    blog_entry_html = fields.Binary(string='HTML Entry Image', help="Image for the blog entry's title.")
+
+    # Extiende el modelo para asegurar que el campo 'author_id' es accesible
+    author_id = fields.Many2one(
+        'res.partner',
+        string='Autor',
+        help="El autor de la publicación del blog."
+    )
+
+    @api.model
+    def _search_get_detail(self, website, order, options):
+        with_description = options['displayDescription']
+        with_date = options['displayDetail']
+        blog = options.get('blog')
+        tags = options.get('tag')
+        date_begin = options.get('date_begin')
+        date_end = options.get('date_end')
+        state = options.get('state')
+        domain = [website.website_domain()]
+        if blog:
+            domain.append([('blog_id', '=', unslug(blog)[1])])
+        if tags:
+            active_tag_ids = [unslug(tag)[1] for tag in tags.split(',')] or []
+            if active_tag_ids:
+                domain.append([('tag_ids', 'in', active_tag_ids)])
+        if date_begin and date_end:
+            domain.append([("post_date", ">=", date_begin), ("post_date", "<=", date_end)])
+        if self.env.user.has_group('website.group_website_designer'):
+            if state == "published":
+                domain.append([("website_published", "=", True), ("post_date", "<=", fields.Datetime.now())])
+            elif state == "unpublished":
+                domain.append(['|', ("website_published", "=", False), ("post_date", ">", fields.Datetime.now())])
+        else:
+            domain.append([("post_date", "<=", fields.Datetime.now())])
+        search_fields = ['name', 'author_name']
+
+        def search_in_tags(env, search_term):
+            tags_like_search = env['blog.tag'].search([('name', 'ilike', search_term)])
+            print(tags_like_search)
+            return [('tag_ids', 'in', tags_like_search.ids)]
+
+        fetch_fields = ['name', 'website_url']
+        mapping = {
+            'name': {'name': 'name', 'type': 'text', 'match': True},
+            'website_url': {'name': 'website_url', 'type': 'text', 'truncate': False},
+        }
+        if with_description:
+            search_fields.append('content')
+            fetch_fields.append('content')
+            mapping['description'] = {'name': 'content', 'type': 'text', 'html': True, 'match': True}
+
+            search_fields.append('author_id.country_id.name')  # 🚨 AÑADIDO
+            search_fields.append('author_id.state_id.name')  # 🚨 AÑADIDO
+
+        if with_date:
+            fetch_fields.append('published_date')
+            mapping['detail'] = {'name': 'published_date', 'type': 'date'}
+        return {
+            'model': 'blog.post',
+            'base_domain': domain,
+            'search_fields': search_fields,
+            'search_extra': search_in_tags,
+            'fetch_fields': fetch_fields,
+            'mapping': mapping,
+            'icon': 'fa-rss',
+            # 'requires_sudo': True,
+        }
+
+-------------------------------
+
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_blog_post_multimedia_public,blog.post.multimedia.public,model_blog_post_multimedia,base.group_public,1,0,0,0
+access_blog_post_multimedia_portal,blog.post.multimedia.portal,model_blog_post_multimedia,base.group_portal,1,1,1,1
+access_blog_post_multimedia_designer,blog.post.multimedia.designer,model_blog_post_multimedia,website.group_website_designer,1,1,1,1
+access_blog_post_wb,access.blog.post.wb,website_blog.model_blog_post,base.group_user,1,1,1,1
+
+
+
+
+-------------------------------
+/odoo16/custom/addons/wb_portal_blogs/static/src/js/blog_form_preview.js
+--------------------------------
+/** @odoo-module **/
+
+// ==========================================================
+//                       CONSTANTES
+// ==========================================================
+const multimediaContainer = document.getElementById('multimedia-container');
+const addMultimediaBtn = document.getElementById('add-multimedia-btn');
+const MAX_FIELDS = 3;
+
+const mainImageInput = document.getElementById('main_image');
+const mainImagePreviewContainer = mainImageInput ? mainImageInput.closest('.card').querySelector('.real-time-preview') : null;
+const mainImageAlert = document.getElementById('main-image-alert');
+const deleteMainImageBtn = mainImageInput ? mainImageInput.closest('.card').querySelector('.delete-image-btn') : null;
+const mainImageInputContainer = mainImageInput ? mainImageInput.closest('.mt-3') : null;
+
+const blogEntryHtmlInput = document.getElementById('blog_entry_html');
+const blogEntryHtmlPreviewContainer = blogEntryHtmlInput ? blogEntryHtmlInput.closest('.card').querySelector('.real-time-preview') : null;
+const blogEntryHtmlAlert = document.getElementById('blog-entry-html-alert');
+const deleteBlogEntryHtmlBtn = blogEntryHtmlInput ? blogEntryHtmlInput.closest('.card').querySelector('.delete-image-btn') : null;
+const blogEntryHtmlInputContainer = blogEntryHtmlInput ? blogEntryHtmlInput.closest('.mt-3') : null;
+
+
+// ==========================================================
+//                       FUNCIONES DE AYUDA
+// ==========================================================
+
+// Función principal para validar y previsualizar una imagen
+function handleImageValidationAndPreview(fileInput, previewContainer, alertContainer, inputContainer, deleteBtn, options = {}) {
+    const file = fileInput.files[0];
+    const MAX_SIZE_MB = options.maxSizeMB || 2;
+    const MIN_WIDTH = options.minWidth || 0;
+    const MIN_HEIGHT = options.minHeight || 0;
+    const MAX_WIDTH = options.maxWidth || Infinity;
+    const MAX_HEIGHT = options.maxHeight || Infinity;
+
+    const showAlert = (message) => {
+        if (alertContainer) {
+            alertContainer.textContent = message;
+            alertContainer.classList.remove('d-none');
+            alertContainer.classList.add('d-block');
+        }
+    };
+
+    const hideAlert = () => {
+        if (alertContainer) {
+            alertContainer.classList.remove('d-block');
+            alertContainer.classList.add('d-none');
+        }
+    };
+
+    hideAlert();
+    previewContainer.innerHTML = '<p class="text-muted">La previsualización aparecerá aquí.</p>';
+    if (deleteBtn) {
+        deleteBtn.style.display = 'none';
+    }
+    if (inputContainer) {
+        inputContainer.classList.remove('d-none');
+    }
+
+    if (file) {
+        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+            showAlert(`¡Error! El tamaño del archivo debe ser menor a ${MAX_SIZE_MB} MB.`);
+            fileInput.value = '';
+            return;
+        }
+
+        const img = new Image();
+        img.onload = () => {
+            if (img.width < MIN_WIDTH || img.height < MIN_HEIGHT || img.width > MAX_WIDTH || img.height > MAX_HEIGHT) {
+                const sizeError = (options.minWidth && options.minHeight && options.maxWidth && options.maxHeight)
+                    ? `Las dimensiones de la imagen deben ser entre ${MIN_WIDTH}x${MIN_HEIGHT} px y ${MAX_WIDTH}x${MAX_HEIGHT} px.`
+                    : (options.minWidth && options.minHeight)
+                    ? `Las dimensiones de la imagen deben ser al menos ${MIN_WIDTH}x${MIN_HEIGHT} px.`
+                    : `Las dimensiones de la imagen no deben exceder ${MAX_WIDTH}x${MAX_HEIGHT} px.`;
+                showAlert(`¡Error! ${sizeError}`);
+                fileInput.value = '';
+            } else {
+                previewContainer.innerHTML = `<img src="${img.src}" alt="Previsualización de imagen" class="img-fluid rounded shadow-sm" style="max-height: 400px; max-width: 550px;" />`;
+                if (deleteBtn) {
+                    deleteBtn.style.display = 'block';
+                }
+                if (inputContainer) {
+                    inputContainer.classList.add('d-none');
+                }
+            }
+        };
+        img.src = URL.createObjectURL(file);
+    }
+}
+
+// ... (Resto de tus funciones de ayuda: updateFieldIndices, checkMultimediaLimit, renderPreview) ...
+function updateFieldIndices() {
+    const blocks = multimediaContainer.querySelectorAll('.multimedia-block');
+    blocks.forEach((block, index) => {
+        block.querySelectorAll('[name]').forEach(input => {
+            const name = input.getAttribute('name');
+        });
+    });
+    checkMultimediaLimit();
+}
+
+function checkMultimediaLimit() {
+    const currentFields = multimediaContainer.querySelectorAll('.multimedia-block').length;
+    if (currentFields >= MAX_FIELDS) {
+        addMultimediaBtn.style.display = 'none';
+    } else {
+        addMultimediaBtn.style.display = 'inline-block';
+    }
+}
+
+function renderPreview(block, file, url) {
+    const previewArea = block.querySelector('.real-time-preview');
+    previewArea.innerHTML = '';
+    if (file) {
+        const fileType = file.type;
+        if (fileType.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.className = 'img-fluid rounded shadow-sm';
+            previewArea.appendChild(img);
+        } else if (fileType === 'application/pdf') {
+            const embed = document.createElement('embed');
+            embed.src = URL.createObjectURL(file);
+            embed.type = 'application/pdf';
+            embed.style.cssText = 'width: 100%; height: 60vh;';
+            previewArea.appendChild(embed);
+        } else if (fileType.startsWith('video/')) {
+             const video = document.createElement('video');
+             video.src = URL.createObjectURL(file);
+             video.controls = true;
+             video.className = 'w-100 rounded shadow-sm';
+             previewArea.appendChild(video);
+        }
+    } else if (url) {
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            const videoId = url.split('v=')[1] || url.split('/').pop();
+            const iframe = document.createElement('iframe');
+            iframe.width = '560';
+            iframe.height = '315';
+            iframe.src = `https://www.youtube.com/embed/${videoId}`;
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allowfullscreen', 'allowfullscreen');
+            iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+            previewArea.appendChild(iframe);
+        } else {
+            const p = document.createElement('p');
+            p.className = 'text-muted';
+            p.textContent = 'Enlace de video no reconocido. Solo se admiten enlaces de YouTube.';
+            previewArea.appendChild(p);
+        }
+    } else {
+        const p = document.createElement('p');
+        p.className = 'text-muted';
+        p.textContent = 'La previsualización aparecerá aquí.';
+        previewArea.appendChild(p);
+    }
+}
+
+
+// ==========================================================
+//                       MANEJADORES DE EVENTOS
+// ==========================================================
+
+// Eventos para el campo main_image
+if (mainImageInput) {
+    mainImageInput.addEventListener('change', () => {
+        handleImageValidationAndPreview(mainImageInput, mainImagePreviewContainer, mainImageAlert, mainImageInputContainer, deleteMainImageBtn, {maxWidth: 1920, maxHeight: 1024});
+    });
+}
+if (deleteMainImageBtn) {
+    deleteMainImageBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        mainImageInput.value = '';
+        mainImagePreviewContainer.innerHTML = '<p class="text-muted">La previsualización aparecerá aquí.</p>';
+        mainImageInputContainer.classList.remove('d-none');
+        deleteMainImageBtn.style.display = 'none';
+    });
+}
+
+// Eventos para el campo blog_entry_html
+if (blogEntryHtmlInput) {
+    blogEntryHtmlInput.addEventListener('change', () => {
+        handleImageValidationAndPreview(blogEntryHtmlInput, blogEntryHtmlPreviewContainer, blogEntryHtmlAlert, blogEntryHtmlInputContainer, deleteBlogEntryHtmlBtn, {minWidth: 1920, minHeight: 1080});
+    });
+}
+if (deleteBlogEntryHtmlBtn) {
+    deleteBlogEntryHtmlBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        blogEntryHtmlInput.value = '';
+        blogEntryHtmlPreviewContainer.innerHTML = '<p class="text-muted">La previsualización aparecerá aquí.</p>';
+        blogEntryHtmlInputContainer.classList.remove('d-none');
+        deleteBlogEntryHtmlBtn.style.display = 'none';
+    });
+}
+
+// Delegación de eventos para los cambios en los bloques multimedia
+if (multimediaContainer) {
+    multimediaContainer.addEventListener('change', (event) => {
+        const target = event.target;
+        const block = target.closest('.multimedia-block');
+        const fileContainer = block.querySelector('.file-container');
+        const urlContainer = block.querySelector('.url-container');
+        const fileInput = block.querySelector('.content-file-input');
+        const urlInput = block.querySelector('.content-url-input');
+
+        if (target.classList.contains('content-type-select')) {
+            const selectedType = target.value;
+            fileContainer.style.display = (selectedType === 'image' || selectedType === 'file' || selectedType === 'videoMp4') ? 'block' : 'none';
+            urlContainer.style.display = (selectedType === 'video') ? 'block' : 'none';
+
+            let acceptValue = '';
+            if (selectedType === 'image') {
+                acceptValue = 'image/*';
+            } else if (selectedType === 'file') {
+                acceptValue = '.pdf, .docx, .xlsx, .pptx';
+            } else if (selectedType === 'videoMp4') {
+                acceptValue = 'video/mp4';
+            }
+            fileInput.setAttribute('accept', acceptValue);
+
+            fileInput.value = '';
+            urlInput.value = '';
+            renderPreview(block, null, null);
+        }
+
+        if (target.classList.contains('content-file-input') && target.offsetParent !== null) {
+            const file = target.files[0];
+            if (file) {
+                renderPreview(block, file, null);
+            }
+        }
+    });
+
+    multimediaContainer.addEventListener('input', (event) => {
+        const target = event.target;
+        if (target.classList.contains('content-url-input') && target.offsetParent !== null) {
+            const block = target.closest('.multimedia-block');
+            const url = target.value;
+            renderPreview(block, null, url);
+        }
+    });
+
+    multimediaContainer.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target.closest('.delete-multimedia-btn')) {
+            const block = target.closest('.multimedia-block');
+            block.remove();
+            updateFieldIndices();
+        }
+    });
+
+    addMultimediaBtn.addEventListener('click', () => {
+        const currentFields = multimediaContainer.querySelectorAll('.multimedia-block').length;
+        if (currentFields < MAX_FIELDS) {
+            const newIndex = multimediaContainer.querySelectorAll('.multimedia-block').length * -1;
+            const newBlock = document.createElement('div');
+            newBlock.className = 'multimedia-block row mb-5 align-items-center bg-white g-0 border rounded position-relative p-3 shadow-sm';
+            newBlock.innerHTML = `
+                <button type="button" class="btn w-auto btn-sm position-absolute top-0 end-0 m-2 delete-multimedia-btn" style="z-index: 10;">
+                    <i class="fa fa-trash"></i>
+                </button>
+                <input type="hidden" name="multimedia_ids[${newIndex}].id" value="0"/>
+                <div class="col-md-4 p-3">
+                    <label class="form-label mb-2 fw-bold">Tipo de Contenido</label>
+                    <select name="multimedia_ids[${newIndex}].content_type" class="form-select w-100 content-type-select">
+                        <option value="none" selected="selected">Ninguno</option>
+                        <option value="image">Imagen</option>
+                        <option value="file">Archivo (PDF, DOCX, XLSX, PPTX)</option>
+                        <option value="videoMp4">Video (video/mp4)</option>
+                        <option value="video">Video (Enlace URL)</option>
+                    </select>
+                </div>
+                <div class="col-md-8 p-3">
+                    <div class="file-container mb-3" style="display: none;">
+                        <label class="form-label">Sube tu archivo</label>
+                        <input type="file" name="multimedia_ids[${newIndex}].content_file" class="form-control content-file-input"/>
+                        <small class="form-text text-muted">Archivos permitidos: Imagen, Video, Documento.</small>
+                        <input type="hidden"
+                               name="multimedia_ids[${newIndex}].content_file_filename"/>
+                        <input type="hidden"
+                               name="multimedia_ids[${newIndex}].content_file_mimetype"/>
+                    </div>
+                    <div class="url-container mb-3" style="display: none;">
+                        <label class="form-label">Pega el enlace del video</label>
+                        <input type="url" name="multimedia_ids[${newIndex}].content_url" class="form-control content-url-input"/>
+                    </div>
+                    <div class="real-time-preview mt-3 p-3 bg-light rounded text-center">
+                        <p class="text-muted">La previsualización aparecerá aquí.</p>
+                    </div>
+                </div>
+            `;
+            multimediaContainer.appendChild(newBlock);
+            checkMultimediaLimit();
+        }
+    });
+}
+
+
+// ==========================================================
+//                       INICIALIZACIÓN
+// ==========================================================
+
+if (multimediaContainer) {
+    updateFieldIndices();
+
+    multimediaContainer.querySelectorAll('.multimedia-block').forEach(block => {
+        const select = block.querySelector('.content-type-select');
+        const fileInput = block.querySelector('.content-file-input');
+        const selectedType = select.value;
+
+        if (select) {
+            let acceptValue = '';
+            if (selectedType === 'image') {
+                acceptValue = 'image/*';
+            } else if (selectedType === 'file') {
+                acceptValue = '.pdf, .docx, .xlsx, .pptx';
+            } else if (selectedType === 'videoMp4') {
+                acceptValue = 'video/mp4';
+            }
+            if (fileInput) {
+                 fileInput.setAttribute('accept', acceptValue);
+            }
+        }
+    });
+}
+
+-------------------------------
+/odoo16/custom/addons/wb_portal_blogs/static/src/js/wysiwyg_custom.js
+--------------------------------
+
+odoo.define('wb_portal_blogs.wysiwyg_custom', function (require) {
+'use strict';
+  
+    var publicWidget = require('web.public.widget');
+    var wysiwygLoader = require('web_editor.loader');
+
+    var core = require('web.core');
+    var QWeb = core.qweb;
+
+
+    publicWidget.registry['public_user_editor_test'] = publicWidget.Widget.extend({
+        selector: 'textarea.o_public_user_editor_test_textarea',
+
+        /**
+         * @override
+         */
+        start: async function () {
+            await this._super(...arguments);
+            await wysiwygLoader.loadFromTextarea(this, this.el, {
+
+                'allowCommandImage': false,
+                'allowCommandVideo': false,
+
+
+
+                'allowCommandLink': false,           // Desactiva la creación de enlaces
+
+            }).then(wysiwyg => {
+                console.log('Editor WYSIWYG cargado solo con imágenes.');
+            });
+        },
+    });
+});
+
+
+---------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="portal_blog_multimedia_html">
+        <section class="container py-5">
+            <div>
+                <img t-attf-src="/web/image/blog.post/#{id}/main_image"
+                     alt="Imagen dinámica del blog"
+                     class="img-fluid rounded me-3 mb-3 float-end"
+                     style="max-width: 50%;"/>
+
+                <t t-raw="dynamic_text_content"/>
+            </div>
+        </section>
+        <div class="o_portal_blog_multimedia_container">
+            <div class="row">
+                <t t-foreach="multimedia_items" t-as="media">
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <t t-if="media.content_file">
+                                <t t-if="media.content_type == 'image'">
+                                    <div class="card-body p-0">
+                                        <a href="#" data-bs-toggle="modal"
+                                           t-attf-data-bs-target="#imageModal_#{media.id}">
+                                            <img t-attf-src="/web/image/blog.post.multimedia/#{media.id}/content_file"
+                                                 class="card-img-top"
+                                                 alt="Imagen del blog"
+                                                 style="cursor: pointer;"/>
+                                        </a>
+                                    </div>
+
+                                    <div class="card-footer text-center">
+                                        <a href="#" data-bs-toggle="modal"
+                                           t-attf-data-bs-target="#imageModal_#{media.id}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fa fa-expand me-1"/>
+                                            Maximizar
+                                        </a>
+                                    </div>
+
+                                    <div class="modal fade" t-attf-id="imageModal_#{media.id}" tabindex="-1"
+                                         aria-labelledby="imageModalLabel_#{media.id}" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" t-attf-id="imageModalLabel_#{media.id}">
+                                                        Imagen del Blog
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"/>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <img t-attf-src="/web/image/blog.post.multimedia/#{media.id}/content_file"
+                                                         class="img-fluid"
+                                                         alt="Imagen ampliada"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-elif="media.content_type == 'videoMp4'">
+                                    <div class="card-body p-0">
+                                        <a href="#" data-bs-toggle="modal"
+                                           t-attf-data-bs-target="#videoModal_#{media.id}" class="d-block w-100">
+                                            <video t-attf-src="/web/content/blog.post.multimedia/#{media.id}/content_file"
+                                                   class="card-img-top" preload="metadata" style="cursor: pointer;"/>
+                                        </a>
+                                    </div>
+
+                                    <div class="card-footer text-center">
+                                        <a href="#" data-bs-toggle="modal"
+                                           t-attf-data-bs-target="#videoModal_#{media.id}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fa fa-expand me-1"/>
+                                            Maximizar
+                                        </a>
+                                    </div>
+
+                                    <div class="modal fade" t-attf-id="videoModal_#{media.id}" tabindex="-1"
+                                         aria-labelledby="videoModalLabel_#{media.id}" aria-hidden="true">
+                                        <div class="modal-dialog modal-xl">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" t-attf-id="videoModalLabel_#{media.id}">
+                                                        Video
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"/>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <video t-attf-src="/web/content/blog.post.multimedia/#{media.id}/content_file"
+                                                           class="w-100" controls="controls"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-elif="media.content_type == 'file'">
+                                    <t t-if="media.content_file_mimetype == 'application/pdf'">
+                                        <div class="card-body p-0">
+                                            <a href="#" data-bs-toggle="modal"
+                                               t-attf-data-bs-target="#pdfModal_#{media.id}"
+                                               class="d-block w-100 h-100">
+                                                <embed t-attf-src="/web/content/blog.post.multimedia/#{media.id}/content_file"
+                                                       type="application/pdf" width="100%" height="400px"/>
+                                            </a>
+                                        </div>
+                                        <div class="card-footer text-center">
+                                            <a href="#" data-bs-toggle="modal"
+                                               t-attf-data-bs-target="#pdfModal_#{media.id}"
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fa fa-expand me-1"/>
+                                                Maximizar
+                                            </a>
+                                            <a t-attf-href="/web/content/blog.post.multimedia/#{media.id}/content_file?download=true"
+                                               download="download" class="btn btn-sm btn-outline-secondary ms-2">
+                                                <i class="fa fa-download me-1"/>
+                                                Descargar
+                                            </a>
+                                        </div>
+                                        <div class="modal fade" t-attf-id="pdfModal_#{media.id}" tabindex="-1"
+                                             aria-labelledby="pdfModalLabel_#{media.id}" aria-hidden="true">
+                                            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" t-attf-id="pdfModalLabel_#{media.id}">
+                                                            <span t-esc="media.content_file_filename"/>
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"/>
+                                                    </div>
+                                                    <div class="modal-body text-center">
+                                                        <embed t-attf-src="/web/content/blog.post.multimedia/#{media.id}/content_file"
+                                                               type="application/pdf" width="100%" height="800px"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                                            <t t-set="file_icon_class">
+                                                <i class="fa fa-file-word-o fa-5x text-primary mb-3"
+                                                   t-if="media.content_file_mimetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"/>
+                                                <i class="fa fa-file-excel-o fa-5x text-success mb-3"
+                                                   t-elif="media.content_file_mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'"/>
+                                                <i class="fa fa-file-powerpoint-o fa-5x text-warning mb-3"
+                                                   t-elif="media.content_file_mimetype == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"/>
+                                                <i class="fa fa-file-o fa-5x text-secondary mb-3" t-else=""/>
+                                            </t>
+                                            <h5 class="card-title text-truncate w-100">
+                                                <a t-attf-href="/web/content/blog.post.multimedia/#{media.id}/content_file?download=true"
+                                                   t-att-download="media.content_file_filename or 'Archivo'">
+                                                    <span t-esc="media.content_file_filename or 'Archivo'"/>
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div class="card-footer text-center">
+                                            <a t-attf-href="/web/content/blog.post.multimedia/#{media.id}/content_file?download=true"
+                                               download="download" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fa fa-download me-1"/>
+                                                Descargar
+                                            </a>
+                                        </div>
+                                    </t>
+                                </t>
+                            </t>
+                            <t t-elif="media.content_type == 'video'">
+                                <t t-set="youtube_id"
+                                   t-value="(media.content_url.split('v=')[1] if 'v=' in media.content_url else media.content_url.split('/')[-1]) or ''"/>
+                                <!-- Limpia el ID (quita parámetros ? o & si existen) -->
+                                <t t-set="youtube_raw_id"
+                                   t-value="(youtube_id.split('&amp;')[0].split('?')[0]) if youtube_id else ''"/>
+                                <div class="card-body p-0">
+                                    <a href="#" data-bs-toggle="modal"
+                                       t-attf-data-bs-target="#youtubeModal_#{media.id}">
+                                        <img t-attf-src="https://img.youtube.com/vi/#{youtube_raw_id if youtube_raw_id else 'dQw4w9WgXcQ'}/0.jpg"
+                                             class="card-img-top"
+                                             alt="Vista previa de YouTube"
+                                             style="cursor: pointer;"/>
+                                        <!--                                        <div class="video-play-button">-->
+                                        <!--                                            <i class="fa fa-play-circle"/>-->
+                                        <!--                                        </div>-->
+                                    </a>
+                                </div>
+
+                                <div class="card-footer text-center">
+                                    <a href="#" data-bs-toggle="modal" t-attf-data-bs-target="#youtubeModal_#{media.id}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fa fa-play-circle me-1"/>
+                                        Ver
+                                    </a>
+                                </div>
+
+                                <div class="modal fade" t-attf-id="youtubeModal_#{media.id}" tabindex="-1"
+                                     aria-labelledby="youtubeModalLabel_#{media.id}" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" t-attf-id="youtubeModalLabel_#{media.id}">Video
+                                                    de YouTube
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"/>
+                                            </div>
+                                            <div class="modal-body text-center">
+                                                <div class="ratio ratio-16x9">
+                                                    <iframe t-attf-src="https://www.youtube.com/embed/#{youtube_id}"
+                                                            frameborder="0"
+                                                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                                            allowfullscreen="allowfullscreen"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </template>
+</odoo>
+
+---------------------------
+<odoo>
+    <record id="view_wb_blog_post_kanban_inherit" model="ir.ui.view">
+        <field name="name">wb_portal_blogs.blog.post.kanban.inherit</field>
+        <field name="model">blog.post</field>
+        <field name="inherit_id" ref="website_blog.blog_post_view_kanban"/>
+        <field name="arch" type="xml">
+            <kanban position="attributes">
+                <attribute name="create">false</attribute>
+            </kanban>
+
+            <xpath expr="//strong[hasclass('col-4', 'text-end')]//span" position="replace"/>
+
+            <!--            <xpath expr="//div[hasclass('oe_kanban_global_click')]/div[hasclass('row')]//strong[hasclass('col-4', 'text-end')]//span" position="replace">-->
+            <xpath expr="//div[hasclass('oe_kanban_global_click')]" position="inside">
+                <div class="o_kanban_record_bottom d-flex justify-content-end">
+                    <div class="o_dropdown_kanban dropdown">
+                        <a role="button" data-bs-toggle="dropdown" href="#" class="dropdown-toggle"
+                           aria-expanded="false">
+                            <i class="fa fa-ellipsis-v" title="Opciones"/>
+                        </a>
+                        <div class="dropdown-menu" role="menu">
+                            <a role="menuitem" t-attf-href="{{record.website_url.value}}" class="dropdown-item">
+                                <span>Ver en Portal</span>
+                            </a>
+                            <button type="edit" class="dropdown-item" role="menuitem">
+                                <span>Editar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_wb_blog_post_tree" model="ir.ui.view">
+        <field name="name">wb_portal_blogs.blog.post.tree</field>
+        <field name="model">blog.post</field>
+        <field name="arch" type="xml">
+            <tree string="Publicaciones del Blog">
+                <field name="name"/>
+                <field name="author_id"/>
+                <field name="website_published"/>
+                <field name="create_date" string="Fecha de Creación"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_wb_blog_post_form" model="ir.ui.view">
+        <field name="name">wb_portal_blogs.blog.post.form</field>
+        <field name="model">blog.post</field>
+        <field name="arch" type="xml">
+            <form string="Publicación del Blog">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Título de la publicación"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="author_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contenido">
+                            <field name="website_published" widget="boolean_toggle"/>
+                            <field name="content"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wb_portal_blogs" model="ir.actions.act_window">
+        <field name="name">Blogs del Portal</field>
+        <field name="res_model">blog.post</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('blog_id.name', '=', 'Comunidad')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crea tu primera publicación de blog!
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+            id="menu_wb_portal_blogs_root"
+            name="Comunidad"
+            action="action_wb_portal_blogs"
+            sequence="10"
+            groups="base.group_user"
+            web_icon="wb_portal_blogs,static/description/img_blog_spot.jpeg"/>
+
+    <record id="blog_post_search_view_wb" model="ir.ui.view">
+        <field name="name">blog.post.search.view</field>
+        <field name="model">blog.post</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Título" filter_domain="[('name','ilike',self)]"/>
+                <field name="author_id" string="Autor"/>
+            </search>
+        </field>
+    </record>
+</odoo>
+
+---------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Hereda de la plantilla 'web.contact' -->
+        <template id="my_custom_contact_line_before_city" inherit_id="base.contact">
+            <!-- Usa XPath para seleccionar el elemento y posicionar tu nueva línea -->
+            <xpath expr="//span[@itemprop='addressCountry']" position="before">
+                <!-- Aquí está la línea que quieres agregar -->
+               <span t-esc="state_id"/>,
+            </xpath>
+        </template>
+    </data>
+</odoo>
+----------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_messages_list_view" name="Mis Mensajes">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mensajes</t>
+            </t>
+            <t t-if="not message_ids">
+                <p>You don't have any message yet.</p>
+            </t>
+            <t t-if="message_ids" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Número de mensajes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="message_ids" t-as="item">
+                        <tr>
+                            <td>
+                                <!--                                <a t-attf-href="#{item['blog_id'].website_url}">-->
+                                <a t-attf-href="/my/messages/thread/partner/#{item['message_id'][0].author_id.id}/blog/#{item['blog_id'].id}">
+                                    <t t-esc="item['message_id'][0].author_id.name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="item['message_id'][0].author_id.email"/>
+                            </td>
+                            <td>
+                                <t t-esc="item['count_message']"/>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_messages_form_view" name="Mensajes">
+        <t t-call="portal.portal_layout">
+
+            <!-- Sección para comentarios o thread -->
+            <div class="container my-4">
+                <t t-if="true">
+                    <h2>💬 Comentarios de
+                        <t t-esc="partner.name"/>
+                        en esta entrada
+                    </h2>
+                    <!-- Reutilizamos el widget de Odoo -->
+                    <t t-call="portal.message_thread">
+                        <t t-set="object"
+                           t-value="blog_entry"/>
+<!--                           t-value="blog_entry.message_ids.filtered( lambda m: m.author_id.id in [partner.id] and m.message_type == 'comment' or not m.parent_id                 )"/>-->
+                    </t>
+                </t>
+            </div>
+
+        </t>
+    </template>
+</odoo>
+-------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_blogs" inherit_id="portal.portal_my_home" name="Portal My Home Blogs"
+              customize_show="True">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <!--                <t t-set="title">Blogs</t>-->
+                <t t-set="title">Perfil Público</t>
+                <t t-set="url" t-value="'/my/blogs'"/>
+                <t t-set="placeholder_count" t-value="'blogs_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mensajes</t>
+                <t t-set="url" t-value="'/my/messages'"/>
+                <t t-set="placeholder_count" t-value="'message_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Modify portal templates -->
+    <template id="portal_my_home_menu_blogs" name="Portal layout : Blogs menu entry"
+              inherit_id="portal.portal_breadcrumbs" priority="10">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'my_blogs'"
+                t-attf-class="breadcrumb-item #{'active' if not blog_posts else ''}">
+                <!--                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Blogs</a>-->
+                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Perfil Público</a>
+                <!--                <t t-else="">Blogs</t>-->
+                <t t-else="">Perfil Público</t>
+            </li>
+            <li t-if="page_name == 'blog_edit'"
+                t-attf-class="breadcrumb-item #{'active' if not blog_posts else ''}">
+                <!--                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Blogs</a>-->
+                <a t-if="not blog_posts" t-attf-href="/my/blogs?{{ keep_query() }}">Perfil Público</a>
+                <!--                <t t-else="">Blogs</t>-->
+                <t t-else="">Perfil Picocli</t>
+            </li>
+            <li t-if="blog_entry" class="breadcrumb-item active">
+                <!--                <span t-field="blog_posts.type_name"/>-->
+                <h1>yesss</h1>
+                <t t-esc="blog_entry.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_blogs_list_view" name="Mis Blogs">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Blogs</t>
+            </t>
+            <t t-if="not blog_posts">
+                <p>You don't have any subscriptions yet.</p>
+            </t>
+            <t t-if="blog_posts" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <!--                        <th>ID</th>-->
+                        <th>Autor</th>
+                        <th>Fecha de Publicación</th>
+                        <th>Nº de Visitas</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="blog_posts" t-as="post">
+                        <tr>
+                                <a t-attf-href="/my/blog/edit/#{post.id}">
+                                    <t t-esc="post.name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="post.post_date" t-options='{"widget": "date"}'/>
+                            </td>
+                            <td>
+                                <t t-esc="post.visits or 0"/>
+                            </td>
+                            <td>
+                                <t t-if="post.is_published">
+                                    <span class="badge bg-success">Publicado</span>
+                                </t>
+                                <t t-if="not post.is_published">
+                                    <span class="badge bg-secondary">No Publicado</span>
+                                </t>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_blogs_form_view_edit" name="Editar Entrada del Blog en Portal">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4 bg-white p-5 border g-0 rounded">
+                <!-- Mensajes de alerta -->
+                <t t-if="error == False">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fa fa-check-circle mt-1 position-relative"/>
+                        <strong>¡Genial!</strong>
+                        Hemos actualizado tu información correctamente. Tus cambios ya se han guardado.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                    </div>
+                </t>
+                <t t-if="error == True">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fa fa-exclamation-triangle mt-1 position-relative"/>
+                        <strong>¡Oops!</strong>
+                        No pudimos actualizar tu información. Por favor, inténtalo de nuevo más tarde.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                    </div>
+                </t>
+
+                <t t-if="blog_entry or action == 'new'">
+                    <form id="blogForm" t-attf-action="/my/blog/#{action}/#{blog_entry.id or 0}" method="post"
+                          enctype="multipart/form-data">
+                        <div class="row mb-3">
+                            <div class="col-md-9">
+                                <!--                                <h2>Editar Entrada del Blog</h2>-->
+                                <h2>Editar mi perfil</h2>
+                            </div>
+                            <div class="col-md-3 text-md-end">
+                                <div class="btn-group w-75" role="group" aria-label="Toggle publish status">
+                                    <!-- Opción "Publicado" -->
+                                    <input type="radio" class="btn-check" name="is_published" id="btnradio_pub"
+                                           autocomplete="off" value="1"
+                                           t-att-checked="blog_entry.is_published and 'checked' or None"/>
+                                    <label class="btn btn-outline-primary flex-fill w-50" for="btnradio_pub">
+                                        Publicado
+                                    </label>
+
+                                    <!-- Opción "No Publicado" -->
+                                    <input type="radio" class="btn-check" name="is_published" id="btnradio_unpub"
+                                           autocomplete="off" value="0"
+                                           t-att-checked="not blog_entry.is_published and 'checked' or None"/>
+                                    <label class="btn btn-outline-primary flex-fill w-50" for="btnradio_unpub">
+                                        No Publicado
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- Token CSRF -->
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                        <!-- Campo: Blog (lectura/selección) -->
+                        <div class="row mb-3" style="display: none;">
+                            <div class="col-md-6">
+                                <label class="form-label">Blog</label>
+                                <select name="blog_id_edit" class="form-select" required="required">
+                                    <!--                                    <option t-if="not blog_entry.blog_id" value="" selected="selected">Seleccione un-->
+                                    <!--                                        blog-->
+                                    <!--                                    </option>-->
+                                    <t t-foreach="blog_ids" t-as="blog">
+                                        <option t-att-value="blog.id"
+                                                t-att-selected="blog_entry.blog_id and blog_entry.blog_id.id == blog.id and 'selected' or null">
+                                            <t t-esc="blog.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+
+                            </div>
+                        </div>
+
+
+                        <!-- Campo: Título -->
+                        <div class="mb-3">
+                            <!--                            <label for="name" class="form-label">Título</label>-->
+                            <label for="name" class="form-label">Autor</label>
+                            <input type="text" name="name" class="form-control"
+                                   t-att-value="blog_entry.name" required="required"/>
+                        </div>
+
+                        <!-- Campo: Subtítulo -->
+                        <div class="mb-3">
+                            <!--                            <label for="subtitle" class="form-label">Subtítulo</label>-->
+                            <label for="subtitle" class="form-label">Pequeña descripción</label>
+                            <input type="text" name="subtitle" class="form-control"
+                                   t-att-value="blog_entry.subtitle or ''"/>
+                        </div>
+
+
+                        <div class="mb-3">
+
+                         
+                            <div>
+                                <label class="form-label">Categorías</label>
+                            </div>
+                            <div class="btn-group d-flex flex-wrap gap-2" role="group" aria-label="Basic checkbox toggle button group">
+                                <t t-foreach="tag_ids" t-as="tag">
+                                    <input type="checkbox"
+                                           class="btn-check"
+                                           t-att-id="'category-%s' % tag.id"
+                                           t-att-name="'category-%s' % tag.id"
+                                           t-att-value="'%s' % tag.id"
+                                           t-att-checked="'checked' if blog_entry.tag_ids and tag.id in blog_entry.tag_ids.ids else None"
+                                           autocomplete="off"/>
+                                    <label class="btn btn-outline-primary" t-att-for="'category-%s' % tag.id"
+                                           t-field="tag.name"/>
+                                </t>
+
+                            </div>
+                        </div>
+                   
+                        <!--Campo: Imagen Título-->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Imagen de fondo para el título</label>
+
+                            <div class="card shadow-sm mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Sube tu archivo</h5>
+                                        <t t-if="blog_entry.blog_entry_html">
+                                            <button type="button" class="btn btn-sm delete-image-btn w-auto">
+                                                <i class="fa fa-trash"/>
+                                            </button>
+                                        </t>
+                                    </div>
+                                    <div t-att-class="'mt-3' + (' d-none' if blog_entry.blog_entry_html else '')">
+                                        <div class="input-group">
+                                            <input type="file" name="blog_entry_html" id="blog_entry_html"
+                                                   class="form-control"
+                                                   accept="image/*"/>
+                                        </div>
+                                        <small class="form-text text-muted">
+                                            Archivos permitidos: Imagen. Dimensión mínima permitida: 1920x1080 px y
+                                            máximo 2 MB.
+                                        </small>
+                                        <small id="blog-entry-html-alert" class="form-text text-danger d-none"
+                                               role="alert"/>
+                                    </div>
+                                    <div class="real-time-preview mt-3 p-3 bg-light rounded text-center">
+                                        <t t-if="blog_entry.blog_entry_html">
+                                            <img t-attf-src="/web/image/blog.post/#{blog_entry.id}/blog_entry_html"
+                                                 alt="Previsualización de imagen"
+                                                 class="img-fluid rounded shadow-sm"
+                                                 style="max-height: 400px;max-width: 550px;"
+                                            />
+                                        </t>
+                                        <t t-else="">
+                                            <p class="text-muted">La previsualización aparecerá aquí.</p>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FIN Imagen Título-->
+
+                        <!--Campo: Imagen Principal-->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Imagen Principal</label>
+
+                            <div class="card shadow-sm mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Sube tu archivo</h5>
+                                        <t t-if="blog_entry.main_image">
+                                            <button type="button" class="btn btn-sm delete-image-btn w-auto">
+                                                <i class="fa fa-trash"/>
+                                            </button>
+                                        </t>
+                                    </div>
+
+                                    <div t-att-class="'mt-3' + (' d-none' if blog_entry.main_image else '')">
+                                        <div class="input-group">
+                                            <input type="file" name="main_image" id="main_image" class="form-control"
+                                                   accept="image/*"/>
+                                        </div>
+                                        <small class="form-text text-muted">Archivos permitidos: Imagen. Dimensión
+                                            máxima de la imagen permitida: 1920x1024 px y máximo 2 MB
+                                        </small>
+                                        <small id="main-image-alert" class="form-text text-danger d-none" role="alert"/>
+                                    </div>
+
+                                    <div class="real-time-preview mt-3 p-3 bg-light rounded text-center">
+                                        <t t-if="blog_entry.main_image">
+                                            <img t-attf-src="/web/image/blog.post/#{blog_entry.id}/main_image"
+                                                 alt="Previsualización de imagen"
+                                                 class="img-fluid rounded shadow-sm"
+                                                 style="max-height: 400px;max-width: 550px;"
+                                            />
+                                        </t>
+                                        <t t-else="">
+                                            <p class="text-muted">La previsualización aparecerá aquí.</p>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FIN Imagen Principal-->
+
+                        <!-- Campo: Contenido Solo Texto (editable) -->
+                        <div class="mb-3">
+                            <label for="only_text_content" class="form-label">Contenido</label>
+                            <textarea name="only_text_content" id="only_text_content"
+                                      class="form-control o_public_user_editor_test_textarea o_wysiwyg_loader"
+                                      rows="10"
+                                      contenteditable="True"
+                                      placeholder="Escribe aquí tu descripción personal. Puedes agregar cualquier tipo de contenido que desees: texto, fotos, videos, enlaces o cualquier otro elemento que te represente.">
+                                <t t-esc="blog_entry.only_text_content"/>
+                            </textarea>
+                        </div>
+
+                        <!-- Opciones de Publicación (solo lectura) -->
+                        <div class="mb-3">
+                            <h3>Opciones de Publicación</h3>
+                            <div class="row">
+                                <div class="col-md-6" style="display: none;">
+                                    <label class="form-label">Autor</label>
+                                    <input type="text" class="form-control"
+                                           t-att-value="blog_entry.author_id and blog_entry.author_id.name or ''"
+                                           readonly="readonly"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Último colaborador</label>
+                                    <input type="text" class="form-control"
+                                           t-att-value="blog_entry.write_uid.name or ''"
+                                           readonly="readonly"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Nº de visitas</label>
+                                    <input type="text" class="form-control"
+                                           t-att-value="blog_entry.visits or 0" readonly="readonly"/>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Fecha de publicación</label>
+                                    <input type="text" class="form-control"
+                                           t-att-value="blog_entry.post_date"
+                                           readonly="readonly"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Última actualización</label>
+                                    <input type="text" class="form-control"
+                                           t-att-value="blog_entry.write_date"
+                                           readonly="readonly"/>
+                                </div>
+                                                          </div>
+                        </div>
+
+                        <!-- Sección para Contenido Multimedia -->
+                        <div class="mt-5 mb-3">
+                            <hr class="mb-5"/>
+                            <h3>Contenido Multimedia</h3>
+                            <p>Puedes agregar hasta 3 elementos multimedia (imágenes, videos, archivos).</p>
+
+                            <div id="multimedia-container">
+                                <t t-foreach="blog_entry.multimedia_ids" t-as="media">
+                                    <div class="card shadow-sm mb-5 multimedia-block">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">
+                                                Contenido Multimedia
+                                            </h5>
+                                            <button type="button" class="btn btn-sm delete-multimedia-btn w-auto">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="card-body">
+                                            <input type="hidden"
+                                                   t-attf-name="multimedia_ids[#{media.id}].id"
+                                                   t-att-value="media.id or 0"/>
+                                            <div class="row align-items-center">
+                                                <div class="col-md-4 mb-3">
+                                                    <label class="form-label fw-bold">Tipo de Contenido</label>
+                                                    <t t-if="media.content_file or media.content_url">
+                                                        <p class="form-control-plaintext">
+                                                            <t t-if="media.content_type == 'image'">Imagen</t>
+                                                            <t t-if="media.content_type == 'file'">Archivo (PDF, DOCX,
+                                                                XLSX, PPTX)
+                                                            </t>
+                                                            <t t-if="media.content_type == 'videoMp4'">Video
+                                                                (video/mp4)
+                                                            </t>
+                                                            <t t-if="media.content_type == 'video'">Video (Enlace URL)
+                                                            </t>
+                                                        </p>
+                                                        <input type="hidden"
+                                                               t-attf-name="multimedia_ids[#{media.id}].content_type"
+                                                               t-att-value="media.content_type"/>
+                                                        <input type="hidden"
+                                                               t-if="media.content_url"
+                                                               t-attf-name="multimedia_ids[#{media.id}].content_url"
+                                                               t-att-value="media.content_url"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <select t-attf-name="multimedia_ids[#{media.id}].content_type"
+                                                                class="form-select content-type-select">
+                                                            <option value="none"
+                                                                    t-att-selected="media.content_type == 'none' or not media.content_type">
+                                                                Ninguno
+                                                            </option>
+                                                            <option value="image"
+                                                                    t-att-selected="media.content_type == 'image'">
+                                                                Imagen
+                                                            </option>
+                                                            <option value="file"
+                                                                    t-att-selected="media.content_type == 'file'">
+                                                                Archivo (PDF, DOCX, XLSX, PPTX)
+                                                            </option>
+                                                            <option value="videoMp4"
+                                                                    t-att-selected="media.content_type == 'videoMp4'">
+                                                                Video (video/mp4)
+                                                            </option>
+                                                            <option value="video"
+                                                                    t-att-selected="media.content_type == 'video'">
+                                                                Video (Enlace URL)
+                                                            </option>
+                                                        </select>
+                                                    </t>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <t t-if="not (media.content_file or media.content_url)">
+                                                        <div t-attf-class="file-container mb-3 #{'d-block' if media.content_type in ('image', 'file', 'videoMp4') else 'd-none'}">
+                                                            <label class="form-label">Sube tu archivo</label>
+                                                            <input type="file"
+                                                                   t-attf-name="multimedia_ids[#{media.id}].content_file"
+                                                                   class="form-control content-file-input"/>
+                                                            <small class="form-text text-muted">Archivos permitidos:
+                                                                Imagen,
+                                                                Video, Documento.
+                                                            </small>
+                                                            <input type="hidden"
+                                                                   t-attf-name="multimedia_ids[#{media.id}].content_file_filename"
+                                                                   t-att-value="media.content_file_filename or ''"/>
+                                                            <input type="hidden"
+                                                                   t-attf-name="multimedia_ids[#{media.id}].content_file_mimetype"
+                                                                   t-att-value="media.content_file_mimetype or ''"/>
+                                                        </div>
+                                                        <div t-attf-class="url-container mb-3 #{'d-block' if media.content_type == 'video' else 'd-none'}">
+                                                            <label class="form-label">Pega el enlace del video</label>
+                                                            <input type="url"
+                                                                   t-attf-name="multimedia_ids[#{media.id}].content_url"
+                                                                   class="form-control content-url-input"
+                                                                   t-att-value="media.content_url or ''"/>
+                                                        </div>
+                                                    </t>
+                                                    <div class="real-time-preview mt-3 p-3 bg-light rounded text-center">
+                                                        <t t-if="media.content_file and media.content_type == 'image'">
+                                                            <img t-attf-src="/web/image/blog.post.multimedia/#{media.id}/content_file"
+                                                                 class="img-fluid rounded shadow-sm"
+                                                                 alt="Previsualización de imagen"/>
+                                                        </t>
+                                                        <t t-elif="media.content_file and media.content_type == 'videoMp4'">
+                                                            <video t-attf-src="/web/content/blog.post.multimedia/#{media.id}/content_file"
+                                                                   width="100%" style="border-radius: 8px;"
+                                                                   controls="controls"/>
+                                                        </t>
+                                                        <t t-elif="media.content_file and media.content_type == 'file'">
+                                                            <t t-if="media.content_file_mimetype == 'application/pdf'">
+                                                                <embed t-attf-src="/web/content/blog.post.multimedia/#{media.id}/content_file"
+                                                                       width="100%" height="400px"
+                                                                       style="border:none;"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <i class="fa fa-file-word-o fa-5x text-primary mb-3"
+                                                                   t-if="media.content_file_mimetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"/>
+                                                                <i class="fa fa-file-excel-o fa-5x text-success mb-3"
+                                                                   t-elif="media.content_file_mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'"/>
+                                                                <i class="fa fa-file-powerpoint-o fa-5x text-warning mb-3"
+                                                                   t-elif="media.content_file_mimetype == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"/>
+                                                                <i class="fa fa-file-o fa-5x text-secondary mb-3"
+                                                                   t-else=""/>
+                                                            </t>
+                                                        </t>
+                                                        <t t-elif="media.content_url and media.content_type == 'video'">
+                                                            <t t-set="youtube_id"
+                                                               t-value="(media.content_url.split('v=')[1] if 'v=' in media.content_url else media.content_url.split('/')[-1]) or ''"/>
+                                                            <iframe width="560" height="315"
+                                                                    t-attf-src="https://www.youtube.com/embed/#{youtube_id}"
+                                                                    frameborder="0"
+                                                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                                                    allowfullscreen="allowfullscreen"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <p class="text-muted">La previsualización aparecerá aquí.
+                                                            </p>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="button" class="btn btn-secondary" id="add-multimedia-btn">
+                                    <i class="fa fa-plus-circle me-2"/>
+                                    Agregar Contenido Multimedia
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Sección SEO -->
+                        <hr/>
+                        <div class="mt-5 mb-3">
+                            <h3>SEO</h3>
+
+                            <!-- Campo: Meta Title -->
+                            <div class="mb-3">
+                                <label for="website_meta_title" class="form-label">Meta Title</label>
+                                <input type="text" name="website_meta_title" class="form-control"
+                                       t-att-value="blog_entry.website_meta_title or ''"/>
+                            </div>
+
+                            <!-- Campo: Meta Description -->
+                            <div class="mb-3">
+                                <label for="website_meta_description" class="form-label">Meta Description</label>
+                                <textarea name="website_meta_description" class="form-control" rows="4">
+                                    <t t-esc="blog_entry.website_meta_description or ''"/>
+                                </textarea>
+                            </div>
+
+                            <!-- Campo: Meta Keywords -->
+                            <div class="mb-3">
+                                <label for="website_meta_keywords" class="form-label">Meta Keywords</label>
+                                <input type="text" name="website_meta_keywords" class="form-control"
+                                       t-att-value="blog_entry.website_meta_keywords or ''"/>
+                                <small class="form-text text-muted">
+                                    Separate every keyword with a comma
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Campo: social_media_display -->
+                        <t t-call="wb_portal_blogs.portal_my_blogs_form_view_edit_social_media_display"/>
+
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </t>
+            </div>
+
+            <!-- Sección para comentarios o thread -->
+            <div class="container my-4">
+                <t t-if="blog_entry">
+                    <h2>Chartter</h2>
+                    <t t-call="portal.message_thread">
+                        <t t-set="object" t-value="blog_entry"/>
+                    </t>
+                </t>
+            </div>
+
+        </t>
+    </template>
+
+    <template id="portal_my_account_inherit" inherit_id="portal.portal_layout">
+        <xpath expr="//div[contains(@class, 'row') and contains(@class, 'align-items-center') and contains(@class, 'bg-white') and contains(@class, 'g-0') and contains(@class, 'border') and contains(@class, 'rounded')]"
+               position="inside">
+            <div t-if="page_name == 'my_details'" class="col-2">
+                <!--                <a href="/my/blog/new/0" class="" title="Ver cómo otros usuarios ven tu perfil público">-->
+                <a t-attf-href="/my/blog/edit/0" class="" title="Ver cómo otros usuarios ven tu perfil público">
+                    <i class="fa fa-user me-2"/>
+                    Perfil Público
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_my_blogs_form_view_edit_social_media_display" name="Editar Entrada del Blog en Portal">
+
+        <div class="container my-4 bg-white p-5 border g-0 rounded">
+            <div class="mt-5 mb-3">
+                <h3>Redes Sociales</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="facebook_url" class="form-label">Facebook URL</label>
+                        <input type="url" name="facebook_url" id="facebook_url" class="form-control"
+                               t-att-value="blog_entry.author_id.facebook_url or ''"/>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="instagram_url" class="form-label">Instagram URL</label>
+                        <input type="url" name="instagram_url" id="instagram_url" class="form-control"
+                               t-att-value="blog_entry.author_id.instagram_url or ''"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="linkedin_url" class="form-label">LinkedIn URL</label>
+                        <input type="url" name="linkedin_url" id="linkedin_url" class="form-control"
+                               t-att-value="blog_entry.author_id.linkedin_url or ''"/>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="twitter_url" class="form-label">X URL</label>
+                        <input type="url" name="twitter_url" id="twitter_url" class="form-control"
+                               t-att-value="blog_entry.author_id.twitter_url or ''"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="youtube_url" class="form-label">YouTube URL</label>
+                        <input type="url" name="youtube_url" id="youtube_url" class="form-control"
+                               t-att-value="blog_entry.author_id.youtube_url or ''"/>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="github_url" class="form-label">GitHub URL</label>
+                        <input type="url" name="github_url" id="github_url" class="form-control"
+                               t-att-value="blog_entry.author_id.github_url or ''"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
+--------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="post_author_custom" inherit_id="website_blog.post_author">
+        <xpath expr="//span[@t-field='blog_post.author_id']" position="replace">
+            <!--            <t t-debug=""/>-->
+            <span t-if="true" t-field="blog_post.author_id"
+                  t-options='{ "widget": "contact", "fields": ["name", "email", "phone","mobile", "city", "zip", "state_id", "country_id"] }'/>
+        </xpath>
+    </template>
+
+    <!-- Agregar bloque de etiquetas después del autor -->
+    <template id="post_author_with_tags" inherit_id="website_blog.post_author">
+        <xpath expr="//div[contains(@t-attf-class, 'o_not_editable') and contains(@t-attf-class, 'align-items-center') and contains(@t-attf-class, 'position-relative')]"
+               position="after">
+            <div t-if="len(blog_post.tag_ids) > 0" class="mt-2">
+                <span class="text-muted">Tags:</span>
+                <t t-foreach="blog_post.tag_ids" t-as="one_tag">
+                    <a class="badge text-primary border me-1 post_link"
+                       t-attf-href="#{blog_url(tag=slug(one_tag), date_begin=False, date_end=False)}"
+                       t-esc="one_tag.name"/>
+                </t>
+            </div>
+
+            <t t-set="blog_spot_id"
+               t-value="(( request.params.get('blog_post').id if request.params.get('blog_post', False) else False ) if request.params else False) if request else False"/>
+            <!--            <span t-esc="repr(blog_spot_id)"/>-->
+            <t t-if="blog_spot_id">
+                <t t-set="blog_entry" t-value="env['blog.post'].search([('id','=',blog_spot_id)])"/>
+                <!--            <t t-if="blog_entry.author_id">-->
+                <t t-set="social_urls"
+                   t-value="[blog_entry.author_id.facebook_url, blog_entry.author_id.twitter_url, blog_entry.author_id.linkedin_url, blog_entry.author_id.youtube_url, blog_entry.author_id.instagram_url, blog_entry.author_id.github_url]"/>
+
+                <t t-if="any(social_urls)">
+                    <div class="o_wblog_sidebar_block pb-5 mt-4">
+                        <h6 class="text-uppercase pb-3 mb-4 border-bottom fw-bold">Sígueme en mis redes</h6>
+
+                        <div t-if="blog_entry" class="d-flex flex-wrap gap-2">
+                            <t t-if="blog_entry.author_id.facebook_url">
+                                <a t-attf-href="{{blog_entry.author_id.facebook_url}}" target="_blank"
+                                   class="social-icon" aria-label="Facebook" title="Visitar perfil de Facebook">
+                                    <i class="fa fa-facebook"/>
+                                </a>
+                            </t>
+                            <t t-if="blog_entry.author_id.twitter_url">
+                                <a t-attf-href="{{blog_entry.author_id.twitter_url}}" target="_blank"
+                                   class="social-icon" aria-label="X" title="Visitar perfil de X">
+                                    <i class="fa fa-twitter text-twitter"/>
+                                </a>
+                            </t>
+                            <t t-if="blog_entry.author_id.linkedin_url">
+                                <a t-attf-href="{{blog_entry.author_id.linkedin_url}}" target="_blank"
+                                   class="social-icon" aria-label="LinkedIn" title="Visitar perfil de LinkedIn">
+                                    <i class="fa fa-linkedin"/>
+                                </a>
+                            </t>
+                            <t t-if="blog_entry.author_id.youtube_url">
+                                <a t-attf-href="{{blog_entry.author_id.youtube_url}}" target="_blank"
+                                   class="social-icon" aria-label="YouTube" title="Visitar canal de YouTube">
+                                    <i class="fa fa-youtube-play"/>
+                                </a>
+                            </t>
+                            <t t-if="blog_entry.author_id.instagram_url">
+                                <a t-attf-href="{{blog_entry.author_id.instagram_url}}" target="_blank"
+                                   class="social-icon" aria-label="Instagram" title="Visitar perfil de Instagram">
+                                    <i class="fa fa-instagram"/>
+                                </a>
+                            </t>
+                            <t t-if="blog_entry.author_id.github_url">
+                                <a t-attf-href="{{blog_entry.author_id.github_url}}" target="_blank"
+                                   class="social-icon" aria-label="GitHub" title="Visitar perfil de GitHub">
+                                    <i class="fa fa-github"/>
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+
+</odoo>
+----------------------
+<odoo>
+    <data>
+        <record id="view_partner_social_media_form" model="ir.ui.view">
+            <field name="name">res.partner.social.media.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Redes Sociales">
+                        <group>
+                            <field name="facebook_url" widget="url" placeholder="Ej: https://www.facebook.com/usuario"/>
+                            <field name="instagram_url" widget="url" placeholder="Ej: https://www.instagram.com/usuario"/>
+                            <field name="linkedin_url" widget="url" placeholder="Ej: https://www.linkedin.com/in/usuario"/>
+                            <field name="twitter_url" widget="url" placeholder="Ej: https://www.twitter.com/usuario"/>
+                            <field name="youtube_url" widget="url" placeholder="Ej: https://www.youtube.com/channel/id"/>
+                            <field name="github_url" widget="url" placeholder="Ej: https://www.github.com/usuario"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+
+
+above is my custom module code and below is my custom module functionality what it does
+
+Based on your custom Odoo code, I can see you've built a comprehensive blog portal system for Odoo v16. Let me break down what your code does:
+Core Functionality
+Blog Portal Extension: This is essentially a user-facing blog management system that allows portal users to create and manage their public profiles through blog posts. It's designed around a "Community" blog concept.
+Key Components
+1. Blog Post Extensions (models/blog_post.py)
+
+Extends the standard blog.post model with multimedia capabilities
+Adds fields for main images, HTML entry images, and text content
+Creates a separate blog.post.multimedia model for handling multiple media types (images, videos, files)
+Enhances search functionality to include author location data
+
+2. User Profile Integration (models/res_partner.py)
+
+Adds social media URL fields to partners (Facebook, Instagram, LinkedIn, etc.)
+Extends the contact display template to show additional location information
+
+3. Portal Controllers (controllers/)
+
+Main controller: Handles blog editing, multimedia processing, and message management
+Portal integration: Adds blog and message counts to the user's portal home
+File handling: Processes multiple file types with validation and preview capabilities
+
+4. Frontend Features
+
+Rich form editor: Users can edit their profiles with WYSIWYG content
+Multimedia management: Upload and manage up to 3 multimedia items per post
+Real-time previews: Image and video previews with validation
+Social media integration: Display author's social media links on blog posts
+Responsive design: Bootstrap-based UI with modals and cards
+
+5. Message System
+
+Aggregates and displays comments from blog posts
+Provides threaded message views between users
+Groups messages by author for easy management
+
+Technical Architecture
+MVC Pattern: Follows Odoo's standard Model-View-Controller architecture
+Security: Implements proper access controls with user verification
+File Management: Handles binary file storage with base64 encoding
+Template Inheritance: Extends existing Odoo templates rather than replacing them
+
+
+---------------------------
+requriment:
+"add an indicator for unread msg in personal view , it would be like a message notification in the portal profile "
+
+
+for that the code you provide is here below
+
+# td_website_customisation module structure and files
+
+# __manifest__.py
+{
+    'name': 'TD Website Customisation',
+    'version': '16.0.1.0.0',
+    'category': 'Website',
+    'summary': 'Unread message notifications for portal users',
+    'description': """
+        Adds unread message indicators to the portal profile for blog posts.
+        Shows notification badges for unread messages in the user's portal.
+    """,
+    'author': 'Your Company',
+    'depends': [
+        'portal',
+        'website_blog',
+        'wb_portal_blogs',  # Your existing module
+    ],
+    'data': [
+        'views/portal_templates.xml',
+        'views/assets.xml',
+    ],
+    'assets': {
+        'web.assets_frontend': [
+            'td_website_customisation/static/src/js/unread_messages.js',
+            'td_website_customisation/static/src/css/unread_messages.css',
+        ],
+    },
+    'installable': True,
+    'auto_install': False,
+}
+
+# controllers/__init__.py
+from . import main
+
+# controllers/main.py
+import json
+from odoo import http
+from odoo.http import request
+from odoo.addons.portal.controllers.portal import CustomerPortal
+
+
+class TDWebsiteCustomisation(http.Controller):
+
+    @http.route('/my/messages/mark_read', type='http', auth="user", methods=['POST'], csrf=True)
+    def mark_messages_read(self, **kwargs):
+        """Mark messages as read for a specific blog post and partner"""
+        try:
+            blog_id = kwargs.get('blog_id')
+            partner_id = kwargs.get('partner_id')
+
+            if not blog_id or not partner_id:
+                return request.make_json_response({'error': 'Missing parameters'}, status=400)
+
+            blog_id = int(blog_id)
+            partner_id = int(partner_id)
+
+            blog_post = request.env['blog.post'].browse(blog_id)
+            if not blog_post.exists() or blog_post.author_id.id != request.env.user.partner_id.id:
+                return request.make_json_response({'error': 'Unauthorized'}, status=403)
+
+            messages = request.env['mail.message'].search([
+                ('model', '=', 'blog.post'),
+                ('res_id', '=', blog_id),
+                ('message_type', '=', 'comment'),
+                ('author_id', '=', partner_id),
+                ('is_read_by_blog_author', '=', False)
+            ])
+
+            if messages:
+                messages.write({'is_read_by_blog_author': True})
+
+            return request.make_json_response({
+                'success': True,
+                'marked_count': len(messages)
+            })
+
+        except Exception as e:
+            return request.make_json_response({'error': str(e)}, status=500)
+
+    @http.route('/my/messages/unread_count', type='json', auth="user", methods=['POST'])
+    def get_unread_count(self, **kwargs):
+        """Get current unread message count for AJAX updates"""
+        try:
+            count = request.env.user.partner_id.get_unread_blog_messages_count()
+            unread_by_blog = request.env.user.partner_id.get_unread_messages_by_blog()
+
+            return {
+                'total_count': count,
+                'by_blog': [{
+                    'blog_id': item['blog_post'].id,
+                    'blog_name': item['blog_post'].name,
+                    'unread_count': item['unread_count'],
+                    'latest_author': item['latest_message'].author_id.name if item['latest_message'] else '',
+                } for item in unread_by_blog]
+            }
+        except Exception as e:
+            return {'error': str(e)}
+
+    @http.route('/my/messages/mark_all_read', type='json', auth="user", methods=['POST'])
+    def mark_all_messages_read(self, **kwargs):
+        """Mark all unread messages as read for current user's blog posts"""
+        try:
+            current_user = request.env.user
+            blog_posts = request.env['blog.post'].search([
+                ('author_id', '=', current_user.partner_id.id)
+            ])
+
+            messages = request.env['mail.message'].search([
+                ('model', '=', 'blog.post'),
+                ('res_id', 'in', blog_posts.ids),
+                ('message_type', '=', 'comment'),
+                ('author_id', '!=', current_user.partner_id.id),
+                ('is_read_by_blog_author', '=', False)
+            ])
+
+            if messages:
+                messages.write({'is_read_by_blog_author': True})
+
+            return {
+                'success': True,
+                'marked_count': len(messages)
+            }
+
+        except Exception as e:
+            return {'error': str(e)}
+
+    @http.route(['/my/messages/thread/partner/<int:partner_id>/blog/<int:blog_id>'], type='http', auth="user",
+                website=True, csrf=True)
+    def portal_messages_profile(self, partner_id, blog_id, **kwargs):
+        values = {}
+        try:
+            blog_entry = partner = filtered_messages = None
+
+            if blog_id and partner_id:
+                blog_entry = request.env['blog.post'].sudo().browse(int(blog_id))
+                partner = request.env['res.partner'].sudo().browse(int(partner_id))
+
+                # Mark messages as read automatically when viewing
+                unread_messages = request.env['mail.message'].search([
+                    ('res_model', '=', 'blog.post'),
+                    ('res_id', '=', blog_id),
+                    ('message_type', '=', 'comment'),
+                    ('author_id', '=', partner_id),
+                    ('is_read_by_blog_author', '=', False)
+                ])
+                if unread_messages:
+                    unread_messages.sudo().write({'is_read_by_blog_author': True})
+
+            values = {
+                'blog_entry': blog_entry,
+                'partner': partner,
+            }
+        except Exception as exc:
+            values.update({
+                'error': True,
+            })
+        return request.render("wb_portal_blogs.portal_my_messages_form_view", values)
+
+
+class CustomerPortalInherit(CustomerPortal):
+
+    def _prepare_home_portal_values(self, counters):
+        """Override to include unread message count"""
+        values = super()._prepare_home_portal_values(counters)
+
+        # Add unread message count
+        if 'message_count' in counters:
+            partner = request.env.user.partner_id
+            values['unread_message_count'] = partner.get_unread_blog_messages_count()
+
+        return values
+        
+------------------------------------
+from odoo import models, fields, api
+
+
+class MailMessage(models.Model):
+    _inherit = 'mail.message'
+
+    is_read_by_blog_author = fields.Boolean(
+        string='Read by Blog Author',
+        default=False,
+        help="Indicates if the blog post author has read this message"
+    )
+
+    @api.model
+    def mark_as_read_by_author(self, message_ids, author_id):
+        """Mark messages as read by the blog author"""
+        messages = self.browse(message_ids)
+        for message in messages:
+            if (message.model == 'blog.post' and
+                    message.res_id and
+                    self.env['blog.post'].browse(message.res_id).author_id.id == author_id):
+                message.write({'is_read_by_blog_author': True})
+        return True
+        
+        
+--------------------------------------------
+from odoo import models, fields, api
+
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+
+    @api.model
+    def get_unread_blog_messages_count(self):
+        """Get count of unread messages for current user's blog posts"""
+        current_user = self.env.user
+        if not current_user or current_user._is_public():
+            return 0
+
+        # Get blog posts authored by current user
+        blog_posts = self.env['blog.post'].search([
+            ('author_id', '=', current_user.partner_id.id)
+        ])
+
+        if not blog_posts:
+            return 0
+
+        # Count unread messages on these blog posts
+        unread_count = self.env['mail.message'].search_count([
+            ('model', '=', 'blog.post'),
+            ('res_id', 'in', blog_posts.ids),
+            ('message_type', '=', 'comment'),
+            ('author_id', '!=', current_user.partner_id.id),
+            ('is_read_by_blog_author', '=', False)
+        ])
+
+        return unread_count
+
+    def get_unread_messages_by_blog(self):
+        """Get unread messages grouped by blog post"""
+        current_user = self.env.user
+        if not current_user or current_user._is_public():
+            return []
+
+        blog_posts = self.env['blog.post'].search([
+            ('author_id', '=', current_user.partner_id.id)
+        ])
+
+        result = []
+        for blog_post in blog_posts:
+            unread_messages = self.env['mail.message'].search([
+                ('model', '=', 'blog.post'),
+                ('res_id', '=', blog_post.id),
+                ('message_type', '=', 'comment'),
+                ('author_id', '!=', current_user.partner_id.id),
+                ('is_read_by_blog_author', '=', False)
+            ])
+
+            if unread_messages:
+                result.append({
+                    'blog_post': blog_post,
+                    'unread_count': len(unread_messages),
+                    'latest_message': unread_messages[0] if unread_messages else None
+                })
+
+        return result
+        
+-------------------------------------
+odoo.define('td_website_customisation.unread_messages', function (require) {
+    'use strict';
+
+    var publicWidget = require('web.public.widget');
+    var ajax = require('web.ajax');
+    var core = require('web.core');
+
+    var UnreadMessagesWidget = publicWidget.Widget.extend({
+        selector: 'body',
+        events: {
+            'click [data-mark-read]': '_onMarkRead',
+        },
+
+        start: function () {
+            var self = this;
+            this._super.apply(this, arguments).then(function () {
+                self._updateUnreadIndicators();
+                // Auto-update every 30 seconds
+                setInterval(function () {
+                    self._updateUnreadIndicators();
+                }, 30000);
+            });
+        },
+
+        _updateUnreadIndicators: function () {
+            var self = this;
+            ajax.jsonRpc('/my/messages/unread_count', 'call', {}).then(function (data) {
+                if (data.total_count !== undefined) {
+                    self._updateBellBadge(data.total_count);
+                    self._updatePageIndicators(data.by_blog);
+                }
+            }).catch(function (error) {
+                console.error('Error updating unread indicators:', error);
+            });
+        },
+
+        _updateBellBadge: function (totalCount) {
+            var bellBadge = document.querySelector('.unread-bell-badge');
+            if (totalCount > 0) {
+                if (bellBadge) {
+                    bellBadge.textContent = totalCount;
+                } else {
+                    var bellIcon = document.querySelector('.fa-bell');
+                    if (bellIcon) {
+                        var badge = document.createElement('span');
+                        badge.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger unread-bell-badge';
+                        badge.textContent = totalCount;
+                        bellIcon.parentElement.appendChild(badge);
+                    }
+                }
+            } else if (bellBadge) {
+                bellBadge.remove();
+            }
+        },
+
+        _updatePageIndicators: function (byBlog) {
+            var indicators = document.querySelectorAll('.unread-indicator');
+            indicators.forEach(function (indicator) {
+                var blogId = indicator.getAttribute('data-blog-id');
+                var blogData = byBlog.find(function (item) {
+                    return item.blog_id == blogId;
+                });
+                if (blogData && blogData.unread_count > 0) {
+                    indicator.textContent = blogData.unread_count;
+                    indicator.style.display = '';
+                } else {
+                    indicator.style.display = 'none';
+                }
+            });
+        },
+
+        _onMarkRead: function (ev) {
+            var $target = $(ev.currentTarget);
+            var blogId = $target.data('blog-id');
+            var partnerId = $target.data('partner-id');
+            var self = this;
+
+            if (blogId && partnerId) {
+                var csrfToken = $('input[name="csrf_token"]').val() || '';
+
+                $.ajax({
+                    url: '/my/messages/mark_read',
+                    type: 'POST',
+                    data: {
+                        'blog_id': blogId,
+                        'partner_id': partnerId,
+                        'csrf_token': csrfToken
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            self._updateUnreadIndicators();
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error marking messages as read:', error);
+                    }
+                });
+            }
+        }
+    });
+
+    // Auto-mark messages as read on thread view
+    var MessageThreadWidget = publicWidget.Widget.extend({
+        selector: '.portal-message-thread',
+
+        start: function () {
+            var self = this;
+            this._super.apply(this, arguments).then(function () {
+                self._autoMarkRead();
+            });
+        },
+
+        _autoMarkRead: function () {
+            var blogId = this.$el.data('blog-id');
+            var partnerId = this.$el.data('partner-id');
+
+            if (blogId && partnerId) {
+                var csrfToken = $('input[name="csrf_token"]').val() || '';
+
+                $.ajax({
+                    url: '/my/messages/mark_read',
+                    type: 'POST',
+                    data: {
+                        'blog_id': blogId,
+                        'partner_id': partnerId,
+                        'csrf_token': csrfToken
+                    },
+                    success: function (data) {
+                        if (data.success && window.updateUnreadIndicators) {
+                            window.updateUnreadIndicators();
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+    publicWidget.registry.UnreadMessagesWidget = UnreadMessagesWidget;
+    publicWidget.registry.MessageThreadWidget = MessageThreadWidget;
+
+    return {
+        UnreadMessagesWidget: UnreadMessagesWidget,
+        MessageThreadWidget: MessageThreadWidget
+    };
+});
+
+-----------------------------------
+/* static/src/css/unread_messages.css */
+.unread-indicator {
+    font-size: 0.75rem;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.unread-bell-badge {
+    font-size: 0.6rem;
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+.unread-messages-menu {
+    min-width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.unread-messages-menu .dropdown-item {
+    white-space: normal;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.unread-messages-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.unread-messages-menu .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+/* Notification styles for portal */
+.portal-notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
+.portal-notification {
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Make bell icon more prominent */
+.nav-link .fa-bell {
+    font-size: 1.2rem;
+    color: #6c757d;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover .fa-bell {
+    color: #007bff;
+}
+
+/* Message count styling in portal docs */
+.o_portal_docs .card .card-body .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .unread-messages-menu {
+        min-width: 280px;
+        max-width: 90vw;
+    }
+
+    .portal-notification-container {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+    }
+}
+--------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend the portal home to show unread message count -->
+    <template id="portal_my_home_unread_messages" inherit_id="wb_portal_blogs.portal_my_home_blogs" name="Portal My Home Unread Messages">
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][2]" position="replace">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mensajes</t>
+                <t t-set="url" t-value="'/my/messages'"/>
+                <t t-set="placeholder_count" t-value="'message_count'"/>
+                <!-- Add unread indicator -->
+                <t t-set="unread_count" t-value="request.env.user.partner_id.get_unread_blog_messages_count()"/>
+                <t t-if="unread_count > 0">
+                    <t t-set="title">
+                        Mensajes
+                        <span class="badge bg-danger ms-2 unread-indicator" t-esc="unread_count"/>
+                    </t>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Extend the messages list view to show unread indicators -->
+    <template id="portal_my_messages_list_view_unread" inherit_id="wb_portal_blogs.portal_my_messages_list_view" name="Portal Messages List Unread Indicators">
+        <xpath expr="//tbody/t/tr/td[1]" position="replace">
+            <td>
+                <t t-set="blog_post" t-value="item['blog_id']"/>
+                <t t-set="unread_for_blog" t-value="request.env['mail.message'].search_count([
+                    ('res_model', '=', 'blog.post'),
+                    ('res_id', '=', blog_post.id),
+                    ('message_type', '=', 'comment'),
+                    ('author_id', '!=', request.env.user.partner_id.id),
+                    ('is_read_by_blog_author', '=', False)
+                ])"/>
+
+                <a t-attf-href="/my/messages/thread/partner/#{item['message_id'][0].author_id.id}/blog/#{item['blog_id'].id}">
+                    <t t-esc="item['message_id'][0].author_id.name"/>
+                    <t t-if="unread_for_blog > 0">
+                        <span class="badge bg-danger ms-2 unread-indicator" t-esc="unread_for_blog"/>
+                    </t>
+                </a>
+            </td>
+        </xpath>
+    </template>
+
+    <template id="portal_messages_thread_mark_read" inherit_id="wb_portal_blogs.portal_my_messages_form_view" name="Portal Messages Thread Mark Read">
+    <xpath expr="//div[@class='container my-4']" position="inside">
+        <!-- Container holding data attributes for JS -->
+        <div id="blog-thread-container"
+             t-att-data-blog-id="blog_entry.id if blog_entry else 0"
+             t-att-data-partner-id="partner.id if partner else 0">
+        </div>
+
+        <!-- JS reads the data attributes -->
+        <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var container = document.getElementById('blog-thread-container');
+            if (!container) return;
+
+            var blogId = parseInt(container.dataset.blogId, 10);
+            var partnerId = parseInt(container.dataset.partnerId, 10);
+
+            if (blogId &amp;&amp; partnerId) {
+                var csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+                var csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '';
+
+                fetch('/my/messages/mark_read', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: 'blog_id=' + blogId + '&amp;partner_id=' + partnerId + '&amp;csrf_token=' + encodeURIComponent(csrfToken)
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success) {
+                        updateUnreadIndicators();
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error marking messages as read:', error);
+                });
+            }
+
+            function updateUnreadIndicators() {
+                var badges = document.querySelectorAll('.unread-indicator');
+                badges.forEach(function(badge) {
+                    badge.style.opacity = '0.5';
+                });
+
+                var bellBadge = document.querySelector('.unread-bell-badge');
+                if (bellBadge) bellBadge.style.display = 'none';
+            }
+        });
+        </script>
+    </xpath>
+</template>
+
+
+    <!-- Add notification bell to portal layout -->
+    <template id="portal_layout_unread_bell" inherit_id="portal.portal_layout" name="Portal Layout Unread Bell">
+        <xpath expr="//nav[@class='navbar navbar-expand-lg navbar-light border-bottom']//div[@class='collapse navbar-collapse']" position="inside">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown" id="unread-messages-dropdown">
+                    <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-bell"/>
+                        <t t-set="total_unread" t-value="request.env.user.partner_id.get_unread_blog_messages_count()"/>
+                        <span t-if="total_unread > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger unread-bell-badge">
+                            <t t-esc="total_unread"/>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end unread-messages-menu">
+                        <li><h6 class="dropdown-header">Mensajes no leídos</h6></li>
+                        <t t-set="unread_by_blog" t-value="request.env.user.partner_id.get_unread_messages_by_blog()"/>
+                        <t t-if="not unread_by_blog">
+                            <li><span class="dropdown-item-text text-muted">No hay mensajes nuevos</span></li>
+                        </t>
+                        <t t-foreach="unread_by_blog[:5]" t-as="item">
+                            <li>
+                                <a class="dropdown-item" t-attf-href="/my/messages/thread/partner/#{item['latest_message'].author_id.id}/blog/#{item['blog_post'].id}">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <strong t-esc="item['blog_post'].name[:30] + '...' if len(item['blog_post'].name) > 30 else item['blog_post'].name"/>
+                                            <br/>
+                                            <small class="text-muted" t-esc="item['latest_message'].author_id.name"/>
+                                        </div>
+                                        <span class="badge bg-primary" t-esc="item['unread_count']"/>
+                                    </div>
+                                </a>
+                            </li>
+                        </t>
+                        <t t-if="len(unread_by_blog) > 5">
+                            <li><hr class="dropdown-divider"/></li>
+                            <li><a class="dropdown-item text-center" href="/my/messages">Ver todos los mensajes</a></li>
+                        </t>
+                    </ul>
+                </li>
+            </ul>
+        </xpath>
+    </template>
+</odoo>
+
+---------------------------------
+
+
+
+
+td_website_customisation/
+├── __init__.py
+├── __manifest__.py
+├── controllers/
+│   ├── __init__.py
+│   └── main.py
+├── models/
+│   ├── __init__.py
+│   ├── mail_message.py
+│   └── res_partner.py
+├── views/
+│   ├── portal_templates.xml
+│   └── assets.xml
+├── static/
+│   └── src/
+│       ├── css/
+│       │   └── unread_messages.css
+│       └── js/
+│           └── unread_messages.js
+└── security/
+    └── ir.model.access.csv
+    
+but i got below error
+
+UncaughtPromiseError > TypeError
+Uncaught Promise > Cannot set properties of null (setting 'textContent')
+TypeError: Cannot set properties of null (setting 'textContent')
+    at http://localhost:8066/web/assets/465-2f96f59/1/web.assets_frontend_lazy.min.js:9178:1911
+    at Array.forEach (<anonymous>)
+    at http://localhost:8066/web/assets/465-2f96f59/1/web.assets_frontend_lazy.min.js:9178:1767
+    at async Promise.all (index 1)
+    
+only give me the code in which i have to change no more description give plzzz
+
+
+update:
+
+>> website blog
+- working on notification points
+- add the methods to find the message is read or unread
+- inherite the client’s custom template and add the unread msg info
+- pass the data in controller to show in the template
+- make a method to read the data when open the msg
+- make a widget for display notification in navbar
+- develop the js for that and try different different ways to pass the data in widget and add method in controller to pass data in widget
+- solve the errors that come during the development
+- explore in different  different AI from different different prompt , how to set notification 
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_mrp_bom_line_form_inherit_purchase_flow" model="ir.ui.view">
+        <field name="name">mrp.bom.line.form.purchase.flow</field>
+        <field name="model">mrp.bom.line</field>
+        <field name="inherit_id" ref="cr_mrp_bom_evr_customisation.view_mrp_bom_line_form_inherit_branch"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <group name="purchase_flow_info" string="Purchase Flow Status">
+                    <field name="to_order" readonly="1"/>
+                    <field name="to_order_cfe" readonly="1"/>
+                    <field name="ordered" readonly="1"/>
+                    <field name="ordered_cfe" readonly="1"/>
+                    <field name="to_transfer" readonly="1"/>
+                    <field name="to_transfer_cfe" readonly="1"/>
+                    <field name="transferred" readonly="1"/>
+                    <field name="transferred_cfe" readonly="1"/>
+                    <field name="used" readonly="1"/>
+                    <field name="free_to_use" readonly="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

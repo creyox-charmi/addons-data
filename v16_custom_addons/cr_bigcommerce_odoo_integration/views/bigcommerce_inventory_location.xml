@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <odoo>
+    <record id="view_bigcommerce_inventory_location_form" model="ir.ui.view">
+        <field name="name">bigcommerce.inventory.location.form</field>
+        <field name="model">bigcommerce.inventory.location</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Location">
+                <sheet>
+                    <group>
+                        <button name="action_update_location_to_bigcommerce"
+                                type="object"
+                                string="Update to BigCommerce"
+                                class="btn-primary"
+                                attrs="{'invisible': [('bc_location_id', '=', False)]}"/>
+                        <button name="action_delete_location_from_bigcommerce"
+                                type="object"
+                                string="Delete from BigCommerce"
+                                class="btn-danger"
+                                attrs="{'invisible': [('bc_location_id', '=', False)]}"/>
+                    </group>
+                    <group>
+                        <group string="Location">
+                            <field name="bigcommerce_store_id"/>
+                            <field name="bc_location_id"/>
+                            <field name="code"/>
+                            <field name="label"/>
+                            <field name="description"/>
+                            <field name="type_id"/>
+                            <field name="enabled"/>
+                            <field name="storefront_visibility"/>
+                            <field name="managed_by_external_source"/>
+                            <field name="time_zone"/>
+                        </group>
+                        <group string="Address">
+                            <field name="address1"/>
+                            <field name="address2"/>
+                            <field name="city"/>
+                            <field name="state"/>
+                            <field name="zip"/>
+                            <field name="country_code"/>
+                            <field name="phone"/>
+                            <field name="latitude"/>
+                            <field name="longitude"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Timestamps" col="2">
+                            <field name="created_at"/>
+                            <field name="updated_at"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bigcommerce_inventory_location_tree" model="ir.ui.view">
+        <field name="name">bigcommerce.inventory.location.tree</field>
+        <field name="model">bigcommerce.inventory.location</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="bigcommerce_store_id"/>
+                <field name="label"/>
+                <field name="code"/>
+                <field name="type_id"/>
+                <field name="enabled"/>
+                <field name="city"/>
+                <field name="country_code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_bigcommerce_inventory_locations" model="ir.actions.act_window">
+        <field name="name">BC Inventory Locations</field>
+        <field name="res_model">bigcommerce.inventory.location</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_bigcommerce_inventory_locations" name="Locations"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+              action="action_bigcommerce_inventory_locations"
+              sequence="10"/>
+</odoo>

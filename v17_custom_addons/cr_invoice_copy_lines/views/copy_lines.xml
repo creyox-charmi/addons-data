@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_copy_line_in_invoicing" model="ir.ui.view">
+        <field name="name">copy.line</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="after">
+                <button name="invoicing_copy_line"
+                                string="Copy"
+                                type="object"
+                                class="oe_highlight"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

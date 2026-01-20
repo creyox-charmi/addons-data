@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="view_cr_restrict_button_mrp_production_form_inherit" model="ir.ui.view">
+            <field name="name">cr.restrict.button.mrp.production.form.inherit</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='button_scrap']" position="attributes">
+                    <attribute name="groups">!cr_warehouse_stock_restrictions.cr_restrict_button</attribute>
+                </xpath>
+
+                <xpath expr="//button[@name='action_toggle_is_locked'][1]" position="attributes">
+                    <attribute name="groups">mrp.group_mrp_manager,!cr_warehouse_stock_restrictions.cr_restrict_button</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+

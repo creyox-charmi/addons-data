@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="cr_website_setting_config_inherit" model="ir.ui.view">
+        <field name="name">res.config.settings.multi.quantity.multi.company</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="website.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//app[@name='website']/block[@id='website_email_marketing']" position="after">
+                <block title="Bulk Quantity on Multiple Website" id="multiple_website_quantity">
+                    <setting id="website_multi_quantity_multi_company" string="Bulk Product Quantity Set For Multiple Website" help="Allows set dynamic bulk quantity for multiple website ">
+                        <field name="multi_quantity_on_multi_product"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_website_configuration_setting" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="cr_website_setting_config_inherit"/>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'website', 'bin_size': False}</field>
+    </record>
+</odoo>

@@ -1,0 +1,29 @@
+<odoo>
+    <record id="view_per_product_shipping_form" model="ir.ui.view">
+        <field name="name">cr.per.product.shipping.form</field>
+        <field name="model">cr.per.product.shipping</field>
+        <field name="arch" type="xml">
+            <form string="Per Product Shipping">
+                <sheet>
+                    <group>
+                        <field name="product_template_id"/>
+                        <field name="delivery_carrier_id" domain="[('id', 'in', delivery_carrier_ids)]"/>
+                        <field name="delivery_carrier_ids" invisible="True"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_per_product_shipping_tree" model="ir.ui.view">
+        <field name="name">cr.per.product.shipping.tree</field>
+        <field name="model">cr.per.product.shipping</field>
+        <field name="arch" type="xml">
+            <tree string="Per Product Shipping">
+                <field name="product_template_id"/>
+                <field name="delivery_carrier_id" domain="[('id', 'in', delivery_carrier_ids)]"/>
+                <field name="delivery_carrier_ids" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

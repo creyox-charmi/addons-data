@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id='inh_edit_project' model='ir.ui.view'>
+        <field name='name'>project.project.form</field>
+        <field name='model'>project.project</field>
+        <field name='inherit_id' ref='project.edit_project'/>
+        <field name='arch' type='xml'>
+            <field name='partner_id' position='after'>
+                <div class="o_td_label">
+                    <label for="client_hourly_rate" string="Client Hourly Rate" groups="base.group_system"/>
+                </div>
+                <div class="d-flex">
+                    <field name="client_hourly_rate" groups="base.group_system"/>
+                    <field name="client_currency_id" placeholder="Currency" nolable="1" groups="base.group_system"/>
+                </div>
+            </field>
+            <xpath expr="//notebook//page[last()]" position="after">
+                <page string="Credential Details" groups="base.group_system">
+                    <h4>Credential Details</h4>
+                    <field name="credential_details_ids">
+                        <tree editable="bottom"> 
+                            <field name="url_type"/>
+                            <field name="url"/>
+                            <field name="login"/>
+                            <field name="password"/>
+                            <field name="github_id"/>
+                            <field name="github_pass"/>
+                            <field name="githus_token"/>
+                        </tree>
+                    </field>
+                    <h4>Hosting Details</h4>
+                    <field name="hosting_details_ids">
+                        <tree editable="bottom"> 
+                            <field name="url_type"/>
+                            <field name="url"/>
+                            <field name="ip"/>
+                            <field name="login"/>
+                            <field name="password"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

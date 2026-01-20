@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="cr_project_inherit" model="ir.ui.view">
+        <field name="name">cr.form.inherit.project.project</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project" />
+        <field name="arch" type="xml">
+            <!-- FIELDS ADDED -->
+            <xpath expr="//sheet/group/group/field[@name='company_id']" position="after">
+                <label for='cr_client_hourly_rate' string="Client Hourly Rate" groups = "base.group_system"/>
+                <div class="o_row" groups = "base.group_system">
+                    <field name='cr_client_hourly_rate' class="o_inline" />
+                    <field name='cr_client_currency_id' class="o_inline"/>
+                </div>
+                <field name='cr_developer_currency_id' string='Developer Currency'
+                    groups="base.group_system" />
+            </xpath>
+            <!-- FIELD ADDED IN SETTINGS PAGE -->
+
+            <!-- <xpath
+            expr="//sheet/notebook/page[@name='settings']/group/group/field[@name='analytic_account_id']"
+            position="after">
+                <field name='cr_assignees_analytic_account_id'/>
+             </xpath> -->
+
+            <!-- SMART BUTTON FOR INVOICE AND BILL -->
+            <xpath expr="//div[@class='oe_button_box']/button" position="after">
+                <button name="action_show_invoices" type="object" class="oe_stat_button"
+                    icon="fa-money icon" groups="base.group_system"
+                    attrs="{'invisible': [('cr_count_no_of_invoices', '=', 0)]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">
+                            <field name='cr_count_no_of_invoices' /> Invoice</span>
+                    </div>
+                </button>
+                <button name="action_show_all_bills" type="object" class="oe_stat_button"
+                    icon="fa-credit-card-alt icon" groups="base.group_system"
+                    attrs="{'invisible': [('cr_count_no_of_bills', '=', 0)]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">
+                            <field name='cr_count_no_of_bills' /> Bill</span>
+                    </div>
+                </button>
+            </xpath>
+
+
+        </field>
+    </record>
+</odoo>

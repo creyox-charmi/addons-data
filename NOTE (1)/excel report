@@ -1,0 +1,281 @@
+    def action_generate_excel_report(self):
+        print("def action_generate_pdf_report execute.........")
+        student = self.student_ids
+        student_record = []
+
+        fp = BytesIO()
+        file_name = "department.xlsx"
+        workbook = xlsxwriter.Workbook(fp, {"in_memory": True})
+        worksheet = workbook.add_worksheet()
+        order_line_header1 = ["Name"]
+        order_line_header2 = ["Hod"]
+        order_line_header3 = ["Code"]
+        order_line_header4 = ["Notes"]
+        order_line_header5 = ["No of Students"]
+        order_line_header6 = ["Active"]
+        order_line_header7 = ["Student"]
+        order_line_header8 = ["Name","Birthdate","E-mail","Mobile","Is Cr"]
+
+        center_format1 = workbook.add_format(
+            {"align": "center", "valign": "vcenter"}
+        )
+        center_format3 = workbook.add_format(
+            {"align": "center", "valign": "vcenter", "bold": True}
+        )
+
+        bold = workbook.add_format({"bold": True})
+        date_style = workbook.add_format({'text_wrap': True, 'num_format': 'dd-mm-yyyy',"align": "center", "valign": "vcenter"})
+
+        worksheet.merge_range(
+            "F1:I1", "Department Report", center_format3)
+
+        for s in student:
+            student_data = {
+                'name': s.name,
+                'birthdate': s.birthdate,
+                'age': s.age,
+                'mobile': s.mobile,
+                'email': s.email,
+                'type': s.type,
+                'notes': s.notes,
+            }
+            student_record.append(student_data)
+
+
+        worksheet.write_column(2, 3, order_line_header1, center_format3)
+        worksheet.write_column(2, 9, order_line_header2, center_format3)
+        worksheet.write_column(4, 3, order_line_header3, center_format3)
+        worksheet.write_column(4, 9, order_line_header4, center_format3)
+        worksheet.write_column(6, 3, order_line_header5, center_format3)
+        worksheet.write_column(6, 9, order_line_header6, center_format3)
+
+        worksheet.write_column(11, 3, order_line_header7, center_format3)
+        worksheet.write_row(13, 3, order_line_header8, center_format3)
+
+
+
+
+        for val1 in self:
+            worksheet.write(2, 4, val1.name, center_format1)
+            worksheet.write(2, 10, val1.hod_id.name, center_format1)
+            worksheet.write(4, 4, val1.code, center_format1)
+            worksheet.write(4, 10, val1.notes, center_format1)
+            worksheet.write(6, 4, val1.no_of_students, center_format1)
+            worksheet.write(6, 10, val1.active, center_format1)
+
+        row=14
+        for val in student_record:
+            worksheet.write(row, 3, val.get("name"), center_format1)
+            worksheet.write(row, 4, val.get("birthdate"), date_style)
+            worksheet.write(row, 5, val.get("email"), center_format1)
+            worksheet.write(row, 6, val.get("mobile"), center_format1)
+            worksheet.write(row, 7, val.get("is_cr"), center_format1)
+
+            row = row + 1
+
+
+        workbook.close()
+        attachment_id = self.env["ir.attachment"].create(
+            {
+                "name": file_name,
+                "type": "binary",
+                "datas": base64.encodebytes(fp.getvalue()),
+                "res_model": self._name,
+                "res_id": self.id,
+            }
+        )
+        return {
+            "type": "ir.actions.act_url",
+            "url": "/web/content/%s/%s/datas/%s"
+                   % ("ir.attachment", attachment_id.id, file_name),
+            "target": "self",
+        }
+-----------------------------------------------------------------
+    def action_generate_excel_report(self):
+        print("def action_generate_pdf_report execute.........")
+        student = self.student_ids
+        student_record = []
+
+        fp = BytesIO()
+        file_name = "department.xlsx"
+        workbook = xlsxwriter.Workbook(fp, {"in_memory": True})
+        worksheet = workbook.add_worksheet()
+
+        center_format1 = workbook.add_format(
+            {"align": "center", "valign": "vcenter"}
+        )
+        center_format3 = workbook.add_format(
+            {"align": "center", "valign": "vcenter", "bold": True}
+        )
+
+        bold = workbook.add_format({"bold": True})
+        date_style = workbook.add_format({'text_wrap': True, 'num_format': 'dd-mm-yyyy',"align": "center", "valign": "vcenter"})
+
+        worksheet.merge_range(
+            "F1:I1", "Department Report", center_format3)
+
+        for s in student:
+            student_data = {
+                'name': s.name,
+                'birthdate': s.birthdate,
+                'age': s.age,
+                'mobile': s.mobile,
+                'email': s.email,
+                'type': s.type,
+                'notes': s.notes,
+            }
+            student_record.append(student_data)
+
+        worksheet.merge_range(
+            "C3:D3","Name", center_format3)
+        worksheet.merge_range(
+            "I3:J3", "Hod", center_format3)
+        worksheet.merge_range(
+            "C5:D5", "Code", center_format3)
+        worksheet.merge_range(
+            "I5:J5", "Notes", center_format3)
+        worksheet.merge_range(
+            "C7:D7", "NO of students", center_format3)
+        worksheet.merge_range(
+            "I7:J7", "Active", center_format3)
+        worksheet.merge_range(
+            "C9:D9", "Students", center_format3)
+
+        worksheet.merge_range(
+            "E3:F3", self.name, center_format1)
+        worksheet.merge_range(
+            "K3:L3", self.hod_id.name, center_format1)
+        worksheet.merge_range(
+            "E5:F5", self.code, center_format1)
+        worksheet.merge_range(
+            "K5:L5", self.notes, center_format1)
+        worksheet.merge_range(
+            "E7:F7", self.no_of_students, center_format1)
+        worksheet.merge_range(
+            "K7:L7", self.active, center_format1)
+
+        worksheet.merge_range(
+            "C10:D10", "Name", center_format3)
+        worksheet.merge_range(
+            "E10:F10", "Birthdate", center_format3)
+        worksheet.merge_range(
+            "G10:H10", "E-mail", center_format3)
+        worksheet.merge_range(
+            "I10:J10", "Mobile", center_format3)
+        worksheet.merge_range(
+            "K10:L10", "Is Cr", center_format3)
+
+        
+        row=11
+        for val in student_record:
+            worksheet.merge_range(f"C{row}:D{row}",val.get("name"), center_format1)
+            worksheet.merge_range(f"E{row}:F{row}", val.get("birthdate"), center_format1)
+            worksheet.merge_range(f"G{row}:H{row}", val.get("email"), date_style)
+            worksheet.merge_range(f"I{row}:J{row}", val.get("mobile"), center_format1)
+            worksheet.merge_range(f"K{row}:L{row}", val.get("is_cr"), center_format1)
+
+            row = row + 1
+
+
+        workbook.close()
+        attachment_id = self.env["ir.attachment"].create(
+            {
+                "name": file_name,
+                "type": "binary",
+                "datas": base64.encodebytes(fp.getvalue()),
+                "res_model": self._name,
+                "res_id": self.id,
+            }
+        )
+        return {
+            "type": "ir.actions.act_url",
+            "url": "/web/content/%s/%s/datas/%s"
+                   % ("ir.attachment", attachment_id.id, file_name),
+            "target": "self",
+        }
+        
+        
+ ---------------------------------------------------------------------------------------
+ student = self.student_ids
+        staff = self.staff_ids
+
+        fp = BytesIO()
+        file_name = "department.xlsx"
+        workbook = xlsxwriter.Workbook(fp, {"in_memory": True})
+        worksheet = workbook.add_worksheet()
+        order_line_header = ["SR NO.", "Name", "street", "city","zip","state_id","country_id","birthdate","age","mobile","email","barcode","type","notes","remarks","is_cr","cr_start_date","cr_end_date","no_of_votes","active"]
+        center_format1 = workbook.add_format(
+            {"align": "center", "valign": "vcenter"}
+        )
+        center_format1.set_bg_color("#D3D3D3")
+        center_format2 = workbook.add_format(
+            {"align": "center", "valign": "vcenter", "bold": True}
+        )
+        center_format2.set_bg_color("#48AAAD")
+        center_format3 = workbook.add_format(
+            {"align": "center", "valign": "vcenter", "bold": True}
+        )
+        date = workbook.add_format(
+            {"align": "center", "valign": "vcenter", "bold": True}
+        )
+        date.set_bg_color("#ADD8E6")
+        bold = workbook.add_format({"bold": True})
+
+        for s in student:
+            if order_line.product_id.id not in products:
+                products.append(order_line.product_id.id)
+                product_order_lines = order_lines.filtered(
+                    lambda line: line.product_id.id == order_line.product_id.id
+                )
+                total_qty = sum(product_order_lines.mapped("product_uom_qty"))
+                subtotal = sum(product_order_lines.mapped("price_subtotal"))
+                order_line_data = {
+                    "product": order_line.product_template_id.name,
+                    "quantity": total_qty,
+                    "subtotal": subtotal,
+                }
+                values.append(order_line_data)
+
+        worksheet.write_row(1, 0, order_line_header, center_format3)
+        row = 2
+        index = 1
+        for val in self:
+            worksheet.write(row, 0, index,center_format1)
+            worksheet.write(row, 2, val.student_ids.name,center_format1)
+            worksheet.write(row, 3, val.student_ids.street, center_format1)
+            worksheet.write(row, 4, val.student_ids.city, center_format1)
+            worksheet.write(row, 5, val.student_ids.zip, center_format1)
+            worksheet.write(row, 6, val.student_ids.state_id, center_format1)
+            worksheet.write(row, 7, val.student_ids.country_id, center_format1)
+            worksheet.write(row, 8, val.student_ids.birthdate, center_format1)
+            worksheet.write(row, 9, val.student_ids.age, center_format1)
+            worksheet.write(row, 10, val.student_ids.mobile, center_format1)
+            worksheet.write(row, 11, val.student_ids.email, center_format1)
+            worksheet.write(row, 12, val.student_ids.barcode, center_format1)
+            worksheet.write(row, 13, val.student_ids.type, center_format1)
+            worksheet.write(row, 14, val.student_ids.notes, center_format1)
+            worksheet.write(row, 15, val.student_ids.is_cr, center_format1)
+            worksheet.write(row, 16, val.student_ids.cr_start_date, center_format1)
+            worksheet.write(row, 17, val.student_ids.cr_end_date, center_format1)
+            worksheet.write(row, 18, val.student_ids.no_of_votes, center_format1)
+            worksheet.write(row, 19, val.student_ids.active, center_format1)
+            row += 1
+            index += 1
+
+        workbook.close()
+        attachment_id = self.env["ir.attachment"].create(
+            {
+                "name": file_name,
+                "type": "binary",
+                "datas": base64.encodebytes(fp.getvalue()),
+                "res_model": self._name,
+                "res_id": self.id,
+            }
+        )
+        return {
+            "type": "ir.actions.act_url",
+            "url": "/web/content/%s/%s/datas/%s"
+                   % ("ir.attachment", attachment_id.id, file_name),
+            "target": "self",
+        }
+

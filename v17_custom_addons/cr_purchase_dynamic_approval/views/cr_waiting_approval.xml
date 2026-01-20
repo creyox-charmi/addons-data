@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="cr_purchase_waiting_approval_action" model="ir.actions.act_window">
+        <field name="name">Waiting Approval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state','=','waiting')]</field>
+    </record>
+
+    <menuitem id="cr_purchase_waiting_approval_menu"
+              name="Waiting Approval"
+              parent="purchase.menu_procurement_management"
+              action="cr_purchase_waiting_approval_action"
+              sequence="2"/>
+</odoo>

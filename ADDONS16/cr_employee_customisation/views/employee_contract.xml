@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="cr_hr_employee_details" model="ir.ui.view">
+        <field name="name">cr.hr.employee.details</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook//page[@name='hr_settings']" position="after">
+                <page name='employee_contract' string="Details" groups='base.group_system'>
+                    <group>
+                        <!--employee special day counters-->
+                        <group string="Employee Celebration" name="employee_celebration_group">
+                            <label for="next_birthday" />
+                            <div class="o_row" name="next_birthday">
+                                <field name="next_birthday" class="o_hr_narrow_field" />
+                                <span>days</span>
+                            </div>
+                            <label for="next_anniversary" />
+                            <div class="o_row" name="next_anniversary">
+                                <field name="next_anniversary" class="o_hr_narrow_field" />
+                                <span>days</span>
+                            </div>
+                            <field name='birthday_msg'></field>
+                            <field name='anniversary_msg'></field>
+                        </group>
+                        <!-- employee paid leave records -->
+                        <group string="Leaves Report" name="paid_leave_group">
+                            <group>
+                                <label for="taken_paid_leaves" />
+                                <div class="o_row" name="taken_paid_leaves">
+                                    <field name="taken_paid_leaves" class="o_hr_narrow_field" />
+                                    <span>days</span>
+                                </div>
+                                <label for="remaining_paid_leaves" />
+                                <div class="o_row" name="remaining_paid_leaves">
+                                    <field name="remaining_paid_leaves" class="o_hr_narrow_field" />
+                                    <span>days</span>
+                                </div>
+                            </group>
+                        </group>
+                    </group>
+                    <group string="Employee Contracts" name="employee_contract_group">
+                        <field name="contract_lines" colspan="2" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name" string="Contract Name" />
+                                <field name="date_start" />
+                                <field name="date_end" />
+                                <field name="currency_id" invisible="1" />
+                                <field name="is_extended" invisible="1" />
+                                <field name="leaves_of_contract" />
+                                <field name="wage" string="Monthly Wage" />
+                                <field name="state" widget="badge"
+                                    decoration-info="state == 'draft'"
+                                    decoration-warning="state == 'close'"
+                                    decoration-success="state == 'open'" />
+                                <button class='btn btn-primary' name='action_extend_contract'
+                                    string='Extend Contract' type='object'
+                                    attrs="{'invisible': [('is_extended', '=', True)]}" />
+                            </tree>
+                        </field>
+                    </group>
+
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    
+</odoo>

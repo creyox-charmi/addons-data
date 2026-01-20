@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+cr_project_customization.access_credential_details,access_credential_details,cr_project_customization.model_credential_details,base.group_user,1,1,1,1
+cr_project_customization.access_hosting_details,access_hosting_details,cr_project_customization.model_hosting_details,base.group_user,1,1,1,1
+cr_project_customization.access_task_invoice,access_task_invoice,cr_project_customization.model_task_invoice,base.group_user,1,1,1,1

@@ -1,0 +1,20 @@
+<odoo>
+    <record id="cr_reject_wizard_view_form" model="ir.ui.view">
+        <field name="name">cr.rejectWizard.view.form</field>
+        <field name="model">cr.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reason">
+                <sheet>
+                    <group>
+                        <field name="reject_reason"/>
+                        <field name="purchase_order_id" invisible="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm" class="oe_highlight"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Inherit Purchase Order form -->
+        <record id="view_purchase_order_form_cfe_location" model="ir.ui.view">
+            <field name="name">purchase.order.form.cfe.location</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <!-- Insert field next to 'Partner' -->
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="cfe_project_location_id"
+                           options="{'no_create': True}"
+                           placeholder="Select CFE Project Location"/>
+                    <field name="production_id"/>
+                </xpath>
+            </field>
+        </record>
+
+            <!-- Add fields in form view-->
+    <record id="product_supplierinfo_form_view_inherit_block_vendor" model="ir.ui.view">
+        <field name="name">product.supplierinfo.form.block.vendor</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='discount']" position="after">
+                <field name="main_vendor"/>
+            </xpath>
+        </field>
+    </record>
+    </data>
+</odoo>

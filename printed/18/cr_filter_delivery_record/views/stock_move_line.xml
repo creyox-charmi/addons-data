@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree View for Stock Move Lines without Recent Deliveries -->
+    <record id="view_stock_move_line_no_recent_delivery_tree" model="ir.ui.view">
+        <field name="name">stock.move.line.no.recent.delivery.tree</field>
+        <field name="model">stock.move.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_id"/>
+                <field name="product_uom_id" string="Unit of Measure"/>
+                <field name="date"/>
+                <field name="picking_id" string="Delivery"/>
+                <field name="location_id"/>
+                <field name="location_dest_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View with Filter -->
+    <record id="view_stock_move_line_no_recent_delivery_search" model="ir.ui.view">
+        <field name="name">stock.move.line.no.recent.delivery.search</field>
+        <field name="model">stock.move.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+                <field name="picking_id"/>
+                <field name="date"/>
+                <filter name="no_recent_delivery"
+                        string="No Recent Delivery (Last 7 Days)"
+                        domain="[('no_recent_delivery', '=', True)]"/>
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_product" string="Product" context="{'group_by': 'product_id'}"/>
+                    <filter name="group_by_picking" string="Delivery" context="{'group_by': 'picking_id'}"/>
+                    <filter name="group_by_date" string="Date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action to Open the View -->
+    <record id="action_stock_move_line_no_recent_delivery" model="ir.actions.act_window">
+        <field name="name">Move Lines Without Recent Deliveries</field>
+        <field name="res_model">stock.move.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('no_recent_delivery', '=', True)]</field>
+        <field name="search_view_id" ref="view_stock_move_line_no_recent_delivery_search"/>
+        <field name="view_id" ref="view_stock_move_line_no_recent_delivery_tree"/>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_stock_move_line_no_recent_delivery"
+              name="Move Lines Without Recent Deliveries"
+              parent="stock.menu_stock_reports"
+              action="action_stock_move_line_no_recent_delivery"
+              sequence="20"/>
+</odoo>

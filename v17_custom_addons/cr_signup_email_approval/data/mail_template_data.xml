@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <template id="cr_signup_email_approval.verification_code" name="Verify Code">
+        <t t-call="web.login_layout">
+            <form class="oe_signup_form" role="form" method="post" action="/user/form/submit" id="cr_oe_signup_form">
+                <h1>Verify Code</h1>
+
+                <t t-call="cr_signup_email_approval.fields">
+                </t>
+
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                <t t-if="error_message">
+                    <div class="alert alert-danger" role="alert">
+                        <t t-esc="error_message"/>
+                    </div>
+                </t>
+
+                 <!-- Success message if OTP is verified successfully -->
+                <t t-if="success_message">
+                    <div class="alert alert-success" role="alert">
+                        <t t-esc="success_message"/>
+                    </div>
+                </t>
+
+
+<!--                <t t-if="otp_expiration_time">-->
+<!--                    <div id="otp_expiration_time">-->
+<!--                        <t t-if="otp_expiration_time" t-esc="remaining_time"/>-->
+<!--                        <t t-else="">-->
+<!--                            OTP Expires in: 60 second-->
+<!--                        </t>-->
+<!--                    </div>-->
+<!--                </t>-->
+
+<!--                <t t-if="otp_expiration_time">-->
+<!--                    <div id="otp-timer1" class="alert alert-info" role="alert">-->
+<!--                    <t t-esc="remaining_time">-->
+<!--                        <span id="timer1"> </span>-->
+<!--                    </t>-->
+<!--                </div>-->
+<!--                </t>-->
+<!--                <t t-else="">-->
+<!--                    <div id="otp-timer2" class="alert alert-info" role="alert">-->
+<!--                        <t>-->
+<!--                            <span id="timer2">OTP Expires in: 60 second</span>-->
+<!--                        </t>-->
+<!--                    </div>-->
+<!--                </t>-->
+
+
+                <div id="otp-timer" class="alert alert-info" role="alert" t-att-data-session-time="session_time">
+                    <t>
+                        <span id="timer"> </span>
+                    </t>
+                </div>
+
+                <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOMContentLoaded event triggered");
+
+        var timerElement = document.getElementById("timer");
+        console.log("timerElement:", timerElement);
+
+        var remainingTimeElement = document.getElementById("otp_expiration_time");
+        console.log("remainingTimeElement:", remainingTimeElement);
+
+        // Check if the 'remaining_time' element exists and get its value, otherwise set a default value
+        var remainingTime = remainingTimeElement ? parseInt(remainingTimeElement.value) : 60;
+        console.log("Initial remainingTime value:", remainingTime);
+
+        // Check if remaining time is stored in sessionStorage (for persistent state across page refreshes in the same session)
+        if (sessionStorage.getItem('otp_remaining_time')) {
+            remainingTime = parseInt(sessionStorage.getItem('otp_remaining_time'));
+            console.log("Remaining time retrieved from sessionStorage:", remainingTime);
+        } else {
+            console.log("No remaining time found in sessionStorage, using default:", remainingTime);
+        }
+
+        var countdownInterval;
+
+        function startTimer() {
+            console.log("Starting timer...");
+
+            countdownInterval = setInterval(function () {
+                console.log("Timer running... Remaining time:", remainingTime);
+                sessionStorage.setItem('otp_remaining_time', 60);
+
+                if (remainingTime > 0) {
+                    remainingTime--;
+                    console.log("Decrementing remainingTime:", remainingTime);
+
+                    sessionStorage.setItem('otp_remaining_time', remainingTime); // Save remaining time in sessionStorage
+                    console.log("Remaining time saved to sessionStorage:", remainingTime);
+
+                    timerElement.textContent = "OTP Expires in: " + remainingTime + " second";
+                }
+
+                if (remainingTime == 0) {
+                    clearInterval(countdownInterval);
+                    console.log("Timer finished, OTP expired.");
+                    timerElement.textContent = "Your OTP has expired!";
+                }
+            }, 1000);
+        }
+
+        // Resetting the timer when OTP is regenerated
+        var regenerateOtpButton = document.getElementById("regenerate-otp-link1");
+        if (regenerateOtpButton) {
+            regenerateOtpButton.addEventListener("click", function () {
+                console.log("OTP regenerated, resetting timer.");
+                remainingTime = 60; // Reset to 60 seconds when OTP is regenerated
+                sessionStorage.setItem('otp_remaining_time', remainingTime);
+                console.log("Remaining time reset to:", remainingTime);
+                clearInterval(countdownInterval); // Clear any existing interval
+                startTimer(); // Start the timer again
+            });
+        }
+
+        var regenerateOtpButton = document.getElementById("regenerate-otp-link2");
+        if (regenerateOtpButton) {
+            regenerateOtpButton.addEventListener("click", function () {
+                console.log("OTP regenerated, resetting timer.");
+                remainingTime = 60; // Reset to 60 seconds when OTP is regenerated
+                sessionStorage.setItem('otp_remaining_time', remainingTime);
+                console.log("Remaining time reset to:", remainingTime);
+                clearInterval(countdownInterval); // Clear any existing interval
+                startTimer(); // Start the timer again
+            });
+        }
+
+        startTimer();
+    });
+</script>
+
+ <!-- Alert for expired OTP with option to regenerate -->
+                <t t-if="expired">
+                    <div class="alert alert-warning" role="alert" id="otp-expired-alert">
+                        <a href="/web/regenerate_otp" class="btn btn-link" id="regenerate-otp-link1">Click here to regenerate OTP</a>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="alert alert-warning" role="alert" id="otp-expired-alert">
+                        <a href="/web/regenerate_otp" class="btn btn-link" id="regenerate-otp-link2">Click here to regenerate OTP</a>
+                    </div>
+                    <div class="text-center oe_login_buttons d-grid pt-3">
+                    <button type="submit" class="btn btn-primary">Verify</button>
+                </div>
+                </t>
+
+
+            </form>
+        </t>
+    </template>
+
+    <template id="cr_signup_email_approval.fields" name="Signup form fields">
+        <div class="mb-3 field-name">
+            <input type="text" name="code" t-att-value="code" id="code" class="form-control form-control-sm"
+                   placeholder="Enter code"
+                   required="required"/>
+        </div>
+    </template>
+
+
+    <template id="user_registration_form_success_template" name="User Registration Form Successfully Submitted">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_text_block pt40 pb40 o_colored_level " data-snippet="s_text_block">
+                    <div class="container s_allow_columns">
+                        <div class="row">
+                            <div class="col-lg-7 col-xl-6 me-lg-auto">
+                                <span class="d-block fa fa-4x fa-thumbs-up mx-auto rounded-circle bg-primary"/>
+                                <br/>
+                                <h1 class="text-center">Thank You!</h1>
+                                <div class="pb16 pt16 s_hr" data-snippet="s_hr" data-name="Separator">
+                                    <hr class="mx-auto border-top w-50 border-dark text-center"/>
+                                </div>
+                                <h5 class="text-center">
+                                    <span class="fa fa-check-circle"/>
+                                    <span>Your response store
+                                        <b>successfully</b>
+                                    </span>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+</odoo>

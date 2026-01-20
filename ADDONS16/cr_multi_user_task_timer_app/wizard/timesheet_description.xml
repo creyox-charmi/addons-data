@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="view_timesheet_description_wizard" model="ir.ui.view">
+        <field name="name">timesheet.description.wizard.form</field>
+        <field name="model">timesheet.description.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Timesheet">
+                <group>
+                    <field name="name"/>
+                    <field name="task_id" invisible = '1'/>
+                </group>
+                <footer>
+                    <button string="Save" type="object" name="action_create_timesheet" class="btn-primary"/>
+                    <button string="Cancel" type="object" name="action_cancel_time" class="btn-secondary" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open the wizard -->
+    <record id="action_timesheet_description_wizard" model="ir.actions.act_window">
+        <field name="name">Timesheet Description Wizard</field>
+        <field name="res_model">timesheet.description.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

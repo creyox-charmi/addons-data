@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="hero_snippet_template" name="section-1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+              media="print" onload="this.media='all'"/>
+
+        <section class="hero-section">
+        <!-- Background Floating Shapes -->
+        <div class="floating-shapes-bg">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="hero-inner">
+            <div class="hero-content-wrapper">
+                <!-- Left Content -->
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Transform Your
+                        <span class="rotating-words">
+                            <span class="word">Business</span>
+                            <span class="word">Operations</span>
+                            <span class="word">Workflow</span>
+                            <span class="word">Growth</span>
+                        </span>
+                        <br/>With Intelligent Odoo ERP
+                    </h1>
+
+                    <a href="/contactus" class="cta-button" title="Start Your ERP Journey">
+                        <span>Start Your AI-Driven ERP Journey</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+
+                <!-- Right Side - Images Container -->
+                <div class="hero-images">
+                    <!-- Tech Icons Orbiting -->
+                    <div class="tech-icons-orbit">
+                        <div class="tech-icon icon-1">
+                            <i class="fab fa-react"></i>
+                        </div>
+                        <div class="tech-icon icon-2">
+                            <i class="fab fa-node-js"></i>
+                        </div>
+                        <div class="tech-icon icon-3">
+                            <i class="fab fa-python"></i>
+                        </div>
+                        <div class="tech-icon icon-4">
+                            <i class="fab fa-aws"></i>
+                        </div>
+                        <div class="tech-icon icon-5">
+                            <i class="fab fa-docker"></i>
+                        </div>
+                        <div class="tech-icon icon-6">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="tech-icon icon-7">
+                            <i class="fab fa-git-alt"></i>
+                        </div>
+                        <div class="tech-icon icon-8">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                    </div>
+
+                    <!-- Realistic PC Monitor with Dashboard -->
+                    <div class="main-dashboard-img">
+                        <div class="pc-monitor">
+                            <div class="monitor-frame">
+                                <div class="monitor-bezel">
+                                    <div class="monitor-screen">
+                                        <!-- Dashboard Inside Screen -->
+                                        <div class="screen-content">
+                                            <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                                                <!-- Dashboard Background -->
+                                                <rect x="5" y="5" width="190" height="140" rx="8" fill="rgba(15, 23, 42, 0.95)"/>
+
+                                                <!-- Header Bar -->
+                                                <rect x="10" y="10" width="180" height="20" rx="5" fill="#1e3a8a"/>
+                                                <circle cx="20" cy="20" r="3" fill="#ef4444"/>
+                                                <circle cx="30" cy="20" r="3" fill="#f59e0b"/>
+                                                <circle cx="40" cy="20" r="3" fill="#10b981"/>
+
+                                                <!-- Sidebar -->
+                                                <rect x="10" y="35" width="45" height="105" rx="4" fill="#1e3a8a" opacity="0.5"/>
+                                                <rect x="15" y="40" width="35" height="5" rx="2" fill="#3b82f6"/>
+                                                <rect x="15" y="50" width="35" height="5" rx="2" fill="#3b82f6" opacity="0.6"/>
+                                                <rect x="15" y="60" width="35" height="5" rx="2" fill="#3b82f6" opacity="0.6"/>
+
+                                                <!-- Main Content Cards -->
+                                                <rect x="65" y="40" width="55" height="35" rx="5" fill="#1e3a8a" opacity="0.8"/>
+                                                <text x="92.5" y="55" text-anchor="middle" fill="#94a3b8" font-size="6" font-weight="600">REVENUE</text>
+                                                <text x="92.5" y="68" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">$45.2K</text>
+
+                                                <rect x="130" y="40" width="55" height="35" rx="5" fill="#1e3a8a" opacity="0.8"/>
+                                                <text x="157.5" y="55" text-anchor="middle" fill="#94a3b8" font-size="6" font-weight="600">USERS</text>
+                                                <text x="157.5" y="68" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">2,847</text>
+
+                                                <!-- Bar Chart -->
+                                                <rect x="70" y="100" width="12" height="20" rx="2" fill="#3b82f6">
+                                                    <animate attributeName="height" values="20;28;20" dur="2s" repeatCount="indefinite"/>
+                                                    <animate attributeName="y" values="100;92;100" dur="2s" repeatCount="indefinite"/>
+                                                </rect>
+                                                <rect x="85" y="95" width="12" height="25" rx="2" fill="#6366f1">
+                                                    <animate attributeName="height" values="25;33;25" dur="2.2s" repeatCount="indefinite"/>
+                                                    <animate attributeName="y" values="95;87;95" dur="2.2s" repeatCount="indefinite"/>
+                                                </rect>
+                                                <rect x="100" y="105" width="12" height="15" rx="2" fill="#8b5cf6">
+                                                    <animate attributeName="height" values="15;23;15" dur="2.4s" repeatCount="indefinite"/>
+                                                    <animate attributeName="y" values="105;97;105" dur="2.4s" repeatCount="indefinite"/>
+                                                </rect>
+                                                <rect x="115" y="90" width="12" height="30" rx="2" fill="#06b6d4">
+                                                    <animate attributeName="height" values="30;38;30" dur="2.1s" repeatCount="indefinite"/>
+                                                    <animate attributeName="y" values="90;82;90" dur="2.1s" repeatCount="indefinite"/>
+                                                </rect>
+                                                <rect x="130" y="97" width="12" height="23" rx="2" fill="#10b981">
+                                                    <animate attributeName="height" values="23;31;23" dur="2.3s" repeatCount="indefinite"/>
+                                                    <animate attributeName="y" values="97;89;97" dur="2.3s" repeatCount="indefinite"/>
+                                                </rect>
+                                                <rect x="145" y="93" width="12" height="27" rx="2" fill="#3b82f6">
+                                                    <animate attributeName="height" values="27;35;27" dur="2.5s" repeatCount="indefinite"/>
+                                                    <animate attributeName="y" values="93;85;93" dur="2.5s" repeatCount="indefinite"/>
+                                                </rect>
+
+                                                <!-- Growth Line -->
+                                                <polyline points="70,115 85,105 100,110 115,95 130,100 145,90 160,95"
+                                                          stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.8">
+                                                    <animate attributeName="points"
+                                                             values="70,115 85,105 100,110 115,95 130,100 145,90 160,95;
+                                                                     70,115 85,100 100,105 115,90 130,95 145,85 160,90;
+                                                                     70,115 85,105 100,110 115,95 130,100 145,90 160,95"
+                                                             dur="3s" repeatCount="indefinite"/>
+                                                </polyline>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="monitor-neck"></div>
+                            <div class="monitor-stand"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </template>
+</odoo>
+
+
+        /* =========================== CSS STYLES - SCOPED TO HERO SECTION ONLY =========================== */
+        .hero-section * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #cr_home_page {
+            background: white;
+        }
+
+        .hero-section {
+            position: relative;
+            background: linear-gradient(135deg, #f0f4ff, #e0ecff);
+            color: #0f172a;
+            overflow: hidden;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Background Floating Shapes */
+        .hero-section .floating-shapes-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .hero-section .floating-shapes-bg span {
+            position: absolute;
+            display: block;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.1);
+            animation: floatBg 20s infinite ease-in-out;
+        }
+
+        .hero-section .floating-shapes-bg span:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .hero-section .floating-shapes-bg span:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+        }
+
+        .hero-section .floating-shapes-bg span:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .hero-section .floating-shapes-bg span:nth-child(4) {
+            width: 70px;
+            height: 70px;
+            top: 30%;
+            left: 70%;
+            animation-delay: 1s;
+        }
+
+        .hero-section .floating-shapes-bg span:nth-child(5) {
+            width: 90px;
+            height: 90px;
+            top: 50%;
+            left: 50%;
+            animation-delay: 3s;
+        }
+
+        @keyframes floatBg {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-50px) scale(1.1);
+                opacity: 0.6;
+            }
+        }
+
+        .hero-section .hero-inner {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        @media (min-width: 768px) {
+            .hero-section .hero-inner {
+                padding: 100px 40px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .hero-section .hero-inner {
+                padding: 120px 60px;
+            }
+        }
+
+        /* Hero Content Wrapper */
+        .hero-section .hero-content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        @media (min-width: 992px) {
+            .hero-section .hero-content-wrapper {
+                grid-template-columns: 1fr 1fr;
+                gap: 80px;
+            }
+        }
+
+        /* Left Content */
+        .hero-section .hero-content {
+            text-align: left;
+        }
+
+        @media (max-width: 991px) {
+            .hero-section .hero-content {
+                text-align: center;
+            }
+        }
+
+        .hero-section .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #1e293b;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .hero-section .hero-title {
+                font-size: 58px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .hero-section .hero-title {
+                font-size: 68px;
+            }
+        }
+
+        /* Rotating Words Animation */
+        .hero-section .rotating-words {
+            display: inline-block;
+            position: relative;
+            height: 1.2em;
+            vertical-align: bottom;
+            min-width: 350px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section .rotating-words {
+                min-width: 250px;
+            }
+        }
+
+        .hero-section .rotating-words .word {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            background: linear-gradient(to right, #3b82f6, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rotateWord 12s infinite;
+        }
+
+        .hero-section .rotating-words .word:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .hero-section .rotating-words .word:nth-child(2) {
+            animation-delay: 3s;
+        }
+
+        .hero-section .rotating-words .word:nth-child(3) {
+            animation-delay: 6s;
+        }
+
+        .hero-section .rotating-words .word:nth-child(4) {
+            animation-delay: 9s;
+        }
+
+        @keyframes rotateWord {
+            0% {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            2% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            23% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            25% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+        }
+
+        /* CTA Button */
+        .hero-section .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: linear-gradient(145deg, #0a173b, #1e3a8a);
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(10, 23, 59, 0.3);
+        }
+
+        .hero-section .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(10, 23, 59, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .hero-section .cta-button i {
+            transition: transform 0.3s ease;
+        }
+
+        .hero-section .cta-button:hover i {
+            transform: translateX(4px);
+        }
+
+        /* Right Side - Images Container */
+        .hero-section .hero-images {
+            position: relative;
+            width: 100%;
+            height: 600px;
+        }
+
+        @media (max-width: 991px) {
+            .hero-section .hero-images {
+                height: 500px;
+            }
+        }
+
+        /* Realistic PC Monitor */
+        .hero-section .main-dashboard-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 500px;
+            animation: floatMain 6s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        @keyframes floatMain {
+            0%, 100% {
+                transform: translate(-50%, -50%);
+            }
+            50% {
+                transform: translate(-50%, calc(-50% - 15px));
+            }
+        }
+
+        .hero-section .pc-monitor {
+            position: relative;
+            filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25));
+        }
+
+        /* Monitor Frame - More Realistic */
+        .hero-section .monitor-frame {
+            position: relative;
+            background: linear-gradient(145deg, #2a2e3a, #1a1d26);
+            border-radius: 16px 16px 8px 8px;
+            padding: 12px;
+            border: 3px solid #3d4354;
+        }
+
+        .hero-section .monitor-bezel {
+            position: relative;
+            background: #000;
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-section .monitor-screen {
+            position: relative;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            border-radius: 4px;
+            overflow: hidden;
+            aspect-ratio: 16/10;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Dashboard Content Inside Screen */
+        .hero-section .screen-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 75%;
+        }
+
+        .hero-section .screen-content svg {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Monitor Stand - More Realistic */
+        .hero-section .monitor-neck {
+            position: relative;
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(145deg, #2a2e3a, #1a1d26);
+            margin: 0 auto;
+            border-radius: 4px 4px 8px 8px;
+            border-top: 3px solid #3d4354;
+        }
+
+        .hero-section .monitor-stand {
+            position: relative;
+            width: 180px;
+            height: 12px;
+            background: linear-gradient(145deg, #2a2e3a, #1a1d26);
+            margin: 0 auto;
+            border-radius: 8px;
+            border: 2px solid #3d4354;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Tech Icons - Orbiting Around PC */
+        .hero-section .tech-icons-orbit {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-section .tech-icon {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+            animation: iconFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .hero-section .tech-icon:hover {
+            transform: translateY(-8px) scale(1.1);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Icon Positions - Professional Circle Around PC */
+        .hero-section .icon-1 {
+            top: 5%;
+            left: 15%;
+            color: #06b6d4;
+            animation-delay: 0s;
+        }
+
+        .hero-section .icon-2 {
+            top: 8%;
+            right: 12%;
+            color: #8b5cf6;
+            animation-delay: 0.5s;
+        }
+
+        .hero-section .icon-3 {
+            top: 40%;
+            left: 2%;
+            color: #3b82f6;
+            animation-delay: 1s;
+        }
+
+        .hero-section .icon-4 {
+            top: 40%;
+            right: 2%;
+            color: #10b981;
+            animation-delay: 1.5s;
+        }
+
+        .hero-section .icon-5 {
+            bottom: 25%;
+            left: 8%;
+            color: #f59e0b;
+            animation-delay: 2s;
+        }
+
+        .hero-section .icon-6 {
+            bottom: 25%;
+            right: 8%;
+            color: #ef4444;
+            animation-delay: 2.5s;
+        }
+
+        .hero-section .icon-7 {
+            bottom: 8%;
+            left: 20%;
+            color: #ec4899;
+            animation-delay: 3s;
+        }
+
+        .hero-section .icon-8 {
+            bottom: 8%;
+            right: 20%;
+            color: #14b8a6;
+            animation-delay: 3.5s;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991px) {
+            .hero-section .tech-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+
+            .hero-section .icon-1 { top: 8%; left: 12%; }
+            .hero-section .icon-2 { top: 10%; right: 10%; }
+            .hero-section .icon-3 { top: 42%; left: 0%; }
+            .hero-section .icon-4 { top: 42%; right: 0%; }
+            .hero-section .icon-5 { bottom: 28%; left: 5%; }
+            .hero-section .icon-6 { bottom: 28%; right: 5%; }
+            .hero-section .icon-7 { bottom: 10%; left: 18%; }
+            .hero-section .icon-8 { bottom: 10%; right: 18%; }
+        }
+
+        @media (max-width: 576px) {
+            .hero-section .rotating-words {
+                min-width: 200px;
+            }
+
+            .hero-section .tech-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+
+            .hero-section .icon-1 { top: 10%; left: 8%; }
+            .hero-section .icon-2 { top: 12%; right: 8%; }
+            .hero-section .icon-3 { top: 45%; left: 0%; }
+            .hero-section .icon-4 { top: 45%; right: 0%; }
+            .hero-section .icon-5 { bottom: 30%; left: 2%; }
+            .hero-section .icon-6 { bottom: 30%; right: 2%; }
+            .hero-section .icon-7 { bottom: 12%; left: 15%; }
+            .hero-section .icon-8 { bottom: 12%; right: 15%; }
+        }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="cr_payroll_config_settings" model="ir.ui.view">
+        <field name="name">res.config.settings.payroll.config.settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="bi_hr_payroll.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//form//div[@id='hr_payroll_accountant']" position="inside">
+
+                <div class="col-lg-6 col-12 o_setting_box">
+                    <label for="journal_id" class="me-5"/>
+                    <field name="journal_id" />
+                </div>
+                <div class="col-lg-6 col-12 o_setting_box mt-5">
+                    <label for="analytic_account_id" class="me-5"/>
+                    <field name="analytic_account_id" />
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,116 @@
+shreyaa.13245@gmail.com
+Charmi@creyox2924
+herryy981234@gmail.com
+doe063291@gmail.com
+mandlishruti65@gmail.com
+charmi.91063@gmail.com
+pass : Charmi@creyox2924
+
+creyox-general
+accesstoken : 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
+
+creyox-charmi
+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
+
+cr_bigcommerce_odoo_integration
+gmail
+creyoxgeneral@gmail.com
+4w8ER@$#
+ 
+github
+creyox-general
+4w8ER@$#
+
+git clone -b 18.0 --single-branch https://github.com/odoo/odoo.git
+git clone -b 14.0 --single-branch https://github.com/odoo/odoo.git
+"category": "eCommerce"
+
+secret key:
+3a0b21ed-7d3d-49f8-806f-fdf0cf6098e0
+
+projrct code:
+M240315130777662
+
+
+
+big commerece john doe : 
+Charmi@creyox29245
+
+
+charmimandli216@gmail.com
+guMgyc-nyrja7-vohrop
+--------------------------------------------
+
+
+
+
+
+testcreyox@gmail.com
+TestCreyox@2025
+
+
+
+
+
+        
+        
+        
+The Flow below works when is_evr boolean is Ture 
+New Field:- Add cfe_quantity Char field BOM overview line. 
+The field is visible when is_evr boolean is True.
+Can only be set for child items, not for BOM headers.
+Represents the quantity to be supplied by the customer.
+Acts as a special purchase order from the customer, with zero price in the PO lines (free of charge).
+Items are directed to a dedicated project location defined in the BOM.
+
+
+Now i want more functionality in my custom module
+
+- PO Creation flow on manufacturing button.
+1]When the Manufacture button is clicked for an EVR BOM system, scan all the lines of the BOM.
+2]For every line do below process
+- IF cfe_quantity is greater then one then process is begins
+- What should happen when on condition below
+case - 1
+------------------
+LLE -> True
+Approval-1 -> True
+Approval-2 -> True
+Should I Create PO? ->  It will create it immediately (Once all the boolean are True)
+
+
+case - 2
+----------------------
+LLE -> True
+Approval-1 -> True
+Approval-2 -> False
+Should I Create PO? ->  No
+
+case - 3
+----------------------
+LLE -> True
+Approval-1 -> False
+Approval-2 -> True
+Should I Create PO? ->  No
+
+case - 4
+----------------------
+LLE -> False
+Approval-1 -> True
+Approval-2 -> True
+Should I Create PO? ->  If the cfe is with values or the product is defined to be purched The Po will be created after push the Manufacture button
+
+->conditions for customer po
+-for every line customer po is create if cfe is greater then zero and above cases is match 
+-A Purchase Order (PO) is generated for the customer for every item with a value in the CFE column, using that quantity, with zero price, and routed to the project’s dedicated location.
+-For custom PO we will take the customer name from the project_id.partner_id
+-The PO is created in draft state. The user will manually confirm the PO to take component stock.
+
+->condition for vendor po
+- A second PO is created for the main vendor defined on the product card, with a quantity equal to (Required Quantity – CFE Quantity) and (Required Quantity – CFE Quantity) should be positive .
+- all other condition should be same that is check for customer po
+
+odoo16
+odoo17
+odoo18
+odoo19

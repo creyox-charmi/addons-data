@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id='inh_view_task_form2' model='ir.ui.view'>
+        <field name='name'>project.task.form</field>
+        <field name='model'>project.task</field>
+        <field name='inherit_id' ref='project.view_task_form2'/>
+        <field name='arch' type='xml'>
+            <field name='user_ids' position='after'>
+                <div class="o_td_label">
+                    <label for="developer_amount" string="Developer Amount" groups="base.group_system"/>
+                    <!-- <label for="dev_currency_id" groups="base.group_system"/> -->
+                </div>
+                <div class="d-flex">
+                    <field name="developer_amount" groups="base.group_system"/>
+                    <field name="dev_currency_id" placeholder="Currency" nolable="1" groups="base.group_system"/>
+                </div>
+                <field name="dev_payment_status" groups="base.group_system" readonly="1"/>
+                <field name="task_payment_status" groups="base.group_system" invisible="1"/>
+                <div class="o_td_label">
+                    <label for="total_amount" string="Total Amount" groups="base.group_system"/>
+                    <!-- <label for="currency_id" groups="base.group_system"/> -->
+                </div>
+                <div class="d-flex">
+                    <field name="total_amount" groups="base.group_system"/>
+                    <field name="currency_id" placeholder="Currency" nolable="1" groups="base.group_system"/>
+                </div>
+                <field name="approved_hours" groups="base.group_system"/>
+            </field>
+            <xpath expr="//field[@name='timesheet_ids']/tree/field[@name='date']" position="after">
+                <field name="task_type"/>
+            </xpath>
+            <xpath expr="//sheet/div[@class='oe_button_box']" position="after">
+                <widget name="web_ribbon" title="Paid" attrs="{'invisible': [('task_payment_status', '!=', 'paid')]}" groups="base.group_system"/>
+                <widget name="web_ribbon" title="Partial" attrs="{'invisible': [('task_payment_status', '!=', 'partial')]}" groups="base.group_system"/>
+            </xpath>
+            <xpath expr="//form/header/button[@name='action_assign_to_me']" position="after">
+                <button name="%(cr_project_customization.action_view_task_invoice)d" string="Create Invoice"
+                        type="action"
+                        data-hotkey="q" groups="base.group_system"/>
+                <button name="button_task_bill" type="object" string="Create Bill" groups="base.group_system"/>
+            </xpath>
+            
+            <xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="inside">
+                <button class="oe_stat_button" name="action_customer_invoice_view" type="object" icon="fa-pencil-square-o"
+                        attrs="{'invisible': [('invoice_count', '=', 0)]}" groups="base.group_system">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="invoice_count"/>
+                        </span>
+                        <span class="o_stat_text">Invoices</span>
+                    </div>
+                </button>
+                <button class="oe_stat_button" name="action_customer_bill_view" type="object" icon="fa-pencil-square-o"
+                        attrs="{'invisible': [('bill_count', '=', 0)]}" groups="base.group_system">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="bill_count"/>
+                        </span>
+                        <span class="o_stat_text">Developer Bills</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

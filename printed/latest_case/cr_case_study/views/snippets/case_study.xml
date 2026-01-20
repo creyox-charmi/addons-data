@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="case_study" name="Case Studies">
+        <section class="case_study">
+            <div class="container-fluid">
+                <section class="s_cover parallax s_parallax_is_fixed bg-black-50 pt96 pb96"
+                         data-scroll-background-ratio="1">
+                    <span class="s_parallax_bg oe_img_bg"
+                          style="background-image: url('/web/image/website.s_cover_default_image'); background-position: 50% 0;"/>
+                    <div class="o_we_bg_filter bg-black-50"/>
+                    <div class="container s_allow_columns">
+                        <h1 style="text-align: center;">
+                            <font style="font-size: 62px; font-weight: bold;">CASE STUDY</font>
+                        </h1>
+                    </div>
+                </section>
+                <!-- element to store list of cities using JS -->
+                <div class="row justify-content-center" id="case-study"/>
+            </div>
+        </section>
+    </template>
+
+    <!-- To be used in JS for snippet options -->
+    <template id="case_study_options" inherit_id="website.snippet_options">
+        <xpath expr="." position="inside">
+            <div data-js="ExploreCaseStudy" data-selector=".drag_and_drop_section" string="ExploreCaseStudy">
+                <we-button data-customize-website-views="">Fade</we-button>
+            </div>
+            <div data-selector=".main_page_of_case_study" data-page-options="true" data-no-check="true"
+                 string="Case Study">
+                <we-select string="Animation Direction">
+                    <we-button data-customize-website-views="">Fade-Left / Fade-Right</we-button>
+                    <we-button data-customize-website-views="cr_case_study.zoom_in_zoom_out_animation">
+                        Zoom-In / Zoom-Out
+                    </we-button>
+                    <we-button data-customize-website-views="cr_case_study.fade_up_fade_down_animation">
+                        Fade-Up / Fade-Down
+                    </we-button>
+                    <we-button data-customize-website-views="cr_case_study.flip_left_flip_right_animation">
+                        Flip-Left / Flip-Right
+                    </we-button>
+                    <we-button data-customize-website-views="cr_case_study.flip_up_flip_down_animation">
+                        Flip-Up / Flip-Down
+                    </we-button>
+
+                </we-select>
+                <we-checkbox string="Sidebar"
+                         data-name="case_study_sidebar_opt"
+                         data-customize-website-views="cr_case_study.opt_blog_post_sidebar"
+                         data-no-preview="true"
+                         data-reload="/"/>
+            </div>
+
+
+        </xpath>
+    </template>
+
+
+    <record id="cr_case_study.case_study_000_scss" model="ir.asset">
+        <field name="name">Case Study 000 SCSS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_case_study/static/src/snippets/case_study/000.scss</field>
+    </record>
+
+    <record id="cr_case_study.case_study_000_js" model="ir.asset">
+        <field name="name">Case Study 000 JS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_case_study/static/src/snippets/case_study/000.js</field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_stock_location_form_inherit" model="ir.ui.view">
+        <field name="name">view.stock.location.form.inherit</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position='after'>
+                <field name="cr_is_activate_account" invisible="1"/>
+            </xpath>
+            <xpath expr="//group[@groups='stock.group_adv_location']" position='after'>
+                <group string="Internal Transfer" invisible="not cr_is_activate_account">
+                    <field name="cr_account_id"/>
+                    <field name="cr_journal_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

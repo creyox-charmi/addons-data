@@ -1,0 +1,25 @@
+<odoo>
+    <record id="cr_product_wizard_view_form" model="ir.ui.view">
+        <field name="name">cr.productWizard.view.form</field>
+        <field name="model">cr.product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Department Wizard">
+                <sheet>
+                    <group>
+                        <field name="type"/>
+                        <field name="name"/>
+                        <field name="category_id"/>
+                        <field name="supplier_id"/>
+                        <field name="price"/>
+                        <field name="quantity"/>
+                        <field name="total_value"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_process" type="object" string="Process" class="oe_highlight"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

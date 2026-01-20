@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="hero_snippet_template" name="section-1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+              media="print" onload="this.media='all'"/>
+
+<!-- Option 1: 3D Isometric Illustration - Odoo ERP Workspace -->
+<section class="hero-section" style="position: relative; background: linear-gradient(135deg, #f0f4ff, #e0ecff); color: #0f172a; overflow: hidden; width: 100vw; margin-left: calc(-50vw + 50%); padding: 0; min-height: 90vh; display: flex; align-items: center;">
+
+    <!-- Floating Background Shapes -->
+    <div class="hero-floating-shapes-bg" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; overflow: hidden; z-index: 1;">
+        <span style="position: absolute; display: block; width: 80px; height: 80px; top: 10%; left: 10%; border-radius: 50%; background: rgba(59, 130, 246, 0.1); animation: heroFloatBg 20s infinite ease-in-out 0s;"></span>
+        <span style="position: absolute; display: block; width: 60px; height: 60px; top: 60%; left: 80%; border-radius: 50%; background: rgba(59, 130, 246, 0.1); animation: heroFloatBg 20s infinite ease-in-out 2s;"></span>
+        <span style="position: absolute; display: block; width: 100px; height: 100px; top: 80%; left: 20%; border-radius: 50%; background: rgba(59, 130, 246, 0.1); animation: heroFloatBg 20s infinite ease-in-out 4s;"></span>
+        <span style="position: absolute; display: block; width: 70px; height: 70px; top: 30%; left: 70%; border-radius: 50%; background: rgba(59, 130, 246, 0.1); animation: heroFloatBg 20s infinite ease-in-out 1s;"></span>
+        <span style="position: absolute; display: block; width: 90px; height: 90px; top: 50%; left: 50%; border-radius: 50%; background: rgba(59, 130, 246, 0.1); animation: heroFloatBg 20s infinite ease-in-out 3s;"></span>
+    </div>
+
+    <div class="hero-inner-container" style="position: relative; z-index: 2; width: 100%; max-width: 1400px; margin: 0 auto; padding: 100px 60px;">
+        <div class="hero-main-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
+
+            <!-- Left Side: Content -->
+            <div class="hero-text-content" style="text-align: left;">
+                <h1 class="hero-main-title" style="font-size: 68px; font-weight: 800; line-height: 1.2; color: #1e293b; margin-bottom: 40px;">
+                    Transform Your
+                    <span class="hero-rotating-words" style="display: inline-block; position: relative; height: 1.2em; vertical-align: bottom; min-width: 350px;">
+                        <span class="hero-word" style="display: block; position: absolute; top: 0; left: 0; width: 100%; opacity: 0; background: linear-gradient(to right, #3b82f6, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: heroRotateWord 12s infinite 0s;">Business</span>
+                        <span class="hero-word" style="display: block; position: absolute; top: 0; left: 0; width: 100%; opacity: 0; background: linear-gradient(to right, #3b82f6, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: heroRotateWord 12s infinite 3s;">Operations</span>
+                        <span class="hero-word" style="display: block; position: absolute; top: 0; left: 0; width: 100%; opacity: 0; background: linear-gradient(to right, #3b82f6, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: heroRotateWord 12s infinite 6s;">Workflow</span>
+                        <span class="hero-word" style="display: block; position: absolute; top: 0; left: 0; width: 100%; opacity: 0; background: linear-gradient(to right, #3b82f6, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: heroRotateWord 12s infinite 9s;">Growth</span>
+                    </span>
+                    <br/>With Intelligent Odoo ERP
+                </h1>
+
+                <a href="/contactus" class="hero-cta-button" style="display: inline-flex; align-items: center; gap: 12px; padding: 18px 36px; background: linear-gradient(145deg, #0a173b, #1e3a8a); color: white; font-size: 17px; font-weight: 600; border-radius: 12px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 8px 20px rgba(30, 58, 138, 0.25);">
+                    <span>Start Your AI-Driven ERP Journey</span>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+
+            <!-- Right Side: 3D Isometric Illustration -->
+            <div class="hero-visual-container" style="perspective: 1200px; perspective-origin: center;">
+                <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; display: block;">
+                    <defs>
+                        <!-- Gradients for 3D effect -->
+                        <linearGradient id="surfaceGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="surfaceGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="surfaceGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="surfaceGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#43e97b;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#38f9d7;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="surfaceGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fa709a;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#fee140;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="surfaceGrad6" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#30cfd0;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#330867;stop-opacity:1" />
+                        </linearGradient>
+
+                        <filter id="shadow3d">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+                            <feOffset dx="0" dy="8" result="offsetblur"/>
+                            <feComponentTransfer>
+                                <feFuncA type="linear" slope="0.3"/>
+                            </feComponentTransfer>
+                            <feMerge>
+                                <feMergeNode/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Base Platform -->
+                    <g opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" dur="0.6s" fill="freeze"/>
+                        <polygon points="400,650 150,520 400,390 650,520" fill="#e0e7ff" stroke="#c7d2fe" stroke-width="3"/>
+                        <polygon points="400,650 400,390 650,520 650,780" fill="#c7d2fe" opacity="0.6"/>
+                        <polygon points="400,650 150,520 150,780 400,650" fill="#a5b4fc" opacity="0.4"/>
+                    </g>
+
+                    <!-- Module Block 1: CRM (Back Left) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="0.3s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="0.3s" dur="0.8s" fill="freeze"/>
+
+                        <!-- Top face -->
+                        <polygon points="220,380 300,340 380,380 300,420" fill="url(#surfaceGrad1)" filter="url(#shadow3d)"/>
+                        <!-- Right face -->
+                        <polygon points="300,420 380,380 380,480 300,520" fill="#5a67d8" opacity="0.8"/>
+                        <!-- Left face -->
+                        <polygon points="220,380 300,420 300,520 220,480" fill="#4c51bf" opacity="0.9"/>
+
+                        <!-- Icon/Label -->
+                        <text x="300" y="460" text-anchor="middle" fill="white" font-size="16" font-weight="700">CRM</text>
+                        <circle cx="300" cy="430" r="15" fill="white" opacity="0.3"/>
+                        <path d="M 295,427 L 300,432 L 308,422" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Module Block 2: Sales (Back Right) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="0.5s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="0.5s" dur="0.8s" fill="freeze"/>
+
+                        <polygon points="420,380 500,340 580,380 500,420" fill="url(#surfaceGrad2)" filter="url(#shadow3d)"/>
+                        <polygon points="500,420 580,380 580,480 500,520" fill="#ec4899" opacity="0.8"/>
+                        <polygon points="420,380 500,420 500,520 420,480" fill="#db2777" opacity="0.9"/>
+
+                        <text x="500" y="460" text-anchor="middle" fill="white" font-size="16" font-weight="700">Sales</text>
+                        <circle cx="500" cy="430" r="15" fill="white" opacity="0.3"/>
+                        <text x="500" y="437" text-anchor="middle" fill="white" font-size="18" font-weight="800">$</text>
+                    </g>
+
+                    <!-- Module Block 3: Inventory (Middle Left) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="0.7s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="0.7s" dur="0.8s" fill="freeze"/>
+
+                        <polygon points="270,280 350,240 430,280 350,320" fill="url(#surfaceGrad3)" filter="url(#shadow3d)"/>
+                        <polygon points="350,320 430,280 430,380 350,420" fill="#0ea5e9" opacity="0.8"/>
+                        <polygon points="270,280 350,320 350,420 270,380" fill="#0284c7" opacity="0.9"/>
+
+                        <text x="350" y="360" text-anchor="middle" fill="white" font-size="14" font-weight="700">Stock</text>
+                        <rect x="340" y="330" width="20" height="20" rx="3" fill="white" opacity="0.3"/>
+                    </g>
+
+                    <!-- Module Block 4: Accounting (Middle Right) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="0.9s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="0.9s" dur="0.8s" fill="freeze"/>
+
+                        <polygon points="470,280 550,240 630,280 550,320" fill="url(#surfaceGrad4)" filter="url(#shadow3d)"/>
+                        <polygon points="550,320 630,280 630,380 550,420" fill="#10b981" opacity="0.8"/>
+                        <polygon points="470,280 550,320 550,420 470,380" fill="#059669" opacity="0.9"/>
+
+                        <text x="550" y="360" text-anchor="middle" fill="white" font-size="13" font-weight="700">Finance</text>
+                        <circle cx="550" cy="335" r="12" fill="white" opacity="0.3"/>
+                        <text x="550" y="342" text-anchor="middle" fill="white" font-size="14" font-weight="800">₹</text>
+                    </g>
+
+                    <!-- Module Block 5: Analytics (Front Left) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="1.1s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="1.1s" dur="0.8s" fill="freeze"/>
+
+                        <polygon points="320,180 400,140 480,180 400,220" fill="url(#surfaceGrad5)" filter="url(#shadow3d)"/>
+                        <polygon points="400,220 480,180 480,280 400,320" fill="#fb923c" opacity="0.8"/>
+                        <polygon points="320,180 400,220 400,320 320,280" fill="#f97316" opacity="0.9"/>
+
+                        <text x="400" y="265" text-anchor="middle" fill="white" font-size="13" font-weight="700">Reports</text>
+                        <path d="M 385,235 L 390,245 L 395,240 L 400,250 L 405,238 L 410,248 L 415,235"
+                              stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+                    </g>
+
+                    <!-- Module Block 6: HR (Front Center) -->
+                    <g transform="translate(0, 0)" opacity="0">
+                        <animate attributeName="opacity" from="0" to="1" begin="1.3s" dur="0.6s" fill="freeze"/>
+                        <animateTransform attributeName="transform" type="translate" from="0,-50" to="0,0" begin="1.3s" dur="0.8s" fill="freeze"/>
+
+                        <polygon points="370,80 450,40 530,80 450,120" fill="url(#surfaceGrad6)" filter="url(#shadow3d)"/>
+                        <polygon points="450,120 530,80 530,180 450,220" fill="#7c3aed" opacity="0.8"/>
+                        <polygon points="370,80 450,120 450,220 370,180" fill="#6d28d9" opacity="0.9"/>
+
+                        <text x="450" y="165" text-anchor="middle" fill="white" font-size="15" font-weight="700">HR</text>
+                        <circle cx="450" cy="140" r="14" fill="white" opacity="0.3"/>
+                        <circle cx="450" cy="137" r="5" fill="white"/>
+                        <path d="M 442,148 Q 450,144 458,148" stroke="white" stroke-width="2" fill="none"/>
+                    </g>
+
+                    <!-- Connecting Lines (showing integration) -->
+                    <g opacity="0">
+                        <animate attributeName="opacity" from="0" to="0.3" begin="1.8s" dur="0.8s" fill="freeze"/>
+                        <line x1="300" y1="420" x2="450" y2="120" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5">
+                            <animate attributeName="stroke-dashoffset" from="100" to="0" begin="1.8s" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="500" y1="420" x2="450" y2="120" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5">
+                            <animate attributeName="stroke-dashoffset" from="100" to="0" begin="2s" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="350" y1="320" x2="450" y2="120" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5">
+                            <animate attributeName="stroke-dashoffset" from="100" to="0" begin="2.2s" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="550" y1="320" x2="450" y2="120" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5">
+                            <animate attributeName="stroke-dashoffset" from="100" to="0" begin="2.4s" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                    </g>
+
+                    <!-- Floating particles around modules -->
+                    <g opacity="0.6">
+                        <circle cx="250" cy="400" r="4" fill="#667eea">
+                            <animate attributeName="cy" values="400;380;400" dur="3s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="550" cy="350" r="3" fill="#4facfe">
+                            <animate attributeName="cy" values="350;330;350" dur="2.5s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="380" cy="250" r="5" fill="#43e97b">
+                            <animate attributeName="cy" values="250;230;250" dur="3.5s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="520" cy="200" r="3" fill="#fa709a">
+                            <animate attributeName="cy" values="200;180;200" dur="2.8s" repeatCount="indefinite"/>
+                        </circle>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    </template>
+</odoo>
+
+
+
+
+    @keyframes heroFloatBg {
+        0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+        50% { transform: translateY(-50px) scale(1.1); opacity: 0.6; }
+    }
+
+    @keyframes heroRotateWord {
+        0% { opacity: 0; transform: translateY(100%); }
+        2% { opacity: 1; transform: translateY(0); }
+        23% { opacity: 1; transform: translateY(0); }
+        25% { opacity: 0; transform: translateY(-100%); }
+        100% { opacity: 0; transform: translateY(-100%); }
+    }
+
+    .hero-cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(30, 58, 138, 0.35) !important;
+    }
+
+    @media (max-width: 991px) {
+        .hero-main-wrapper {
+            grid-template-columns: 1fr !important;
+            gap: 60px !important;
+        }
+        .hero-text-content {
+            text-align: center !important;
+        }
+        .hero-main-title {
+            font-size: 48px !important;
+        }
+        .hero-inner-container {
+            padding: 60px 20px !important;
+        }
+        .hero-rotating-words {
+            min-width: 250px !important;
+        }
+    }
+

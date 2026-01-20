@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_report_readonly,account.report.readonly,model_account_report,,1,0,0,0
+access_account_fiscal_year_readonly,account.fiscal.year.user,model_account_fiscal_year,,1,0,0,0
+access_account_report_line_readonly,account.report.line.readonly,model_account_report_line,,1,0,0,0
+access_account_report_column_readonly,account.report.column.readonly,model_account_report_column,,1,0,0,0
+access_account_group,account.group,model_account_group,,1,0,0,0
+access_account_report_expression_readonly,account.report.expression.readonly,model_account_report_expression,,1,0,0,0
+
+

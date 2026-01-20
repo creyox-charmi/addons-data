@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="res.groups" id="po_group_manager">
+            <field name="name">PO Access</field>
+        </record>
+
+        <record id="security_group_confirm_rule" model="ir.rule">
+            <field name="name">confirm button access for security group</field>
+            <field name="model_id" ref="cr_scrap_management.model_purchase_order"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('cr_scrap_management.group_security'))]"/>
+        </record>
+
+        <record id="administrator_group_confirm_rule" model="ir.rule">
+            <field name="name">confirm button access for Administrator group</field>
+            <field name="model_id" ref="cr_scrap_management.model_purchase_order"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('cr_scrap_management.group_administrator'))]"/>
+        </record>
+    </data>
+</odoo>

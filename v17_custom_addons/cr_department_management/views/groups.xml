@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+         <record id="custom_group_by_user" model="ir.module.category">
+            <field name="name">Custom group by user</field>
+        </record>
+
+        <record id="access_department" model="res.groups">
+            <field name="name">Access Department profile</field>
+            <field name="category_id" ref="cr_department_management.custom_group_by_user"/>
+        </record>
+
+        <record id="create_record_rule_for_department" model="ir.rule">
+            <field name="name">Record rule for Department</field>
+            <field name="model_id" ref="cr_department_management.model_cr_department_department"/>
+            <field name="domain_force">[('create_uid','=',user.id)]</field>
+        </record>
+    </data>
+</odoo>

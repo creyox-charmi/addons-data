@@ -1,0 +1,20 @@
+<odoo>
+    <record id="view_task_assignment_wizard_form" model="ir.ui.view">
+        <field name="name">task.assignment.wizard.form</field>
+        <field name="model">task.assignment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assign Team Members to Tasks">
+                <sheet>
+                    <group>
+                        <field name="project_id"/>
+                        <field name="team_member_ids"/>
+                    </group>
+                    <footer>
+                        <button string="Assign" type="object" name="action_assign_tasks" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

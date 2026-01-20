@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_cr_account_payment_register_form_inherit" model="ir.ui.view">
+        <field name="name">cr.account.payment.register.form.inherit</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_bank_id']" position="after">
+                <field name="cr_add_cash_register_entry"/>
+                <field name="cr_cash_register_option" widget="radio" attrs="{'readonly': [('cr_add_cash_register_entry', '=', False)]}"/>
+                <field name="cr_cash_register_id" attrs="{'readonly': [('cr_cash_register_option', '=', 'without using cash register')]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

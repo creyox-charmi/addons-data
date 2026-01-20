@@ -1,0 +1,943 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--    <record id="view_form_bigcommerce_store" model="ir.ui.view">-->
+    <!--        <field name="name">bigcommerce.store.form</field>-->
+    <!--        <field name="model">bigcommerce.store</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <form string="BigCommerce Store">-->
+    <!--                <header>-->
+    <!--                    <button name="action_sync_store_info" string="Import Store Details" class="oe_highlight"-->
+    <!--                            type="object"-->
+    <!--                            invisible="connection_status != 'draft'"-->
+    <!--                            icon="fa-download"/>-->
+    <!--                    <button name="action_import_bigcommerce_categories"-->
+    <!--                            string="Import Categories"-->
+    <!--                            type="object"-->
+    <!--                            class="btn btn-primary"-->
+    <!--                            invisible="connection_status != 'connected'"-->
+    <!--                            icon="fa-download"/>-->
+    <!--                    <button name="import_bigcommerce_products"-->
+    <!--                            type="object"-->
+    <!--                            string="Import Products"-->
+    <!--                            class="btn-primary"-->
+    <!--                            invisible="connection_status != 'connected'"-->
+    <!--                            icon="fa-download"/>-->
+    <!--                    <button name="action_import_bigcommerce_customers"-->
+    <!--                            type="object"-->
+    <!--                            class="btn-primary"-->
+    <!--                            string="Import Customers"-->
+    <!--                            invisible="connection_status != 'connected'"-->
+    <!--                            icon="fa-download"/>-->
+    <!--                    <button name="action_import_bigcommerce_customer_addresses"-->
+    <!--                            type="object"-->
+    <!--                            string="Import Customer Addresses"-->
+    <!--                            class="btn-primary" invisible="connection_status != 'connected'"-->
+    <!--                            icon="fa-download"/>-->
+    <!--                    <button name="action_import_bigcommerce_orders"-->
+    <!--                            type="object"-->
+    <!--                            string="Import Orders"-->
+    <!--                            class="btn-primary"-->
+    <!--                            invisible="connection_status != 'connected'"-->
+    <!--                            icon="fa-download"/>-->
+    <!--                    <button name="action_import_order_statuses"-->
+    <!--                            type="object"-->
+    <!--                            string="Import Order Statuses"-->
+    <!--                            class="btn-primary"-->
+    <!--                            icon="fa-download"-->
+    <!--                            invisible="connection_status != 'connected'"/>-->
+    <!--                    <button name="action_import_bigcommerce_brands"-->
+    <!--                            type="object"-->
+    <!--                            string="Import Brands"-->
+    <!--                            class="btn-primary"-->
+    <!--                            icon="fa-download"/>-->
+
+    <!--                    <field name="connection_status" widget="statusbar" options="{'clickable': False}"/>-->
+
+    <!--                </header>-->
+    <!--                <sheet>-->
+    <!--                    <group>-->
+    <!--                        <field name="client_id" password="True"/>-->
+    <!--                        <field name="client_secret" password="True"/>-->
+    <!--                        <field name="access_token" password="True"/>-->
+    <!--                        <field name="api_url" password="True"/>-->
+    <!--                        <field name="store_hash" password="True"/>-->
+    <!--                    </group>-->
+    <!--                    <notebook>-->
+
+    <!--                        &lt;!&ndash; General Info &ndash;&gt;-->
+    <!--                        <page string="Store Info">-->
+    <!--                            <group>-->
+    <!--                                <group>-->
+    <!--                                    <field name="store_id"/>-->
+    <!--                                    <field name="bigcommerce_id"/>-->
+    <!--                                    <field name="store_hash"/>-->
+    <!--                                    <field name="account_uuid"/>-->
+    <!--                                    <field name="name"/>-->
+    <!--                                    <field name="status"/>-->
+    <!--                                    <field name="industry"/>-->
+    <!--                                    <field name="plan_name"/>-->
+    <!--                                    <field name="plan_level"/>-->
+    <!--                                    <field name="plan_is_trial"/>-->
+    <!--                                </group>-->
+    <!--                                <group>-->
+    <!--                                    <field name="domain"/>-->
+    <!--                                    <field name="secure_url"/>-->
+    <!--                                    <field name="control_panel_base_url"/>-->
+    <!--                                    <field name="logo_url"/>-->
+    <!--                                    <field name="favicon_url"/>-->
+    <!--                                </group>-->
+    <!--                            </group>-->
+    <!--                        </page>-->
+
+    <!--                        &lt;!&ndash; Contact &ndash;&gt;-->
+    <!--                        <page string="Contact Info">-->
+    <!--                            <group>-->
+    <!--                                <field name="first_name"/>-->
+    <!--                                <field name="last_name"/>-->
+    <!--                                <field name="phone"/>-->
+    <!--                                <field name="admin_email"/>-->
+    <!--                                <field name="order_email"/>-->
+    <!--                                <field name="address"/>-->
+    <!--                                <field name="country"/>-->
+    <!--                                <field name="country_code"/>-->
+    <!--                                <field name="infrastructure_region"/>-->
+    <!--                            </group>-->
+    <!--                        </page>-->
+
+    <!--                        &lt;!&ndash; Currency & Units &ndash;&gt;-->
+    <!--                        <page string="Currency &amp; Units">-->
+    <!--                            <group>-->
+    <!--                                <group>-->
+    <!--                                    <field name="language"/>-->
+    <!--                                    <field name="currency"/>-->
+    <!--                                    <field name="currency_symbol"/>-->
+    <!--                                    <field name="decimal_separator"/>-->
+    <!--                                    <field name="thousands_separator"/>-->
+    <!--                                    <field name="decimal_places"/>-->
+    <!--                                    <field name="currency_symbol_location"/>-->
+    <!--                                </group>-->
+    <!--                                <group>-->
+    <!--                                    <field name="weight_units"/>-->
+    <!--                                    <field name="dimension_units"/>-->
+    <!--                                    <field name="dimension_decimal_places"/>-->
+    <!--                                    <field name="dimension_decimal_token"/>-->
+    <!--                                    <field name="dimension_thousands_token"/>-->
+    <!--                                </group>-->
+    <!--                            </group>-->
+    <!--                        </page>-->
+
+    <!--                        <page string="Other">-->
+    <!--                            <group>-->
+    <!--                                <field name="is_price_entered_with_tax"/>-->
+    <!--                                <field name="default_channel_id"/>-->
+    <!--                                <field name="default_site_id"/>-->
+    <!--                                <field name="active_comparison_modules"/>-->
+    <!--                            </group>-->
+    <!--                        </page>-->
+    <!--                    </notebook>-->
+    <!--                </sheet>-->
+    <!--            </form>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <record id="view_form_bigcommerce_store" model="ir.ui.view">
+        <field name="name">bigcommerce.store.form</field>
+        <field name="model">bigcommerce.store</field>
+        <field name="arch" type="xml">
+            <form string="BigCommerce Store">
+                <header>
+                    <button name="action_sync_store_info" string="Import Store Details"
+                            class="oe_highlight"
+                            type="object"
+                            invisible="connection_status != 'draft'"
+                            icon="fa-download"/>
+                    <field name="connection_status" widget="statusbar" options="{'clickable': False}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="API Credentials">
+                            <field name="client_id" password="True"/>
+                            <field name="client_secret" password="True"/>
+                            <field name="access_token" password="True"/>
+                            <field name="api_url" password="True"/>
+                            <field name="store_hash" password="True"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group string="Other Details">
+                            <field name="order_sequence"/>
+                            <field name="total_customers" invisible="True"/>
+                            <field name="total_orders" invisible="True"/>
+                            <field name="total_products" invisible="True"/>
+                            <field name="total_shipped_orders" invisible="True"/>
+                            <field name="total_refunded_orders" invisible="True"/>
+                            <field name="sales_chart_data" invisible="True"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- Import/Export -->
+                        <page string="Import / Export">
+                            <div class="oe_title">
+                                <h2 class="mb-3">BigCommerce Sync Operations</h2>
+                            </div>
+
+                            <!-- Import Section -->
+                            <div class="mb-4">
+                                <h4 class="text-primary">Import Data</h4>
+                                <div class="row" style="row-gap: 10px;">
+                                    <div class="col-md-3">
+                                        <button name="action_import_bigcommerce_currencies"
+                                                string="Import Currencies"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_import_bigcommerce_categories"
+                                                string="Import Categories"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_import_bigcommerce_brands"
+                                                string="Import Brands"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="import_bigcommerce_products"
+                                                string="Import Products"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_import_bigcommerce_customers"
+                                                string="Import Customers"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_import_bigcommerce_customer_addresses"
+                                                string="Import Customer Addresses"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_import_shipping_zones"
+                                                string="Import Shipping Zones"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_import_inventory_locations"
+                                                string="Import Locations"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_sync_taxes"
+                                                string="Import Taxes"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_sync_inventory"
+                                                string="Import Inventory"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_import_order_statuses"
+                                                string="Import Order Statuses"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_import_bigcommerce_orders"
+                                                string="Import Orders"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                icon="fa-download"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Export Section -->
+                            <div class="mb-3">
+                                <h4 class="text-success">Export Data</h4>
+                                <div class="row" style="row-gap: 10px;">
+                                    <!-- Add export buttons here -->
+                                    <div class="col-md-3">
+                                        <button name="action_export_categories_to_bigcommerce"
+                                                string="Export Categories"
+                                                type="object"
+                                                class="btn btn-success btn-sm w-100"
+                                                icon="fa-upload"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_export_products_to_bigcommerce"
+                                                string="Export Products"
+                                                type="object"
+                                                class="btn btn-success btn-sm w-100"
+                                                icon="fa-upload"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_export_customers_to_bigcommerce"
+                                                string="Export Customers"
+                                                type="object"
+                                                class="btn btn-success btn-sm w-100"
+                                                icon="fa-upload"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_export_customer_addresses"
+                                                string="Export Customer Addresses"
+                                                type="object"
+                                                class="btn btn-success btn-sm w-100"
+                                                icon="fa-upload"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_export_brands_to_bigcommerce"
+                                                string="Export Brands"
+                                                type="object"
+                                                class="btn btn-success btn-sm w-100"
+                                                icon="fa-upload"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="bulk_export_inventory"
+                                                string="Export Stocks"
+                                                type="object"
+                                                class="btn btn-success btn-sm w-100"
+                                                icon="fa-upload"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </page>
+
+                        <page string="Webhooks">
+                            <div class="oe_title">
+                                <h2 class="mb-3">Webhook Configuration</h2>
+                            </div>
+                            <div class="mb-4">
+                                <h5 class="text-primary">Would you like to manage orders from BigCommerce to Odoo?</h5>
+                                <div class="row" style="row-gap: 10px;">
+                                    <div class="col-md-3">
+                                        <button name="action_create_order_created_webhook"
+                                                string="Create Order Webhook"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_delete_order_created_webhook"
+                                                string="Delete Create Order Webhook"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_create_order_updated_webhook"
+                                                string="Updated Order Webhook"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <!--                                    <div class="col-md-3">-->
+                                    <!--                                        <button name="action_delete_order_updated_webhook"-->
+                                    <!--                                                string="Delete Updated Order Webhook"-->
+                                    <!--                                                type="object"-->
+                                    <!--                                                class="btn btn-primary btn-sm w-100"-->
+                                    <!--                                                invisible="connection_status != 'connected'"/>-->
+                                    <!--                                    </div>-->
+                                    <!--                                    <div class="col-md-3">-->
+                                    <!--                                        <button name="action_create_order_refunded_webhook"-->
+                                    <!--                                                string="Create Refunded Order Webhook"-->
+                                    <!--                                                type="object"-->
+                                    <!--                                                class="btn btn-primary btn-sm w-100"-->
+                                    <!--                                                invisible="connection_status != 'connected'"/>-->
+                                    <!--                                    </div>-->
+                                    <div class="col-md-3">
+                                        <button name="action_delete_order_refunded_webhook"
+                                                string="Delete Refunded Order Webhook"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="mb-4">
+                                <h5 class="text-success">Would you like to manage Product from BigCommerce to Odoo?</h5>
+                                <div class="row" style="row-gap: 10px;">
+                                    <div class="col-md-3">
+                                        <button name="action_create_product_created_webhook"
+                                                string="Create Product Webhook"
+                                                type="object"
+                                                class="btn btn-success btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_delete_product_created_webhook"
+                                                string="Delete Create Product Webhook"
+                                                type="object"
+                                                class="btn btn-success btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_create_product_updated_webhook"
+                                                string="Updated Product Webhook"
+                                                type="object"
+                                                class="btn btn-success btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_delete_product_updated_webhook"
+                                                string="Delete Updated Product Webhook"
+                                                type="object"
+                                                class="btn btn-success btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="text-primary">Would you like to manage Inventory from BigCommerce to Odoo?
+                                </h5>
+                                <div class="row" style="row-gap: 10px;">
+                                    <div class="col-md-3">
+                                        <button name="action_create_product_inventory_updated_webhook"
+                                                string="Inventory Update Webhook"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_delete_product_inventory_updated_webhook"
+                                                string="Delete Inventory Update Webhook"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_create_sku_inventory_updated_webhook"
+                                                string="SKU Inventory Update Webhook (Variant)"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button name="action_delete_sku_inventory_updated_webhook"
+                                                string="Delete SKU Inventory Update Webhook (Variant)"
+                                                type="object"
+                                                class="btn btn-primary btn-sm w-100"
+                                                invisible="connection_status != 'connected'"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </page>
+
+                        <page string="Scheduale Action">
+                            <form>
+                                <group>
+                                    <group string="Configure Schedule for Product">
+                                        <field name="auto_import_product"/>
+                                        <field name="import_cron_value" invisible="not auto_import_product"/>
+                                        <field name="import_scheduled_units" invisible="not auto_import_product"/>
+                                        <button string="Schedule Import Action" invisible="auto_import_product != True"
+                                                type="object" name="create_cron_jobs" class="btn-primary"/>
+
+                                    </group>
+                                    <group string="Configure Schedule for order">
+                                        <field name="auto_import_order"/>
+                                        <field name="import_cron_value1" invisible="not auto_import_order"/>
+                                        <field name="import_scheduled_units1" invisible="not auto_import_order"/>
+                                        <button string="Schedule Import Action" invisible="auto_import_order != True"
+                                                type="object" name="create_order_cron" class="btn-primary"/>
+
+                                    </group>
+                                </group>
+                            </form>
+                        </page>
+
+                        <!-- Store Info -->
+                        <page string="Store Info">
+                            <group>
+                                <!-- Identifiers -->
+                                <group string="Store Identifiers">
+                                    <field name="store_id"/>
+                                    <field name="bigcommerce_id"/>
+                                    <field name="store_hash"/>
+                                    <field name="account_uuid"/>
+                                    <field name="name"/>
+                                    <field name="status"/>
+                                </group>
+
+                                <!-- Plan Details -->
+                                <group string="Plan Information">
+                                    <field name="industry"/>
+                                    <field name="plan_name"/>
+                                    <field name="plan_level"/>
+                                    <field name="plan_is_trial"/>
+                                </group>
+
+                                <!-- Domain and URL Info -->
+                                <group string="Domain &amp; URLs">
+                                    <field name="domain"/>
+                                    <field name="secure_url"/>
+                                    <field name="control_panel_base_url"/>
+                                </group>
+
+                                <!-- Branding -->
+                                <group string="Store Branding">
+                                    <field name="logo_url"/>
+                                    <field name="favicon_url"/>
+                                </group>
+                            </group>
+                        </page>
+
+
+                        <!-- Contact Info -->
+                        <page string="Contact Info">
+                            <group>
+                                <!-- Contact Person -->
+                                <group string="Contact Person">
+                                    <field name="first_name"/>
+                                    <field name="last_name"/>
+                                    <field name="phone"/>
+                                </group>
+
+                                <!-- Email Addresses -->
+                                <group string="Email Information">
+                                    <field name="admin_email"/>
+                                    <field name="order_email"/>
+                                </group>
+
+                                <!-- Address & Location -->
+                                <group string="Address Details">
+                                    <field name="address"/>
+                                    <field name="country"/>
+                                    <field name="country_code"/>
+                                </group>
+
+                                <!-- Infrastructure Region -->
+                                <group string="Infrastructure">
+                                    <field name="infrastructure_region"/>
+                                </group>
+                            </group>
+                        </page>
+
+
+                        <!-- Currency & Units -->
+                        <page string="Currency &amp; Units">
+                            <group>
+                                <!-- Currency Settings -->
+                                <group string="Currency Settings">
+                                    <field name="language"/>
+                                    <field name="currency"/>
+                                    <field name="currency_symbol"/>
+                                    <field name="decimal_separator"/>
+                                    <field name="thousands_separator"/>
+                                    <field name="decimal_places"/>
+                                    <field name="currency_symbol_location"/>
+                                </group>
+
+                                <!-- Measurement Units -->
+                                <group string="Measurement Units">
+                                    <field name="weight_units"/>
+                                    <field name="dimension_units"/>
+                                    <field name="dimension_decimal_places"/>
+                                    <field name="dimension_decimal_token"/>
+                                    <field name="dimension_thousands_token"/>
+                                </group>
+                            </group>
+                        </page>
+
+
+                        <!-- Other -->
+                        <page string="Other">
+                            <group>
+                                <field name="is_price_entered_with_tax"/>
+                                <field name="default_channel_id"/>
+                                <field name="default_site_id"/>
+                                <field name="active_comparison_modules"/>
+                            </group>
+                        </page>
+
+                        <page string="Logs">
+                            <field name="cr_logs_ids">
+                                <tree>
+                                    <field name="cr_record_count"/>
+                                    <field name="cr_status" string="Status"/>
+                                    <field name="cr_error_message"/>
+                                    <field name="cr_timestamp"/>
+                                    <field name="cr_message"/>
+                                    <field name="cr_initiated_at"/>
+                                    <field name="cr_user_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Tree View -->
+    <record id="view_tree_bigcommerce_store" model="ir.ui.view">
+        <field name="name">bigcommerce.store.tree</field>
+        <field name="model">bigcommerce.store</field>
+        <field name="arch" type="xml">
+            <tree string="BigCommerce Stores">
+                <field name="name"/>
+                <field name="store_hash"/>
+                <field name="status"/>
+                <field name="plan_name"/>
+                <field name="currency"/>
+                <field name="country"/>
+                <field name="admin_email"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <!--    <record id="view_kanban_bigcommerce_store" model="ir.ui.view">-->
+    <!--        <field name="name">bigcommerce.store.kanban</field>-->
+    <!--        <field name="model">bigcommerce.store</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <kanban class="o_kanban_example">-->
+    <!--                <field name="name"/>-->
+    <!--                <field name="status"/>-->
+    <!--                <field name="plan_name"/>-->
+    <!--                <field name="country"/>-->
+    <!--                <templates>-->
+    <!--                    <t t-name="kanban-box">-->
+    <!--                        <div class="o_kanban_card">-->
+    <!--                            <div class="o_kanban_card_header">-->
+    <!--                                <strong>-->
+    <!--                                    <field name="name"/>-->
+    <!--                                </strong>-->
+    <!--                                <div>-->
+    <!--                                    <field name="status"/>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="o_kanban_card_body">-->
+    <!--                                <div>Plan:-->
+    <!--                                    <field name="plan_name"/>-->
+    <!--                                </div>-->
+    <!--                                <div>Country:-->
+    <!--                                    <field name="country"/>-->
+    <!--                                </div>-->
+    <!--                                <div>Email:-->
+    <!--                                    <field name="admin_email"/>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </t>-->
+    <!--                </templates>-->
+    <!--            </kanban>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <record id="view_bigcommerce_store_kanban" model="ir.ui.view">
+        <field name="name">bigcommerce.store.kanban</field>
+        <field name="model">bigcommerce.store</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard">
+                <field name="name"/>
+                <field name="total_customers"/>
+                <field name="total_orders"/>
+                <field name="total_products"/>
+                <field name="total_shipped_orders"/>
+                <field name="total_refunded_orders"/>
+                <field name="sales_chart_points"/>
+                <field name="connection_status"/>
+                <field name="cr_logs_ids"/>
+                <templates>
+                    <t t-name="kanban-box">
+
+                        <style>
+                            .kanban-card-box {
+                            border: 1px solid #dfe3e8;
+                            border-radius: 14px;
+                            overflow: hidden;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                            background-color: #ffffff;
+                            transition: all 0.3s ease;
+                            }
+
+                            .kanban-card-box:hover {
+                            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+                            transform: translateY(-2px);
+                            }
+
+                            .kanban-header-box {
+                            background: linear-gradient(135deg, #4f93ce, #295f9c);
+                            color: white;
+                            padding: 16px 20px;
+                            margin:15px;
+                            font-size: 18px;
+                            font-weight: 600;
+                            display: flex;
+                            align-items: center;
+                            text-align: center;
+                            text-transform: uppercase;
+                            border-bottom: 1px solid #e1e5ea;
+                            border-radius: 12px;
+                            }
+
+                            .kanban-header-box i {
+                            font-size: 20px;
+                            margin-right: 10px;
+                            color: white;
+                            }
+
+                            .stat-box {
+                            border-radius: 12px;
+                            padding: 16px 10px;
+                            text-align: center;
+                            margin-bottom: 16px;
+                            transition: all 0.3s ease;
+                            }
+
+                            .stat-box i {
+                            font-size: 22px;
+                            margin-bottom: 6px;
+                            display: block;
+                            }
+
+                            .stat-box strong {
+                            font-size: 18px;
+                            font-weight: 600;
+                            }
+
+                            .stat-box .small {
+                            font-size: 13px;
+                            color: #6c757d;
+                            }
+
+                            .bg-light-primary { background-color: #e3f2fd; }
+                            .bg-light-success { background-color: #e6f4ea; }
+                            .bg-light-warning { background-color: #fff8e5; }
+                            .bg-light-info { background-color: #e9f7fd; }
+                            .bg-light-danger { background-color: #fdecea; }
+                            .bg-light-secondary { background-color: #f4f4f4; }
+
+                            .custom-button-container {
+                            padding: 16px;
+                            margin-top: 15px;
+                            background-color: #f8f9fa;
+                            border-radius: 12px;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                            display: flex;
+                            justify-content: space-around;
+                            gap: 12px;
+                            }
+
+                            .custom-button-container .btn {
+                            font-size: 16px;
+                            padding: 12px 24px;
+                            font-weight: 600;
+                            border-radius: 8px;
+                            min-width: 150px;
+                            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+                            }
+
+                            .custom-button-container .btn i {
+                            margin-right: 8px;
+                            font-size: 18px;
+                            }
+
+                            .custom-button-container .btn:hover {
+                            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+                            }
+
+
+                        </style>
+
+                        <div t-attf-class="oe_kanban_global_click o_kanban_card kanban-card-box">
+
+                            <!-- Enhanced Header -->
+                            <div class="kanban-header-box">
+                                <i class="fa fa-store" style="text-transform: uppercase;"/>
+                                <field name="name" style="text-align: center;"/>
+                            </div>
+
+                            <!-- Stat Boxes -->
+                            <div class="o_kanban_content p-3">
+                                <div class="row row-cols-3 g-2">
+                                    <div class="col">
+                                        <a t-attf-href="/web#action=cr_bigcommerce_odoo_integration.action_bigcommerce_customers&amp;id=#{record.id}&amp;model=bigcommerce.store"
+                                           target="_self">
+
+                                            <div class="stat-box bg-light-primary">
+                                                <i class="fa fa-users text-primary"/>
+                                                <strong>
+                                                    <t t-esc="record.total_customers.value"/>
+                                                </strong>
+                                                <div class="small">Customers</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a t-attf-href="/web#action=cr_bigcommerce_odoo_integration.action_bigcommerce_orders&amp;id=#{record.id}&amp;model=bigcommerce.store"
+                                           target="_self">
+
+                                            <div class="stat-box bg-light-success">
+                                                <i class="fa fa-shopping-cart text-success"/>
+                                                <strong>
+                                                    <t t-esc="record.total_orders.value"/>
+                                                </strong>
+                                                <div class="small">Orders</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a t-attf-href="/web#action=cr_bigcommerce_odoo_integration.action_bigcommerce_products&amp;id=#{record.id}&amp;model=bigcommerce.store"
+                                           target="_self">
+
+                                            <div class="stat-box bg-light-warning">
+                                                <i class="fa fa-cubes text-warning"/>
+                                                <strong>
+                                                    <t t-esc="record.total_products.value"/>
+                                                </strong>
+                                                <div class="small">Products</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a t-attf-href="/web#action=cr_bigcommerce_odoo_integration.action_bigcommerce_delivery_orders&amp;id=#{record.id}&amp;model=bigcommerce.store"
+                                           target="_self">
+
+                                            <div class="stat-box bg-light-info">
+                                                <i class="fa fa-truck text-info"/>
+                                                <strong>
+                                                    <t t-esc="record.total_shipped_orders.value"/>
+                                                </strong>
+                                                <div class="small">Shipped</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a t-attf-href="/web#action=cr_bigcommerce_odoo_integration.action_bigcommerce_customers&amp;id=#{record.id}&amp;model=bigcommerce.store"
+                                           target="_self">
+
+                                            <div class="stat-box bg-light-danger">
+                                                <i class="fa fa-undo text-danger"/>
+                                                <strong>
+                                                    <t t-esc="record.total_refunded_orders.value"/>
+                                                </strong>
+                                                <div class="small">Refunded</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a t-attf-href="/web#action=cr_bigcommerce_odoo_integration.action_cr_data_processing_log&amp;id=#{record.id}&amp;model=bigcommerce.store"
+                                           target="_self">
+
+                                            <div class="stat-box bg-light-secondary">
+                                                <i class="fa fa-book"/>
+                                                <strong>
+                                                    <t t-esc="record.cr_logs_ids.raw_value.length"/>
+                                                </strong>
+                                                <div class="small">Logs</div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="custom-button-container">
+                                <button type="object"
+                                        name="action_open_import_wizard"
+                                        class="btn btn-outline-primary">
+                                    <i class="fa fa-download"/>
+                                    Import Data
+                                </button>
+                                <button type="object"
+                                        name="action_open_export_wizard"
+                                        class="btn btn-outline-success">
+                                    <i class="fa fa-upload"/>
+                                    Export Data
+                                </button>
+                            </div>
+
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <record id="bigcommerce_store_company_rule" model="ir.rule">
+        <field name="name">BigCommerce Store: Company Rule</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_bigcommerce_store"/>
+        <field name="domain_force">[('company_id', 'parent_of', company_ids)]</field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_bigcommerce_store" model="ir.actions.act_window">
+        <field name="name">BigCommerce Stores</field>
+        <field name="res_model">bigcommerce.store</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <menuitem id="menu_bigcommerce_store" name="Stores" parent="cr_bigcommerce_odoo_integration.cr_bigcommerce_menu"
+              action="cr_bigcommerce_odoo_integration.action_bigcommerce_store" sequence="1"/>
+
+    <!-- Wizard Actions (place separately) -->
+    <record id="action_bigcommerce_open_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import Wizard</field>
+        <field name="res_model">bigcommerce.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_bigcommerce_open_export_wizard" model="ir.actions.act_window">
+        <field name="name">Export Wizard</field>
+        <field name="res_model">bigcommerce.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>

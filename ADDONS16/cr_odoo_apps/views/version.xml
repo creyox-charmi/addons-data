@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree view for versions of odoo-->
+    <record id="view_tree_version" model="ir.ui.view">
+        <field name="name">cr.versions.odoo.tree</field>
+        <field name="model">cr.versions.odoo</field>
+        <field name="arch" type="xml">
+            <tree editable='bottom'>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for Versions -->
+    <record id="action_versions" model="ir.actions.act_window">
+        <field name="name">Odoo Versions</field>
+        <field name="res_model">cr.versions.odoo</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <!-- Menu inside config for version-->
+    <menuitem id="menu_version"
+              name="Odoo Versions"
+              parent="cr_odoo_apps.menu_migration_config"
+              action="action_versions"
+              sequence="1"/>
+</odoo>

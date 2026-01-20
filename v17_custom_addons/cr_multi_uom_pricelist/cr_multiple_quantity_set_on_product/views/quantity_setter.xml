@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <template id="product_inherit" inherit_id="website_sale.product">
+        <xpath expr="//input[@class='product_id'][1]" position="after">
+            <!-- Add the new hidden input fields -->
+            <input type="hidden" class="product_template_id" t-att-value="product.id"/>
+            <input type="hidden"  class="multi_quantity_product" t-att-value="product.multi_quantity_product"/>
+        </xpath>
+        <xpath expr="//input[@name='add_qty']" position="attributes">
+            <!-- Set default value dynamically based on multi_quantity_product -->
+            <attribute name="t-att-value">product.multi_quantity_product or 1</attribute>
+        </xpath>
+    </template>
+
+    <template id="product_cart_line_inherit" inherit_id="website_sale.cart_lines">
+        <xpath expr="//div[@id='cart_products']//img" position="before">
+            <input type='hidden' class="multi_quantity_product" t-att-value="line.product_id.multi_quantity_product"/>
+        </xpath>
+    </template>
+
+    <template id="custom_configure_optional_products" inherit_id="website_sale_product_configurator.configure_optional_products">
+        <xpath expr="//td[@class='text-center td-qty']/t[@t-call='website_sale_product_configurator.product_quantity_config']" position="replace">
+            <!-- Custom Quantity HTML -->
+            <input type="hidden" class="multi_quantity_product" t-att-value="product.multi_quantity_product"/>
+            <div t-if="is_view_active('website_sale.product_quantity')" class="css_quantity input-group">
+                <button t-attf-href="#" 
+                        class="btn btn-primary float_left js_add_cart_json d-none d-md-inline-block" 
+                        aria-label="Remove one" 
+                        title="Remove one">
+                    <i class="fa fa-minus"></i>
+                </button>
+                <input type="text"
+                       class="js_quantity form-control quantity text-center"
+                       style="max-width: 4rem"
+                       data-min="1"
+                       name="add_qty"
+                       t-att-value="add_qty or 1"/>
+                <button t-attf-href="#" 
+                        class="btn btn-primary float_left js_add_cart_json d-none d-md-inline-block" 
+                        aria-label="Add one" 
+                        title="Add one">
+                    <i class="fa fa-plus"></i>
+                </button>
+                <input type="hidden" class="d-none js_quantity form-control quantity" name="add_qty" t-att-value="add_qty or 1"/>
+                <input type="hidden" class="multi_quantity_product" t-att-value="product.multi_quantity_product"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Tree view of Categories -->
+    <record id="view_tree_categories" model="ir.ui.view">
+        <field name="name">cr.categories.tree</field>
+        <field name="model">cr.categories</field>
+        <field name="arch" type="xml">
+            <tree editable='bottom'>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for Categories-->
+    <record id="action_categories" model="ir.actions.act_window">
+        <field name="name">Apps Categories</field>
+        <field name="res_model">cr.categories</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <!-- Added Stage to the menu -->
+    <menuitem id="menu_categories"
+              name="Apps Category"
+              parent="menu_migration_config"
+              action="action_categories"
+              sequence='5'/>
+
+</odoo>

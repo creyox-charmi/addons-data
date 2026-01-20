@@ -1,0 +1,70 @@
+<odoo>
+     <record id="eam_member_view_search" model="ir.ui.view">
+        <field name="name">project.team.member.search</field>
+        <field name="model">project.team.member</field>
+        <field name="arch" type="xml">
+             <search>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="project_ids"/>
+
+                 <filter string="Sales" name="project_ids" domain="[('project_ids', '=', 'Sales')]"/>
+                 <filter string="Invoicing" name="project_ids" domain="[('project_ids', '=', 'Invoicing')]"/>
+                 <filter string="Email Marketing" name="project_ids" domain="[('project_ids', '=', 'Email Marketing')]"/>
+                 <filter string="Inventory" name="project_ids" domain="[('project_ids', '=', 'Inventory')]"/>
+                 <filter string="CRM" name="project_ids" domain="[('project_ids', '=', 'CRM')]"/>
+                 <filter string="Point of sale" name="project_ids" domain="[('project_ids', '=', 'Point of sale')]"/>
+            </search>
+        </field>
+    </record>
+    <record id="team_member_view_form" model="ir.ui.view">
+        <field name="name">project.team.member.form</field>
+        <field name="model">project.team.member</field>
+        <field name="arch" type="xml">
+            <form string="Team Member">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="email"/>
+                        <field name="phone"/>
+                        <field name="role"/>
+                        <field name="project_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="team_member_view_tree" model="ir.ui.view">
+        <field name="name">project.team.member.tree</field>
+        <field name="model">project.team.member</field>
+        <field name="arch" type="xml">
+            <tree string="Team Member">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="role"/>
+                <field name="project_ids" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+
+
+
+    <record id="action_project_team_member" model="ir.actions.act_window">
+        <field name="name">Team Members</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.team.member</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem id="project_team_main_menu"
+              name="Project Team Management"
+              sequence="999" />
+
+    <menuitem id="project_team_member_menu"
+              name="Team Members"
+              parent="project_team_main_menu"
+              action="action_project_team_member"/>
+</odoo>

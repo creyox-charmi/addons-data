@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!-- Define the email template -->
+        <record id="ticket_generated_email_template" model="mail.template">
+            <field name="name">Ticket Generated Email Template</field>
+            <field name="model_id" ref="cr_helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">Your Support Ticket Has been Generated Successfully</field>
+            <field name="email_from">support@creyox.com</field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="body_html" type="html">
+                <div style="background-color:#4A628A; padding:50px 0; font-family:Arial,sans-serif;">
+                    <div style="background-color:#ffffff; width: 400px; margin: 0 auto; text-align:center; padding:30px; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.1);">
+                        <h1 style="font-size:32px; color:#333; margin-bottom:20px;">Your Support Ticket has been
+                            Generated Successfully
+                        </h1>
+                        <p style="color:#555; font-size:16px; line-height:1.5;">
+                            Your Support Ticket number is:
+                            <strong>
+                                <t t-out="object.name"/>
+                            </strong>
+                            <br/>
+                            <p>
+                                Our team is already looking into it, and we will get
+                                back to you as soon as possible.
+                            </p>
+                            <br/>
+                            <p>
+                                If you have any questions
+                                or concerns regarding your support ticket,
+                                please do not hesitate to
+                            </p>
+                        </p>
+                        <a href="mailto:support@creyox.com"
+                           style="display:inline-block; background-color:#FF007F; color:white; text-decoration:none; padding:10px 20px; border-radius:30px; font-size:16px;">
+                            Contact Us
+                        </a>
+                    </div>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

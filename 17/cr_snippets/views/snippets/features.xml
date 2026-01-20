@@ -1,0 +1,333 @@
+<odoo>
+    <template id="external_snippets" inherit_id="website.snippets" priority="8">
+        <xpath expr="//div[@id='snippet_feature']//t[@t-snippet][last()]" position="after">
+            <t t-snippet="cr_snippets.cr_advertise"/>
+        </xpath>
+    </template>
+
+    <template id="cr_advertise" name="Advertise">
+        <section class="container">
+            <!-- Two-column layout -->
+            <div class="ad-snippet">
+                <!-- Column 1: Advertisement content (text) -->
+                <div class="left-column">
+                    <!-- Company Logo -->
+                    <img src="/cr_snippets/static/src/img/Titan_Watches_logo.png" alt="Titan Logo" class="logo"/>
+
+                    <!-- Title -->
+                    <h2>Get 10% Off on Titan Watches &amp; Accessories!</h2>
+
+                    <!-- Description -->
+                    <p>
+                        Explore the premium collection of Titan watches and accessories! For a limited time only, get an exclusive 10% discount on all your orders through our website.
+                    </p>
+
+                    <!-- Call-to-Action Button -->
+                    <a href="https://www.titan.co.in" target="_blank" class="cta-button">Shop Now &amp; Save 10%</a>
+
+
+                    <div class="download-app">
+                     <a class="gtm-footer-link"
+                     href="https://apps.apple.com/us/app/world-of-titan/id1351637761?ls=1" target="_blank">
+                     <img class="app-download appstore-img"
+                     src="https://www.titan.co.in/on/demandware.static/-/Library-Sites-TitanSharedLibrary/default/dw435df752/images/footer/Group 15609.png" alt="appstore"/></a>
+                     <a class="gtm-footer-link"
+                     href="https://play.google.com/store/apps/details?id=com.titancompany.tx37consumerapp&amp;cm_sp=Homepage-_-footer-_-AndroidAppLogo" target="_blank">
+                     <img class="app-download" src="https://www.titan.co.in/on/demandware.static/-/Library-Sites-TitanSharedLibrary/default/dwac46a6ed/images/footer/Group 15610@2x.png" alt="sdf"/></a>
+                  </div>
+
+
+                    <!-- Terms and Conditions -->
+                    <p class="terms">
+                        *Discount applied at checkout. Terms and conditions apply.
+                    </p>
+                </div>
+
+                <!-- Column 2: Titan Watch Image -->
+                <div class="right-column">
+                    <img src="/cr_snippets/static/src/img/a.jpg" alt="Titan Watch" class="watch-image"/>
+                </div>
+            </div>
+           <section id="image-slider">
+            <div class="slider-container">
+                <!-- Slider Images -->
+                <div class="slider-images">
+                    <img src="/cr_snippets/static/src/img/1.webp" alt="Titan Watch 1"/>
+                    <img src="/cr_snippets/static/src/img/2.webp" alt="Titan Watch 2"/>
+                    <img src="/cr_snippets/static/src/img/3.webp" alt="Titan Watch 3"/>
+                    <img src="/cr_snippets/static/src/img/4.jpg" alt="Titan Watch 4"/>
+                    <img src="/cr_snippets/static/src/img/5.webp" alt="Titan Watch 5"/>
+                    <img src="/cr_snippets/static/src/img/6.webp" alt="Titan Watch 6"/>
+                    <img src="/cr_snippets/static/src/img/7.webp" alt="Titan Watch 7"/>
+                </div>
+
+                <!-- Slider Navigation Arrows -->
+                <div class="slider-nav">
+                    <span id="prev" class="nav-arrow">&lt;</span>
+                    <span id="next" class="nav-arrow">&gt;</span>
+                </div>
+            </div>
+        </section>
+
+        </section>
+
+
+
+       <style>
+            /* General Styling */
+            .ad-snippet {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 40px 30px;
+                margin: 20px 0;
+                background-color: #ffffff;
+                transition: transform 0.3s ease;
+            }
+
+            .ad-snippet:hover {
+                transform: translateY(-5px);
+            }
+
+            /* Title Styling */
+            .ad-snippet h2 {
+                font-size: 32px;
+                color: #333;
+                font-weight: 700;
+                margin-bottom: 15px;
+                font-family: 'Roboto', sans-serif;
+                letter-spacing: 0.5px;
+                line-height: 1.4;
+            }
+
+            /* Paragraph Styling */
+            .ad-snippet p {
+                font-size: 18px;
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 20px;
+                font-family: 'Open Sans', sans-serif;
+            }
+
+            /* Call-to-Action Button Styling */
+            .ad-snippet a.cta-button {
+                display: inline-block;
+                padding: 18px 35px;
+                background-color: 	#000000;
+                color: #FFFFFF;
+                font-size: 20px;
+                text-decoration: none;
+                border-radius: 2px;
+                font-weight: bold;
+                letter-spacing: 1px;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+            }
+
+            .ad-snippet a.cta-button:hover {
+                background-color: #0056b3;
+                transform: scale(1.05);
+            }
+
+            /* Terms &amp; Conditions Styling */
+            .ad-snippet p.terms {
+                font-size: 14px;
+                color: #888;
+                font-family: 'Open Sans', sans-serif;
+            }
+
+            /* Left Column Styling */
+            .left-column {
+                flex: 1;
+                padding-right: 25px;
+            }
+
+            /* Right Column Styling */
+            .right-column {
+                flex: 1;
+                padding-left: 25px;
+            }
+
+            /* Logo Image Styling */
+            .logo {
+                max-width: 180px;
+                margin-bottom: 20px;
+            }
+
+            /* Watch Image Styling */
+            .watch-image {
+                max-width: 100%;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .download-app .gtm-footer-link:last-child .app-download {
+                width: 12.4375rem;
+            }
+                       .download-app .gtm-footer-link .app-download {
+                height: 4.5rem;
+                width: 12.5rem;
+            }
+            .ad-snippet a {
+                display: inline-block;
+                margin-top:15px;
+                margin-bottom:15px;
+                padding: 0px 0px;
+                background-color: #030d18;
+                color: white;
+                font-size: 20px;
+                text-decoration: none;
+                border-radius: 11px;
+                font-weight: bold;
+                transition: background-color 0.3s ease;
+            }
+
+            /* Slider Section */
+            #image-slider {
+                position: relative;
+                width: 100%;
+                margin-top: 30px;
+                border-radius: 8px;
+                overflow: hidden; /* Hide the overflow from the slider images */
+            }
+
+            /* Container for the images */
+            .slider-container {
+                width: 100%;
+                position: relative;
+                display: flex;
+                overflow: hidden;
+                margin : 5px 5px 5px 5px;
+            }
+
+            /* Image Slider Images */
+            .slider-images {
+                display: flex;
+                transition: transform 0.5s ease; /* Smooth sliding effect */
+            }
+
+            .slider-images img {
+                width: 100%;  /* Each image takes up the full width of the container */
+                height: auto;
+                border-radius: 0px; /* Rounded corners for images */
+            }
+
+            /* Slider Navigation Arrows */
+            .slider-nav {
+                position: absolute;
+                top: 50%;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                transform: translateY(-50%); /* Centers the arrows vertically */
+                padding: 0 20px;
+                z-index: 10;
+            }
+
+            /* Style for Navigation Arrows */
+            .nav-arrow {
+                font-size: 3rem;
+                color: white;
+                background-color: rgba(0, 0, 0, 0.5);
+                padding: 15px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: background-color 0.3s, transform 0.3s;
+            }
+
+            /* Hover effect for arrows */
+            .nav-arrow:hover {
+                background-color: rgba(0, 0, 0, 0.8);
+                transform: scale(1.1);
+            }
+
+            /* Make sure arrows are clickable */
+            #prev {
+                margin-left: 20px;
+            }
+
+            #next {
+                margin-right: 20px;
+            }
+
+
+            /* Responsive Adjustments */
+            @media (max-width: 768px) {
+                .ad-snippet {
+                    flex-direction: column;
+                    text-align: center;
+                    padding: 20px;
+                }
+
+                .left-column, .right-column {
+                    flex: none;
+                    width: 100%;
+                    padding-right: 0;
+                    margin-bottom: 20px;
+                }
+
+                .right-column img {
+                    max-width: 80%;
+                    margin: 0 auto;
+                }
+
+                .slider-container {
+                    max-width: 100%;
+                }
+
+                .slider-images img {
+                    width: 100%;
+                }
+                    .nav-arrow {
+                font-size: 2rem; /* Smaller arrow size for mobile */
+                padding: 10px;
+            }
+
+
+            /* Add fonts */
+            @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&amp;family=Open+Sans:wght@400&amp;display=swap');
+        </style>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const advertiseTemplate = document.getElementById('image-slider');
+            if (advertiseTemplate) {
+                let index = 0;
+                const images = document.querySelectorAll('#image-slider .slider-images img');
+                const totalImages = images.length;
+
+                function slideImages() {
+                    if(advertiseTemplate){
+                        index = (index + 1) % totalImages;
+                        const transformValue = 'translateX(' + (-index * 100) + '%)';
+                        document.querySelector('.slider-images').style.transform = transformValue;
+                      }
+                      else{
+                        console.log('not find');
+                      }
+                }
+
+                if(advertiseTemplate){
+                        setInterval(slideImages, 3000);
+                }
+                else{
+                        console.log('stop');
+                      }
+
+                document.getElementById('next').addEventListener('click', function() {
+                    index = (index + 1) % totalImages;
+                    const transformValue = 'translateX(' + (-index * 100) + '%)';
+                    document.querySelector('.slider-images').style.transform = transformValue;
+                });
+
+                document.getElementById('prev').addEventListener('click', function() {
+                    index = (index - 1 + totalImages) % totalImages;
+                    const transformValue = 'translateX(' + (-index * 100) + '%)';
+                    document.querySelector('.slider-images').style.transform = transformValue;
+                });
+            }
+              else{
+              console.log('nooooooooooooooo');
+              }
+        });
+    </script>
+    </template>
+</odoo>

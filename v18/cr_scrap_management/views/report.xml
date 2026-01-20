@@ -1,0 +1,97 @@
+<odoo>
+    <data>
+
+        <template id="purchase_order_receipt_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="main">
+                                <div style="width: 100%; text-align: center;">
+                                    <h2 t-field="doc.name"/>
+                                </div>
+
+
+                            <div class="row">
+                                 <div class="col-auto col-6 text-left">
+                                    Vendor Name:
+                                </div>
+                                <div class="col-auto col-6 mw-100 text-right">
+                                    <span t-field="doc.partner_id.name"/>
+                                </div>
+                            </div>
+
+                                <div class="row">
+                                 <div class="col-auto col-6 text-left">
+                                    Order Date:
+                                </div>
+                                <div class="col-auto col-6 mw-100 text-right">
+                                    <span t-field="doc.date_order"/>
+                                </div>
+                            </div>
+
+
+                                <t t-set="lines_to_report" t-value="doc.order_line"/>
+
+                                <div style="width: 100%; margin-top: 15px;">
+                                    <table>
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th>Product</th>
+                                                <th>Qty</th>
+                                                <th>Price</th>
+                                                <th>Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="lines_to_report" t-as="line">
+                                                <td name="td_1">
+                                                    <span t-field="line.product_id.name"/>
+                                                </td>
+                                                <td name="td_2" style="text-align: right;">
+                                                    <span t-field="line.product_qty"/>
+                                                </td>
+                                                <td name="td_3" style="text-align: right;">
+                                                    <span t-field="line.price_unit"/>
+                                                </td>
+                                                <td name="td_4" style="text-align: right;">
+                                                    <span t-field="line.price_subtotal"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div style="width: 100%; margin-top: 10px;">
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td style="text-align: right;">
+                                                <b>Total:</b>
+                                                <b t-field="doc.amount_total"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+
+        <record id="action_report_purchase_order_receipt" model="ir.actions.report">
+            <field name="name">Purchase Receipt Report</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">cr_scrap_management.purchase_order_receipt_report</field>
+            <field name="report_file">cr_scrap_management.purchase_order_receipt_report</field>
+            <field name="print_report_name">'Purchase Receipt Report'</field>
+            <field name="binding_model_id" ref="model_purchase_order"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="cr_scrap_management.cr_paper"/>
+        </record>
+
+    </data>
+</odoo>

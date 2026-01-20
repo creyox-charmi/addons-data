@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bigcommerce_store_user,bigcommerce.store user,model_bigcommerce_store,base.group_user,1,1,1,1
+access_bigcommerce_order_status_user,bigcommerce.order.status,model_bigcommerce_order_status,base.group_user,1,1,1,1
+access_bigcommerce_brand_user,bigcommerce.brand,model_bigcommerce_brand,base.group_user,1,1,1,1
+access_bigcommerce_inventory_location_manager,bigcommerce.inventory.location.manager,model_bigcommerce_inventory_location,base.group_user,1,1,1,1
+access_bigcommerce_shipping_zone_user,bigcommerce.shipping.zone user,model_bigcommerce_shipping_zone,base.group_user,1,1,1,1
+access_bigcommerce_webhook_admin,access_bigcommerce_webhook_admin,model_bigcommerce_webhook,,1,1,1,1
+access_cr_data_processing_log,cr.data.processing.log,model_cr_data_processing_log,,1,1,1,1
+access_cr_select_store_user,cr.select.store.user,model_cr_select_store,,1,1,1,1
+access_bigcommerce_import_wizard,bigcommerce.import.wizard,model_bigcommerce_import_wizard,base.group_user,1,1,1,1
+access_bigcommerce_export_wizard,bigcommerce.export.wizard,model_bigcommerce_export_wizard,base.group_user,1,1,1,1
+access_fiscal_position_postal_user,Fiscal Position Postal User,model_account_fiscal_position_postal,base.group_user,1,1,1,1

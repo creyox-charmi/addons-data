@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_cr_terms_and_condition_form" model="ir.ui.view">
+        <field name="name">cr.terms.and.condition.form</field>
+        <field name="model">cr.terms.and.condition</field>
+        <field name="arch" type="xml">
+            <form string="Terms and Condition">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="customer" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="language"/>
+                            <field name="cr_model_reference"/>
+                        </group>
+                        <div style="display: flex; align-items: center; width: 100%; overflow: hidden;">
+                            <label for="terms_and_condition" string="Terms and Conditions" class="o_field_label"
+                                   style="margin-right: 10px; font-weight: bold;"/>
+                            <field name="terms_and_condition" widget="html" nolabel="1"
+                                   style="flex-grow: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;font-weight: bold;"/>
+                        </div>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cr_terms_and_condition_tree" model="ir.ui.view">
+        <field name="name">cr.terms.and.condition.tree</field>
+        <field name="model">cr.terms.and.condition</field>
+        <field name="arch" type="xml">
+            <tree string="Terms and Conditions">
+                <field name="name"/>
+                <field name="terms_and_condition" widget="html"/>
+                <field name="customer" widget="many2many_tags"/>
+                <field name="cr_model_reference"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

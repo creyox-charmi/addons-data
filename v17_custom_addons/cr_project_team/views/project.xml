@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     <record id="project_team_view_search" model="ir.ui.view">
+        <field name="name">project.team.search</field>
+        <field name="model">project.team</field>
+        <field name="arch" type="xml">
+             <search>
+                <field name="name"/>
+                <field name="team_member_ids"/>
+                 <field name="task_ids"/>
+
+                 <filter string="Sales" name="name" domain="[('name', '=', 'Sales')]"/>
+                 <filter string="Invoicing" name="name" domain="[('name', '=', 'Invoicing')]"/>
+                 <filter string="Email Marketing" name="name" domain="[('name', '=', 'Email Marketing')]"/>
+                 <filter string="Inventory" name="name" domain="[('name', '=', 'Inventory')]"/>
+                 <filter string="CRM" name="name" domain="[('name', '=', 'CRM')]"/>
+                 <filter string="Point of sale" name="name" domain="[('name', '=', 'Point of sale')]"/>
+
+
+            </search>
+        </field>
+    </record>
+    <record id="project_team_view_form" model="ir.ui.view">
+        <field name="name">project.team.form</field>
+        <field name="model">project.team</field>
+        <field name="arch" type="xml">
+            <form string="Project Team">
+                <header>
+                        <button string="Assign Task"
+                                class="oe_stat_button"
+                                type="object"
+                                name="action_task_assign_record" />
+                </header>
+                <sheet>
+                    <div name="button_box" position="inside">
+                        <button class="oe_stat_button"
+                                 type="object"
+                                 icon="fa-user"
+                                 name="action_get_team_member_record" >
+                            <field string="Team Member" name="team_member_ids" widget="statinfo" />
+                        </button>
+                         <button class="oe_stat_button"
+                                 type="object"
+                                 icon="fa-user"
+                                 name="action_get_task_record" >
+                            <field string="Task" name="task_ids" widget="statinfo" />
+                        </button>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                        <field name="team_member_ids"/>
+                        <field name="task_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="project_team_view_tree" model="ir.ui.view">
+        <field name="name">project.team.tree</field>
+        <field name="model">project.team</field>
+        <field name="arch" type="xml">
+            <tree string="Project Team">
+                <field name="name"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_project_team" model="ir.actions.act_window">
+        <field name="name">Projects</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.team</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="project_team_main_menu"
+              name="Project Team Management"
+              sequence="999" />
+    <menuitem id="project_team_menu"
+              name="Projects"
+              parent="project_team_main_menu"
+              action="action_project_team"/>
+</odoo>

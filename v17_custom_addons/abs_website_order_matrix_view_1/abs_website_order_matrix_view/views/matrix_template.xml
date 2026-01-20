@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+   <template id="inherit_assets_frontend" inherit_id="web.assets_frontend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/abs_website_order_matrix_view/static/src/js/website_add_to_cart.js"></script>       
+        </xpath>
+    </template>        
+ 
+    <template id="inherit_multi_variant_product_quantity" inherit_id="website_sale.product_quantity">
+        <xpath expr="//div[@id='product_details']/form/div[hasclass('js_product')]/div[hasclass('css_quantity','input-group')]" position="attributes">
+            <attribute name="t-if">len(product.product_variant_ids) == 1</attribute>
+        </xpath>
+    </template>
+
+    <template id="product_variant" inherit_id="website_sale.product">
+        <xpath expr="//div[@id='product_details']/form/div[hasclass('js_product')]/t" position="before">
+                <div id="variants_list_view_status" t-att-data-variant_list_status="not (len(product.product_variant_ids) == 1)"/>
+        </xpath>kj
+        <xpath expr="//div[hasclass('js_product','js_main_product')]/t[@t-call='website_sale.product_price']" position="attributes">
+            <attribute name="t-if">len(product.product_variant_ids) == 1</attribute>        
+        </xpath>  
+             
+        <xpath expr="//t[@t-placeholder='select']" position="replace">
+            <t t-if="len(product.product_variant_ids) == 1">
+                <t t-placeholder="select">
+                    <input type="hidden" class="product_id" name="product_id" t-att-value="product_variant.id" />
+                    <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="product.id" />
+                    <t t-if="combination" t-call="sale.variants">
+                        <t t-set="ul_class" t-value="'flex-column'" />
+                        <t t-set="parent_combination" t-value="None" />
+                    </t>
+                    <t t-else="">
+                        <ul class="d-none js_add_cart_variants" t-att-data-attribute_exclusions="{'exclusions: []'}"/>
+                    </t>
+                </t>
+            </t>
+            <!--form><br/>
+                <center>
+                    <div id="product_variant_quantity_error" class="text-center alert alert-danger" style="display:none;width: 300px;">
+                        <span>No product will be selected</span>
+                    </div>
+                     
+                    <t t-if="product.product_variant_count &gt; 1">
+                        <div>
+                            <h4>Select the Quantities You Want to Order</h4>
+                        </div> 
+                        <t t-set="product_possible_variants" t-value="product.get_product_possible_variants()"/>
+                        <table  class="table table-sm table-bordered table-hover" id="p_variants" style="width:400px;">
+                            <thead class="text-center bg-primary" >
+                                <t t-foreach="product.product_variant_id.product_template_attribute_value_ids" t-as="attribute_value_id">     
+                                    <th t-if="attribute_value_id.display_type == 'radio'">
+                                        <span t-field="attribute_value_id.attribute_id.name"></span>
+                                    </th>
+                                        
+                                   <th t-if="attribute_value_id.display_type == 'select'">
+                                        <span t-field="attribute_value_id.attribute_id.name"></span>
+                                   </th>       
+                                   <th t-if="attribute_value_id.display_type == 'color'">
+                                        <span t-field="attribute_value_id.attribute_id.name"></span>
+                                   </th>
+                                </t>   
+                                <th><span>Price</span></th>
+                                <th><span>Quantity</span></th>  
+                            </thead>
+
+                            <tbody class="text-center">
+                                <t t-foreach="product_possible_variants" t-as="product_variant_id">       
+                                    <tr class="p_variants">
+                                        <t t-foreach="product_variant_id.product_template_attribute_value_ids" t-as="attribute_value_id">
+                                            <td t-if="attribute_value_id.display_type == 'radio'">  
+                                                <span t-field="attribute_value_id.name"/>
+                                                <t t-if="attribute_value_id.is_custom">
+                                                    <input type="text" t-att-data-p_attribute_value_id="attribute_value_id.id" t-att-data-p_attribute_value_name="attribute_value_id.name" class="p_variants_cust_val" t-att-name="attribute_value_id.name" style="width:50px;"/>
+                                                </t>
+                                            </td> 
+                                             <td t-if="attribute_value_id.display_type == 'select'">  
+                                                <span t-field="attribute_value_id.name"/>
+                                                <t t-if="attribute_value_id.is_custom">
+                                                    <input type="text" t-att-data-p_attribute_value_id="attribute_value_id.id" t-att-data-p_attribute_value_name="attribute_value_id.name" class="p_variants_cust_val" t-att-name="attribute_value_id.name" style="width:50px;"/>
+                                                </t>
+                                             </td> 
+                                             <td t-if="attribute_value_id.display_type == 'color'">  
+                                                <span t-field="attribute_value_id.name"/>
+                                                <t t-if="attribute_value_id.is_custom">
+                                                    <input type="text" t-att-data-p_attribute_value_id="attribute_value_id.id" t-att-data-p_attribute_value_name="attribute_value_id.name" class="p_variants_cust_val" t-att-name="attribute_value_id.name" style="width:50px;"/>
+                                                </t>
+                                            </td>
+                                        </t> 
+                                        <td><span t-field="product_variant_id.price"/></td>
+                                        <td><input type="text" class="quantity" id="quantity" name="add_quantity" t-att-value="add_quantity" style="width:50px;"/></td>
+                                        <input type="hidden" class="product_variant_ids" id="product_variant_ids" name="product_variant_ids" t-att-value="product_variant_id.id" style="width:50px;"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+                 </center> 
+            </form-->
+        </xpath>
+    </template> 
+    <template id="product_variant_matrix" inherit_id="website_sale.product" priority="15">
+        <xpath expr="//div[@t-field='product.website_description']" position="before">
+            <form><br/>
+                <center>
+                    <div id="product_variant_quantity_error" class="text-center alert alert-danger" style="display:none;width: 300px;">
+                        <span>No product will be selected</span>
+                    </div>
+                     
+                    <t t-if="product.product_variant_count &gt; 1">
+                        <div>
+                            <h4>Select the Quantities You Want to Order</h4>
+                        </div> 
+                        <t t-set="product_possible_variants" t-value="product.get_product_possible_variants()"/>
+                        <table  class="table table-sm table-bordered table-hover" id="p_variants" style="width:700px;">
+                            <thead class="text-center bg-primary" >
+                                <t t-foreach="product.product_variant_id.product_template_attribute_value_ids" t-as="attribute_value_id">     
+                                    <th t-if="attribute_value_id.display_type == 'radio'">
+                                        <span t-field="attribute_value_id.attribute_id.name"></span>
+                                    </th>
+                                        
+                                   <th t-if="attribute_value_id.display_type == 'select'">
+                                        <span t-field="attribute_value_id.attribute_id.name"></span>
+                                   </th>       
+                                   <th t-if="attribute_value_id.display_type == 'color'">
+                                        <span t-field="attribute_value_id.attribute_id.name"></span>
+                                   </th>
+                                </t>   
+                                <th><span>Price</span></th>
+                                <th><span>Quantity</span></th>  
+                            </thead>
+
+                            <tbody class="text-center">
+                                <t t-foreach="product_possible_variants" t-as="product_variant_id">       
+                                    <tr class="p_variants">
+                                        <t t-foreach="product_variant_id.product_template_attribute_value_ids" t-as="attribute_value_id">
+                                            <td t-if="attribute_value_id.display_type == 'radio'">  
+                                                <span t-field="attribute_value_id.name"/>
+                                                <t t-if="attribute_value_id.is_custom">
+                                                    <input type="text" t-att-data-p_attribute_value_id="attribute_value_id.id" t-att-data-p_attribute_value_name="attribute_value_id.name" class="p_variants_cust_val" t-att-name="attribute_value_id.name" style="width:70px;"/>
+                                                </t>
+                                            </td> 
+                                             <td t-if="attribute_value_id.display_type == 'select'">  
+                                                <span t-field="attribute_value_id.name"/>
+                                                <t t-if="attribute_value_id.is_custom">
+                                                    <input type="text" t-att-data-p_attribute_value_id="attribute_value_id.id" t-att-data-p_attribute_value_name="attribute_value_id.name" class="p_variants_cust_val" t-att-name="attribute_value_id.name" style="width:70px;"/>
+                                                </t>
+                                             </td> 
+                                             <td t-if="attribute_value_id.display_type == 'color'">  
+                                                <span t-field="attribute_value_id.name"/>
+                                                <t t-if="attribute_value_id.is_custom">
+                                                    <input type="text" t-att-data-p_attribute_value_id="attribute_value_id.id" t-att-data-p_attribute_value_name="attribute_value_id.name" class="p_variants_cust_val" t-att-name="attribute_value_id.name" style="width:70px;"/>
+                                                </t>
+                                            </td>
+                                        </t> 
+                                        <td><span t-field="product_variant_id.price"/></td>
+                                        <td><input type="text" class="quantity" id="quantity" name="add_quantity" t-att-value="add_quantity" style="width:50px;"/></td>
+                                        <input type="hidden" class="product_variant_ids" id="product_variant_ids" name="product_variant_ids" t-att-value="product_variant_id.id" style="width:50px;"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+                 </center> 
+            </form>    
+        </xpath>
+    </template>
+</odoo>

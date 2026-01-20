@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="user_registration_form_template" name="Get Quote">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <section class="s_title parallax s_parallax_is_fixed bg-black-50 pt24 pb24"
+                         data-vcss="001"
+                         data-snippet="s_title" data-scroll-background-ratio="1">
+                    <span class="s_parallax_bg oe_img_bg"/>
+                    <div class="o_we_bg_filter bg-black-50"/>
+                    <div class="container">
+                        <h1>Get Quick Quote</h1>
+                    </div>
+                </section>
+                <div class="container">
+                    <div class="col-md-10">
+                        <div class="col-md-10">
+                            <form id="quote_form">
+                                <section class="s_text_block pt40 pb40 o_colored_level " data-snippet="s_text_block">
+                                    <div class="s_website_form_rows row s_col_no_bgcolor">
+                                        <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required"
+                                             data-type="char" data-name="Field">
+                                            <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label"
+                                                       style="width: 200px" for="contact1">
+                                                    <span class="s_website_form_label_content">First Name</span>
+                                                    <span class="s_website_form_mark">*</span>
+                                                </label>
+                                                <div class="col-sm">
+                                                    <input id="contact1" type="text"
+                                                           class="form-control s_website_form_input"
+                                                           name="first_name" required=""/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required"
+                                             data-type="char" data-name="Field">
+                                            <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label"
+                                                       style="width: 200px" for="contact2">
+                                                    <span class="s_website_form_label_content">Last Name</span>
+                                                    <span class="s_website_form_mark">*</span>
+                                                </label>
+                                                <div class="col-sm">
+                                                    <input id="contact2" type="text"
+                                                           class="form-control s_website_form_input"
+                                                           name="last_name" required=""/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required"
+                                             data-type="email" data-name="Field">
+                                            <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label"
+                                                       style="width: 200px" for="contact3">
+                                                    <span class="s_website_form_label_content">E-mail</span>
+                                                    <span class="s_website_form_mark">*</span>
+                                                </label>
+                                                <div class="col-sm">
+                                                    <input id="contact3" type="text"
+                                                           class="form-control s_website_form_input"
+                                                           name="email" required=""/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom"
+                                             data-type="char" data-name="Field">
+                                            <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label"
+                                                       style="width: 200px" for="contact4">
+                                                    <span class="s_website_form_label_content">Phone Number
+                                                    </span>
+                                                </label>
+                                                <div class="col-sm">
+                                                    <input id="contact4" type="tel"
+                                                           class="form-control s_website_form_input"
+                                                           name="phone" data-fill-with="phone" required=""/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required"
+                                             data-type="char" data-name="Field">
+                                            <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label"
+                                                       style="width: 200px" for="contact5">
+                                                    <span class="s_website_form_label_content">Street-1</span>
+                                                </label>
+                                                <div class="col-sm">
+                                                    <input id="contact5" type="text"
+                                                           class="form-control s_website_form_input"
+                                                           name="street-1"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required"
+                                             data-type="char" data-name="Field">
+                                            <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label"
+                                                       style="width: 200px" for="contact6">
+                                                    <span class="s_website_form_label_content">Street-2</span>
+                                                </label>
+                                                <div class="col-sm">
+                                                    <input id="contact6" type="text"
+                                                           class="form-control s_website_form_input"
+                                                           name="street-2"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required"
+                                             data-name="Field">
+                                            <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label"
+                                                       style="width: 200px" for="country_id" required="">
+                                                    <span class="s_website_form_label_content">Country</span>
+
+                                                </label>
+                                                <div class="col-sm">
+                                                    <select id="country_id" name="country_id"
+                                                            class="form-control link-style">
+                                                        <t t-foreach="country_id" t-as="country">
+                                                            <option t-att-value="country.id" t-esc="country.name"/>
+                                                        </t>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required"
+                                             data-name="Field">
+                                            <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label"
+                                                       style="width: 200px" for="state_id">
+                                                    <span class="s_website_form_label_content">State</span>
+
+                                                </label>
+                                                <div class="col-sm">
+                                                    <select id="state_id" name="state_id"
+                                                            class="form-control link-style">
+                                                        <t t-foreach="state_id" t-as="state">
+                                                            <option t-att-value="state.id" t-esc="state.name"/>
+                                                        </t>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required"
+                                             data-type="char" data-name="Field">
+                                            <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label"
+                                                       style="width: 200px" for="contact7">
+                                                    <span class="s_website_form_label_content">City</span>
+                                                </label>
+                                                <div class="col-sm">
+                                                    <input id="contact7" type="text"
+                                                           class="form-control s_website_form_input" name="city" required=""/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required"
+                                             data-type="char" data-name="Field">
+                                            <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label"
+                                                       style="width: 200px" for="contact8">
+                                                    <span class="s_website_form_label_content">Zipcode</span>
+
+                                                </label>
+                                                <div class="col-sm">
+                                                    <input id="contact8" type="text"
+                                                           class="form-control s_website_form_input"
+                                                           name="zipcode" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                            <div class="mb-0 py-2 col-12 s_website_form_submit">
+                                                <button type="button" id="add_product_row" class="btn btn-primary">Add
+                                                </button>
+                                            </div>
+                                            <table id="product_table" class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Product</th>
+                                                        <th>Quantity</th>
+                                                        <th>Note</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr id="product_row_template" style="display:none">
+                                                        <td>
+                                                            <select name="product[]"
+                                                                    id="p1"
+                                                                    class="form-control product-dropdown" placeholder="Select a Product..."
+                                                                    style="width:200px;">
+                                                                <option value="">Select a Product...</option>
+                                                                <t t-foreach="product_ids" t-as="product">
+                                                                    <option t-att-value="product.id"
+                                                                            t-esc="product.name"/>
+                                                                </t>
+                                                            </select>
+                                                        </td>
+                                                        <td id="number1">
+                                                            <input type="number" name="quantity[]" class="form-control"/>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="note[]" class="form-control"/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="mb-0 py-2 col-12 s_website_form_submit">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+
+
+                                    </div>
+                                </section>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.js"></script>
+
+
+            <style>
+                .select2 {
+                width:100%!important;
+                height: 34px;
+                }
+                #product_table th, #product_table td {
+                    width: 200px;
+                    text-align: center;
+                }
+
+                .product-dropdown {
+                    width: 100% !important;
+                    height: 34px;  /* Make the height consistent */
+                }
+                #number1 {
+                 margin: 25px 50px 75px 100px;
+                    }
+
+                #product_table input {
+                    width: 100%;
+                     height: 34px;
+                }
+            </style>
+
+            <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("Page Loaded");
+
+        // When Add button is clicked
+        document.getElementById('add_product_row').addEventListener('click', function() {
+            console.log("Add Product Row Button Clicked");
+
+            // Clone the hidden row and append it to the table
+            var newRow = document.getElementById('product_row_template').cloneNode(true);  // Clone the hidden row
+            newRow.removeAttribute('id');  // Remove the id so it's not repeated
+            newRow.style.display = '';  // Make sure the row is visible
+            document.querySelector('#product_table tbody').appendChild(newRow);  // Append the row to the table
+            console.log("New Row Added");
+
+            // Initialize select2 on the new product dropdown
+            var productDropdown = newRow.querySelector('.product-dropdown');
+
+            if (productDropdown) {
+                console.log("Initializing Select2 on new product dropdown...");
+                $(productDropdown).select2({
+                    placeholder: 'Select a product',
+                    allowClear: true,
+                    width: '100%' ,
+                });
+                console.log("Select2 initialized on new product dropdown.");
+            } else {
+                console.log("No product dropdown found in the new row.");
+            }
+        });
+
+        // Form submission logic
+        document.getElementById('quote_form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            console.log("Form Submitted");
+
+            // Validate if all fields in the table are filled
+            var isValid = true;
+            var rows = document.querySelectorAll('#product_table tbody tr');
+
+
+
+            rows.forEach(function(row, index) {
+                if (index === 0) return;  // Skip the 0th row
+
+                var product = row.querySelector('.product-dropdown');
+                var quantity = row.querySelector('input[name="quantity[]"]');
+                var note = row.querySelector('input[name="note[]"]');
+
+                console.log("----------------------");
+            console.log("Row Index: " + index);
+
+            // Log the actual DOM elements for debugging
+            console.log("Product Dropdown: ", product);
+            console.log("Quantity Input: ", quantity);
+            console.log("Note Input: ", note);
+
+            var productName = product.querySelector('.select2-chosen');  // Find the span with the selected product name
+            var productValue = productName ? productName.textContent : '';  // Get the text content of the selected product
+            console.log("Product Value (from select2): ", productValue);
+
+            console.log("Quantity Value: ", quantity.value);
+            console.log("Note Value: ", note.value);
+
+            // Check if any of the fields in this row are empty
+            if (!productValue || !quantity.value || !note.value) {
+                isValid = false;
+                console.log("Validation failed for this row.");
+            }
+
+            console.log("Is Valid for this row? ", isValid);
+            console.log("-----------------------");
+        });
+
+        // If any row fails validation, alert and stop form submission
+        if (!isValid) {
+            alert("Please fill out all fields (Product, Quantity, and Note) in the required rows.");
+            return;  // Prevent form submission
+        }
+            // Collect form data
+            var formData = new FormData(this);
+            var formDataObject = {};
+
+            // Iterate over each key in the FormData object and structure it properly
+            formData.forEach((value, key) => {
+                // If the key already exists in formDataObject, push the value into an array
+                if (formDataObject[key]) {
+                    formDataObject[key] = [].concat(formDataObject[key], value);
+                } else {
+                    formDataObject[key] = value;
+                }
+            });
+
+            console.log("Serialized form data:", formDataObject);
+
+            // Send data to the server
+            fetch("/user/get_quote_form/submit", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json', // Send data as JSON
+                },
+                body: JSON.stringify(formDataObject), // Send the data as a JSON string
+            })
+            .then(function(response) {
+                return response.json();  // Assuming the response is in JSON format
+            })
+            .then(function(response) {
+                console.log("Form Submission Success:", response);
+                window.location.href = '/quote/success'; // Redirect to success page
+            })
+            .catch(function(error) {
+                console.log("Form Submission Error:", error);
+                alert('Error submitting quote');
+            });
+        });
+    });
+</script>
+
+
+        </t>
+    </template>
+
+    <template id="user_registration_form_success_template" name="User Registration Form Successfully Submitted">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_text_block pt40 pb40 o_colored_level " data-snippet="s_text_block">
+                    <div class="container s_allow_columns">
+                        <div class="row">
+                            <div class="col-lg-7 col-xl-6 me-lg-auto">
+                                <span class="d-block fa fa-4x fa-thumbs-up mx-auto rounded-circle bg-primary"/>
+                                <br/>
+                                <h1 class="text-center">Thank You!</h1>
+                                <div class="pb16 pt16 s_hr" data-snippet="s_hr" data-name="Separator">
+                                    <hr class="mx-auto border-top w-50 border-dark text-center"/>
+                                </div>
+                                <h5 class="text-center">
+                                    <span class="fa fa-check-circle"/>
+                                    <span>Your response store
+                                        <b>successfully</b>
+                                    </span>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+</odoo>

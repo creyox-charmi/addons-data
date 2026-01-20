@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Tree view of Migration -->
+    <record id="view_tree_migration" model="ir.ui.view">
+        <field name="name">cr.migration.tree</field>
+        <field name="model">cr.migration</field>
+        <field name="arch" type="xml">
+            <tree editable='bottom' js_class="cr_migration_button">
+                <field name="name_id"/>
+                <field name="version_id"/>
+                <field name="assignee_ids" widget='many2many_avatar_employee'/>
+                <field name="stage_id"/>
+                <field name="remarks"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for Migration-->
+    <record id="action_migration" model="ir.actions.act_window">
+        <field name="name">Migration</field>
+        <field name="res_model">cr.migration</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <!-- Add Migration to the menu -->
+    <menuitem id="menu_migration"
+              name="Odoo Apps"
+              action="action_migration"
+              sequence="20"/>
+
+    <menuitem id="menu_migration_child"
+              name="Migration"
+              parent="menu_migration"
+              action="action_migration"
+              sequence="21"/>
+</odoo>

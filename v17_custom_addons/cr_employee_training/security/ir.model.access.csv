@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cr_employee,access_cr_employee,model_cr_employee,,1,1,1,1
+access_cr_training_session,access_cr_training_session,model_cr_training_session,,1,1,1,1
+access_cr_employee_training_record,access_cr_employee_training_record,model_cr_employee_training_record,,1,1,1,1
+access_cr_employeeWizard,access_cr_employeeWizard,model_cr_employee_wizard,,1,1,1,1

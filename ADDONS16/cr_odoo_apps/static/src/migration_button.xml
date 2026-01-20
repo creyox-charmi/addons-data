@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="Migration.Buttons"  t-inherit="web.ListView.Buttons" t-inherit-mode="primary" owl="1">
+        <xpath expr="(//div/*)[last()]" position="after">
+            <button type="button" class="btn btn-primary" t-on-click="onClickMigrationOnVersion" style="margin-left:10px;">
+                Migrate on Version
+            </button>
+            </xpath>
+    </t>
+</templates>

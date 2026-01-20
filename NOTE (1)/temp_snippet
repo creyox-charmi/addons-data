@@ -1,0 +1,61 @@
+<!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--<odoo>-->
+<!--    <template id="case_study_detail" name="Case Study Detail">-->
+<!--        <div class="container my-5">-->
+<!--            &lt;!&ndash; Case Study Title and Banner &ndash;&gt;-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-12 text-center">-->
+<!--                    <h1 t-esc="case_study.case_study_title" class="display-4 mb-4"/>-->
+<!--                    <img t-att-src="'data:' + case_study_banner_mimetype + ';base64,' + case_study.case_study_banner.decode('utf-8')" alt="Case Study Banner" class="img-fluid rounded shadow"/>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Case Study Summary Section &ndash;&gt;-->
+<!--            <div class="row my-5">-->
+<!--                <div class="col-md-6">-->
+<!--                    <h3 class="text-primary mb-3">Summary</h3>-->
+<!--                    <p class="lead" t-esc="case_study.case_study_summary"/>-->
+<!--                </div>-->
+<!--                <div class="col-md-6">-->
+<!--                    <img t-att-src="'data:' + case_study_banner_mimetype + ';base64,' + case_study.case_study_banner.decode('utf-8')" alt="Summary Image" class="img-fluid rounded shadow"/>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Client Challenges Section &ndash;&gt;-->
+<!--            <div class="row my-5">-->
+<!--                <div class="col-md-6">-->
+<!--                    <img t-att-src="'data:' + client_challenges_img_mimetype + ';base64,' + case_study.client_challenges_img.decode('utf-8')" alt="Client Challenges Image" class="img-fluid rounded shadow"/>-->
+<!--                </div>-->
+<!--                 <div class="col-md-6">-->
+<!--                    <h3 class="text-danger mb-3">Client Challenges</h3>-->
+<!--                    <p t-esc="case_study.client_challenges"/>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Solution Section &ndash;&gt;-->
+<!--            <div class="row my-5">-->
+<!--                <div class="col-md-6">-->
+<!--                    <h3 class="text-success mb-3">Solution</h3>-->
+<!--                    <p t-esc="case_study.solution"/>-->
+<!--                </div>-->
+<!--                <div class="col-md-6">-->
+<!--                    <img t-att-src="'data:' + solution_img_mimetype + ';base64,' + case_study.solution_img.decode('utf-8')" alt="Solution Image" class="img-fluid rounded shadow"/>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Impact Section &ndash;&gt;-->
+<!--            <div class="row">-->
+<!--                 <div class="col">-->
+<!--                    <img t-att-src="'data:' + impact_img_mimetype + ';base64,' + case_study.impact_img.decode('utf-8')" alt="Impact Image" class="img-fluid rounded shadow"/>-->
+<!--                </div>-->
+<!--                <div class="col">-->
+<!--                    <h3 class="text-warning mb-3">Impact</h3>-->
+<!--                    <p t-esc="case_study.impact"/>-->
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+<!--    </template>-->
+
+<!--</odoo>-->

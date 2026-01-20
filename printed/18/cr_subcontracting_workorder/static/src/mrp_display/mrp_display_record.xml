@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t name="cr_subcontracting_workorder.inherit_mrp_display_recoord" t-inherit="mrp_workorder.MrpDisplayWorkorderHeader" t-inherit-mode="extension">
+        <xpath expr="//i" position="replace">
+            <t t-if="this.props.record.data.is_subcontract_wo">
+                <t t-if="this.props.record.data.state == 'ready'">
+                    <button t-attf-class="btn btn-success"
+                        t-on-click="onClickSubcontractingButton">Subcontract Order</button>
+                </t>
+
+            </t>
+            <t t-else="">
+                <i class="fa" t-att-class="this.active ? 'fa-pause' : 'fa-play'"></i>
+            </t>
+        </xpath>
+    </t>
+
+
+        <t name="cr_subcontracting_workorder.inherit_MrpDisplayWorkorderFooter" t-inherit="mrp_workorder.MrpDisplayWorkorderFooter" t-inherit-mode="extension">
+        </t>
+</templates>

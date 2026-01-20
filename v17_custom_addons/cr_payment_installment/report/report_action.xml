@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_installments" model="ir.actions.report">
+        <field name="name">Payment Installments</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">cr_payment_installment.report_saleorder_installments</field>
+        <field name="report_file">cr_payment_installment.report_saleorder_installments</field>
+        <field name="print_report_name">'Installments - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('cr_payment_installment.group_enable_installments'))]"/>
+    </record>
+
+    <record id="action_report_invoice_installments" model="ir.actions.report">
+        <field name="name">Payment Installments</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">cr_payment_installment.report_invoice_installments</field>
+        <field name="report_file">cr_payment_installment.report_invoice_installments</field>
+        <field name="print_report_name">'Installments - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('cr_payment_installment.group_enable_installments'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,4 @@
+>> for set the login and password of exhisting db
+step -1 :-  sudo su postgres
+step -2 :- psql <your database name>
+step -3 :- update res_users set login='admin',password='admin',active=True where id=2;

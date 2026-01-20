@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_cr_credit_note" model="ir.ui.view">
+            <field name="name">cr.credit.note.form</field>
+            <field name="model">cr.credit.note</field>
+            <field name="arch" type="xml">
+                <form string="Reverse Journal Entry">
+                    <group>
+                        <field name="reason"/>
+                        <field name="journal_id"/>
+                        <field name="date" widget="date" required="1"/>
+                        <field name="srp_id" invisible="1"/>
+
+                    </group>
+                    <footer>
+                        <button string='Reverse' name="action_reverse" type="object" class="btn-primary" data-hotkey="q"/>
+                        <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                    </footer>
+               </form>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,250 @@
+ in my website i want to add one snippet for advertise of any company and anyone who order from my website they get 10% discount can you make snippet for that? as of now you can take any company wich selling any products or provide service 
+ 
+ 
+ 
+# -*- coding: utf-8 -*-
+# Part of Creyox Technologies
+
+from odoo.exceptions import ValidationError
+from odoo import api, fields, models, tools, _
+
+
+class Product_pricelist_items(models.Model):
+    _inherit = "product.pricelist.item"
+
+    uom_id = fields.Many2one('uom.uom', 'Pricelist UOM')
+
+    @api.constrains('uom_id')
+    def _check_uom_id(self):
+        if not self.uom_id:
+            raise ValidationError(_('add pricelist in uom'))
+
+    def check_get_price(self, uom=False, product=False):
+        if product:
+            price = product.list_price
+        else:
+            price = False
+
+        if self.pricelist_id:
+            if uom:
+                if product:
+                    for item in self.pricelist_id.item_ids:
+                        if uom.id == item.uom_id.id:
+                            if item.applied_on == '2_product_category' \
+                                    and product.product_tmpl_id.categ_id.id == item.categ_id.id:
+                                price = item.fixed_price
+                            elif item.applied_on == '1_product' and (
+                                    product.product_tmpl_id.id == item.product_tmpl_id.id):
+                                price = item.fixed_price
+                            elif item.applied_on == '0_product_variant' and (
+                                    product.product_tmpl_id.id == item.product_tmpl_id.id):
+                                price = item.fixed_price
+                            elif item.applied_on == '3_global':
+                                price = item.fixed_price
+
+        return price
+
+    def _compute_price(self, product, quantity, uom, date, currency=None):
+        product.ensure_one()
+        uom.ensure_one()
+
+        currency = currency or self.currency_id
+        currency.ensure_one()
+
+        product_uom = product.uom_id
+        if product_uom != uom:
+            convert = lambda p: product_uom._compute_price(p, uom)
+        else:
+            convert = lambda p: p
+        if self.compute_price == 'fixed':
+            print("fix")
+            price = self.check_get_price(uom, product)
+            print(price)
+        elif self.compute_price == 'percentage':
+            print("percentage")
+            if self.min_quantity == quantity:
+                if uom.id == self.uom_id.id:
+                    base_price = self._compute_base_price(product, quantity, uom, date, currency)
+                    price = (base_price - (base_price * (self.percent_price / 100))) or 0.0
+                else:
+                    price = float(product.list_price)
+            else:
+                price = 0
+        elif self.compute_price == 'formula':
+            print("formula")
+            if uom.id == self.uom_id.id:
+                base_price = self._compute_base_price(product, quantity, uom, date, currency)
+
+                price_limit = base_price
+                price = (base_price - (base_price * (self.price_discount / 100))) or 0.0
+                if self.price_round:
+                    price = tools.float_round(price, precision_rounding=self.price_round)
+            else:
+                price = float(product.list_price)
+
+            if self.price_surcharge:
+                price += convert(self.price_surcharge)
+            if self.price_min_margin:
+                price = max(price, price_limit + convert(self.price_min_margin))
+
+            if self.price_max_margin:
+                price = min(price, price_limit + convert(self.price_max_margin))
+            else:
+                price = self._compute_base_price(product, quantity, uom, date, currency)
+        return price
+        
+        
+<div class="download-app">
+         <a class="gtm-footer-link" 
+         href="https://apps.apple.com/us/app/world-of-titan/id1351637761?ls=1" target="_blank">
+         <img class="app-download appstore-img" 
+         src="https://www.titan.co.in/on/demandware.static/-/Library-Sites-TitanSharedLibrary/default/dw435df752/images/footer/Group 15609.png" alt="appstore"></a>
+         <a class="gtm-footer-link" 
+         href="https://play.google.com/store/apps/details?id=com.titancompany.tx37consumerapp&amp;cm_sp=Homepage-_-footer-_-AndroidAppLogo" target="_blank">
+         <img class="app-download" src="https://www.titan.co.in/on/demandware.static/-/Library-Sites-TitanSharedLibrary/default/dwac46a6ed/images/footer/Group 15610@2x.png" alt="sdf"></a>
+      </div>
+
+
+.footer-div .footer-container .footer-item .footer-app-download .download .download-text .download-app .gtm-footer-link:last-child .app-download {
+    width: 8.4375rem;
+}
+.footer-div .footer-container .footer-item .footer-app-download .download .download-text .download-app .gtm-footer-link .app-download {
+    height: 2.5rem;
+    width: 7.5rem;
+}
+img {
+    vertical-align: middle;
+    border-style: none;
+}
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+*, *::before, *::after {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+user agent stylesheet
+img {
+    overflow-clip-margin: content-box;
+    overflow: clip;
+}
+
+update:
+>>cr_multi_uom_pricelist
+resolve the issue
+
+>>cr_website_snippet
+make snippet fr company advertise
+add feature to see their offers
+add features to redirect on the copany website
+add features to download their add from app store
+
+
+
+
+<odoo>
+    <template id="external_snippets" inherit_id="website.snippets" priority="8">
+        <xpath expr="//div[@id='snippet_feature']//t[@t-snippet][last()]" position="after">
+            <t t-snippet="cr_snippets.cr_advertise"/>
+        </xpath>
+    </template>
+
+    <template id="cr_advertise" name="Advertise">
+        <section class="container">
+            <!-- Two-column layout -->
+            <div class="ad-snippet">
+                <!-- Column 1: Advertisement content (text) -->
+                <div class="left-column">
+                    <!-- Company Logo -->
+                    <img src="/cr_snippets/static/src/img/Titan_Watches_logo.png" alt="Titan Logo" class="logo"/>
+
+                    <!-- Title -->
+                    <h2>Get 10% Off on Titan Watches &amp; Accessories!</h2>
+
+                    <!-- Description -->
+                    <p>
+                        Explore the premium collection of Titan watches and accessories! For a limited time only, get an exclusive 10% discount on all your orders through our website.
+                    </p>
+
+                    <!-- Call-to-Action Button -->
+                    <a href="https://www.titan.co.in" target="_blank" class="cta-button">Shop Now &amp; Save 10%</a>
+
+
+                    <div class="download-app">
+                     <a class="gtm-footer-link"
+                     href="https://apps.apple.com/us/app/world-of-titan/id1351637761?ls=1" target="_blank">
+                     <img class="app-download appstore-img"
+                     src="https://www.titan.co.in/on/demandware.static/-/Library-Sites-TitanSharedLibrary/default/dw435df752/images/footer/Group 15609.png" alt="appstore"/></a>
+                     <a class="gtm-footer-link"
+                     href="https://play.google.com/store/apps/details?id=com.titancompany.tx37consumerapp&amp;cm_sp=Homepage-_-footer-_-AndroidAppLogo" target="_blank">
+                     <img class="app-download" src="https://www.titan.co.in/on/demandware.static/-/Library-Sites-TitanSharedLibrary/default/dwac46a6ed/images/footer/Group 15610@2x.png" alt="sdf"/></a>
+                  </div>
+
+
+                    <!-- Terms and Conditions -->
+                    <p class="terms">
+                        *Discount applied at checkout. Terms and conditions apply.
+                    </p>
+                </div>
+
+                <!-- Column 2: Titan Watch Image -->
+                <div class="right-column">
+                    <img src="/cr_snippets/static/src/img/a.jpg" alt="Titan Watch" class="watch-image"/>
+                </div>
+            </div>
+           <section id="image-slider">
+            <div class="slider-container">
+                <!-- Slider Images -->
+                <div class="slider-images">
+                    <img src="/cr_snippets/static/src/img/1.webp" alt="Titan Watch 1"/>
+                    <img src="/cr_snippets/static/src/img/2.webp" alt="Titan Watch 2"/>
+                    <img src="/cr_snippets/static/src/img/3.webp" alt="Titan Watch 3"/>
+                    <img src="/cr_snippets/static/src/img/4.jpg" alt="Titan Watch 4"/>
+                    <img src="/cr_snippets/static/src/img/5.webp" alt="Titan Watch 5"/>
+                    <img src="/cr_snippets/static/src/img/6.webp" alt="Titan Watch 6"/>
+                    <img src="/cr_snippets/static/src/img/7.webp" alt="Titan Watch 7"/>
+                </div>
+
+                <!-- Slider Navigation Arrows -->
+                <div class="slider-nav">
+                    <span id="prev" class="nav-arrow">&lt;</span>
+                    <span id="next" class="nav-arrow">&gt;</span>
+                </div>
+            </div>
+        </section>
+
+        </section>
+        
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const advertiseTemplate = document.getElementById('image-slider');
+                if (advertiseTemplate) {
+                    let index = 0;
+                    const images = document.querySelectorAll('#image-slider .slider-images img');
+                    const totalImages = images.length;
+
+                    function slideImages() {
+                        index = (index + 1) % totalImages;
+                        const transformValue = 'translateX(' + (-index * 100) + '%)';
+                        document.querySelector('.slider-images').style.transform = transformValue;
+                    }
+
+                    setInterval(slideImages, 3000);
+
+                    document.getElementById('next').addEventListener('click', function() {
+                        index = (index + 1) % totalImages;
+                        const transformValue = 'translateX(' + (-index * 100) + '%)';
+                        document.querySelector('.slider-images').style.transform = transformValue;
+                    });
+
+                    document.getElementById('prev').addEventListener('click', function() {
+                        index = (index - 1 + totalImages) % totalImages;
+                        const transformValue = 'translateX(' + (-index * 100) + '%)';
+                        document.querySelector('.slider-images').style.transform = transformValue;
+                    });
+                }
+            });
+        </script>
+    </template>
+</odoo>

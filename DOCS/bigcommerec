@@ -1,0 +1,50 @@
+https://api.bigcommerce.com/stores/qmhmb2ogcl/v3/
+
+
+client id:
+2agk9r437ata747qy7kghwe7fa41s8o
+
+client secret:
+c08c9becd6b8fe5a91c2f4576a1b5a94d73283e16d9c932f4fcccb0686c50a2e
+
+Access token:
+rxn8qhi3jhsqynopr2zirs3as66fav7
+
+https://api.bigcommerce.com/stores/qmhmb2ogcl/v3/catalog/trees/categories
+https://api.bigcommerce.com/stores/qmhmb2ogcl/v3/catalog/products
+https://api.bigcommerce.com/stores/{store_hash}/v3/customers/addresses
+https://api.bigcommerce.com/stores/qmhmb2ogcl/v3/customers/addresses
+https://api.bigcommerce.com/stores/qmhmb2ogcl/v3/customers
+
+ https://api.bigcommerce.com/stores/{store_hash}/v3/catalog/products/{product_id}/images
+ https://api.bigcommerce.com/stores/qmhmb2ogcl/v3/catalog/products/93/images
+ https://api.bigcommerce.com/stores/qmhmb2ogcl/v3/pricing/products
+ https://api.bigcommerce.com/stores/qmhmb2ogcl/v3/pricelists
+
+
+
+
+postman:
+charmimandli216@gmail.com
+CHarmi@2003
+
+
+
+
+Get Store Information
+update:
+>>cr_bigcommerce_odoo_integration
+test the api response in postman 
+import store
+Import customer
+Sync customer address and personal detail with store
+Import order in bulk
+Import order status
+Import brands
+Import product
+Import product with product variant
+Import product price 
+Import product images
+Import product categories
+make model and views for bigcommerce order status and bigcommerce brand
+added some fields in sale.order , product.template , product.product ,res.partner

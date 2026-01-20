@@ -1,0 +1,47 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'Dynamic User Notification on Record Creation or State Change | All in One User Notification | Notify Users | Real Time Notification',
+    'description': """
+        Nofication,
+        User Wise Notification,
+        Record Creation Notification,
+        Record Update Notification,
+        State change Notification,
+        Bus Notification,
+        Notification on Record Creation,
+        Notification on State Change,
+        Notification on Record Update,
+        Notification Based on User,
+        Notification in Odoo,
+        Odoo Notification,
+        All in One Notification,
+        Dynamic Notification in Odoo,
+        Dynamic User Notification on Record Creation or State Change,
+        All in One User Notification,
+        Real Time Notification,
+        Notify Users,
+    """,
+    'summary': 'User can get notification on record creation or update the state of record',
+    'version': '17.0',
+    "license": "OPL-1",
+    'price': '88.0',
+    'currency': 'USD',
+    "category": "Extra Tools",
+    'author': 'Creyox Technologies',
+    'website': 'https://creyox.com',
+    'uninstall_hook': '_user_notify_uninstall_hook',
+    'depends': ['web', 'bus', 'base', 'mail', 'base_automation'],
+    'assets': {
+        'web.assets_backend': [
+            'cr_dynamic_user_notification/static/src/js/services/*.js',
+        ]
+    },
+    'data': [
+        'security/ir.model.access.csv',
+        'views/notification_config.xml',
+    ],
+    'images': ['static/description/banner.png'],
+    'installable': True,
+    'auto_install': False,
+    'application': True,
+}

@@ -1,0 +1,153 @@
+    @http.route([
+        '/blog',
+        '/blog/page/<int:page>',
+        '/blog/tag/<string:tag>',
+        '/blog/tag/<string:tag>/page/<int:page>',
+        '/blog/category/<string:category>',
+        '/blog/category/<string:category>/page/<int:page>',
+        '/blog/category/<string:category>/tag/<string:tag>',
+        '/blog/category/<string:category>/tag/<string:tag>/page/<int:page>',
+        '''/blog/<model("blog.blog"):blog>''',
+        '''/blog/<model("blog.blog"):blog>/page/<int:page>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
+        '''/blog/<model("blog.blog"):blog>/category/<string:category>''',
+        '''/blog/<model("blog.blog"):blog>/category/<string:category>/page/<int:page>''',
+        '''/blog/<model("blog.blog"):blog>/category/<string:category>/tag/<string:tag>''',
+        '''/blog/<model("blog.blog"):blog>/category/<string:category>/tag/<string:tag>/page/<int:page>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/category/<string:category>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/category/<string:category>/page/<int:page>''',
+    ], type='http', auth="public", website=True, sitemap=True)
+    def blog(self, blog=None, tag=None, page=1, search=None, category=None, **opt):
+        print('yes')
+        Blog = request.env['blog.blog']
+        blogs = tools.lazy(lambda: Blog.search(request.website.website_domain(), order="create_date asc, id asc"))
+
+        if not blog and len(blogs) == 1:
+            url = QueryURL('/blog/%s' % slug(blogs[0]), search=search, **opt)()
+            return request.redirect(url, code=302)
+
+        date_begin, date_end, state = opt.get('date_begin'), opt.get('date_end'), opt.get('state')
+
+        community_blog = request.env['blog.blog'].sudo().search([('name', 'ilike', 'comunidad')], limit=1)
+        is_community_blog = blog and community_blog and blog.id == community_blog.id
+        is_not_all_blog_page = True
+
+        if not blog:
+            is_not_all_blog_page = False
+
+        if not blog:
+            return super(PortalBlogCategoryFilter, self).blog(blog=blog, tag=tag, page=page, search=search, **opt)
+
+        values = self._prepare_blog_values(blogs=blogs, blog=blog, date_begin=date_begin, date_end=date_end, tags=tag,
+                                           state=state, page=page, search=search)
+
+        if isinstance(values, werkzeug.wrappers.Response):
+            return values
+
+        if blog:
+            values['main_object'] = blog
+
+        search_categories = self._parse_category_slugs(category)
+        search_tags = self._parse_tag_slugs(tag)
+
+        blog_post_env = request.env['blog.post'].sudo()
+
+        domain = [('blog_id', '=', blog.id)]
+
+        if search_categories:
+            domain.append(('tag_ids.category_id', 'in', search_categories.ids))
+
+        if search_tags:
+            domain.append(('tag_ids', 'in', search_tags.ids))
+
+        search_categories = self._parse_category_slugs(category)
+        search_tags = self._parse_tag_slugs(tag)
+
+        blog_post_env = request.env['blog.post'].sudo()
+        cr_tags = []
+        if search_tags:
+            tag_param = tag if tag else ''
+            tag_ids_ordered = [int(tid) for tid in tag_param.split(',') if tid.isdigit()]
+
+            category_order = []
+            seen_categories = set()
+
+            for tag_id in tag_ids_ordered:
+                tag_obj = request.env['blog.tag'].sudo().browse(tag_id)
+                if tag_obj.exists() and tag_obj.category_id:
+                    cat_id = tag_obj.category_id.id
+                    if cat_id not in seen_categories:
+                        category_order.append(cat_id)
+                        seen_categories.add(cat_id)
+
+            ordered_posts = request.env['blog.post'].sudo()
+            seen_post_ids = set()
+
+            for cat_id in category_order:
+                category_tag_ids = [tid for tid in tag_ids_ordered
+                                    if request.env['blog.tag'].sudo().browse(tid).category_id.id == cat_id]
+
+                if category_tag_ids:
+                    category_domain = [
+                        ('blog_id', '=', blog.id),
+                        ('tag_ids', 'in', category_tag_ids),('is_published','=',True)
+                    ]
+
+                    category_posts = blog_post_env.search(category_domain)
+
+                    for post in category_posts:
+                        if post.id not in seen_post_ids:
+                            ordered_posts |= post
+                            seen_post_ids.add(post.id)
+
+            filtered_posts = ordered_posts
+        else:
+            for data in blog.tag_category_ids:
+                tags = request.env['blog.tag'].search([('category_id', '=', data.id)])
+                for x in tags:
+                    if x.id not in cr_tags:
+                        cr_tags.append(x.id)
+
+            filtered_posts = blog_post_env.search([('blog_id', '=', blog.id), ('tag_ids', 'in', cr_tags),('is_published','=',True)])
+
+        values = self._prepare_blog_values(
+            blogs=blogs, blog=blog,
+            date_begin=date_begin, date_end=date_end,
+            tags=tag,
+            state=state, page=page, search=search
+        )
+
+        if isinstance(values, werkzeug.wrappers.Response):
+            return values
+
+        values['posts'] = filtered_posts
+
+        if search_categories:
+            available_tags = request.env['blog.tag'].sudo().search([
+                ('category_id', 'in', search_categories.ids)
+            ])
+        else:
+            available_tags = request.env['blog.tag']
+
+        tag_categories = blog.tag_category_ids
+        blog_url_base = '/blog/%s' % slug(blog)
+
+        values.update({
+            'blog_url': QueryURL(blog_url_base, ['tag', 'category'], blog=blog, tag=tag, category=category,
+                                 date_begin=date_begin, date_end=date_end, search=search),
+            'is_community_blog': True,
+            'is_not_all_blog_page': is_not_all_blog_page,
+            'tag_categories': tag_categories,
+            'search_categories': search_categories,
+            'search_tags': search_tags,
+            'available_tags': available_tags,
+            'slugify_categories': self._slugify_categories,
+            'slugify_tags': self._slugify_tags,
+            'slugify_tags_for_categories': self._slugify_tags_for_categories,
+            'blog_query_url': lambda **kw: QueryURL(blog_url_base, ['tag', 'category'], **kw),
+        })
+
+
+        print('values: ',values)
+        return request.render("website_blog.blog_post_short", values)

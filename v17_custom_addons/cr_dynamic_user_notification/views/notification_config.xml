@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="notification_config_tree_view" model="ir.ui.view">
+        <field name="name">notification.config.tree.view</field>
+        <field name="model">notification.config</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="model_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="notification_type"/>
+                <field name="on_create"/>
+                <field name="on_state_change"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="notification_config_form_view" model="ir.ui.view">
+        <field name="name">notification.config.form.view</field>
+        <field name="model">notification.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                    <button name="action_confirm" class="oe_highlight"
+                            invisible="state == 'confirmed'" string="Confirm" type="object"/>
+                    <button name="reset_to_draft" invisible="state == 'draft'"
+                            string="Reset To Draft" type="object"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Title..." required="1" readonly="state == 'confirmed'"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="model_id" required="1" options="{'no_create': True, 'no_create_edit':True}" readonly="state == 'confirmed'"/>
+                            <field name="on_create" readonly="state == 'confirmed'"/>
+                            <field name="is_sticky" readonly="state == 'confirmed'"/>
+                            <field name="notify_user_ids"  options="{'no_create': True, 'no_create_edit':True}"
+                                   domain="[('share', '=', False)]" widget="many2many_tags" readonly="state == 'confirmed'"/>
+                        </group>
+                        <group>
+                            <field name="notification_type" required="1" readonly="state == 'confirmed'"/>
+                            <field name="on_state_change" readonly="state == 'confirmed'"/>
+                            <field name="field_id" options="{'no_create': True, 'no_create_edit':True}"
+                                   domain="[('model_id', '=', model_id), ('ttype', 'in', ('selection','many2one')), ('related', '=', False)]"
+                                   invisible="on_state_change == False" required="on_state_change == True" readonly="state == 'confirmed'"/>
+                            <field name="state_ids" widget="many2many_tags" domain="[('field_id', '=', field_id)]"
+                                   options="{'no_create': True, 'no_create_edit':True}"
+                                   invisible="on_state_change == False" required="on_state_change == True" readonly="state == 'confirmed'"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_notification_config" model="ir.actions.act_window">
+        <field name="name">User Notify Configuration</field>
+        <field name="res_model">notification.config</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_notification_config"
+              action="action_notification_config"
+              parent="mail.mail_menu_technical"
+              name="User Notify Configuration"
+              sequence="111"/>
+</odoo>

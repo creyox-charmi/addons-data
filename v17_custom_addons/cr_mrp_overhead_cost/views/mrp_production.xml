@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_mrp_production_form" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+             <xpath expr="//page[@name='components']/field[@name='move_raw_ids']" position='after'>
+                  <div class="row mb-2">
+                        <div class="col-auto col-12">
+                            <div style="border-bottom: 1px solid #454;">
+                                <strong>OVERHEAD COSTS</strong>
+                            </div>
+                        </div>
+                  </div>
+                    <field name="cr_overhead_data_ids">
+                        <tree editable="bottom">
+                            <field name="overhead_master_id"/>
+                            <field name="cost"/>
+                            <field name="subtotal"/>
+                        </tree>
+                    </field>
+	         </xpath>
+        </field>
+    </record>
+</odoo>

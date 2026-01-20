@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="custom_posts_loop" inherit_id="website_blog.posts_loop">
+        <xpath expr="//t[@t-foreach='posts']" position="replace">
+            <t t-if="is_latest_post">
+                <div class="cr-section-header">
+                    <div class="cr-section-header-link-div">
+                        <h2 class="cr-section-header-link">
+                            <a t-attf-href="/cr/blog/tag/Latest">
+                                <p>Latest</p>
+                            </a>
+                        </h2>
+                    </div>
+                    <div class="cr-section-link">
+                        <a href="/cr/blog/tag/Latest">View All</a>
+                    </div>
+                </div>
+
+                <t t-foreach="posts[:no_of_record_display][::-1]" t-as="blog_post">
+                    <div t-attf-class="pb-4 col-12 #{colWidth}"
+                         t-cache="blog_post,opt_blog_list_view,opt_blog_readable,active_tag_ids">
+                        <article
+                                t-attf-class="o_wblog_post position-relative #{'card h-100' if opt_blog_cards_design else ''}"
+                                name="blog_post">
+                            <!-- List-View Design -->
+                            <t t-if="opt_blog_list_view">
+                                <h2>NO</h2>
+                            </t>
+                            <t t-if="not opt_blog_list_view" id="cr_main_block">
+                                <div class="cr_blocks">
+                                    <t t-if="opt_posts_loop_show_cover" t-call="website_blog.post_cover_image"/>
+                                    <div t-attf-class="o_wblog_normalize_font #{'card-footer px-2 pb-2' if opt_blog_cards_design else 'pe-2 pb-2'}">
+                                        <t t-call="website_blog.post_info"/>
+                                    </div>
+                                </div>
+                            </t>
+                        </article>
+                    </div>
+
+                </t>
+            </t>
+
+
+            <t t-foreach="tag_list" t-as="tag">
+                <div class="cr-section-header">
+                    <div class="cr-section-header-link-div">
+                        <h2 class="cr-section-header-link">
+                            <a t-attf-href="/cr/blog/tag/#{slug(tag)}">
+                                <t t-esc="tag.name"/>
+                            </a>
+                        </h2>
+                    </div>
+                    <div class="cr-section-link">
+                        <a href="/cr/blog/tag/#{slug(tag)}">View All</a>
+                    </div>
+                </div>
+
+
+                <t t-foreach="tag.post_ids[:no_of_record_display][::-1]" t-as="blog_post">
+                    <t t-foreach="posts" t-as="tp">
+                        <t t-if="tp.name == blog_post.name">
+                            <div t-attf-class="pb-4 col-12 #{colWidth}"
+                                 t-cache="blog_post,opt_blog_list_view,opt_blog_readable,active_tag_ids">
+                                <article
+                                        t-attf-class="o_wblog_post position-relative #{'card h-100' if opt_blog_cards_design else ''}"
+                                        name="blog_post">
+                                    <!-- List-View Design -->
+                                    <t t-if="opt_blog_list_view">
+                                        <h2>NO</h2>
+                                    </t>
+                                    <t t-if="not opt_blog_list_view" id="main_block">
+                                        <div class="cr_blocks">
+                                            <t t-if="opt_posts_loop_show_cover" t-call="website_blog.post_cover_image"/>
+                                            <div t-attf-class="o_wblog_normalize_font #{'card-footer px-2 pb-2' if opt_blog_cards_design else 'pe-2 pb-2'}">
+                                                <t t-call="website_blog.post_info"/>
+                                            </div>
+                                        </div>
+
+                                    </t>
+                                </article>
+                            </div>
+                        </t>
+                    </t>
+                </t>
+
+            </t>
+        </xpath>
+    </template>
+
+
+    <template id="post_info_without_stats" name="Post Info Without Stats" inherit_id="website_blog.post_info">
+        <xpath expr="//time[@t-field='blog_post.post_date']" position="attributes">
+            <attribute name="style">font-size: 1.2rem;</attribute>
+            <attribute name="class">text-nowrap px-2</attribute>
+        </xpath>
+        <xpath expr="//time" position="before">
+            <div id="blog_author_name">
+                <span t-field="blog_post.author_id.name" id="author_name" class="text-nowrap px-2 name"/>
+            </div>
+        </xpath>
+        <xpath expr="//b[@t-if='posts_list_show_parent_blog']" position="replace">
+        </xpath>
+    </template>
+
+
+    <template id="post_cover_image_with_bg_color" name="Post Cover Image with Background Color"
+              inherit_id="website_blog.post_cover_image">
+        <xpath expr="//a" position="replace">
+
+            <a t-attf-href="/blog/#{slug(blog_post.blog_id)}/#{slug(blog_post)}"
+               t-attf-class="text-decoration-none d-block #{classes or 'mb-2'}"
+               t-att-style="not blog_post.website_published and 'opacity:0.6;'">
+
+                <div id="cr_cover_background"
+                     class="card-img-top mb-2 align-middle cover_background"
+                     t-att-data-post-id="blog_post.id"
+                     t-att-style="'background-color: ' + (blog_post.background_color or '#FFFFFF')">
+
+                    <h3 id="cr_cover_background_content" t-esc="blog_post.name" style="color:white;"/>
+                </div>
+            </a>
+
+        </xpath>
+    </template>
+
+
+    <template id="custom_blog_post_complete" inherit_id="website_blog.blog_post_complete">
+        <xpath expr="//section[@id='o_wblog_post_top']" position="replace">
+            <center>
+                <div t-attf-class="o_wblog_post_title #{opt_blog_post_select_to_tweet and 'js_tweet'} #{opt_blog_post_select_to_comment and 'js_comment'}">
+                    <div class="mx-auto main_header">
+                        <h1 t-field="blog_post.name" id="o_wblog_post_name" class="o_editable_no_shadow"
+                            data-oe-expression="blog_post.name" t-att-data-blog-id="blog_post.id"
+                            placeholder="Blog Post Title"/>
+                        <div t-field="blog_post.subtitle" id="o_wblog_post_subtitle" class="o_editable_no_shadow"
+                             placeholder="Subtitle"/>
+
+                    </div>
+                </div>
+            </center>
+        </xpath>
+
+    </template>
+
+    <template id="custom_blog_post_content" inherit_id="website_blog.blog_post_content">
+        <xpath expr="//t[@t-call='website_blog.post_breadcrumbs']" position="replace"/>
+        <xpath expr="//div[@t-if='len(blogs) > 1 or len(blog_post.tag_ids) > 0']" position="replace"/>
+    </template>
+
+
+</odoo>
+
+
+

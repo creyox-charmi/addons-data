@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="hero_snippet_template" name="section-1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+              media="print" onload="this.media='all'"/>
+
+        <section class="hero-section cr_font" aria-label="Odoo ERP Solutions Hero Banner">
+            <div class="floating-shapes-bg">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="hero-inner">
+                <div class="hero-content-wrapper">
+                    <!-- Left Side: Content -->
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Transform Your
+                            <span class="rotating-words">
+                                <span class="word active">Business</span>
+                                <span class="word">Operations</span>
+                                <span class="word">Workflow</span>
+                                <span class="word">Growth</span>
+                            </span>
+                            <br/>With Intelligent Odoo ERP
+                        </h1>
+
+                        <p class="hero-subtitle">
+                            Customised ERP solutions with AI-driven features to boost your business growth.
+                        </p>
+
+                        <ul class="hero-features">
+                            <li><i class="fas fa-check-circle"></i> Smart Automation</li>
+                            <li><i class="fas fa-check-circle"></i> AI Insights</li>
+                            <li><i class="fas fa-check-circle"></i> Custom Workflows</li>
+                            <li><i class="fas fa-check-circle"></i> Real-time Analytics</li>
+                        </ul>
+
+                        <p class="hero-description">
+                            Automate your business processes with the right ERP to improve productivity, minimize manual tasks, and accelerate growth serving as your trusted partner in long-term success.
+                        </p>
+
+                        <a href="/contactus" class="cta-button">
+                            <span>Start Your AI-Driven ERP Journey</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Right Side: Animated Images -->
+                    <div class="hero-images">
+                        <div class="main-dashboard-img">
+                            <img src="https://cdn.prod.website-files.com/5f0c9c18f2c82d6855eb3873/64e8e332ea9e53c069e90d6f_Business%20intelligence-amico.svg"
+                                 alt="ERP Dashboard"
+                                 loading="lazy"/>
+                        </div>
+
+                        <div class="floating-card card-1">
+                            <div class="card-content">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="card-text">
+                                    <span class="label">Revenue</span>
+                                    <span class="value">+127%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="floating-card card-2">
+                            <div class="card-content">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="card-text">
+                                    <span class="label">Efficiency</span>
+                                    <span class="value">98.5%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="floating-card card-3">
+                            <div class="card-content">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <div class="card-text">
+                                    <span class="label">Growth</span>
+                                    <span class="value">3.2x</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+</odoo>
+
+/* ===========================
+   CSS STYLES
+=========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#cr_home_page {
+    background: white;
+}
+
+.hero-section {
+    position: relative;
+    background: linear-gradient(135deg, #f0f4ff, #e0ecff);
+    color: #0f172a;
+    overflow: hidden;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Background Floating Shapes */
+.floating-shapes-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.floating-shapes-bg span {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.1);
+    animation: floatBg 20s infinite ease-in-out;
+}
+
+.floating-shapes-bg span:nth-child(1) {
+    width: 80px;
+    height: 80px;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.floating-shapes-bg span:nth-child(2) {
+    width: 60px;
+    height: 60px;
+    top: 60%;
+    left: 80%;
+    animation-delay: 2s;
+}
+
+.floating-shapes-bg span:nth-child(3) {
+    width: 100px;
+    height: 100px;
+    top: 80%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+.floating-shapes-bg span:nth-child(4) {
+    width: 70px;
+    height: 70px;
+    top: 30%;
+    left: 70%;
+    animation-delay: 1s;
+}
+
+.floating-shapes-bg span:nth-child(5) {
+    width: 90px;
+    height: 90px;
+    top: 50%;
+    left: 50%;
+    animation-delay: 3s;
+}
+
+@keyframes floatBg {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-50px) scale(1.1);
+        opacity: 0.6;
+    }
+}
+
+.hero-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 20px;
+}
+
+@media (min-width: 768px) {
+    .hero-inner {
+        padding: 100px 40px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .hero-inner {
+        padding: 120px 60px;
+    }
+}
+
+/* Hero Content Wrapper */
+.hero-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+@media (min-width: 992px) {
+    .hero-content-wrapper {
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+    }
+}
+
+/* Left Content */
+.hero-content {
+    text-align: left;
+}
+
+@media (max-width: 991px) {
+    .hero-content {
+        text-align: center;
+    }
+}
+
+.hero-title {
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #1e293b;
+    margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+    .hero-title {
+        font-size: 48px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .hero-title {
+        font-size: 56px;
+    }
+}
+
+/* Rotating Words Animation */
+.rotating-words {
+    display: inline-block;
+    position: relative;
+    height: 1.2em;
+    overflow: hidden;
+    vertical-align: bottom;
+}
+
+.rotating-words .word {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    background: linear-gradient(to right, #3b82f6, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rotateWord 12s infinite;
+}
+
+.rotating-words .word:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.rotating-words .word:nth-child(2) {
+    animation-delay: 3s;
+}
+
+.rotating-words .word:nth-child(3) {
+    animation-delay: 6s;
+}
+
+.rotating-words .word:nth-child(4) {
+    animation-delay: 9s;
+}
+
+@keyframes rotateWord {
+    0% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    2% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    23% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    25% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+}
+
+.hero-subtitle {
+    font-size: 18px;
+    color: #475569;
+    font-weight: 500;
+    margin-bottom: 28px;
+    line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+    .hero-subtitle {
+        font-size: 20px;
+    }
+}
+
+/* Features List */
+.hero-features {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+@media (max-width: 991px) {
+    .hero-features {
+        justify-content: center;
+    }
+}
+
+.hero-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.hero-features li i {
+    color: #10b981;
+    font-size: 18px;
+}
+
+.hero-description {
+    font-size: 16px;
+    color: #64748b;
+    line-height: 1.7;
+    margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+    .hero-description {
+        font-size: 17px;
+    }
+}
+
+/* CTA Button */
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    background: linear-gradient(145deg, #0a173b, #1e3a8a);
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(10, 23, 59, 0.3);
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(10, 23, 59, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.cta-button i {
+    transition: transform 0.3s ease;
+}
+
+.cta-button:hover i {
+    transform: translateX(4px);
+}
+
+/* Right Side - Images */
+.hero-images {
+    position: relative;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .hero-images {
+        height: 600px;
+    }
+}
+
+.main-dashboard-img {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    animation: floatMain 6s ease-in-out infinite;
+    z-index: 2;
+}
+
+.main-dashboard-img img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 20px 60px rgba(59, 130, 246, 0.25));
+}
+
+@keyframes floatMain {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* Floating Cards */
+.floating-card {
+    position: absolute;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    z-index: 3;
+    animation: floatCard 4s ease-in-out infinite;
+}
+
+.floating-card .card-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.floating-card .icon-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.floating-card .card-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.floating-card .label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.floating-card .value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Card 1 - Top Right */
+.card-1 {
+    top: 5%;
+    right: 5%;
+    animation-delay: 0s;
+}
+
+.card-1 .icon-wrapper {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+/* Card 2 - Bottom Left */
+.card-2 {
+    bottom: 10%;
+    left: 5%;
+    animation-delay: 1.5s;
+}
+
+.card-2 .icon-wrapper {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+/* Card 3 - Middle Right */
+.card-3 {
+    top: 50%;
+    right: -5%;
+    transform: translateY(-50%);
+    animation-delay: 3s;
+}
+
+.card-3 .icon-wrapper {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+}
+
+@keyframes floatCard {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .floating-card {
+        padding: 16px;
+    }
+
+    .floating-card .icon-wrapper {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .floating-card .value {
+        font-size: 20px;
+    }
+
+    .card-1 {
+        top: 2%;
+        right: 2%;
+    }
+
+    .card-2 {
+        bottom: 5%;
+        left: 2%;
+    }
+
+    .card-3 {
+        top: 45%;
+        right: 2%;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-features {
+        grid-template-columns: 1fr;
+    }
+
+    .floating-card {
+        padding: 12px;
+    }
+
+    .floating-card .card-content {
+        gap: 10px;
+    }
+
+    .floating-card .icon-wrapper {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+
+    .floating-card .value {
+        font-size: 18px;
+    }
+
+    .floating-card .label {
+        font-size: 10px;
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "name": "CR Employee Customisation",
+    "author": "Creyox Technologies",
+    "version": "16.0.0.0",
+    "summary": "",
+    "sequence": 11,
+    "description": """List view of Contracts, Employee Details in Page 'Details'. """,
+    "category": "",
+    "website": "",
+    "depends": ["base", "hr", "hr_holidays", "hr_contract", "cr_time_off_customization"],
+    "data": ["security/ir.model.access.csv", 
+             "views/employee_contract.xml", 
+             "views/hr_contract_view.xml"],
+    "demo": [],
+    "installable": True,
+    "application": True,
+    "license": "LGPL-3",
+}

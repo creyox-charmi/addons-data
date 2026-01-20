@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_blogs_form_category_search_inherit"
+              inherit_id="wb_portal_blogs.portal_my_blogs_form_view_edit">
+        <xpath expr="//div[contains(@class, 'mb-3') and .//label[text()='Categorías']]" position="replace">
+            <div class="mb-3">
+                <label class="form-label">Categorías</label>
+
+                <!-- Category Buttons Container -->
+                <div class="d-flex flex-wrap gap-2 mb-3" id="category-buttons-container">
+                    <t t-foreach="tag_categories" t-as="category">
+                        <div class="dropdown d-inline-block">
+                            <t t-set="selected_tags_count"
+                               t-value="len(blog_entry.tag_ids.filtered(lambda t: t.category_id == category))"/>
+
+                            <button
+                                    t-att-class="'btn btn-sm dropdown-toggle category-btn %s' % ('btn-primary' if selected_tags_count > 0 else 'btn-outline-secondary')"
+                                    type="button"
+                                    t-att-id="'categoryDropdown_%s' % category.id"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                <i class="fa fa-folder-o me-1"/>
+                                <t t-esc="category.name"/>
+                                <span t-if="selected_tags_count > 0" class="badge bg-light text-dark ms-1">
+                                    <t t-esc="selected_tags_count"/>
+                                </span>
+                            </button>
+
+                            <!-- Dropdown Menu for Category Tags -->
+                            <div t-att-class="'dropdown-menu category-dropdown-menu p-3 o_category_dropdown_%s' % category.id"
+                                 t-att-aria-labelledby="'categoryDropdown_%s' % category.id"
+                                 style="min-width: 320px; max-height: 400px; overflow-y: auto;">
+
+                                <!-- Search bar -->
+                                <div class="mb-2 position-sticky top-0 bg-white pb-2" style="z-index: 10;">
+                                    <input type="text"
+                                           t-att-class="'form-control form-control-sm tag-search-input o_tag_search_%s' % category.id"
+                                           placeholder="Buscar tags..."
+                                           t-att-data-category-id="category.id"/>
+                                </div>
+
+                                <!-- Select All / Clear -->
+                                <div class="mb-2 d-flex gap-2">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-primary flex-fill select-all-tags"
+                                            t-att-data-category-id="category.id">
+                                        Seleccionar Todo
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary flex-fill clear-all-tags"
+                                            t-att-data-category-id="category.id">
+                                        Limpiar
+                                    </button>
+                                </div>
+
+                                <div class="dropdown-divider"/>
+
+                                <!-- Tags list for this category -->
+                                <t t-set="category_tags"
+                                   t-value="request.env['blog.tag'].sudo().search([('category_id', '=', category.id)])"/>
+                                <div t-att-class="'tags-list o_tags_list_%s' % category.id">
+                                    <t t-foreach="category_tags" t-as="ctag">
+                                        <div class="form-check tag-item" t-att-data-tag-name="ctag.name.lower()">
+                                            <input class="form-check-input tag-checkbox"
+                                                   type="checkbox"
+                                                   t-att-id="'tag_%s' % ctag.id"
+                                                   t-att-data-tag-id="ctag.id"
+                                                   t-att-data-category-id="category.id"
+                                                   t-att-data-tag-name="ctag.name"
+                                                   t-att-name="'category-%s' % ctag.id"
+                                                   t-att-value="ctag.id"
+                                                   t-att-checked="'checked' if ctag in blog_entry.tag_ids else None"/>
+                                            <label class="form-check-label w-100"
+                                                   t-att-for="'tag_%s' % ctag.id"
+                                                   style="cursor: pointer;">
+                                                <t t-esc="ctag.name"/>
+                                            </label>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Clear All Button -->
+                    <button type="button"
+                            class="btn btn-sm btn-danger clear-all-button"
+                            style="display: none;">
+                        <i class="fa fa-times me-1"/>
+                        Limpiar Todo
+                    </button>
+                </div>
+
+                <!-- Selected Tags Display -->
+                <div id="selected-tags-display" style="display: none;" class="mb-3">
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="text-muted small">Tags Seleccionados:</span>
+                        <div id="selected-tags-container"></div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+
+        <!-- Available Categories Section - Add after Categories xpath -->
+        <xpath expr="//div[@id='selected-tags-display']" position="after">
+            <div class="mb-3">
+                <label class="form-label">Categorías Disponibles</label>
+
+                <!-- Available Category Buttons -->
+                <div class="d-flex flex-wrap gap-2 mb-3" id="available-category-container">
+                    <t t-set="available_categories" t-value="request.env['blog.available.category'].sudo().search([])"/>
+                    <t t-foreach="available_categories" t-as="avail_cat">
+                        <button type="button"
+                                t-att-class="'btn btn-sm available-cat-btn %s' % ('btn-success' if avail_cat in blog_entry.available_category_ids else 'btn-outline-secondary')"
+                                t-att-data-category-id="avail_cat.id"
+                                t-att-data-category-name="avail_cat.name">
+                            <i class="fa fa-star me-1"/>
+                            <t t-esc="avail_cat.name"/>
+                        </button>
+
+                        <!-- Hidden input for form submission -->
+                        <input type="checkbox"
+                               name="available_category_ids"
+                               t-att-value="avail_cat.id"
+                               t-att-checked="'checked' if avail_cat in blog_entry.available_category_ids else None"
+                               t-att-class="'available-cat-checkbox available-cat-checkbox-%s' % avail_cat.id"
+                               style="display: none;"/>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//form[@id='blogForm']" position="after">
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function() {
+                    const selectedTagsDisplay = document.getElementById('selected-tags-display');
+                    const selectedTagsContainer = document.getElementById('selected-tags-container');
+                    const clearAllButton = document.querySelector('.clear-all-button');
+
+
+                    function updateSelectedTags() {
+                        const checkedBoxes = document.querySelectorAll('.tag-checkbox:checked');
+
+                        // Update category button badges and colors
+                        document.querySelectorAll('.category-btn').forEach(btn => {
+                                const categoryId = btn.id.replace('categoryDropdown_', '');
+                                const categoryTags = document.querySelectorAll(
+                                `.tag-checkbox:checked[data-category-id="${categoryId}"]`
+                                );
+                                const badge = btn.querySelector('.badge');
+
+                                if (categoryTags.length > 0) {
+                                    if (badge) {
+                                        badge.textContent = categoryTags.length;
+                                    } else {
+                                        const newBadge = document.createElement('span');
+                                        newBadge.className = 'badge bg-light text-dark ms-1';
+                                        newBadge.textContent = categoryTags.length;
+                                        btn.appendChild(newBadge);
+                                    }
+                                    btn.classList.remove('btn-outline-secondary');
+                                    btn.classList.add('btn-primary');
+                                } else {
+                                    if (badge) badge.remove();
+                                    btn.classList.remove('btn-primary');
+                                    btn.classList.add('btn-outline-secondary');
+                                }
+                        });
+
+
+                        // Update selected tags display
+                        selectedTagsContainer.innerHTML = '';
+                        if (checkedBoxes.length > 0) {
+                            selectedTagsDisplay.style.display = 'block';
+
+                            checkedBoxes.forEach(checkbox => {
+                                const tagId = checkbox.getAttribute('data-tag-id');
+                                const tagName = checkbox.getAttribute('data-tag-name');
+
+                                const badge = document.createElement('span');
+                                badge.className = 'badge bg-info text-white';
+
+                                const closeBtn = document.createElement('a');
+                                closeBtn.href = '#';
+                                closeBtn.className = 'text-white ms-1 remove-tag';
+                                closeBtn.style.cssText = 'text-decoration: none; font-weight: bold;';
+                                closeBtn.textContent = '×';
+                                closeBtn.setAttribute('data-tag-id', tagId);
+
+                                closeBtn.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    const checkbox = document.querySelector(
+                                    `.tag-checkbox[data-tag-id="${tagId}"]`
+                                    );
+                                    checkbox.checked = false;
+                                    checkbox.dispatchEvent(new Event('change'));
+                                });
+
+                                badge.appendChild(document.createTextNode(tagName + ' '));
+                                badge.appendChild(closeBtn);
+                                selectedTagsContainer.appendChild(badge);
+                            });
+                            clearAllButton.style.display = 'inline-block';
+                        } else {
+                            selectedTagsDisplay.style.display = 'none';
+                            clearAllButton.style.display = 'none';
+                        }
+
+                    }
+
+                    // Search functionality
+                    document.querySelectorAll('.tag-search-input').forEach(searchInput => {
+                        searchInput.addEventListener('input', function(e) {
+                            const categoryId = this.getAttribute('data-category-id');
+                            const searchText = e.target.value.toLowerCase();
+                            const tagsList = document.querySelector(`.o_tags_list_${categoryId}`);
+
+                            tagsList.querySelectorAll('.tag-item').forEach(item => {
+                                const tagName = item.getAttribute('data-tag-name');
+                                item.style.display = tagName.includes(searchText) ? '' : 'none';
+                            });
+                        });
+                    });
+
+                    // Select All for category
+                    document.querySelectorAll('.select-all-tags').forEach(btn => {
+                        btn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const categoryId = this.getAttribute('data-category-id');
+                            const tagsList = document.querySelector(`.o_tags_list_${categoryId}`);
+                            const visibleItems = Array.from(tagsList.querySelectorAll('.tag-item'))
+                            .filter(item => item.style.display !== 'none');
+
+                            let count = 0;
+                            visibleItems.forEach(item => {
+                                    const checkbox = item.querySelector('.tag-checkbox');
+                                    if (count &lt; 3) {
+                                        checkbox.checked = true;
+                                        count++;
+                                    }
+                            });
+
+                            if (visibleItems.length > 3) {
+                            alert('Solo se seleccionaron los primeros 3 tags (límite máximo por categoría).');
+                            }
+
+                            updateSelectedTags();
+                        });
+                    });
+
+
+                    // Clear All for category
+                    document.querySelectorAll('.clear-all-tags').forEach(btn => {
+                        btn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const categoryId = this.getAttribute('data-category-id');
+                            const tagsList = document.querySelector(`.o_tags_list_${categoryId}`);
+
+                            tagsList.querySelectorAll('.tag-checkbox').forEach(cb => {
+                                cb.checked = false;
+                            });
+                            updateSelectedTags();
+                        });
+                    });
+
+                    // Clear All button
+                    clearAllButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelectorAll('.tag-checkbox').forEach(cb => {
+                            cb.checked = false;
+                        });
+                        updateSelectedTags();
+                    });
+
+                    // Tag checkbox change handler
+                    document.querySelectorAll('.tag-checkbox').forEach(cb => {
+                        cb.addEventListener('change', function() {
+                            const categoryId = this.getAttribute('data-category-id');
+                            const categoryCheckboxes = document.querySelectorAll(`.tag-checkbox[data-category-id="${categoryId}"]`);
+                            const checkedCount = Array.from(categoryCheckboxes).filter(checkbox => checkbox.checked).length;
+
+                            if (this.checked &amp;&amp; checkedCount > 3) {
+                                this.checked = false;
+                                alert('Máximo 3 tags permitidos por categoría!');
+                                return;
+                            }
+
+                            updateSelectedTags();
+                        });
+                    });
+
+
+                    // Prevent dropdown close on internal clicks
+                    document.querySelectorAll('.category-dropdown-menu').forEach(menu => {
+                        menu.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                        });
+                    });
+
+                    // Initialize
+                    updateSelectedTags();
+
+
+                    // Available Category Toggle
+                    document.querySelectorAll('.available-cat-btn').forEach(btn => {
+                        btn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            const categoryId = this.getAttribute('data-category-id');
+                            const checkbox = document.querySelector(`.available-cat-checkbox-${categoryId}`);
+
+                            // Toggle checkbox
+                            checkbox.checked = !checkbox.checked;
+
+                            // Toggle button style
+                            if (checkbox.checked) {
+                                this.classList.remove('btn-outline-secondary');
+                                this.classList.add('btn-success');
+                            } else {
+                                this.classList.remove('btn-success');
+                                this.classList.add('btn-outline-secondary');
+                            }
+                        });
+                    });
+
+                });
+            </script>
+
+            <style>
+                /* Category Buttons Container */
+                #category-buttons-container {
+                    gap: 1rem;
+                    margin-bottom: 2rem;
+                    flex-wrap: wrap;
+                }
+
+                .category-btn {
+                    border: 1px solid #d1d5db;
+                    background: #ffffff;
+                    color: #374151;
+                    font-weight: 500;
+                    font-size: 0.9375rem;
+                    padding: 0.625rem 1.25rem;
+                    transition: all 0.25s ease;
+                    border-radius: 4px; /* CHANGED: Square corners */
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+                    white-space: nowrap;
+                    min-height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .category-btn:hover {
+                    border-color: #9ca3af;
+                    background: #f9fafb;
+                    color: #111827;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+                }
+
+                .category-btn.btn-primary {
+                    border-color: #000000; /* CHANGED: Black */
+                    background: #000000; /* CHANGED: Black */
+                    color: #ffffff;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                }
+
+                .category-btn.btn-primary:hover {
+                    border-color: #1f1f1f; /* CHANGED: Slightly lighter black */
+                    background: #1f1f1f;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+                }
+
+                /* Category Dropdown Menu */
+                .category-dropdown-menu {
+                    border: 1px solid #d1d5db;
+                    border-radius: 4px; /* CHANGED: Square corners */
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+                    background: #ffffff;
+                    animation: slideDown 0.2s ease-out;
+                    min-width: 340px !important;
+                    max-width: 400px !important;
+                }
+
+                @keyframes slideDown {
+                    from {
+                    opacity: 0;
+                        transform: translateY(-8px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                /* Search Input */
+                .tag-search-input {
+                    border: 1px solid #d1d5db;
+                    border-radius: 4px; /* CHANGED: Square corners */
+                    padding: 0.625rem 0.875rem;
+                    font-size: 0.9375rem;
+                    color: #374151;
+                    background: #ffffff;
+                    transition: all 0.25s ease;
+                }
+
+                .tag-search-input::placeholder {
+                    color: #9ca3af;
+                    font-size: 0.9375rem;
+                }
+
+                .tag-search-input:focus {
+                    border-color: #000000; /* CHANGED: Black */
+                    outline: none;
+                    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+                    background: #ffffff;
+                }
+
+                /* Buttons in Dropdown */
+                .select-all-tags,
+                .clear-all-tags {
+                    border: 1px solid #d1d5db;
+                    font-weight: 600;
+                    font-size: 0.8125rem;
+                    transition: all 0.25s ease;
+                    border-radius: 4px; /* CHANGED: Square corners */
+                    padding: 0.5rem 1rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+
+                .select-all-tags {
+                    border-color: #000000; /* CHANGED: Black */
+                    color: #000000; /* CHANGED: Black */
+                    background: #f5f5f5;
+                }
+
+                .select-all-tags:hover {
+                    background: #000000; /* CHANGED: Black */
+                    color: #ffffff;
+                    border-color: #000000;
+                }
+
+                .select-all-tags:active {
+                    transform: scale(0.98);
+                }
+
+                .clear-all-tags {
+                    border-color: #d1d5db;
+                    color: #6b7280;
+                    background: #f9fafb;
+                }
+
+                .clear-all-tags:hover {
+                    background: #f3f4f6;
+                    color: #374151;
+                    border-color: #9ca3af;
+                }
+
+                .clear-all-tags:active {
+                    transform: scale(0.98);
+                }
+
+                /* Clear All Button */
+                .clear-all-button {
+                    border-radius: 4px !important; /* CHANGED: Square corners */
+                    border: 1px solid #dc2626 !important;
+                    background: #dc2626 !important;
+                    color: #ffffff !important;
+                    font-size: 0.9375rem !important;
+                    padding: 0.625rem 1.25rem !important;
+                    font-weight: 500 !important;
+                    transition: all 0.25s ease !important;
+                    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15) !important;
+                }
+
+                .clear-all-button:hover {
+                    background: #b91c1c !important;
+                    border-color: #b91c1c !important;
+                    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25) !important;
+                }
+
+                /* Tag Items */
+                .tag-item {
+                    padding: 0.625rem 0.875rem;
+                    margin-bottom: 0.375rem;
+                    border-radius: 4px; /* CHANGED: Square corners */
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .tag-item:hover {
+                    background: #f3f4f6;
+                }
+
+                /* Checkbox */
+                .tag-checkbox {
+                    cursor: pointer;
+                    margin-right: 0.75rem;
+                    width: 18px;
+                    height: 18px;
+                    accent-color: #000000; /* CHANGED: Black */
+                    flex-shrink: 0;
+                    transition: all 0.2s ease;
+                    border: 1px solid #d1d5db;
+                    border-radius: 3px; /* CHANGED: Square corners */
+                }
+
+                .tag-checkbox:hover {
+                    border-color: #000000; /* CHANGED: Black */
+                }
+
+                .tag-checkbox:checked {
+                    background: #000000; /* CHANGED: Black */
+                    border-color: #000000;
+                }
+
+                /* Label */
+                .tag-item .form-check-label {
+                    cursor: pointer;
+                    color: #374151;
+                    font-weight: 500;
+                    font-size: 0.9375rem;
+                    user-select: none;
+                    transition: color 0.2s ease;
+                    margin: 0;
+                }
+
+                .tag-checkbox:checked + .form-check-label {
+                    color: #000000; /* CHANGED: Black */
+                    font-weight: 600;
+                }
+
+                /* Divider */
+                .category-dropdown-menu .dropdown-divider {
+                    border-color: #e5e7eb;
+                    margin: 0.75rem 0;
+                }
+
+                /* Scrollbar */
+                .category-dropdown-menu::-webkit-scrollbar {
+                    width: 6px;
+                }
+
+                .category-dropdown-menu::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+
+                .category-dropdown-menu::-webkit-scrollbar-thumb {
+                    background: #d1d5db;
+                    border-radius: 3px;
+                }
+
+                .category-dropdown-menu::-webkit-scrollbar-thumb:hover {
+                    background: #9ca3af;
+                }
+
+                /* Selected Tags Display */
+                #selected-tags-display {
+                    background: #f9fafb;
+                    padding: 1.25rem;
+                    border-radius: 4px; /* CHANGED: Square corners */
+                    border: 1px solid #e5e7eb;
+                    margin-top: 1.5rem;
+                }
+
+                #selected-tags-display .badge {
+                    animation: slideIn 0.25s ease-out;
+                    background: #0ea5e9; /* Sky color - UNCHANGED */
+                    padding: 0.5em 0.875em;
+                    border-radius: 4px; /* CHANGED: Square corners */
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    display: inline-flex;
+                    align-items: center;
+                    margin: 0.375rem 0.5rem 0.375rem 0;
+                }
+
+                #selected-tags-display .badge a {
+                    color: #ffffff !important;
+                    text-decoration: none;
+                    font-weight: bold;
+                    margin-left: 0.5rem;
+                    cursor: pointer;
+                    transition: opacity 0.2s ease;
+                }
+
+                #selected-tags-display .badge a:hover {
+                    opacity: 0.8;
+                }
+
+                @keyframes slideIn {
+                    from {
+                        opacity: 0;
+                        transform: translateX(-12px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                }
+
+                /* Sticky Search Container */
+                .category-dropdown-menu > .position-sticky {
+                    background: linear-gradient(180deg, #ffffff 0%, #ffffff 92%, rgba(255, 255, 255, 0) 100%);
+                    padding-bottom: 0.875rem;
+                }
+
+                /* Small Text Label */
+                #selected-tags-display .text-muted {
+                    font-size: 0.875rem;
+                    color: #6b7280 !important;
+                    margin-right: 0.875rem;
+                    font-weight: 500;
+                }
+
+
+                /* Available Category Buttons */
+                .available-cat-btn {
+                    border-radius: 4px;
+                    padding: 0.625rem 1.25rem;
+                    font-weight: 500;
+                    font-size: 0.9375rem;
+                    transition: all 0.25s ease;
+                    border: 1px solid #d1d5db;
+                }
+
+                .available-cat-btn:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+
+                .available-cat-btn.btn-success {
+                    background: #10b981;
+                    border-color: #10b981;
+                    color: #ffffff;
+                    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+                }
+
+                .available-cat-btn.btn-success:hover {
+                    background: #059669;
+                    border-color: #059669;
+                    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+                }
+
+                .available-cat-btn.btn-outline-secondary {
+                    background: #ffffff;
+                    color: #6b7280;
+                }
+
+                .available-cat-btn.btn-outline-secondary:hover {
+                    background: #f9fafb;
+                    color: #374151;
+                }
+            </style>
+        </xpath>
+    </template>
+</odoo>

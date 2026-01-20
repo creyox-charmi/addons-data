@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="blog_post_teaser_categories" inherit_id="website_blog.post_teaser">
+        <xpath expr="//div[hasclass('o_wblog_post_short_tag_section')]" position="after">
+            <div t-if="blog_post.tag_category_ids and is_community_blog" class="o_wblog_post_categories pt-2">
+                <t t-foreach="blog_post.tag_category_ids" t-as="category">
+                    <div class="d-flex align-items-center flex-wrap mb-2">
+                        <!-- Display tags for this category -->
+                        <t t-set="category_tags"
+                           t-value="blog_post.tag_ids.filtered(lambda tag: tag.category_id == category)"/>
+                        <t t-if="category_tags">
+                            <t t-foreach="category_tags" t-as="tag">
+                                <a rel="nofollow"
+                                   t-att-class="'badge me-1 mb-1 text-truncate o_wblog_tag_badge text-decoration-none text-white'"
+                                   t-att-style="'background-color: %s !important; max-width: 200px; transition: all 0.2s ease; %s' % (tag.category_id.color or '#17a2b8', 'opacity: 1;' if tag in search_tags else 'opacity: 0.7;')"
+                                   t-att-href="blog_query_url(tag=slugify_tags(search_tags.ids, toggle_tag_id=tag.id))()"
+                                   t-esc="tag.name"/>
+                            </t>
+                        </t>
+                        <!--                        Display category name as clickable badge-->
+                        <!--                        <a rel="nofollow"-->
+                        <!--                           t-att-class="'badge ms-2 mb-1 text-decoration-none o_wblog_category_badge %s' % ('bg-primary text-white' if category in search_categories else 'bg-secondary text-white')"-->
+                        <!--                           t-att-href="blog_query_url(category=slugify_categories(search_categories.ids, toggle_category_id=category.id), tag=slugify_tags_for_categories(search_tags.ids, search_categories.ids, category.id))()"-->
+                        <!--                           style="transition: all 0.2s ease;">-->
+                        <!--                            <i class="fa fa-folder-o me-1" style="font-size: 0.85em;"/>-->
+                        <!--                            <t t-esc="category.name"/>-->
+                        <!--                        </a>-->
+                    </div>
+                </t>
+
+            </div>
+              <div t-if="blog_post.available_category_ids" class="o_wblog_available_categories mt-2">
+                    <t t-foreach="blog_post.available_category_ids" t-as="avail_cat">
+                        <span class="badge bg-success me-1 mb-1">
+                            <t t-esc="avail_cat.name"/>
+                        </span>
+                    </t>
+                </div>
+
+            <!-- Custom CSS for professional styling -->
+            <style>
+                .o_wblog_tag_badge {
+                    padding: 0.35em 0.65em;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    border-radius: 0.25rem;
+                    cursor: pointer;
+                }
+
+                .o_wblog_tag_badge:hover {
+                    text-decoration: none !important;
+                    opacity: 0.85;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+
+                .o_wblog_category_badge {
+                    padding: 0.35em 0.75em;
+                    font-size: 0.875rem;
+                    font-weight: 600;
+                    border-radius: 0.25rem;
+                    cursor: pointer;
+                }
+
+                .o_wblog_category_badge:hover {
+                    text-decoration: none !important;
+                    opacity: 0.9;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+                }
+
+                .o_wblog_category_badge i {
+                    opacity: 0.9;
+                }
+
+                /* Active/selected states */
+                .o_wblog_tag_badge.bg-info {
+                    box-shadow: 0 2px 4px rgba(23, 162, 184, 0.3);
+                }
+
+                .o_wblog_category_badge.bg-primary {
+                    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+                }
+
+                /* Ensure no underline on any state */
+                .o_wblog_tag_badge:hover,
+                .o_wblog_tag_badge:focus,
+                .o_wblog_tag_badge:active,
+                .o_wblog_category_badge:hover,
+                .o_wblog_category_badge:focus,
+                .o_wblog_category_badge:active {
+                    text-decoration: none !important;
+                }
+            </style>
+        </xpath>
+    </template>
+
+    <template id="post_teaser_inherit_hide_tags" inherit_id="website_blog.post_teaser" name="Hide Blog Post Tags">
+        <!-- Remove the tag section -->
+        <xpath expr="//div[contains(@class, 'o_wblog_post_short_tag_section')]" position="replace"/>
+    </template>
+</odoo>

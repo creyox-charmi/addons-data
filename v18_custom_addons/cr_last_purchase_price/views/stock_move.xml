@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+        <record id="last_view_picking_inherit_form" model="ir.ui.view">
+            <field name="name">last.view.picking.inherit.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='operations']/field[@name='move_ids_without_package']/list/field[@name='quantity']" position="after">
+                    <field name="product_cost"/>
+                    <field name="updated_price"/>
+                </xpath>
+            </field>
+        </record>
+</odoo>

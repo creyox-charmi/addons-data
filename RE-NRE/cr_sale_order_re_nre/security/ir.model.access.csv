@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_order_line_custom,sale.order.line.custom,sale.model_sale_order_line,,1,1,1,1
+access_sale_order_line_custom_manager,sale.order.line.custom.manager,sale.model_sale_order_line,,1,1,1,1
+access_sale_order_line_re_sub_salesman,sale.order.line.re.sub.salesman,model_sale_order_line_re_sub,,1,1,1,1
+access_sale_order_line_re_sub_manager,sale.order.line.re.sub.manager,model_sale_order_line_re_sub,,1,1,1,1
+access_sale_order_line_nre_sub_salesman,sale.order.line.nre.sub.salesman,model_sale_order_line_nre_sub,,1,1,1,1
+access_sale_order_line_nre_sub_manager,sale.order.line.nre.sub.manager,model_sale_order_line_nre_sub,,1,1,1,1

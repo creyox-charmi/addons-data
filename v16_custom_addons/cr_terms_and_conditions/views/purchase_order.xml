@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_cr_terms_and_condition_purchase_order_form" model="ir.ui.view">
+        <field name="name">cr.terms.and.condition.purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='reminder']" position="after">
+                <field name="cr_purchase_order_terms_and_condition_id"
+                       domain="[('cr_model_reference', '=', 'purchase')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="cr_purchase_order_terms_and_condition_action" model="ir.actions.act_window">
+        <field name="name">Terms and Conditions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cr.terms.and.condition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="cr_purchase_order_terms_and_condition_menu"
+              name="Terms and Conditions"
+              parent="purchase.menu_purchase_config"
+              action="cr_purchase_order_terms_and_condition_action"
+              sequence="9999"/>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="split_sale_wizard_view_form" model="ir.ui.view">
+        <field name="name">split.sale.wizard.view.form</field>
+        <field name="model">split.sale.wizard</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="partner_id"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_process" type="object" string="Process" class="oe_highlight"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,40 @@
+When creating 8 MOs - is the number "8" based on the number of companies, or is it a fixed number? Should it be configurable?
+ans :  8 is quantity of sale.order.line 
+
+
+For the BOM hierarchy:
+
+Layer 1 (EVR00121): Should this create a new product automatically or use an existing one?
+Layer 2 (EVR00121.01): Should this also create a new product or use the sale order line product?
+Layer 3 (EVR00121.01.01, etc.): Should these create new products or use existing ones?
+ans :  consider the product of sale.order.line for which the mo is create as per base flow
+
+The part_number field on MO - should this store values like "EVR00121.01.01", "EVR00121.01.02", etc.?
+ans : yes
+
+Should the 8 MOs all be linked to the same Layer 2 BOM (EVR00121.01), or should each MO have its own separate BOM?
+same 
+
+When you say "8 company are there" - do you mean 8 records from res.company model, or something else?
+8 is not fix , it is only for example we have to take the quantity of sale.order.line
+
+Should the Layer 3 BOMs (EVR00121.01.01, etc.) have any components, or are they just structure?
+ans:
+(for below 8 bom parent should be EVR00121.01)
+EVR00121.01.01
+EVR00121.01.02
+EVR00121.01.03
+EVR00121.01.04
+EVR00121.01.05
+EVR00121.01.06
+EVR00121.01.07
+
+for EVR00121.01 parent should be EVR00121
+
+
+What should be the product for each Layer 3 BOM? The same product as the sale order line?
+ans: yes
+
+
+
+

@@ -1,0 +1,171 @@
+in odoo18 i want to do some customisation in my sale order line and see below requriments:
+1 ] Line N - 
+This will show the row number while adding different order lines in a sale order. (starts from 1,2,3……)
+2 ] Everest PN - 
+It should be created using the logic :- 
+prefix EVR + (5 digits of sale order number) + Number of quantities in the order line + Number of row
+
+EX:
+prefix EVR
+if sale order number is S00033 then 5 digit is - 00033
+if Number of quantities is 1 then - 01
+if in sale order in sale order line , Number of row is first then - 01
+So for the above example the Everest PN number should be:
+EVR00033.01.01
+
+where 00033 is the quotation number, 01 stands for the number of quantity and 01 stands for the row if we add  more 3 order lines so the Everest PN will be:
+EVR00033.01.02
+EVR00033.01.03
+EVR00033.01.04
+
+
+Instead of showing the internal reference number, we want to display the Everest PN number. Also, the Everest PN should appear in a separate column – it should not be shown along with the product name. The Product column should only show the product name, nothing else. 
+This way only product names should be displayed and Everest PN should be in a different column.
+
+3 ] Customer PN  - need to be added manually, nothing to be prefilled, just add the column.
+
+4 ] Product - it is standard odoo field but , it should be come at fourth number , i mean fields must be in the same order from left to right.
+
+
+5 ] Quantity - it is standard odoo field but , it should be come at fourth number , i mean fields must be in the same order from left to right.
+
+6 ] Remaining quantity to deliver - If the quantities ordered for a product is 10, and at the time of delivery if we deliver only 4 products, a backorder for 6 products will be created and in main sale order line under DELIVERED field there will be 4, but we want one more column which will show remaining quantities left to deliver i.e. 6.
+
+7 ] Unit of Measure - it is standard odoo field but , it should be come at fourth number , i mean fields must be in the same order from left to right.
+
+
+
+8 ] RE & NRE Field - this is a selection field where the user can select either RE or NRE)
+
+9 ] Unit price - it is standard odoo field but , it should be come at fourth number , i mean fields must be in the same order from left to right.
+
+10 ] Discount per line - if added in the product. - it is standard odoo field but , it should be come at fourth number , i mean fields must be in the same order from left to right.
+
+11 ] Amount - it is standard odoo field but , it should be come at fourth number , i mean fields must be in the same order from left to right.
+
+12 ] Required Delivery date - this is the expected delivery date.
+
+13 ] Updated Delivery date - this the date on which the product is delivered after or before the required delivery date.
+
+
+
+
+
+- Flow for RE and NRE lines
+RE Lines (Recurring or Repeatable deliveries) 
+
+This option will be selected when the quantity of the same product is more than 1.
+
+
+Here we can see that the quantity of the product is 15 and 10 respectively, so in the main sale order line the quantity will be seen as 15 and 10, but there should be an icon added (+) next to the RE/NRE field to hide or show a sub table.
+
+On clicking the (+) icon a pop up box having a sub table should be opened which will show 15 and 10 order lines with the same product having unique Everest PN number assigned as per the logic discussed previously in the document.
+
+The sub table opened should have these fields:
+
+1 - Everest PN   
+2 - Remaining quantity to deliver
+3 - Delivery note number
+4 - Updated delivery date
+5 - Required delivery date
+6 - Quantity
+7 - Sub line code
+
+This is the sub table that should open while clicking on the (+) icon next to RE.
+and in sub table in the row how to add data see , if the sale order line on which you click (+) icon it have 10 quantity then 10 lines in subtable will be created 
+in Everest PN in sub table should be set 
+EVR00033.01.01
+EVR00033.01.02
+EVR00033.01.03
+EVR00033.01.04
+EVR00033.01.05
+EVR00033.01.06
+EVR00033.01.07
+EVR00033.01.08
+EVR00033.01.09
+EVR00033.01.010
+I mean based on row select that and prefix you know already  EVR00033.01 this should be same as it is the Everest PN of their sale.order.line and last digit is adjust based on the row number and in Quantity set 1 in sub table in every line
+
+
+For the 1st product, if we deliver the first 2 products selected from the sub-table, the number of quantities delivered should change to 2 and remaining quantity to deliver should change to 8 in the main sale order line. Along with this a backorder for the remaining 8 products should be created.
+
+For the 2nd product, if we deliver the first 3 products selected from the sub-table, the number of quantities delivered should change to 3 and remaining quantity to deliver should change to 12 in the main sale order line. Along with this a backorder for the remaining 12 products should be created.
+
+Here we can see that the order is for 10 and 15 but we are going to deliver only 2 and 3 products respectively. On validating the delivery a pop-up for creating a backorder for 8 and 12 products will come.
+
+Clicking on create backorder, the delivered quantity in main sale order line changes to 2 and 3 respectively for both the products.
+
+Below is the backorder created for the quantities 8 and 12 for both the products.
+
+Also the amount of the products delivered should be deducted and the main line should display the remaining billing amount for the remaining quantities for invoicing.
+
+-----------------------
+NRE Lines (Non-recurring deliverables)
+
+This option will be selected when the quantity of product is only 1.
+
+Here if there is only one line so there’s no need for a sub-table.
+
+But if the order is divided into three milestones for the payment then a pop up box having a sub table should open on clicking the (+) icon next to the NRE line.
+
+The sub table for the NRE line should have the fields:
+
+1 - Everest PN
+2 - Product
+3 - Updated delivery date
+4 - Required delivery date
+5 - Billing percentage (how much percentage to be paid)
+6 - Sub-line description
+7 - Sub-line code
+
+
+Here the user will manually add the details/sale order lines, as how much payment is divided into how much percentage is not fixed.
+
+For example if : EVR00003.01 is divided into three stages for payment, so the order lines in sub-table will be displayed as:
+
+EVR00003.01.01 => 20% (initial payment/advance payment)
+EVR00003.01.02 => 50% (payment after half work is done)
+EVR00003.01.03 => 30% (payment after deployment of the product)     
+
+Note : This NRE line will mostly be used for service based products.
+
+For example a service based product with the cost $1000 is added in the main sale order line, and the NRE field is selected but we need to divide the payment in three steps, so by clicking on (+) icon the above mentioned sub table will be opened and we need to add three sale order lines
+
+For the initial payment, which will be the 20% amount of $1000 i.e. $200.
+
+For the payment when half of the work is completed which will be the 50% amount of $1000 i.e. $500.
+
+For the final payment which will be the 30% amount of $1000 i.e. $300.
+
+But the main sale order line will show $1000.
+
+Once the customer pays the initial payment we need to select the first sale order line and need to create the invoice for the same.
+
+Now as soon as the initial payment ($200) is paid, it should be deducted from the total amount and in main sale order line the amount should be displayed as : 
+
+                      => Total amount = $1000
+                      => Remaining amount to be paid = $800
+
+Similarly if the 50% payment is done, we will select the second sale order line and will create the invoice for the same.
+
+Now when ($500) is paid at second milestone, the main sale order should display the amount as : 
+
+                        => Total amount = $1000
+                        => Remaining amount to be paid = $300
+
+When the remaining amount ($300) is paid we will create an invoice and complete the payment for the project.
+
+Below is the invoice flow if the payment is divided into three milestones : 
+
+
+
+Here a service based product named website development is added, whose price is $1000 and NRE is selected, so clicking on (+) icon, a sub-table will be opened with the fields mentioned.
+
+When the sub-table is opened, we can see that the main sales order line is split into three milestones. If the user has made the payment for Product A, we should be able to select Product A, and then a Create Invoice button should appear. This button will allow us to create an invoice for that product.
+
+
+
+Once we click on Create Invoice button an invoice of 20% amount will be created i.e. $200 as 20% of $1000 is $200.
+
+
+So once we click on the Create Invoice button after selecting Product A, the Invoicing Status for the Product A should display Invoiced.
