@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="about_us_snippet_section5" name="AboutUS Section-5">
+        <section class="about-us-transformation cr_font">
+    <h3 class="slider-title">Your Odoo Experience - Before &amp; After Our Solutions</h3>
+    <div class="slider-wrapper">
+        <div class="slider-container">
+            <div class="comparison-grid">
+                <div class="slider-image before-image">
+                    <div class="slider-text">
+                        <h4>Before Our Odoo Solutions</h4>
+                        <ul class="comparison-list">
+                            <li>Generic setup without industry focus</li>
+                            <li>Manual workarounds to fill gaps</li>
+                            <li>Limited automation &amp; slow workflows</li>
+                            <li>Poor integration with other tools</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slider-image after-image">
+                    <div class="slider-text">
+                        <h4>After Our Odoo Solutions</h4>
+                        <ul class="comparison-list">
+                            <li>Custom modules for your exact needs</li>
+                            <li>Fully automated and optimized processes</li>
+                            <li>Real-time data &amp; smart dashboards</li>
+                            <li>Seamless integration across all systems</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    </template>
+
+
+<!--    <record id="cr_internal_website_theme.about_us_s5_000_scss" model="ir.asset">-->
+<!--        <field name="name">AboutUS SECTION-5 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/about_us_section5/000.scss</field>-->
+<!--    </record>-->
+</odoo>

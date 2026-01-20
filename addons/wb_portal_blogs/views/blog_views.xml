@@ -1,0 +1,164 @@
+<odoo>
+    <!--    <record id="view_wb_blog_post_kanban" model="ir.ui.view">-->
+    <!--        <field name="name">wb_portal_blogs.blog.post.kanban</field>-->
+    <!--        <field name="model">blog.post</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <kanban string="Publicaciones del Blog" create="false">-->
+    <!--                <field name="author_id"/>-->
+    <!--                <field name="name"/>-->
+    <!--                <field name="website_published"/>-->
+    <!--                <templates>-->
+    <!--                    <t t-name="kanban-box">-->
+    <!--                        <div t-attf-class="oe_kanban_global_click">-->
+    <!--                            <div class="oe_kanban_details">-->
+    <!--                                <strong>-->
+    <!--                                    <field name="name"/>-->
+    <!--                                </strong>-->
+    <!--                                <ul>-->
+    <!--                                    <li>Autor:-->
+    <!--                                        <field name="author_id"/>-->
+    <!--                                    </li>-->
+    <!--                                    <li>Publicado:-->
+    <!--                                        <field name="website_published"/>-->
+    <!--                                    </li>-->
+    <!--                                </ul>-->
+    <!--                                <div class="o_kanban_record_bottom">-->
+    <!--                                    <div class="oe_kanban_bottom_right">-->
+    <!--                                        <a role="button" href="/blog/post" class="btn btn-sm btn-primary">-->
+    <!--                                            <span>Ver en Portal</span>-->
+    <!--                                        </a>-->
+    <!--                                        <button type="edit" class="btn btn-sm btn-secondary">-->
+    <!--                                            <span>Editar</span>-->
+    <!--                                        </button>-->
+    <!--                                    </div>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </t>-->
+    <!--                </templates>-->
+    <!--            </kanban>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <record id="view_wb_blog_post_kanban_inherit" model="ir.ui.view">
+        <field name="name">wb_portal_blogs.blog.post.kanban.inherit</field>
+        <field name="model">blog.post</field>
+        <field name="inherit_id" ref="website_blog.blog_post_view_kanban"/>
+        <field name="arch" type="xml">
+            <kanban position="attributes">
+                <attribute name="create">false</attribute>
+            </kanban>
+
+            <xpath expr="//strong[hasclass('col-4', 'text-end')]//span" position="replace"/>
+
+            <!--            <xpath expr="//div[hasclass('oe_kanban_global_click')]/div[hasclass('row')]//strong[hasclass('col-4', 'text-end')]//span" position="replace">-->
+            <xpath expr="//div[hasclass('oe_kanban_global_click')]" position="inside">
+                <div class="o_kanban_record_bottom d-flex justify-content-end">
+                    <div class="o_dropdown_kanban dropdown">
+                        <a role="button" data-bs-toggle="dropdown" href="#" class="dropdown-toggle"
+                           aria-expanded="false">
+                            <i class="fa fa-ellipsis-v" title="Opciones"/>
+                        </a>
+                        <div class="dropdown-menu" role="menu">
+                            <a role="menuitem" t-attf-href="{{record.website_url.value}}" class="dropdown-item">
+                                <span>Ver en Portal</span>
+                            </a>
+                            <button type="edit" class="dropdown-item" role="menuitem">
+                                <span>Editar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_wb_blog_post_tree" model="ir.ui.view">
+        <field name="name">wb_portal_blogs.blog.post.tree</field>
+        <field name="model">blog.post</field>
+        <field name="arch" type="xml">
+            <tree string="Publicaciones del Blog">
+                <field name="name"/>
+                <field name="author_id"/>
+                <field name="website_published"/>
+                <field name="create_date" string="Fecha de Creación"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_wb_blog_post_form" model="ir.ui.view">
+        <field name="name">wb_portal_blogs.blog.post.form</field>
+        <field name="model">blog.post</field>
+        <field name="arch" type="xml">
+            <form string="Publicación del Blog">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Título de la publicación"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="author_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contenido">
+                            <field name="website_published" widget="boolean_toggle"/>
+                            <field name="content"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wb_portal_blogs" model="ir.actions.act_window">
+        <field name="name">Blogs del Portal</field>
+        <field name="res_model">blog.post</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('blog_id.name', '=', 'Comunidad')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crea tu primera publicación de blog!
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+            id="menu_wb_portal_blogs_root"
+            name="Comunidad"
+            action="action_wb_portal_blogs"
+            sequence="10"
+            groups="base.group_user"
+            web_icon="wb_portal_blogs,static/description/img_blog_spot.jpeg"/>
+
+    <record id="blog_post_search_view_wb" model="ir.ui.view">
+        <field name="name">blog.post.search.view</field>
+        <field name="model">blog.post</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Título" filter_domain="[('name','ilike',self)]"/>
+                <field name="author_id" string="Autor"/>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Inherit Blog Page
+    <template id="blog_tag_filter_inherit" inherit_id="website_blog.blog_post_short">
+        <xpath expr="//t[@t-call='website_blog.blogs_nav']" position="after">
+            <div class="container o_wblog_tags_filter mb-3">
+                <ul class="list-inline">
+                    <li>Tags:</li>
+                    <li class="nav-item" t-foreach="request.env['blog.tag'].sudo().search([])" t-as="tag">
+                            <a t-att-href="'/blog/tag/%s' % tag.id" class="btn btn-outline-primary btn-sm">
+                                <t t-esc="tag.name"/>
+                            </a>
+                    </li>
+                </ul>
+            </div>
+        </xpath>
+    </template>
+-->
+</odoo>

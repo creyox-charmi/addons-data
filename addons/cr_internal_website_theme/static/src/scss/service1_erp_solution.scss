@@ -1,0 +1,1631 @@
+/* ===== Base (Already Good for Desktop) ===== */
+
+.service-intro-banner {
+    background: #0A173B;
+    padding: 60px 0;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+
+.banner-main-title {
+    font-size: 2.25rem; /* 36px */
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.banner-tagline {
+    font-size: 1.125rem; /* 18px */
+    color: white;
+    margin-bottom: 25px;
+}
+
+.banner-breadcrumbs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.breadcrumb-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.breadcrumb-link:hover {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.breadcrumb-separator {
+    margin-left: 5px;
+}
+
+.breadcrumb-current {
+    color: white;
+    font-weight: 600;
+}
+
+
+/* ====== Responsive Media Queries ====== */
+
+/* Large Tablets (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .banner-main-title {
+        font-size: 2rem; /* 32px */
+    }
+    .banner-tagline {
+        font-size: 1.05rem; /* 17px */
+    }
+}
+
+/* Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+    .service-intro-banner {
+        padding: 45px 20px;
+    }
+    .banner-main-title {
+        font-size: 1.75rem; /* 28px */
+    }
+    .banner-tagline {
+        font-size: 1rem; /* 16px */
+    }
+}
+
+/* Mobile Large (max-width: 480px) */
+@media (max-width: 480px) {
+    .service-intro-banner {
+        padding: 35px 15px;
+    }
+    .banner-main-title {
+        font-size: 1.5rem; /* 24px */
+    }
+    .banner-tagline {
+        font-size: 0.95rem; /* 15px */
+    }
+    .banner-breadcrumbs {
+        font-size: 0.85rem;
+        gap: 5px;
+    }
+}
+
+/* Mobile Small (max-width: 375px) */
+@media (max-width: 375px) {
+    .banner-main-title {
+        font-size: 1.35rem; /* 21.6px */
+    }
+    .banner-tagline {
+        font-size: 0.9rem;
+    }
+}
+
+/* Extra Small (max-width: 320px) */
+@media (max-width: 320px) {
+    .banner-main-title {
+        font-size: 1.2rem; /* ~19px */
+    }
+    .banner-tagline {
+        font-size: 0.85rem;
+    }
+    .banner-breadcrumbs {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+
+
+
+/* =========================
+   ERP Intro Section
+========================= */
+.cr-erp-solution-intro {
+    background: white;
+    padding: 80px 20px;
+//     margin-bottom: 50px;
+}
+
+/* Container */
+.cr-erp-container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Header Row: Text Left / Image Right */
+.cr-erp-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Text Section */
+.cr-erp-header-text {
+    flex: 0 0 50%;
+    max-width: 50%;
+    color: #001f54;
+}
+
+.cr-erp-header-text h1 {
+    color: #002855;
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 20px;
+}
+
+.cr-erp-subtext {
+    font-size: 1.05rem;
+    color: #444;
+    line-height: 1.7;
+    text-align: justify;
+}
+
+/* Image Section */
+.cr-erp-header-img {
+    flex: 0 0 50%;
+    max-width: 50%;
+    text-align: right;
+}
+
+.cr-erp-header-img img {
+    max-width: 100%;
+    height: auto;
+//     min-width: 300px;
+}
+
+/* Content Below */
+.cr-erp-content h2 {
+    color: #002855;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 70px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.cr-erp-content p {
+    font-size: 1.05rem;
+    color: #333;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+/* Large Tablets / Small Desktops (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .cr-erp-content p {
+        font-size: 1.1rem;
+    }
+}
+
+/* Tablets / Mobile Large (max-width: 768px) */
+@media (max-width: 768px) {
+    .cr-erp-content p {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+}
+
+/* Mobile Medium (max-width: 480px) */
+@media (max-width: 480px) {
+    .cr-erp-content p {
+        font-size: 0.95rem;
+    }
+}
+
+/* Mobile Small / Extra Small (max-width: 375px) */
+@media (max-width: 375px) {
+    .cr-erp-content p {
+        font-size: 0.9rem;
+    }
+}
+
+
+
+
+
+/* ================================
+   ERP Features Box Style
+=================================*/
+
+.erp-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* always 3 equal columns on desktop */
+    gap: 30px;
+    list-style: none;
+    padding: 0;
+    margin: 50px 0;
+    margin-bottom: 20px;
+}
+
+/* Tablet landscape */
+@media (max-width: 1024px) {
+    .erp-features {
+        grid-template-columns: repeat(3, 1fr); /* 2 columns */
+        gap: 18px;
+    }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+    .erp-features {
+        grid-template-columns: repeat(2, 1fr); /* still 2 columns */
+        gap: 16px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .erp-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 14px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 375px) {
+    .erp-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 12px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 320px) {
+    .erp-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 10px;
+    }
+}
+
+
+.cr-erp-solution-features li {
+    background: linear-gradient(135deg, #f0f4ff, #ffffff);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0; /* square corners */
+    padding: 30px 20px 25px; /* bigger padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hover effect on li */
+.cr-erp-solution-features li:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.18);
+    border-color: #1e3a8a;
+}
+
+/* Icon as pseudo-element centered */
+.cr-erp-solution-features li::before {
+    content: '';
+    font-weight: 900;
+    font-size: 1.4rem; /* slightly bigger icon */
+    color: #fff;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a173b, #1e3a8a);
+    margin-bottom: 16px;
+    transition: background 0.3s ease;
+}
+
+/* Hover icon effect */
+.cr-erp-solution-features li:hover::before {
+    background: linear-gradient(135deg, #1e3a8a, #0ea5e9);
+}
+
+/* Assign icons to each ERP feature */
+.cr-erp-solution-features ul li:nth-child(1)::before { content: "\f201"; } /* AI-Powered Insights - fa-chart-line */
+.cr-erp-solution-features ul li:nth-child(2)::before { content: "\f0c2"; } /* Cloud Accessibility - fa-cloud */
+.cr-erp-solution-features ul li:nth-child(3)::before { content: "\f10b"; } /* Mobile-First Design - fa-mobile-alt */
+.cr-erp-solution-features ul li:nth-child(4)::before { content: "\f023"; } /* Security & Compliance - fa-lock */
+.cr-erp-solution-features ul li:nth-child(5)::before { content: "\f0ae"; } /* Custom Workflows - fa-project-diagram */
+.cr-erp-solution-features ul li:nth-child(6)::before { content: "\f1ab"; } /* Multi-Currency & Multi-Language - fa-globe */
+.cr-erp-solution-features ul li:nth-child(7)::before { content: "\f0c1"; } /* Integration Hub - fa-link */
+.cr-erp-solution-features ul li:nth-child(8)::before { content: "\f201"; } /* Automated Reporting - fa-chart-line */
+.cr-erp-solution-features ul li:nth-child(9)::before { content: "\f199"; } /* Scalable Architecture - fa-server */
+.cr-erp-solution-features ul li:nth-child(10)::before { content: "\f059"; } /* 24/7 Support & Training - fa-headset */
+
+/* Title */
+.cr-erp-solution-features li strong {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+
+/* Description */
+.cr-erp-solution-features li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #334155;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================
+   FAQ Section Styling (CSS Only)
+========================= */
+.cr-erp-content dl {
+    margin: 40px 0;
+    border-top: 2px solid #e0e6f0;
+    border-bottom: 2px solid #e0e6f0;
+    padding: 20px 0;
+    background: #f9fbff;
+    border-radius: 10px;
+}
+
+.cr-erp-content dt {
+    font-weight: 700;
+    color: #002855;
+    margin-top: 20px;
+    padding: 15px 20px 15px 45px; /* leave space for icon */
+    background: #e6f0ff;
+    border-radius: 8px;
+    position: relative;
+    text-align: left;
+}
+
+.cr-erp-content dt::before {
+    content: "\f128"; /* FontAwesome question-circle */
+    font-weight: 900;
+    position: absolute;
+    left: 15px;  /* horizontal position */
+    top: 50%;    /* vertical center */
+    transform: translateY(-50%); /* vertical center exactly */
+    color: #007bff;
+    font-size: 1.2rem; /* optional size */
+}
+
+
+.cr-erp-content dd {
+    margin: 10px 0 20px 20px;
+    color: #333;
+    line-height: 1.6;
+    text-align: justify;
+    padding-left: 10px;
+    border-left: 3px solid #007bff;
+    background: #ffffff;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 1rem;
+}
+
+.cr-erp-content dt + dd {
+    margin-top: 10px;
+}
+
+/* Optional: subtle hover effect on questions */
+.cr-erp-content dt:hover {
+    background: #d0e4ff;
+    cursor: default;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .cr-erp-content dt {
+        padding: 12px 15px;
+    }
+
+    .cr-erp-content dd {
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .cr-erp-content dd , .cr-erp-content dt{
+        font-size: 1.05rem;
+    }
+
+}
+
+/* Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+
+    .cr-erp-content dd , .cr-erp-content dt {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile Large (max-width: 480px) */
+@media (max-width: 480px) {
+    .cr-erp-content dd , .cr-erp-content dt {
+        font-size: 0.95rem;
+    }
+}
+
+/* Mobile Small (max-width: 375px) */
+@media (max-width: 375px) {
+    .cr-erp-content dd , .cr-erp-content dt {
+        font-size: 0.9rem;
+    }
+}
+
+/* Extra Small (max-width: 320px) */
+@media (max-width: 320px) {
+    .cr-erp-content dd , .cr-erp-content dt {
+        font-size: 0.85rem;
+    }
+}
+
+
+/* ===============================
+   All Media Queries for ERP Snippet
+=============================== */
+
+/* Large Tablets / Small Desktops (max-width: 1024px) */
+@media (max-width: 1024px) {
+    /* Hero Banner */
+    .service-intro-banner {
+        padding: 50px 20px;
+    }
+    .banner-main-title {
+        font-size: 2rem; /* 32px */
+    }
+    .banner-tagline {
+        font-size: 1.05rem; /* 17px */
+    }
+
+    /* ERP Header Text & Image */
+    .cr-erp-header-row {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .cr-erp-header-text,
+    .cr-erp-header-img {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    .cr-erp-header-text h1 {
+        font-size: 2.4rem;
+        line-height: 1.25;
+    }
+    .cr-erp-subtext {
+        font-size: 1.1rem;
+    }
+
+    /* ERP Content Headings */
+    .cr-erp-content h2 {
+        font-size: 1.75rem;
+    }
+    .cr-erp-content p {
+        font-size: 1rem;
+    }
+
+    /* FAQ Section */
+    .cr-erp-content dt {
+        font-size: 1rem;
+        padding: 12px 18px 12px 40px;
+    }
+    .cr-erp-content dt::before {
+        font-size: 1.1rem;
+    }
+    .cr-erp-content dd {
+        font-size: 0.95rem;
+        padding: 8px 12px;
+    }
+}
+
+/* Tablets / Mobile Large (max-width: 768px) */
+@media (max-width: 768px) {
+    /* Hero Banner */
+    .service-intro-banner {
+        padding: 40px 15px;
+    }
+    .banner-main-title {
+        font-size: 1.75rem; /* 28px */
+    }
+    .banner-tagline {
+        font-size: 1rem; /* 16px */
+    }
+    .banner-breadcrumbs {
+        font-size: 0.85rem;
+        gap: 5px;
+    }
+
+    /* ERP Header Row */
+    .cr-erp-header-row {
+        gap: 15px;
+    }
+    .cr-erp-header-text h1 {
+        font-size: 2rem;
+    }
+    .cr-erp-subtext {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    .cr-erp-header-img img {
+        min-width: 250px;
+    }
+
+    /* ERP Content Headings */
+    .cr-erp-content h2 {
+        font-size: 1.6rem;
+    }
+    .cr-erp-content p {
+        font-size: 0.98rem;
+    }
+
+    /* FAQ Section */
+    .cr-erp-content dt {
+        font-size: 0.98rem;
+        padding: 10px 15px 10px 35px;
+    }
+    .cr-erp-content dt::before {
+        font-size: 1rem;
+    }
+    .cr-erp-content dd {
+        font-size: 0.92rem;
+        padding: 6px 10px;
+    }
+}
+
+/* Mobile Medium (max-width: 480px) */
+@media (max-width: 480px) {
+    /* Hero Banner */
+    .service-intro-banner {
+        padding: 30px 10px;
+    }
+    .banner-main-title {
+        font-size: 1.5rem; /* 24px */
+    }
+    .banner-tagline {
+        font-size: 0.95rem; /* 15px */
+    }
+
+    /* ERP Header Text */
+    .cr-erp-header-text h1 {
+        font-size: 1.8rem;
+    }
+    .cr-erp-subtext {
+        font-size: 0.95rem;
+    }
+
+
+    /* FAQ Section */
+    .cr-erp-content dt {
+        font-size: 0.95rem;
+        padding: 10px 12px 10px 30px;
+    }
+    .cr-erp-content dt::before {
+        font-size: 0.95rem;
+    }
+    .cr-erp-content dd {
+        font-size: 0.9rem;
+        padding: 6px 8px;
+    }
+}
+
+/* Mobile Small / Extra Small (max-width: 375px) */
+@media (max-width: 375px) {
+    /* Hero Banner */
+    .banner-main-title {
+        font-size: 1.35rem; /* ~21.6px */
+    }
+    .banner-tagline {
+        font-size: 0.9rem;
+    }
+
+    /* ERP Header Text */
+    .cr-erp-header-text h1 {
+        font-size: 1.6rem;
+    }
+    .cr-erp-subtext {
+        font-size: 0.9rem;
+    }
+
+    /* FAQ Section */
+    .cr-erp-content dt {
+        font-size: 0.9rem;
+        padding: 8px 10px 8px 28px;
+    }
+    .cr-erp-content dt::before {
+        font-size: 0.9rem;
+    }
+    .cr-erp-content dd {
+        font-size: 0.88rem;
+        padding: 5px 8px;
+    }
+}
+
+/* Extra Small (max-width: 320px) */
+@media (max-width: 320px) {
+    /* Hero Banner */
+    .banner-main-title {
+        font-size: 1.2rem;
+    }
+    .banner-tagline {
+        font-size: 0.85rem;
+    }
+
+
+    /* FAQ Section */
+    .cr-erp-content dt {
+        font-size: 0.85rem;
+        padding: 6px 8px 6px 25px;
+    }
+    .cr-erp-content dt::before {
+        font-size: 0.85rem;
+    }
+    .cr-erp-content dd {
+        font-size: 0.85rem;
+        padding: 5px 6px;
+    }
+}
+
+
+
+/* ===============================
+   Industries Section
+=============================== */
+
+:root {
+  --industry-gradient-start: #0a173b;
+  --industry-gradient-end: #1e3a8a;
+  --industry-dark: #0a173b;
+  --industry-text-muted: #334155;
+}
+
+.erp-industries-section {
+  margin-bottom: 30px;
+}
+
+.erp-industries-container {
+  text-align: center;
+}
+
+.erp-section-title {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--industry-dark);
+
+}
+
+.erp-industries-section h2{
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+/* GRID */
+.erp-industries-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(200px, 1fr));
+    gap: 25px;
+    max-width: 1200px; /* prevent stretching */
+    margin: 0 auto;
+}
+
+
+/* CARD STYLE */
+.erp-industry-card {
+  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 20px;
+  box-shadow: 0 10px 20px rgba(10, 23, 59, 0.08);
+  transition: all 0.35s ease;
+  border-bottom: 4px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Hover BG Animation */
+
+.erp-industry-card::before {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #e3edff, #d5e1fc);
+  transition: top 0.4s ease;
+  z-index: 0; /* stays at the back */
+}
+
+.erp-industry-card:hover::before {
+  top: 0;
+}
+
+.erp-industry-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 26px rgba(10, 23, 59, 0.15);
+  border-bottom: 4px solid var(--industry-gradient-end);
+}
+
+/* ICON STYLE */
+.erp-industry-card i {
+  background: linear-gradient(145deg, var(--industry-gradient-start), var(--industry-gradient-end));
+  color: #fff;
+  font-size: 22px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+/* TEXT */
+.erp-industry-card span {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--industry-dark);
+  position: relative;
+  z-index: 1;
+}
+
+
+
+/* ========== RESPONSIVE MEDIA QUERIES ========== */
+
+/* Large screens (max 1200px) */
+@media (max-width: 1200px) {
+  .erp-industries-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Medium screens (max 992px) */
+@media (max-width: 992px) {
+  .erp-industries-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Tablets (max 768px) */
+@media (max-width: 768px) {
+  .erp-industries-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .erp-industry-card {
+    padding: 22px 16px;
+  }
+  .erp-section-title {
+    font-size: 28px;
+  }
+}
+
+/* Mobile (max 480px) */
+@media (max-width: 480px) {
+  .erp-industries-grid {
+    grid-template-columns: repeat(2, 1fr); /* ✅ two per row */
+    gap: 16px;
+  }
+  .erp-industry-card {
+    padding: 20px 14px;
+  }
+  .erp-section-title {
+    font-size: 24px;
+  }
+  .erp-industry-card i {
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
+  }
+  .erp-industry-card span {
+    font-size: 1rem;
+  }
+}
+
+/* Extra small mobile (max 360px) */
+@media (max-width: 360px) {
+  .erp-industries-grid {
+    grid-template-columns: repeat(2, 1fr); /* ✅ two per row */
+    gap: 12px;
+  }
+  .erp-industry-card {
+    padding: 18px 12px;
+  }
+  .erp-section-title {
+    font-size: 20px;
+  }
+  .erp-industry-card i {
+    font-size: 18px;
+    width: 44px;
+    height: 44px;
+  }
+  .erp-industry-card span {
+    font-size: 0.9rem;
+  }
+}
+
+
+
+
+:root {
+  --solution-dark: #0a3d62;
+  --solution-accent: #38a1db;
+}
+
+/* Section Container */
+
+.erp-solutions-container {
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Title */
+.erp-solutions-title {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--solution-dark);
+  margin-bottom: 12px;
+}
+
+
+/* Wrapper */
+.erp-solutions-wrapper {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  margin: 0 auto;
+}
+
+/* Image side */
+.erp-solutions-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.erp-solutions-image img {
+  max-height: 500px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Boxes side */
+.erp-solutions-boxes {
+  flex: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.erp-solution-box {
+  position: relative;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f8ff 100%);
+  border: 1px solid rgba(10, 61, 98, 0.2);
+  border-radius: 16px;
+  padding: 25px 20px;
+  text-align: left;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+/* Decorative background */
+.erp-solution-box::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -40%;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle at center, rgba(10,61,98,0.08) 0%, transparent 70%);
+  transform: rotate(25deg);
+  opacity: 0.5;
+}
+
+/* Hover */
+.erp-solution-box:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(10,61,98,0.2);
+  border-color: var(--solution-dark);
+}
+
+/* Heading */
+.erp-solution-box h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--solution-dark);
+  position: relative;
+}
+
+.erp-solution-box h3::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 3px;
+  margin-top: 6px;
+  background: linear-gradient(90deg, var(--solution-dark), var(--solution-accent));
+  border-radius: 2px;
+}
+
+/* Paragraph */
+.erp-solution-box p {
+  color: #333;
+  line-height: 1.5;
+  font-size: 15px;
+  flex-grow: 1;
+  text-align: left;
+}
+
+/* ---------------------------------- */
+/* RESPONSIVE MEDIA QUERIES           */
+/* ---------------------------------- */
+
+/* ≤1200px */
+@media (max-width: 1200px) {
+  .erp-solutions-title { font-size: 30px; }
+  .erp-solution-box { height: 190px; }
+}
+
+/* ≤992px */
+@media (max-width: 992px) {
+  .erp-solutions-wrapper { flex-direction: column; }
+  .erp-solutions-image img { max-height: 350px; }
+  .erp-solutions-boxes { grid-template-columns: 1fr 1fr; }
+  .erp-solution-box { height: 180px; }
+}
+
+/* ≤768px */
+@media (max-width: 768px) {
+  .erp-solutions-title { font-size: 26px; }
+  .erp-solutions-boxes { grid-template-columns: 1fr; }
+  .erp-solution-box { height: auto; padding: 20px; }
+}
+
+/* ≤480px */
+@media (max-width: 480px) {
+  .erp-solutions { padding: 50px 15px; }
+  .erp-solutions-title { font-size: 22px; }
+  .erp-solutions-image img { max-height: 250px; }
+}
+
+/* ≤360px */
+@media (max-width: 360px) {
+  .erp-solutions-title { font-size: 20px; }
+  .erp-solution-box h3 { font-size: 18px; }
+  .erp-solution-box p { font-size: 13px; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==============================
+   ERP CTA Section - Base Styles
+   ============================== */
+.erp-cta-section {
+    position: relative;
+    background: #0a173b;
+    overflow: hidden;
+    padding: 60px 20px;
+    z-index: 1;
+    margin-top: 50px;
+}
+
+/* ✅ Reuse bubbles */
+.erp-cta-section .bubble {
+    position: absolute;
+    bottom: 10px;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(100, 149, 237, 0.2);
+    border-radius: 50%;
+    animation: floatSmall 4s infinite ease-in-out;
+    opacity: 0.6;
+}
+
+.erp-cta-section .bubble:nth-child(1) { left: 10%; animation-delay: 0s; }
+.erp-cta-section .bubble:nth-child(2) { left: 30%; width: 15px; height: 15px; animation-delay: 1s; }
+.erp-cta-section .bubble:nth-child(3) { left: 50%; width: 25px; height: 25px; animation-delay: 2s; }
+.erp-cta-section .bubble:nth-child(4) { left: 70%; width: 18px; height: 18px; animation-delay: 0.5s; }
+.erp-cta-section .bubble:nth-child(5) { left: 90%; width: 22px; height: 22px; animation-delay: 1.5s; }
+
+/* ✅ Layout */
+.erp-cta-container {
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 15px;
+    text-align: center;
+}
+
+.erp-cta-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.erp-cta-row h2 {
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+
+.erp-cta-row .highlight {
+    color: var(--highlight-color);
+}
+
+/* ✅ Reuse the same button */
+.erp-cta-row {
+    margin-top: 15px;
+}
+
+
+.erp-cta-row {
+    display: flex;
+    flex-direction: row;   /* row now works properly */
+    align-items: center;   /* center align vertically */
+    justify-content: center;
+    gap: 20px;
+    text-align: left;      /* prevent text from staying centered */
+}
+
+.erp-cta-text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ==============================
+   Responsive Media Queries
+   ============================== */
+
+/* ✅ Extra large desktops (1201px+) */
+@media (min-width: 1201px) {
+    .erp-cta-row h2 {
+        font-size: 2.2rem;
+    }
+}
+/* ✅ Large screens (993px - 1200px) */
+@media (max-width: 1200px) {
+    .erp-cta-row h2 {
+        font-size: 1.9rem;
+    }
+}
+
+/* ✅ Small laptops (769px - 992px) */
+@media (max-width: 992px) {
+    .erp-cta-row h2 {
+        font-size: 1.8rem;
+    }
+    .erp-cta-row .dark-cta-btn {
+        font-size: 1rem;
+    }
+}
+/* ✅ Tablets (481px - 768px) */
+@media (max-width: 768px) {
+    .erp-cta-row {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    .erp-cta-row h2 {
+        font-size: 1.6rem;
+    }
+    .erp-cta-row .dark-cta-btn {
+        font-size: 0.95rem;
+    }
+}
+/* ✅ Large phones (361px - 480px) */
+@media (max-width: 480px) {
+    .erp-cta-section {
+        padding: 20px 10px;
+    }
+    .erp-cta-row {
+        flex-direction: column;
+        gap: 18px;
+        text-align: center;
+    }
+    .erp-cta-row h2 {
+        font-size: 0.8rem;
+    }
+    .erp-cta-row .dark-cta-btn {
+        font-size: 0.8rem;
+        padding: 8px 16px;
+    }
+    .erp-cta-container {
+        padding: 0px 5px;
+    }
+    .erp-cta-row .dark-cta-btn , .erp-cta-row .dark-cta-btn i {
+        font-size: 0.9 rem;
+    }
+
+}
+/* ✅ Small phones (max 360px) */
+@media (max-width: 360px) {
+    .erp-cta-section {
+        padding: 20px 10px;
+    }
+    .erp-cta-row {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    .erp-cta-row h2 {
+        font-size: 0.8rem;
+    }
+    .erp-cta-row .dark-cta-btn {
+        font-size: 0.85rem;
+        padding: 8px 14px;
+    }
+    .erp-cta-container {
+        padding: 0px 5px;
+    }
+
+    .erp-cta-row .dark-cta-btn , .erp-cta-row .dark-cta-btn i {
+        font-size: 0.9 rem;
+    }
+
+}
+
+
+
+
+
+/* ===== Contact Section Styling ===== */
+/* Section Wrapper */
+.contact-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Main Wrapper */
+.contact-wrapper {
+  display: flex;
+  width: 100%;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Left Side (Form) */
+.contact-form {
+  flex: 1;
+  padding: 50px 40px;
+  border-radius: 16px;
+  border: 1px solid black;
+  text-align: center;
+  background: #f7f9fc; /* almost white, elegant */
+
+}
+
+.contact-form h2 {
+  font-size: 26px;
+  color: #222;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+.contact-form p {
+  color: #555;
+  margin-bottom: 25px;
+  font-size: 15px;
+  text-align: center;
+}
+
+/* Floating Label Wrapper */
+.form-group {
+  position: relative;
+  margin-bottom: 22px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid black;
+  border-radius: 8px;
+  background: #fafafa;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.form-group textarea {
+  resize: none;
+  min-height: 120px;
+}
+
+/* Floating Label */
+.form-group label {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-size: 15px;
+  color: #888;
+  pointer-events: none;
+  transition: 0.3s ease all;
+}
+
+/* Focus or Filled */
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #0066ff;
+  background: #fff;
+//   box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+  outline: none;
+}
+
+.form-group input:focus + label,
+.form-group textarea:focus + label,
+.form-group textarea:not(:placeholder-shown) + label {
+  top: -8px;
+  left: 12px;
+  font-size: 12px;
+  color: #0066ff;
+  background: linear-gradient(to bottom, #f7f9fc 50%, #fff 50%);
+  padding: 0 5px;
+}
+
+.form-group input:not(:placeholder-shown) + label{
+  top: -8px;
+  left: 12px;
+  font-size: 12px;
+  color: #0066ff;
+  background: linear-gradient(to bottom, #f7f9fc 50%, #fafafa 50%);
+  padding: 0 5px;
+}
+
+/* Button (Smaller) */
+.contact-form button {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #0066ff;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.contact-form button:hover {
+  background: #004ecc;
+  transform: translateY(-2px);
+}
+
+/* Right Side (Image) */
+.contact-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.contact-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===== Responsive Breakpoints ===== */
+
+/* Tablets (≤992px) */
+@media (max-width: 992px) {
+  .contact-wrapper {
+    flex-direction: column; /* stack */
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Image comes first */
+  .contact-image {
+    order: -1;
+    width: 80%;
+    padding: 20px;
+  }
+
+  .contact-form {
+    width: 70%;
+    margin-top: 20px;
+    padding: 40px 30px;
+  }
+}
+
+/* Small Tablets & Large Phones (≤768px) */
+@media (max-width: 768px) {
+  .contact-form {
+    width: 85%;
+    padding: 30px 20px;
+  }
+
+  .contact-form h2 {
+    font-size: 22px;
+  }
+
+  .contact-form p {
+    font-size: 13px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .contact-form button {
+    padding: 8px 18px;
+    font-size: 13px;
+  }
+
+  .contact-image {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+}
+
+/* Phones (≤480px) */
+@media (max-width: 480px) {
+  .contact-form {
+    width: 90%;
+    padding: 20px 15px;
+  }
+
+  .contact-form h2 {
+    font-size: 20px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .contact-form button {
+    font-size: 12px;
+    padding: 7px 15px;
+  }
+
+  .contact-image {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+}
+
+/* Extra Small Phones (≤360px) */
+@media (max-width: 360px) {
+  .contact-form {
+    width: 95%;
+    padding: 15px 10px;
+  }
+
+  .contact-form h2 {
+    font-size: 18px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 10px;
+    padding: 10px 10px;
+  }
+
+  .contact-form button {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+
+  .contact-image {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+}
+
+
+/* Remove browser autofill background */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #fafafa inset !important;
+  box-shadow: 0 0 0px 1000px #fafafa inset !important;
+  -webkit-text-fill-color: #000 !important; /* text color */
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+
+/* Popup Container */
+#successPopup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Popup Box */
+#successPopup .popup-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 35px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+  transform: scale(0.8);
+  opacity: 0;
+  animation: popupIn 0.4s ease forwards;
+  position: relative;
+}
+
+/* Success Icon Circle */
+.popup-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  background: linear-gradient(135deg, #16c47f, #0f9d58);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: white;
+  box-shadow: 0 8px 20px rgba(22,196,127,0.4);
+}
+
+/* Message Text */
+#popupMessage {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin-top: 12px;
+}
+
+/* Fade & Scale Animation */
+@keyframes popupIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes popupOut {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(0.8); opacity: 0; }
+}
+
+/* ✅ 1200px and below (large desktops / laptops) */
+@media (max-width: 1200px) {
+  #successPopup .popup-box {
+    max-width: 380px;
+    padding: 35px 28px;
+  }
+  .popup-icon {
+    width: 65px;
+    height: 65px;
+    font-size: 30px;
+  }
+  #popupMessage {
+    font-size: 17px;
+  }
+}
+
+/* ✅ 992px and below (medium devices / tablets landscape) */
+@media (max-width: 992px) {
+  #successPopup .popup-box {
+    max-width: 350px;
+    padding: 32px 25px;
+  }
+  .popup-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+  #popupMessage {
+    font-size: 16px;
+  }
+}
+
+/* ✅ 768px and below (tablets portrait / small laptops) */
+@media (max-width: 768px) {
+  #successPopup .popup-box {
+    max-width: 320px;
+    padding: 28px 22px;
+  }
+  .popup-icon {
+    width: 55px;
+    height: 55px;
+    font-size: 26px;
+  }
+  #popupMessage {
+    font-size: 15px;
+  }
+}
+
+/* ✅ 480px and below (large phones) */
+@media (max-width: 480px) {
+  #successPopup .popup-box {
+    max-width: 280px;
+    padding: 25px 18px;
+    border-radius: 16px;
+  }
+  .popup-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+  #popupMessage {
+    font-size: 14px;
+  }
+}
+
+/* ✅ 360px and below (small phones) */
+@media (max-width: 360px) {
+  #successPopup .popup-box {
+    max-width: 240px;
+    padding: 20px 15px;
+    border-radius: 14px;
+  }
+  .popup-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 22px;
+  }
+  #popupMessage {
+    font-size: 13px;
+  }
+}
+

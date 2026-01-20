@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="case_study" name="Case Studies">
+        <section class="case_study cr_font">
+            <div class="container-fluid">
+                <section class="s_cover parallax s_parallax_is_fixed bg-black-50 pt96 pb96"
+                         data-scroll-background-ratio="1">
+                    <span class="s_parallax_bg oe_img_bg"
+                          style="background-image: url('/web/image/website.s_cover_default_image'); background-position: 50% 0;"/>
+                    <div class="o_we_bg_filter bg-black-50"/>
+                    <div class="container s_allow_columns">
+                        <h1 style="text-align: center;">
+                            <font style="font-size: 62px; font-weight: bold;">CASE STUDY</font>
+                        </h1>
+                    </div>
+                </section>
+                <div class="row justify-content-center" id="case-study"/>
+            </div>
+        </section>
+    </template>
+
+    <!-- To be used in JS for snippet options -->
+    <template id="case_study_options" inherit_id="website.snippet_options">
+        <xpath expr="." position="inside">
+            <div data-selector=".main_page_of_case_study" data-page-options="true" data-no-check="true"
+                 string="Case Study">
+                <we-checkbox string="Sidebar"
+                             data-name="case_study_sidebar_opt"
+                             data-customize-website-views="cr_internal_website_theme.opt_blog_post_sidebar"
+                             data-no-preview="true"
+                             data-reload="/"/>
+            </div>
+
+
+        </xpath>
+    </template>
+
+
+    <record id="cr_internal_website_theme.case_study_000_scss" model="ir.asset">
+        <field name="name">Case Study 000 SCSS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_internal_website_theme/static/src/snippets/case_study/000.scss</field>
+    </record>
+
+    <record id="cr_internal_website_theme.case_study_000_js" model="ir.asset">
+        <field name="name">Case Study 000 JS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_internal_website_theme/static/src/snippets/case_study/000.js</field>
+    </record>
+
+
+</odoo>

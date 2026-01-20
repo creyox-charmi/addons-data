@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_blog_post_multimedia_public,blog.post.multimedia.public,model_blog_post_multimedia,base.group_public,1,0,0,0
+access_blog_post_multimedia_portal,blog.post.multimedia.portal,model_blog_post_multimedia,base.group_portal,1,1,1,1
+access_blog_post_multimedia_designer,blog.post.multimedia.designer,model_blog_post_multimedia,website.group_website_designer,1,1,1,1
+access_blog_post_wb,access.blog.post.wb,website_blog.model_blog_post,base.group_user,1,1,1,1

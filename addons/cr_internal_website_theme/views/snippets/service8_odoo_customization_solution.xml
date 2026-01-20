@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service8_odoo_customization_solution" name="service8_odoo_customization_solution">
+
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_odoo_customization_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Tailored Odoo Customization Services
+                    </h1>
+                    <p class="banner-tagline">
+                        Unlock the full potential of Odoo with custom modules, workflows, and integrations
+                        designed to fit your exact business requirements and growth strategies.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">Odoo Customization</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-odoo-customization-intro o_website_snippet cr_font" aria-labelledby="odoo-customization-heading">
+            <div class="cr-odoo-container">
+                <!-- Header Row -->
+                <div class="cr-odoo-header-row">
+                    <div class="cr-odoo-header-text">
+                        <h1 id="odoo-customization-heading">Custom Odoo Solutions for Unique Business Needs</h1>
+                        <p class="cr-odoo-subtext">
+                            Every business has unique processes, and Odoo's flexibility allows us to mold the ERP into a
+                            system that fits perfectly with your requirements. Our Odoo customization services include
+                            module development, third-party integrations, workflow automation, UI/UX enhancements, and
+                            advanced reporting capabilities.
+                            <br/>
+                            <br/>
+                            With a deep understanding of industries and proven customization expertise,
+                            we ensure that your Odoo ERP evolves with your business needs, delivers better efficiency,
+                            and empowers your teams to achieve more.
+                            Our approach ensures innovation, scalability, and long-term value for your ERP investment.
+                        </p>
+                    </div>
+                    <div class="cr-odoo-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/odoo-customization.png"
+                             alt="Odoo Customization"/>
+                    </div>
+                </div>
+
+
+                <section class="cr-odoo-process">
+                    <div class="cr-odoo-container">
+                        <h2>Our Odoo Customization Process</h2>
+
+                        <div class="process-row">
+                            <div class="process-box img-box">
+                                <img src="/cr_internal_website_theme/static/src/img/step1.jpg"
+                                     alt="Requirement Analysis"/>
+                            </div>
+                            <div class="process-box content-box">
+                                <span class="step-number">1</span>
+                                <h3>Requirement Analysis</h3>
+                                <p>We begin by understanding your workflows, challenges, and improvement
+                                    opportunities.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="process-row reverse">
+                            <div class="process-box content-box">
+                                <span class="step-number">2</span>
+                                <h3>Design &amp; Planning</h3>
+                                <p>Our team drafts a scalable customization roadmap that aligns with your business
+                                    goals.
+                                </p>
+                            </div>
+                            <div class="process-box img-box">
+                                <img src="/cr_internal_website_theme/static/src/img/step2.jpg"
+                                     alt="Design &amp; Planning"/>
+                            </div>
+                        </div>
+
+                        <div class="process-row">
+                            <div class="process-box img-box">
+                                <img src="/cr_internal_website_theme/static/src/img/step3.jpg"
+                                     alt="Development &amp; Testing"/>
+                            </div>
+                            <div class="process-box content-box">
+                                <span class="step-number">3</span>
+                                <h3>Development &amp; Testing</h3>
+                                <p>We build and test modules iteratively to ensure accuracy, efficiency, and
+                                    compatibility.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="process-row reverse">
+                            <div class="process-box content-box">
+                                <span class="step-number">4</span>
+                                <h3>Deployment &amp; Training</h3>
+                                <p>Custom solutions are deployed with proper documentation and staff training.</p>
+                            </div>
+                            <div class="process-box img-box">
+                                <img src="/cr_internal_website_theme/static/src/img/step4.jpg"
+                                     alt="Deployment &amp; Training"/>
+                            </div>
+                        </div>
+
+                        <div class="process-row">
+                            <div class="process-box img-box">
+                                <img src="/cr_internal_website_theme/static/src/img/step5.jpg" alt="Ongoing Support"/>
+                            </div>
+                            <div class="process-box content-box">
+                                <span class="step-number">5</span>
+                                <h3>Ongoing Support</h3>
+                                <p>We offer continuous support, monitoring, and future upgrades as your needs evolve.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- Content Below -->
+                <div class="cr-odoo-content">
+                    <h2>Why Choose Our Odoo Customization Services?</h2>
+                    <p>
+                        We specialize in transforming Odoo into a solution that truly mirrors your business workflows.
+                        Our consultants collaborate with your team to identify pain points, inefficiencies, and
+                        opportunities.
+                        From small tweaks to large-scale custom module development, we design enhancements that align
+                        with your strategic objectives.
+                        <br/>
+                        <br/>
+                        With transparent processes, quality-driven coding standards, and ongoing support,
+                        we help you maximize productivity, minimize bottlenecks, and adapt quickly to market changes.
+                    </p>
+
+                    <ul class="odoo-features">
+                        <li>
+                            <strong>Custom Module Development:</strong>
+                            Build industry-specific modules and features tailored to your business needs.
+                        </li>
+                        <li>
+                            <strong>Third-Party Integrations:</strong>
+                            Seamless connection with external apps, payment gateways, and APIs.
+                        </li>
+                        <li>
+                            <strong>Workflow Automation:</strong>
+                            Automate repetitive tasks and ensure process consistency.
+                        </li>
+                        <li>
+                            <strong>UI/UX Customization:</strong>
+                            Enhance the user interface for better adoption and usability.
+                        </li>
+                        <li>
+                            <strong>Advanced Reporting:</strong>
+                            Generate insightful custom dashboards and reports.
+                        </li>
+                        <li>
+                            <strong>Performance Optimization:</strong>
+                            Improve system speed, stability, and resource efficiency.
+                        </li>
+                        <li>
+                            <strong>Security Enhancements:</strong>
+                            Apply custom rules, roles, and secure access for sensitive data.
+                        </li>
+                        <li>
+                            <strong>Scalable Architecture:</strong>
+                            Future-proof customization designed for business growth.
+                        </li>
+                        <li>
+                            <strong>Mobile Optimization:</strong>
+                            Custom features optimized for mobile and tablets.
+                        </li>
+                        <li>
+                            <strong>Continuous Support:</strong>
+                            Ongoing customization, upgrades, and maintenance for evolving needs.
+                        </li>
+                    </ul>
+
+                    <h2>Our Customization Approach</h2>
+                    <p>
+                        We follow a collaborative and agile-driven methodology for Odoo customization.
+                        Our process begins with requirement analysis, where we map your workflows and identify
+                        areas of improvement. Once approved, our developers design, build, and test
+                        custom features in iterative cycles for faster delivery and higher adaptability.
+                        <br/>
+                        <br/>
+                        Post-deployment, we provide thorough training, documentation, and support to ensure
+                        smooth adoption. Our team also monitors performance and suggests upgrades as your
+                        business evolves, ensuring your ERP remains aligned with your long-term goals.
+                    </p>
+
+                    <section class="web-cta-section o_wfull" aria-labelledby="web-cta-heading">
+                        <!-- Floating bubbles -->
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+
+                        <div class="container web-cta-container">
+                            <div class="web-cta-row">
+                                <!-- Text -->
+                                <div class="web-cta-text">
+                                    <h2 id="web-cta-heading">
+                                        Let’s build a system that works exactly the way your business does.
+                                    </h2>
+                                </div>
+
+                                <!-- Button (same pattern as ERP CTA) -->
+                                <a href="/contactus" class="dark-cta-btn" title="Get a Free Consultation"
+                                   aria-label="Get a Free Consultation">
+                                    <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                                    <span>Get a Free Consultation</span>
+                                </a>
+
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Can Odoo customization break during upgrades?</dt>
+                        <dd>We follow best coding practices and modular architecture to ensure your customizations
+                            remain compatible with future versions.
+                        </dd>
+                        <dt>Can you integrate Odoo with third-party apps?</dt>
+                        <dd>Yes, we specialize in integrating Odoo with payment gateways, shipping providers, CRMs, and
+                            external systems.
+                        </dd>
+                        <dt>Do you provide post-customization support?</dt>
+                        <dd>Absolutely. We provide maintenance, bug fixes, and additional enhancements whenever
+                            needed.
+                        </dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+    <!--    <record id="cr_internal_website_theme.service8_odoo_customization_solution_000_scss" model="ir.asset">-->
+    <!--        <field name="name">SERVICE-8 000 SCSS</field>-->
+    <!--        <field name="bundle">web.assets_frontend</field>-->
+    <!--        <field name="path">cr_internal_website_theme/static/src/snippets/service8_odoo_customization_solution/000.scss</field>-->
+    <!--    </record>-->
+</odoo>

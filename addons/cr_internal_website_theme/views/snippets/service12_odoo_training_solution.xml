@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Odoo Training Snippet Template -->
+    <template id="service12_odoo_training_solution" name="service12_odoo_training_solution">
+
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_odoo_training_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Professional Odoo Training Services
+                    </h1>
+                    <p class="banner-tagline">
+                        Equip your team with the knowledge and skills to fully leverage Odoo—through structured training
+                        programs covering functional workflows, technical development, administration, and best practices.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">Odoo Training</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-odoo-training-intro o_website_snippet cr_font" aria-labelledby="odoo-training-heading">
+            <div class="cr-odoo-container">
+                <!-- Header Row -->
+                <div class="cr-odoo-header-row">
+                    <div class="cr-odoo-header-text">
+                        <h1 id="odoo-training-heading">Empower Your Workforce with Odoo Training</h1>
+                        <p class="cr-odoo-subtext">
+                            Adopting Odoo is only successful when your team is confident using it. Our structured training
+                            services ensure your employees—from end-users to developers—gain practical, hands-on knowledge
+                            tailored to your business processes.
+                            <br/><br/>
+                            Our certified trainers deliver sessions that blend real-world use cases, interactive workshops,
+                            and scenario-based learning. With both functional and technical modules, we help your workforce
+                            master Odoo and apply it effectively in day-to-day operations.
+                        </p>
+                    </div>
+                    <div class="cr-odoo-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/odoo-training.png" alt="Odoo Training"/>
+                    </div>
+                </div>
+
+                <!-- Content Below -->
+                <div class="cr-odoo-content">
+                    <h2>Why Choose Our Odoo Training?</h2>
+                    <p>
+                        Our training is not just about theory—it’s about building confidence and self-sufficiency.
+                        Each session is designed to ensure maximum knowledge retention and immediate application in real projects.
+                        With interactive exercises, role-based sessions, and post-training support, we make Odoo training practical,
+                        engaging, and effective.
+                        <br/><br/>
+                        Whether your team needs <strong>functional user training, developer bootcamps, or administrator workshops</strong>,
+                        we offer flexible formats to match your requirements.
+                    </p>
+
+                    <ul class="odoo-training-features">
+                        <li>
+                            <strong>Functional Training:</strong>
+                            Master Odoo modules such as Sales, CRM, Inventory, Accounting, and HR.
+                        </li>
+                        <li>
+                            <strong>Technical Training:</strong>
+                            Learn module development, customizations, APIs, and advanced Odoo frameworks.
+                        </li>
+                        <li>
+                            <strong>Administrator Training:</strong>
+                            Manage databases, performance tuning, and security best practices.
+                        </li>
+                        <li>
+                            <strong>Role-Based Learning:</strong>
+                            Tailored sessions for users, managers, and technical staff.
+                        </li>
+                        <li>
+                            <strong>Hands-On Practice:</strong>
+                            Real-world exercises and case studies for deeper understanding.
+                        </li>
+                        <li>
+                            <strong>Flexible Delivery:</strong>
+                            On-site, remote, or hybrid training options.
+                        </li>
+                        <li>
+                            <strong>Certified Trainers:</strong>
+                            Learn from Odoo-certified experts with years of experience.
+                        </li>
+                        <li>
+                            <strong>Post-Training Support:</strong>
+                            Continued mentoring and Q&amp;A assistance after completion.
+                        </li>
+                    </ul>
+
+                    <h2>Our Training Approach</h2>
+                    <p>
+                        Our methodology is <strong>interactive, practical, and results-oriented</strong>.
+                        We begin by assessing your team’s current knowledge and business processes.
+                        Next, we design a customized curriculum that focuses on your industry use cases
+                        and desired outcomes.
+                        <br/><br/>
+                        Training sessions include live demonstrations, guided exercises, and
+                        assessments to track progress. We ensure your team doesn’t just learn Odoo,
+                        but gains the confidence to optimize and innovate with it in real-world operations.
+                    </p>
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Who can attend Odoo Training?</dt>
+                        <dd>We offer training for end-users, managers, administrators, and developers, tailored to each role.</dd>
+                        <dt>Do you provide certification?</dt>
+                        <dd>Yes, we provide completion certificates and prepare participants for official Odoo certifications.</dd>
+                        <dt>Can the training be customized?</dt>
+                        <dd>Absolutely. We design training programs based on your company’s processes and industry needs.</dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+<!--    <record id="cr_internal_website_theme.service12_odoo_training_solution_000_scss" model="ir.asset">-->
+<!--        <field name="name">SERVICE-12 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/service12_odoo_training_solution/000.scss</field>-->
+<!--    </record>-->
+</odoo>

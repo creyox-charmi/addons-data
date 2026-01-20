@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_messages_counter" inherit_id="portal.portal_my_home" name="Portal Home Messages Counter">
+        <xpath expr="//div[hasclass('o_portal_docs')]//t[@t-call='portal.portal_docs_entry']//t[@t-set='placeholder_count'][@t-value='message_count']" position="before">
+            <t t-set="total_msg" t-value="message_count if message_count else 0"/>
+            <t t-set="unread_msg" t-value="unread_message_count if unread_message_count else 0"/>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o_portal_docs')]//t[@t-call='portal.portal_docs_entry']//t[@t-set='title'][contains(., 'Mensajes')]" position="attributes">
+            <attribute name="t-value">'Mensajes (' + str(total_msg) + '/' + str(unread_msg) + ')'</attribute>
+        </xpath>
+    </template>
+
+    <template id="portal_layout_unread_bell" inherit_id="portal.frontend_layout" name="Portal Unread Bell">
+        <xpath expr="//header//ul[hasclass('navbar-nav')]" position="inside">
+            <li class="nav-item dropdown">
+                <a class="nav-link position-relative" href="#" id="unreadDropdown" role="button" data-bs-toggle="dropdown">
+                    <i class="fa fa-bell"/>
+                    <t t-set="current_partner" t-value="request.env.user.partner_id"/>
+                    <t t-set="blog_blog_id" t-value="request.env['blog.post'].sudo().blog_id.search([('name', 'ilike', 'comunidad')], limit=1)"/>
+                    <t t-set="my_blog_post" t-value="request.env['blog.post'].sudo().search([('blog_id', '=', blog_blog_id.id), ('author_id', '=', current_partner.id)], limit=1)"/>
+
+                    <t t-set="total_unread" t-value="0"/>
+                    <t t-set="unread_users" t-value="{}"/>
+
+                    <t t-if="my_blog_post">
+                        <t t-foreach="my_blog_post.message_ids.filtered(lambda m: m.message_type == 'comment' and m.author_id != current_partner and current_partner.id not in m.read_by_partner_ids.ids)" t-as="msg">
+                            <t t-set="total_unread" t-value="total_unread + 1"/>
+                            <t t-if="msg.author_id.id not in unread_users">
+                                <t t-set="unread_users" t-value="dict(unread_users, **{msg.author_id.id: {'partner': msg.author_id, 'count': 1}})"/>
+                            </t>
+                            <t t-else="">
+                                <t t-set="unread_users" t-value="dict(unread_users, **{msg.author_id.id: {'partner': msg.author_id, 'count': unread_users[msg.author_id.id]['count'] + 1}})"/>
+                            </t>
+                        </t>
+                    </t>
+
+                    <span t-if="total_unread > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger unread-bell-badge">
+                        <t t-esc="total_unread"/>
+                    </span>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end unread-messages-menu" aria-labelledby="unreadDropdown">
+                    <li><h6 class="dropdown-header">Mensajes no leídos</h6></li>
+                    <t t-if="not unread_users">
+                        <li><span class="dropdown-item-text text-muted">No hay mensajes nuevos</span></li>
+                    </t>
+                    <t t-else="">
+                        <t t-foreach="list(unread_users.values())[:5]" t-as="item">
+                            <li>
+                                <a class="dropdown-item" t-attf-href="/my/messages/thread/#{item['partner'].id}">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <strong t-esc="item['partner'].name"/>
+                                        </div>
+                                        <span class="badge bg-primary" t-esc="item['count']"/>
+                                    </div>
+                                </a>
+                            </li>
+                        </t>
+                        <t t-if="len(unread_users) > 5">
+                            <li><hr class="dropdown-divider"/></li>
+                            <li><a class="dropdown-item text-center" href="/my/messages">Ver todos</a></li>
+                        </t>
+                    </t>
+                </ul>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="blog_post_mark_read_script" inherit_id="website_blog.blog_post_complete" name="Mark Messages Read on Blog View">
+        <xpath expr="//div[@id='wrap']" position="inside">
+            <script type="text/javascript">
+                odoo.define('td_website_customisation.blog_mark_read', function(require) {
+                    'use strict';
+                    var ajax = require('web.ajax');
+                    var core = require('web.core');
+
+                    var blogPostId = parseInt($('article[data-blog-post-id]').attr('data-blog-post-id'));
+
+                    if (blogPostId) {
+                        ajax.jsonRpc('/web/dataset/call_kw', 'call', {
+                            model: 'blog.post',
+                            method: 'mark_messages_read_from_blog',
+                            args: [blogPostId],
+                            kwargs: {}
+                        });
+                    }
+                });
+            </script>
+        </xpath>
+    </template>
+
+</odoo>

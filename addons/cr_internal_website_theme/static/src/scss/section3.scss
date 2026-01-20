@@ -1,0 +1,507 @@
+        .erp-comparison-section-v3 {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0ecff 50%, #ffffff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .erp-comparison-section-v3::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08), transparent 70%);
+            border-radius: 50%;
+        }
+
+        .erp-comparison-section-v3::after {
+            content: '';
+            position: absolute;
+            bottom: -150px;
+            left: -150px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.06), transparent 70%);
+            border-radius: 50%;
+        }
+
+        .erp-comparison-section-v3 * {
+            box-sizing: border-box;
+        }
+
+        .erp-comparison-container-v3 {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .erp-comparison-header-v3 {
+            max-width: 800px;
+            margin: 0 auto 80px;
+            text-align: center;
+        }
+
+        .erp-comparison-pretitle-v3 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 24px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);;
+            border-radius: 100px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .erp-comparison-title-v3 {
+            font-size: 48px;
+            font-weight: 800;
+            color: #0A173B;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .erp-comparison-title-v3 .cr_vs{
+            color: #3b82f6;
+
+        }
+
+
+
+        .erp-comparison-description-v3 {
+            font-size: 19px;
+            color: #64748b;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .erp-comparison-grid-v3 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-bottom: 64px;
+        }
+
+        .erp-comparison-column-v3 {
+            background: #ffffff;
+            border: 2px solid rgba(59, 130, 246, 0.12);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.08);
+        }
+
+        .erp-comparison-column-v3::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .erp-comparison-column-v3:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .erp-comparison-column-v3:hover::before {
+            opacity: 1;
+        }
+
+        .erp-comparison-column-premium-v3 {
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.15);
+        }
+
+        .erp-comparison-column-premium-v3::before {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(99, 102, 241, 0.3));
+            opacity: 1;
+        }
+
+        .erp-comparison-column-premium-v3::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #6366f1, #3b82f6);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .erp-comparison-column-header-v3 {
+            padding: 40px 32px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            position: relative;
+        }
+
+        .erp-comparison-column-premium-v3 .erp-comparison-column-header-v3 {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            border-bottom: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .erp-comparison-column-premium-v3 .erp-comparison-column-header-v3::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+        }
+
+        .erp-comparison-column-badge-v3 {
+            display: inline-flex;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .erp-comparison-column-v3:not(.erp-comparison-column-premium-v3) .erp-comparison-column-badge-v3 {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .erp-comparison-column-premium-v3 .erp-comparison-column-badge-v3 {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .erp-comparison-column-title-v3 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0A173B;
+            margin-bottom: 12px;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .erp-comparison-column-premium-v3 .erp-comparison-column-title-v3 {
+            color: #ffffff;
+        }
+
+        .erp-comparison-column-subtitle-v3 {
+            font-size: 16px;
+            color: #64748b;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .erp-comparison-column-premium-v3 .erp-comparison-column-subtitle-v3 {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .erp-comparison-features-v3 {
+            padding: 32px;
+        }
+
+        .erp-comparison-feature-v3 {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .erp-comparison-feature-v3:hover {
+            padding-left: 8px;
+        }
+
+        .erp-comparison-feature-v3:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .erp-comparison-feature-v3:first-child {
+            padding-top: 0;
+        }
+
+        .erp-comparison-icon-wrapper-v3 {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin-top: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .erp-comparison-feature-v3:hover .erp-comparison-icon-wrapper-v3 {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .erp-comparison-icon-negative-v3 {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+        }
+
+        .erp-comparison-icon-positive-v3 {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1));
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+        }
+
+        .erp-comparison-icon-wrapper-v3 i {
+            font-size: 16px;
+            font-weight: 900;
+            position: relative;
+            z-index: 1;
+        }
+
+        .erp-comparison-feature-content-v3 {
+            flex: 1;
+        }
+
+        .erp-comparison-feature-title-v3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0A173B;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .erp-comparison-feature-text-v3 {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .erp-comparison-cta-v3 {
+            padding: 0 32px 32px;
+        }
+
+        .erp-comparison-button-v3 {
+            display: block;
+            width: 100%;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .erp-comparison-button-v3::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+            border-radius: 50%;
+        }
+
+        .erp-comparison-button-v3:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .erp-comparison-button-v3 span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .erp-comparison-column-v3:not(.erp-comparison-column-premium-v3) .erp-comparison-button-v3 {
+            background: #ffffff;
+            color: #0A173B;
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .erp-comparison-column-v3:not(.erp-comparison-column-premium-v3) .erp-comparison-button-v3:hover {
+            background: #f0f4ff;
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .erp-comparison-column-premium-v3 .erp-comparison-button-v3 {
+            background: linear-gradient(145deg, #0a173b, #1e3a8a);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 8px 24px rgba(30, 58, 138, 0.3);
+        }
+
+        .erp-comparison-column-premium-v3 .erp-comparison-button-v3:hover {
+            background: linear-gradient(145deg, #1e3a8a, #3b82f6);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4);
+        }
+
+        .erp-comparison-footer-v3 {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 48px;
+            background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
+            border: 2px solid rgba(59, 130, 246, 0.15);
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.08);
+        }
+
+        .erp-comparison-footer-v3::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .erp-comparison-footer-title-v3 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0A173B;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .erp-comparison-footer-text-v3 {
+            font-size: 17px;
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 991px) {
+            .erp-comparison-section-v3 {
+                padding: 80px 0;
+            }
+
+            .erp-comparison-container-v3 {
+                padding: 0 24px;
+            }
+
+            .erp-comparison-grid-v3 {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .erp-comparison-title-v3 {
+                font-size: 40px;
+            }
+
+            .erp-comparison-column-v3:hover {
+                transform: translateY(-4px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .erp-comparison-section-v3 {
+                padding: 60px 0;
+            }
+
+            .erp-comparison-header-v3 {
+                margin-bottom: 48px;
+            }
+
+            .erp-comparison-title-v3 {
+                font-size: 32px;
+            }
+
+            .erp-comparison-description-v3 {
+                font-size: 17px;
+            }
+
+            .erp-comparison-column-header-v3 {
+                padding: 32px 24px;
+            }
+
+            .erp-comparison-features-v3 {
+                padding: 24px;
+            }
+
+            .erp-comparison-cta-v3 {
+                padding: 0 24px 24px;
+            }
+
+            .erp-comparison-column-title-v3 {
+                font-size: 26px;
+            }
+
+            .erp-comparison-footer-v3 {
+                padding: 36px 24px;
+            }
+
+            .erp-comparison-footer-title-v3 {
+                font-size: 22px;
+            }
+
+            .erp-comparison-footer-text-v3 {
+                font-size: 15px;
+            }
+        }
+
+        .erp-comparison-button-v3 {
+    text-decoration: none;
+}
+
+.erp-comparison-button-v3:hover,
+.erp-comparison-button-v3:focus {
+    text-decoration: none;
+}
+
+.erp-comparison-button-v3 span {
+    text-decoration: none;
+}

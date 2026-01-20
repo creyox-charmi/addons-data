@@ -1,0 +1,177 @@
+.about-us-transformation {
+  padding: 80px 20px;
+  background: linear-gradient(120deg, #ffffff, #f1f5f9); /* White to soft slate */
+  font-family: 'Poppins', sans-serif;
+}
+
+.slider-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 50px;
+  color: #1f2d5a;
+}
+
+.slider-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.slider-container {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Comparison layout */
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Before column - Blue Tint */
+.before-image {
+  background: linear-gradient(135deg, #f0f7ff, #d9e8ff); /* Light blue shades */
+  padding: 40px;
+  color: #000000; /* Black text */
+}
+
+/* After column - Brighter Blue Tint */
+.after-image {
+  background: linear-gradient(135deg, #e6f0ff, #b3d4ff); /* Brighter blue shades */
+  padding: 40px;
+  color: #000000; /* Black text */
+}
+
+.slider-text h4 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.comparison-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.comparison-list li {
+  font-size: 1rem;
+  padding: 12px 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.comparison-list li:last-child {
+  border-bottom: none;
+}
+
+.comparison-list li::before {
+  display: inline-block;
+  width: 20px; /* Equal space for both icons */
+//   text-align: center;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Icons for before and after */
+.before-image .comparison-list li::before {
+  content: "✖";
+  color: #dc2626; /* Red */
+  font-weight: bold;
+}
+
+.after-image .comparison-list li::before {
+  content: "✔";
+  color: #2563eb; /* Blue */
+  font-weight: bold;
+}
+
+/* ======================
+   RESPONSIVE BREAKPOINTS
+   ====================== */
+
+/* Tablet - up to 768px */
+@media (max-width: 768px) {
+  .about-us-transformation {
+    padding: 60px 15px;
+  }
+  .slider-title {
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+  .comparison-grid {
+    grid-template-columns: 1fr; /* Stack vertically */
+  }
+  .before-image, .after-image {
+//     text-align: center;
+    padding: 30px;
+  }
+  .slider-text h4 {
+    font-size: 1.4rem;
+  }
+  .comparison-list li {
+    font-size: 0.95rem;
+    padding: 10px 0;
+  }
+}
+
+/* Mobile Large - up to 480px */
+@media (max-width: 480px) {
+  .about-us-transformation {
+    padding: 50px 12px;
+  }
+  .slider-title {
+    font-size: 1.8rem;
+    margin-bottom: 35px;
+  }
+  .slider-text h4 {
+    font-size: 1.2rem;
+  }
+  .comparison-list li {
+    font-size: 0.9rem;
+    padding: 8px 0;
+  }
+}
+
+/* Mobile Medium - up to 375px */
+@media (max-width: 375px) {
+  .about-us-transformation {
+    padding: 45px 10px;
+  }
+  .slider-title {
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+  }
+  .slider-text h4 {
+    font-size: 1.1rem;
+  }
+  .comparison-list li {
+    font-size: 0.85rem;
+  }
+}
+
+/* Mobile Small - up to 320px */
+@media (max-width: 320px) {
+  .about-us-transformation {
+    padding: 40px 8px;
+  }
+  .slider-title {
+    font-size: 1.4rem;
+    margin-bottom: 25px;
+  }
+  .slider-text h4 {
+    font-size: 1rem;
+  }
+  .comparison-list li {
+    font-size: 0.8rem;
+    padding: 6px 0;
+  }
+}

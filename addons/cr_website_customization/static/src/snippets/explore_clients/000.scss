@@ -1,0 +1,35 @@
+@keyframes sliderAnimation {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+.client-logos-slider {
+    animation-direction: normal;
+}
+// #client-logo{
+//     background-color: #e8e5df;
+//     }
+
+.explore_clients {
+
+    &.normal .client-logos-slider{
+        animation-direction: normal;
+    }
+
+    &.reverse .client-logos-slider{
+        animation-direction: reverse;
+    }
+
+    &.alternate .client-logos-slider{
+        animation-direction: alternate;
+    }
+    &.square .client-logo-item{
+        animation-direction: 0px;
+    }
+    &.round .client-logo-item{
+        border-radius: 25px;
+    }
+}

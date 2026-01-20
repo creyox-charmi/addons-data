@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_case_study,access_case_study,model_case_study,base.group_user,1,1,1,1
+access_cr_client,access_cr_client,model_cr_client,base.group_user,1,1,1,1

@@ -1,0 +1,525 @@
+.main_page_banner img {
+    width: 100%;  /* Make the image take up the full width of the container */
+    height: auto;  /* Maintain aspect ratio of the image */
+    object-fit: cover;  /* Ensure the image covers the area without distortion */
+    max-height: 300px;  /* Set a max height to avoid excessively large images */
+    display: block;  /* Remove any unwanted space below the image */
+    margin: 0 auto;  /* Center the image horizontally */
+}
+
+.main_page_banner {
+    margin-bottom: 20px;  /* Adjust space below the image */
+}
+
+.main_page_of_case_study{
+    .client_reviews {
+        margin-top: 70px;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding: 0px 15px;
+    }
+
+    /* Section Title Styling */
+    .client_reviews .section-title {
+        font-size: 34px;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        display: inline-block;
+        position: relative;
+        padding-bottom: 12px;
+        color: #333;
+    }
+
+    /* Border Under Title */
+    .client_reviews .section-title::after {
+        content: "";
+        display: block;
+        width: 100px;
+        height: 4px;
+        background: #007bff;
+        margin: 12px auto 0;
+        border-radius: 6px;
+    }
+    .client_reviews .section-title:hover::after {
+        width: 140px; /* Expands on hover */
+    }
+    /* Review Card Enhancements */
+    .client_reviews .review-section {
+        padding: 30px;
+        position: relative;
+        margin-bottom: 30px;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    /* Hover Effect */
+    .client_reviews .review-section:hover {
+        transform: translateY(-12px); /* Perfect Zoom Effect */
+        background: #f0f8ff; /* Light blue background */
+        box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Quote Icon */
+    .client_reviews .review-section .quote-icon {
+        margin-left: 5px;
+        position: absolute;
+        font-size: 30px;
+        color: #808080;
+    }
+
+    /* Review Content Styling */
+    .client_reviews .review-content {
+        margin: 30px 50px;
+        font-size: 18px;
+        line-height: 1.6;
+        color: #555;
+        text-align: justify;
+    }
+
+    /* Author Name Styling */
+    .client_reviews .review-author {
+        font-weight: bold;
+        margin-top: 2px;
+        font-size: 20px;
+        color: #222;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .client_reviews .review-author::before {
+        content: "★";
+        color: #808080;
+        margin-right: 5px;
+        font-size: 18px;
+    }
+}
+
+// main description of case-study
+#cr_odoo_case_study {
+    .container {
+        width: 100%;
+    }
+
+    .cr_odoo_case_study .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+
+    .sh_service_content {
+        width: 100%;
+        margin-top:0px;
+        margin-bottom:20px;
+        margin-right:10px;
+        margin-left:30px;
+        padding: 12px 29px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .sh_service_content:hover {
+        transform: translateY(-12px); /* Perfect Zoom Effect */
+        box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .sh_service_content h2.sh_box_title, .sh_service_content .sh_box_title.h2 {
+        font-size: 34px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: black;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
+
+    .sh_service_content div.sh_text {
+        font-size: 18px;
+        font-weight: 400;
+        color: #445781;
+        line-height: 1.6;
+        margin: 10px 0 0;
+        text-align: justify;
+    }
+
+    p {
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure sections are scrollable */
+    .cr_odoo_case_study {
+        padding: 80px 0;
+        min-height: 100vh; /* Reduce height for better trigger */
+    }
+}
+
+
+
+
+// main heading web css
+#odoo_service_call_to_action {
+    display: flex;
+    justify-content: justify;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    padding: 50px 0px;
+    background: rgb(255, 255, 255);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    margin:30px 30px;
+}
+#odoo_service_call_to_action:hover {
+    transform: translateY(-10px);
+    box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.15), -12px -12px 20px rgba(255, 255, 255, 0.8); /* Slightly enhanced shadows on hover */
+}
+
+#odoo_service_call_to_action {
+    .container, .o_container_small, .container-fluid, .container-xxl, .container-xl, .container-lg, .container-md, .container-sm {
+        width: 100%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .sh_call_action_box .sh_title_heading {
+        font-size: 34px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: black;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        position: relative;
+        text-transform: uppercase;
+        justify-content: justify;
+        background-color: #ffffff;
+
+
+    }
+    .sh_call_action_box {
+        width: 100%;
+        justify-content: justify;
+        margin: 0px auto;
+    }
+}
+
+
+
+
+
+
+#o_wblog_post_sidebar {
+    #oe_structure_blog_post_sidebar_1 {
+        margin: 0px 50px;
+        color: black;
+    }
+
+    .s_title font {
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+
+    .s_website_form {
+        background: #f5f7fa;
+        border-radius: 15px;
+        box-shadow: 8px 8px 15px #d1d9e6, -8px -8px 15px #ffffff;
+        padding: 5px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .s_website_form:hover {
+        transform: translateY(-10px);
+        box-shadow: 12px 12px 20px #c0c8d6, -12px -12px 20px #ffffff;
+    }
+
+    .s_website_form_input {
+        background: #f5f7fa !important;
+        border: none !important;
+        border-radius: 8px !important;
+        box-shadow: inset 4px 4px 6px #d1d9e6, inset -4px -4px 6px #ffffff;
+        padding: 12px !important;
+        transition: all 0.3s ease-in-out;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+    .s_website_form_input:focus {
+        outline: none;
+        box-shadow: inset 2px 2px 4px #c0c8d6, inset -2px -2px 4px #ffffff;
+    }
+
+    .s_website_form_label {
+        font-weight: 600;
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-group,
+    .s_website_form_field {
+        margin-bottom: 20px;
+    }
+
+    .s_website_form_submit a.s_website_form_send {
+        display: inline-block;
+        width: 100%;
+        background: #e0e5ec;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        box-shadow: 5px 5px 10px #b8bcc2, -5px -5px 10px #ffffff;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        color: #000;
+        text-decoration: none;
+    }
+
+    .s_website_form_submit a.s_website_form_send:hover {
+        transform: translateY(-10px);
+        box-shadow: 3px 3px 6px #b8bcc2, -3px -3px 6px #ffffff;
+    }
+
+    .s_website_form_rows {
+        margin-top: 20px;
+    }
+
+    /* Optional: hide d-none labels unless needed */
+    .s_website_form_label.d-none {
+        display: none !important;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+
+// main heading mobile view css
+#odoo_service_call_to_action {
+    padding: 10px;
+    margin: 15px;
+
+    .sh_call_action_box {
+        width: 100%;
+        justify-content: justify;
+        margin: 5px 5px;
+    }
+
+    .sh_call_action_box .sh_title_heading {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: black;
+        position: relative;
+        left: 0px;
+        text-transform: uppercase;
+        text-align: justify;
+    }
+
+}
+
+
+#cr_odoo_case_study {
+
+    .row {
+        --gutter-x: 0px;
+        --gutter-y: 0px;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin-top: 0px;
+        margin-right: 0Px;
+        margin-left: 0px;
+    }
+
+    .sh_service_content {
+        width: 100%;
+        margin-top:10px;
+        margin-bottom:10px;
+        margin-right: 0px;
+        margin-left: 0px;
+        padding: 0px 19px;
+        text-align: justify;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .sh_service_content:hover {
+        transform: translateY(-5px); /* Perfect Zoom Effect */
+        box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .sh_service_content h2.sh_box_title, .sh_service_content .sh_box_title.h2 {
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: black;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+    }
+
+    .sh_service_content div.sh_text {
+        font-size: 9px;
+        font-weight: 400;
+        color: #445781;
+        line-height: 1.6;
+        margin: 10px 0 0;
+        text-align: justify;
+    }
+}
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+.main_page_of_case_study .client_reviews {
+    margin-top: 20px;
+    padding: 40px 15px !important;
+
+    .section-title {
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        display: inline-block;
+        position: relative;
+        padding-bottom: 10px;
+        color: #333;
+    }
+
+    /* Border Under Title */
+    .section-title::after {
+        content: "";
+        display: block;
+        width: 100px;
+        height: 4px;
+        background: #007bff;
+        margin: 12px auto 0;
+        border-radius: 6px;
+    }
+     .section-title:hover::after {
+        width: 140px; /* Expands on hover */
+    }
+    /* Review Card Enhancements */
+    .review-section {
+        padding: 10px;
+        position: relative;
+        margin-bottom: 30px;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    /* Hover Effect */
+    .review-section:hover {
+        transform: translateY(-12px); /* Perfect Zoom Effect */
+        background: #f0f8ff; /* Light blue background */
+        box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Quote Icon */
+    .review-section .quote-icon {
+        margin-left:2px;
+        position: absolute;
+        font-size: 5px;
+        color: #808080;
+    }
+
+    /* Review Content Styling */
+    .review-content {
+        padding-top: 0px;
+        margin: 12px 12px;
+        font-size: 9px;
+        line-height: 1.6;
+        color: #555;
+    }
+
+    /* Author Name Styling */
+    .review-author {
+        font-weight: bold;
+        margin-top: 15px;
+        font-size: 10px;
+        color: #222;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .review-author::before {
+        content: "★";
+        color: #808080;
+        margin-right: 5px;
+        font-size: 18px;
+    }
+        }
+
+
+
+}
+
+
+@media only screen and (max-width: 768px) {
+    #o_wblog_post_sidebar #oe_structure_blog_post_sidebar_1 {
+        margin: 0px 15px;
+    }
+
+    #o_wblog_post_sidebar .s_website_form {
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 6px 6px 12px #d1d9e6, -6px -6px 12px #ffffff;
+    }
+
+    #o_wblog_post_sidebar .s_website_form_input {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    #o_wblog_post_sidebar .s_website_form_label {
+        font-size: 13px;
+        margin-bottom: 3px;
+    }
+
+    #o_wblog_post_sidebar .s_website_form_submit a.s_website_form_send {
+        font-size: 14px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+
+    #o_wblog_post_sidebar .s_title h2 {
+        font-size: 20px !important;
+        text-align: center !important;
+    }
+
+    #o_wblog_post_sidebar .s_website_form_rows {
+        flex-direction: column;
+        margin: 0;
+    }
+
+    #o_wblog_post_sidebar .s_website_form_field {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+
+
+

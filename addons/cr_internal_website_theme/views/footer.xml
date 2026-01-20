@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom Footer Template -->
+    <template id="footer_custom_enhanced" inherit_id="website.layout" name="Custom Enhanced Footer" active="True">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <div id="footer" class="custom_footer_wrapper" t-ignore="true" t-if="not no_footer">
+
+                <!-- Main Footer Section -->
+                <section class="custom_footer_main cr_font">
+                    <div class="container">
+                        <div class="row">
+
+                            <!-- Company Info Column -->
+                            <div class="col-lg-4 col-md-6 footer_column">
+                                <div class="footer_logo_section">
+                                    <img src="/cr_internal_website_theme/static/src/img/logo.png" alt="Company Logo"
+                                         class="footer_logo"/>
+                                    <!--                                    <h4 class="footer_company_name mt-3">Creyox Technologies</h4>-->
+                                </div>
+                                <p class="footer_description mt-3">
+                                    Building innovative solutions for modern businesses.
+                                    We transform ideas into reality with cutting-edge technology
+                                    and exceptional customer service.
+                                </p>
+
+                                <!--                                <div class="footer_tech_stack mt-4">-->
+                                <!--    <h6>Technologies We Use</h6>-->
+                                <!--    <div class="tech_icons_list">-->
+                                <!--        <span class="tech_item">Python</span>-->
+                                <!--        <span class="tech_item">Odoo</span>-->
+                                <!--        <span class="tech_item">PostgreSQL</span>-->
+                                <!--        <span class="tech_item">JavaScript</span>-->
+                                <!--        <span class="tech_item">XML</span>-->
+                                <!--        <span class="tech_item">QWeb</span>-->
+                                <!--        <span class="tech_item">OWL</span>-->
+                                <!--        <span class="tech_item">CSS/SCSS</span>-->
+                                <!--        <span class="tech_item">jQuery</span>-->
+                                <!--        <span class="tech_item">Bootstrap</span>-->
+                                <!--    </div>-->
+                                <!--</div>-->
+
+
+                                <!-- Stats Counter -->
+                                <!--                                <div class="footer_stats mt-4">-->
+                                <!--                                    <div class="stat_item">-->
+                                <!--                                        <div class="stat_number" data-target="500">0</div>-->
+                                <!--                                        <div class="stat_label">Projects Completed</div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="stat_item">-->
+                                <!--                                        <div class="stat_number" data-target="150">0</div>-->
+                                <!--                                        <div class="stat_label">Happy Clients</div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="stat_item">-->
+                                <!--                                        <div class="stat_number" data-target="50">0</div>-->
+                                <!--                                        <div class="stat_label">Team Members</div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+
+                                <!--                                <div class="footer_certificates mt-4">-->
+                                <!--                                    <img src="/custom_footer/static/src/img/cert1.png" alt="Certificate" class="cert_badge"/>-->
+                                <!--                                    <img src="/custom_footer/static/src/img/cert2.png" alt="Certificate" class="cert_badge"/>-->
+                                <!--                                </div>-->
+                            </div>
+
+                            <!-- Quick Links Column -->
+                            <div class="col-lg-2 col-md-6 footer_column">
+                                <h5 class="footer_heading">Quick Links</h5>
+                                <ul class="footer_links">
+                                    <li>
+                                        <a href="/">Home</a>
+                                    </li>
+                                    <li>
+                                        <a href="/aboutus">About Us</a>
+                                    </li>
+                                    <li>
+                                        <a href="/services">Services</a>
+                                    </li>
+                                    <li>
+                                        <a href="/career">Career</a>
+                                    </li>
+                                    <!--                                    <li><a href="/case-study">Case Study</a></li>-->
+                                    <li>
+                                        <a href="/helpdesk">Support</a>
+                                    </li>
+                                    <li>
+                                        <a href="/contactus">Contact Us</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Services Column -->
+                            <div class="col-lg-2 col-md-6 footer_column">
+                                <h5 class="footer_heading">Our Services</h5>
+                                <ul class="footer_links">
+                                    <li>
+                                        <a href="/services/erp">ERP Solution</a>
+                                    </li>
+                                    <li>
+                                        <a href="/services/crm">CRM Solution</a>
+                                    </li>
+                                    <li>
+                                        <a href="/services/pos">POS Solution</a>
+                                    </li>
+                                    <li>
+                                        <a href="/services/web">Web Development</a>
+                                    </li>
+                                    <li>
+                                        <a href="/services/odoo_development">Odoo Development</a>
+                                    </li>
+                                    <!--                                    <li><a href="/services/sap-services">SAP Services</a></li>-->
+                                </ul>
+                            </div>
+
+                            <!-- Contact & Newsletter Column -->
+                            <div class="col-lg-4 col-md-6 footer_column">
+                                <h5 class="footer_heading">Stay Connected</h5>
+
+                                <!-- Contact Info -->
+                                <ul class="footer_contact">
+                                    <li>
+                                        <i class="fa fa-map-marker"/>
+                                        <span>306 - Business Bay High Street,<br/>Dr. Yagnik Road,<br/>Rajkot - 360005,
+                                            <br/>Gujarat,<br/>India
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-phone"/>
+                                        <span>
+                                            <a href="tel:+91 9265290098">+91 9265290098</a>
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-envelope"/>
+                                        <span>
+                                            <a href="mailto:info@creyox.com">info@creyox.com</a>
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-clock-o"/>
+                                        <span>Mon - Fri: 9:00 AM - 6:00 PM</span>
+                                    </li>
+                                </ul>
+
+                                <!-- Newsletter Subscription -->
+                                <!--                                <div class="footer_newsletter mt-4">-->
+                                <!--                                    <h6 class="newsletter_title">Subscribe to Newsletter</h6>-->
+                                <!--                                    <form action="/website/subscribe" method="post" class="newsletter_form js_subscribe">-->
+                                <!--                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
+                                <!--                                        <div class="input-group">-->
+                                <!--                                            <input type="email" name="email" class="form-control newsletter_input"-->
+                                <!--                                                   placeholder="Your email address" required="required"/>-->
+                                <!--                                            <button type="submit" class="btn newsletter_btn">-->
+                                <!--                                                <i class="fa fa-paper-plane"/>-->
+                                <!--                                            </button>-->
+                                <!--                                        </div>-->
+                                <!--                                    </form>-->
+                                <!--                                </div>-->
+
+                                <!-- Social Media -->
+                                <div class="footer_social mt-4">
+                                    <h6 class="social_title">Follow Us</h6>
+                                    <div class="social_icons">
+<!--                                        <a href="/website/social/facebook" target="_blank" class="social_icon facebook">-->
+<!--                                            <i class="fa fa-facebook"/>-->
+<!--                                        </a>-->
+                                        <a href="/website/social/twitter" target="_blank" class="social_icon twitter">
+                                            <i class="fa fa-twitter"/>
+                                        </a>
+                                        <a href="/website/social/linkedin" target="_blank" class="social_icon linkedin">
+                                            <i class="fa fa-linkedin"/>
+                                        </a>
+                                        <a href="/website/social/instagram" target="_blank"
+                                           class="social_icon instagram">
+                                            <i class="fa fa-instagram"/>
+                                        </a>
+                                        <a href="/website/social/youtube" target="_blank" class="social_icon youtube">
+                                            <i class="fa fa-youtube"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer Bottom Bar -->
+                <section class="custom_footer_bottom cr_font">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center text-md-start">
+                                <p class="footer_copyright mb-0">
+                                    ©
+                                    <span t-esc="datetime.datetime.now().year"/>
+                                    <strong>Creyox Technologies</strong>. All Rights Reserved.
+                                    <!--                                    <span class="separator">|</span>-->
+                                    <!--                                    <span class="made_with">Made with <i class="fa fa-heart heart_beat"></i> in India</span>-->
+                                </p>
+                            </div>
+                            <!--                            <div class="col-md-6 text-center text-md-end">-->
+                            <!--                                <ul class="footer_legal_links">-->
+                            <!--                                    <li><a href="/privacy-policy">Privacy Policy</a></li>-->
+                            <!--                                    <li><a href="/terms-conditions">Terms &amp; Conditions</a></li>-->
+                            <!--                                    <li><a href="/cookie-policy">Cookie Policy</a></li>-->
+                            <!--                                    <li><a href="/sitemap">Sitemap</a></li>-->
+                            <!--                                </ul>-->
+                            <!--                            </div>-->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Trust Badges Bar -->
+                <!--                <section class="footer_trust_badges">-->
+                <!--                    <div class="container">-->
+                <!--                        <div class="trust_badges_wrapper">-->
+                <!--                            <div class="trust_badge">-->
+                <!--                                <i class="fa fa-shield"></i>-->
+                <!--                                <span>Secure Payment</span>-->
+                <!--                            </div>-->
+                <!--                            <div class="trust_badge">-->
+                <!--                                <i class="fa fa-lock"></i>-->
+                <!--                                <span>SSL Certified</span>-->
+                <!--                            </div>-->
+                <!--                            <div class="trust_badge">-->
+                <!--                                <i class="fa fa-check-circle"></i>-->
+                <!--                                <span>ISO Certified</span>-->
+                <!--                            </div>-->
+                <!--                            <div class="trust_badge">-->
+                <!--                                <i class="fa fa-trophy"></i>-->
+                <!--                                <span>Award Winning</span>-->
+                <!--                            </div>-->
+                <!--                            <div class="trust_badge">-->
+                <!--                                <i class="fa fa-users"></i>-->
+                <!--                                <span>24/7 Support</span>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </section>-->
+
+                <!-- Back to Top Button -->
+                <a href="#" class="back_to_top" id="backToTop">
+                    <i class="fa fa-chevron-up"/>
+                </a>
+
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Add JavaScript for Back to Top functionality -->
+    <template id="footer_custom_js" inherit_id="website.layout">
+        <xpath expr="//body" position="inside">
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function() {
+                var backToTopBtn = document.getElementById('backToTop');
+
+                if (backToTopBtn) {
+                // Show/hide button on scroll
+                window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('show');
+                } else {
+                backToTopBtn.classList.remove('show');
+                }
+                });
+
+                // Smooth scroll to top
+                backToTopBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+                });
+                });
+                }
+
+                // Animated Counter for Stats
+                function animateCounter(element) {
+                const target = parseInt(element.getAttribute('data-target'));
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+
+                const updateCounter = () => {
+                current += increment;
+                if (current &lt; target) {
+                element.textContent = Math.floor(current) + '+';
+                requestAnimationFrame(updateCounter);
+                } else {
+                element.textContent = target + '+';
+                }
+                };
+                updateCounter();
+                }
+
+                // Intersection Observer for stats animation
+                const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                const counters = entry.target.querySelectorAll('.stat_number');
+                counters.forEach(counter => {
+                if (!counter.classList.contains('animated')) {
+                counter.classList.add('animated');
+                animateCounter(counter);
+                }
+                });
+                }
+                });
+                }, { threshold: 0.5 });
+
+                const statsSection = document.querySelector('.footer_stats');
+                if (statsSection) {
+                statsObserver.observe(statsSection);
+                }
+                });
+            </script>
+        </xpath>
+    </template>
+
+</odoo>

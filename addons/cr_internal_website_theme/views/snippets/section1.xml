@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="hero_snippet_template" name="section-1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+              media="print" onload="this.media='all'"/>
+
+        <section class="hero-section cr_font">
+            <!-- Background Floating Shapes -->
+            <div class="floating-shapes-bg">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="hero-inner">
+                <div class="hero-content-wrapper">
+                    <!-- Left Content -->
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Transform Your
+                            <span class="rotating-words">
+                                <span class="word">Business</span>
+                                <span class="word">Operations</span>
+                                <span class="word">Workflow</span>
+                                <span class="word">Growth</span>
+                            </span>
+                            <br/>With Intelligent Odoo ERP
+                        </h1>
+
+                        <p class="hero-subtitle">
+                            Streamline operations, boost productivity, and scale your business with our comprehensive
+                            Odoo ERP solutions tailored for modern enterprises.
+                        </p>
+
+                        <a href="/contactus" class="cta-button">
+                            <i class="fas fa-rocket" aria-hidden="true"></i>
+                            <span>Book a Free Demo</span>
+                        </a>
+                    </div>
+
+                    <!-- Right Side - Professional PC -->
+                    <div class="hero-images">
+                        <!-- Random Scattered Tech Icons -->
+                        <div class="tech-icons">
+                            <div class="tech-icon icon-1">
+                                <i class="fab fa-react"></i>
+                            </div>
+                            <div class="tech-icon icon-2">
+                                <i class="fab fa-node-js"></i>
+                            </div>
+                            <div class="tech-icon icon-3">
+                                <i class="fab fa-python"></i>
+                            </div>
+                            <div class="tech-icon icon-4">
+                                <i class="fab fa-aws"></i>
+                            </div>
+                            <div class="tech-icon icon-5">
+                                <i class="fab fa-docker"></i>
+                            </div>
+                            <div class="tech-icon icon-6">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="tech-icon icon-7">
+                                <i class="fab fa-git-alt"></i>
+                            </div>
+                            <div class="tech-icon icon-8">
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                        </div>
+
+                        <!-- Professional Desktop Computer -->
+                        <div class="desktop-computer">
+                            <div class="monitor">
+                                <div class="screen-bezel">
+                                    <div class="screen">
+                                        <!-- Corporate Dashboard -->
+                                        <div class="dashboard-content">
+                                            <div class="dashboard-header">
+                                                <div class="logo">DASHBOARD</div>
+                                                <div style="display: flex; gap: 6px;">
+                                                    <div style="width: 8px; height: 8px; background: white; border-radius: 50%; opacity: 0.8;"></div>
+                                                    <div style="width: 8px; height: 8px; background: white; border-radius: 50%; opacity: 0.8;"></div>
+                                                    <div style="width: 8px; height: 8px; background: white; border-radius: 50%; opacity: 0.8;"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="stats-grid">
+                                                <div class="stat-card">
+                                                    <div class="stat-label">Revenue</div>
+                                                    <div class="stat-value">$94.2K</div>
+                                                </div>
+                                                <div class="stat-card">
+                                                    <div class="stat-label">Orders</div>
+                                                    <div class="stat-value">3,847</div>
+                                                </div>
+                                                <div class="stat-card">
+                                                    <div class="stat-label">Users</div>
+                                                    <div class="stat-value">18.5K</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="chart-area">
+                                                <div class="chart-bar"></div>
+                                                <div class="chart-bar"></div>
+                                                <div class="chart-bar"></div>
+                                                <div class="chart-bar"></div>
+                                                <div class="chart-bar"></div>
+                                                <div class="chart-bar"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stand-neck"></div>
+                            <div class="stand-base"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="floating-shapes">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+
+        </section>
+    </template>
+</odoo>
+

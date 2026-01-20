@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Customize Jobs Index Page -->
+    <template id="jobs_index_custom" inherit_id="website_hr_recruitment.index" name="Custom Jobs Page">
+
+        <!-- Replace entire wrap -->
+        <xpath expr="//div[@id='wrap']" position="replace">
+            <div id="wrap" class="custom_jobs_page cr_font">
+
+                <!-- Hero Section -->
+                <section class="jobs_hero_section">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8">
+                                <h1 class="hero_title">Join Our Team</h1>
+                                <p class="hero_subtitle">Discover exciting career opportunities and be part of our growing team</p>
+                            </div>
+                            <div class="col-lg-4 text-end">
+                                <div class="hero_stat_box">
+                                    <h2><t t-esc="len(jobs)"/></h2>
+                                    <p>Open Positions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                 <section class="career_about_section">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <img src="/cr_internal_website_theme/static/src/img/career_team.png" alt="Our Team" class="career_image img-fluid rounded shadow" />
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="about_content">
+                                    <h2>Work with Passion, Build with Purpose</h2>
+                                    <p>We’re a team of Odoo enthusiasts building robust ERP solutions, creative websites, and innovative business apps.
+                                    At our company, your ideas matter — collaboration and creativity drive everything we do.</p>
+                                    <ul class="about_list">
+                                        <li><i class="fa fa-check-circle"></i> Flexible Work Environment</li>
+                                        <li><i class="fa fa-check-circle"></i> Continuous Learning</li>
+                                        <li><i class="fa fa-check-circle"></i> Global Client Exposure</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Jobs Listing -->
+                <section class="jobs_listing_section">
+                    <div class="container">
+
+                        <!-- No Jobs Message -->
+                        <div t-if="not jobs" class="no_jobs_wrapper">
+                            <div class="no_jobs_content">
+                                <i class="fa fa-briefcase"></i>
+                                <h3>No Open Positions at the Moment</h3>
+                                <p>We're not currently hiring, but we'd love to hear from you! Send us your resume and we'll keep you in mind for future opportunities.</p>
+                                <a href="/contactus" class="btn_contact">Contact Us</a>
+                            </div>
+                        </div>
+
+                        <!-- Jobs Grid -->
+                        <div t-if="jobs" class="jobs_grid">
+                            <t t-foreach="jobs" t-as="job">
+                                <div class="job_card">
+                                    <span t-if="not job.website_published" class="unpublished_badge">Unpublished</span>
+
+                                    <div class="job_card_header">
+                                        <h3 class="job_title">
+                                            <a t-attf-href="/jobs/detail/#{slug(job)}">
+                                                <span t-field="job.name"/>
+                                            </a>
+                                        </h3>
+                                        <span t-if="job.no_of_recruitment >= 1" class="positions_badge">
+                                            <t t-esc="job.no_of_recruitment"/>
+                                            <t t-if="job.no_of_recruitment == 1">Position</t>
+                                            <t t-else="">Positions</t>
+                                        </span>
+                                    </div>
+
+                                    <div class="job_card_body">
+                                        <div class="job_description" t-esc="job.description or 'No description available'"/>
+                                    </div>
+
+                                    <div class="job_card_footer">
+                                        <div class="job_meta">
+                                            <span t-if="job.address_id" class="job_location">
+                                                <i class="fa fa-map-marker"></i>
+                                                <span t-field="job.address_id" t-options='{"widget": "contact", "fields": ["city"], "no_tag_br": True}'/>
+                                            </span>
+                                            <span t-if="job.contract_type_id" class="job_type">
+                                                <i class="fa fa-suitcase"></i>
+                                                <span t-field="job.contract_type_id"/>
+                                            </span>
+                                            <span class="job_date">
+                                                <i class="fa fa-clock-o"></i>
+                                                <span t-field="job.write_date" t-options='{"widget": "relative"}'/>
+                                            </span>
+                                        </div>
+                                        <a t-attf-href="/jobs/detail/#{slug(job)}" class="btn_view_details">
+                                            View Details &amp; Apply
+                                        </a>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Why Join Us Section -->
+                <section class="why_join_section">
+                    <div class="container">
+                        <div class="section_header text-center">
+                            <h2>Why Work With Us</h2>
+                            <p>Discover what makes us a great place to work</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="benefit_box">
+                                    <div class="benefit_icon">
+                                        <i class="fa fa-rocket"></i>
+                                    </div>
+                                    <h4>Growth</h4>
+                                    <p>Career advancement opportunities</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="benefit_box">
+                                    <div class="benefit_icon">
+                                        <i class="fa fa-users"></i>
+                                    </div>
+                                    <h4>Team</h4>
+                                    <p>Collaborative environment</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="benefit_box">
+                                    <div class="benefit_icon">
+                                        <i class="fa fa-heart"></i>
+                                    </div>
+                                    <h4>Balance</h4>
+                                    <p>Work-life balance programs</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="benefit_box">
+                                    <div class="benefit_icon">
+                                        <i class="fa fa-trophy"></i>
+                                    </div>
+                                    <h4>Benefits</h4>
+                                    <p>Competitive packages</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </xpath>
+
+    </template>
+
+</odoo>

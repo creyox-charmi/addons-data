@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="expert_snippet_template" name="section-3-new">
+
+
+
+<section class="erp-comparison-section-v3 cr_font">
+        <div class="erp-comparison-container-v3">
+            <div class="erp-comparison-header-v3">
+                <div class="erp-comparison-pretitle-v3">Make the Right Choice</div>
+                <h2 class="erp-comparison-title-v3">Traditional <strong class="cr_vs">vs</strong> Odoo ERP</h2>
+                <p class="erp-comparison-description-v3">
+                    See how Odoo outperforms legacy systems with modern, integrated solutions that scale with your business
+                </p>
+            </div>
+
+            <div class="erp-comparison-grid-v3">
+                <div class="erp-comparison-column-v3">
+                    <div class="erp-comparison-column-header-v3">
+                        <div class="erp-comparison-column-badge-v3">Traditional ERP</div>
+                        <h3 class="erp-comparison-column-title-v3">Legacy Systems</h3>
+                        <p class="erp-comparison-column-subtitle-v3">
+                            Outdated, fragmented software that limits growth and drains resources
+                        </p>
+                    </div>
+
+                    <div class="erp-comparison-features-v3">
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-negative-v3">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">High Implementation Costs</div>
+                                <div class="erp-comparison-feature-text-v3">Expensive licenses, hardware, and lengthy setup timelines</div>
+                            </div>
+                        </div>
+
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-negative-v3">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Disconnected Modules</div>
+                                <div class="erp-comparison-feature-text-v3">Multiple vendors, poor integration, data silos across departments</div>
+                            </div>
+                        </div>
+
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-negative-v3">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Complex Customization</div>
+                                <div class="erp-comparison-feature-text-v3">Requires expensive consultants and months of development time</div>
+                            </div>
+                        </div>
+
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-negative-v3">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Limited Mobility</div>
+                                <div class="erp-comparison-feature-text-v3">Desktop-only access, no mobile apps, poor remote work support</div>
+                            </div>
+                        </div>
+
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-negative-v3">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Slow Updates</div>
+                                <div class="erp-comparison-feature-text-v3">Annual releases, expensive upgrades, compatibility nightmares</div>
+                            </div>
+                        </div>
+
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-negative-v3">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Poor User Experience</div>
+                                <div class="erp-comparison-feature-text-v3">Outdated interfaces, steep learning curves, low adoption rates</div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                    <div class="erp-comparison-cta-v3">-->
+<!--                        <a href="/" class="erp-comparison-button-v3"><span>Learn More</span></a>-->
+<!--                    </div>-->
+                </div>
+
+                <div class="erp-comparison-column-v3 erp-comparison-column-premium-v3">
+                    <div class="erp-comparison-column-header-v3">
+                        <div class="erp-comparison-column-badge-v3">Odoo ERP</div>
+                        <h3 class="erp-comparison-column-title-v3">Modern Solution</h3>
+                        <p class="erp-comparison-column-subtitle-v3">
+                            All-in-one, cloud-based platform designed for agility and scalability
+                        </p>
+                    </div>
+
+                    <div class="erp-comparison-features-v3">
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-positive-v3">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Cost-Effective Pricing</div>
+                                <div class="erp-comparison-feature-text-v3">Affordable per-user model, no hidden fees, fast ROI in months</div>
+                            </div>
+                        </div>
+
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-positive-v3">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Fully Integrated Suite</div>
+                                <div class="erp-comparison-feature-text-v3">40+ apps work together seamlessly, real-time data across all modules</div>
+                            </div>
+                        </div>
+
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-positive-v3">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Easy Customization</div>
+                                <div class="erp-comparison-feature-text-v3">No-code studio, drag-and-drop builder, rapid implementation</div>
+                            </div>
+                        </div>
+
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-positive-v3">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Mobile-First Design</div>
+                                <div class="erp-comparison-feature-text-v3">Native iOS/Android apps, work from anywhere, offline capabilities</div>
+                            </div>
+                        </div>
+
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-positive-v3">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Continuous Innovation</div>
+                                <div class="erp-comparison-feature-text-v3">Regular updates, new features quarterly, always current version</div>
+                            </div>
+                        </div>
+
+                        <div class="erp-comparison-feature-v3">
+                            <div class="erp-comparison-icon-wrapper-v3 erp-comparison-icon-positive-v3">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="erp-comparison-feature-content-v3">
+                                <div class="erp-comparison-feature-title-v3">Intuitive Interface</div>
+                                <div class="erp-comparison-feature-text-v3">Modern UI/UX, minimal training needed, high user satisfaction</div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                    <div class="erp-comparison-cta-v3">-->
+<!--                        <a href="/contactus" class="erp-comparison-button-v3"><span>Get Started Today</span></a>-->
+<!--                    </div>-->
+                </div>
+            </div>
+
+            <div class="erp-comparison-footer-v3">
+                <h3 class="erp-comparison-footer-title-v3">Ready to Make the Switch?</h3>
+                <p class="erp-comparison-footer-text-v3">
+                    Join thousands of businesses that have transformed their operations with Odoo.
+                    Experience the difference of a truly modern ERP system.
+                </p>
+                 <a href="/contactus" class="cta-button">
+                    <i class="fas fa-rocket" aria-hidden="true"></i>
+                    <span>Schedule a Demo</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    </template>
+</odoo>
+

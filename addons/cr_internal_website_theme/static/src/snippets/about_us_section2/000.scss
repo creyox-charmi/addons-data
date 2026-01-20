@@ -1,0 +1,293 @@
+// /* ===== Wrapper Section ===== */
+// .vvm-milestone-style-section {
+//   width: 100vw;
+//   margin-left: calc(-50vw + 50%);
+//   padding: 80px 20px;
+//   background: linear-gradient(to right, #f8faff, #eef2fb);
+//   position: relative;
+//   z-index: 1;
+//   overflow: hidden;
+// }
+//
+// /* ===== Section Heading ===== */
+// .vvm-milestone-style-section .milestone-heading {
+//   font-size: 36px;
+//   font-weight: 800;
+//   color: #1f2d5a;
+//   text-align: center;
+//   margin-bottom: 60px;
+//   text-transform: uppercase;
+//   position: relative;
+// }
+//
+// /* ===== Grid Layout ===== */
+// .vvm-milestone-style-section .milestone-grid {
+//   display: grid;
+//   grid-template-columns: repeat(3, 1fr);
+//   gap: 30px;
+//   justify-items: center;
+// }
+//
+// /* ===== Individual Card ===== */
+// .vvm-milestone-style-section .milestone-card {
+//   background: #ffffff;
+//   border-radius: 20px;
+//   padding: 30px 25px;
+//   text-align: center;
+//   transition: all 0.4s ease-in-out;
+//   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+//   position: relative;
+//   overflow: hidden;
+//   border-bottom: 4px solid transparent;
+// }
+//
+// /* Hover animation: color gradient + bottom border */
+// .vvm-milestone-style-section .milestone-card:hover {
+//   background: linear-gradient(to bottom, #e3ecff, #d8e4ff);
+//   border-bottom: 4px solid #284b9b;
+//   transform: translateY(-5px);
+// }
+//
+// /* ===== Icon Style ===== */
+// .vvm-milestone-style-section .milestone-icon {
+//   font-size: 36px;
+//   color: #284b9b;
+//   margin-bottom: 20px;
+// }
+//
+// /* ===== Card Title ===== */
+// .vvm-milestone-style-section .milestone-card h3 {
+//   font-size: 20px;
+//   font-weight: 700;
+//   color: #1f2d5a;
+//   margin-bottom: 15px;
+// }
+//
+// /* ===== Card Description ===== */
+// .vvm-milestone-style-section .milestone-card p {
+//   font-size: 16px;
+//   line-height: 1.6;
+//   color: #4d5875;
+// }
+//
+// /* ===== Responsive for Tablet ===== */
+// @media (max-width: 991px) {
+//   .vvm-milestone-style-section .milestone-grid {
+//     grid-template-columns: repeat(2, 1fr);
+//   }
+// }
+//
+// /* ===== Responsive for Mobile ===== */
+// @media (max-width: 767px) {
+//   .vvm-milestone-style-section .milestone-grid {
+//     grid-template-columns: 1fr;
+//   }
+//
+//   .vvm-milestone-style-section .milestone-heading {
+//     font-size: 28px;
+//     margin-bottom: 40px;
+//   }
+// }
+
+
+/* ===== Wrapper Section ===== */
+.vvm-milestone-style-section {
+//   width: 100vw;
+//   margin-left: calc(-50vw + 50%);
+  padding: 60px 15px;
+  background: linear-gradient(to right, #f8faff, #eef2fb);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+
+  /* Responsive padding */
+  @media (min-width: 576px) {
+    padding: 70px 20px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 80px 25px;
+  }
+
+  @media (min-width: 992px) {
+    padding: 80px 30px;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 80px 40px;
+  }
+}
+
+/* ===== Section Heading ===== */
+.vvm-milestone-style-section .milestone-heading {
+  font-weight: 800;
+  color: #1f2d5a;
+  text-align: center;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  position: relative;
+
+  /* Responsive typography */
+  font-size: 28px;
+
+  @media (min-width: 576px) {
+    font-size: 32px;
+    margin-bottom: 50px;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 36px;
+    margin-bottom: 60px;
+  }
+}
+
+/* ===== Grid Layout ===== */
+.vvm-milestone-style-section .milestone-grid {
+  display: grid;
+  gap: 20px;
+  justify-items: center;
+
+  /* Mobile-first single column */
+  grid-template-columns: 1fr;
+
+  @media (min-width: 576px) {
+    gap: 25px;
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+
+  @media (min-width: 992px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ===== Individual Card ===== */
+.vvm-milestone-style-section .milestone-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 25px 20px;
+  text-align: center;
+  transition: all 0.4s ease-in-out;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 4px solid transparent;
+  width: 100%;
+
+  /* Responsive padding */
+  @media (min-width: 576px) {
+    padding: 30px 25px;
+  }
+
+  /* Hover animation: color gradient + bottom border */
+  &:hover {
+    background: linear-gradient(to bottom, #e3ecff, #d8e4ff);
+    border-bottom: 4px solid #284b9b;
+    transform: translateY(-5px);
+  }
+}
+
+/* ===== Icon Style ===== */
+.vvm-milestone-style-section .milestone-icon {
+  color: #284b9b;
+  margin-bottom: 15px;
+
+  /* Responsive sizing */
+  font-size: 30px;
+
+  @media (min-width: 576px) {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+
+  i {
+    transition: transform 0.3s ease;
+  }
+}
+
+/* Hover effect for icons */
+.vvm-milestone-style-section .milestone-card:hover .milestone-icon i {
+  transform: scale(1.1);
+}
+
+/* ===== Card Title ===== */
+.vvm-milestone-style-section .milestone-card h3 {
+  font-weight: 700;
+  color: #1f2d5a;
+  margin-bottom: 12px;
+
+  /* Responsive typography */
+  font-size: 18px;
+
+  @media (min-width: 576px) {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+}
+
+/* ===== Card Description ===== */
+.vvm-milestone-style-section .milestone-card p {
+  line-height: 1.6;
+  color: #4d5875;
+  text-align: justify;
+
+  /* Responsive typography */
+  font-size: 15px;
+
+  @media (min-width: 576px) {
+    font-size: 16px;
+  }
+}
+
+/* ===== Special Breakpoints ===== */
+
+/* For tablets in portrait mode */
+@media (min-width: 768px) and (max-width: 991px) {
+  .vvm-milestone-style-section .milestone-card:nth-child(3) {
+    grid-column: span 2;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+/* For very small mobile devices */
+@media (max-width: 360px) {
+  .vvm-milestone-style-section .milestone-heading {
+    font-size: 26px;
+  }
+
+  .vvm-milestone-style-section .milestone-card {
+    padding: 20px 15px;
+  }
+
+  .vvm-milestone-style-section .milestone-card h3 {
+    font-size: 17px;
+  }
+
+  .vvm-milestone-style-section .milestone-card p {
+    font-size: 14px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .vvm-milestone-style-section {
+    padding: 40px 15px;
+  }
+
+  .vvm-milestone-style-section .milestone-heading {
+    margin-bottom: 30px;
+    font-size: 26px;
+  }
+
+  .vvm-milestone-style-section .milestone-grid {
+    gap: 15px;
+  }
+
+  .vvm-milestone-style-section .milestone-card {
+    padding: 20px 15px;
+  }
+}

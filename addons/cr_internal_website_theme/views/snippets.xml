@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="custom_snippets" inherit_id="website.snippets" name="Custom Snippets">
+        <xpath expr="//div[@id='snippet_structure']" position="before">
+            <div id="snippet_structure" class="o_panel">
+                <div class="o_panel_header">YourHome</div>
+                <div class="o_panel_body">
+                    <t t-snippet="cr_internal_website_theme.hero_snippet_template"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.growth_snippet_template"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.expert_snippet_template"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service_snippet_template"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.milestone_snippet_template"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.explore_clients"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.contact_snippet_template"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                </div>
+            </div>
+            <div id="about_us_snippets" class="o_panel">
+                <div class="o_panel_header">AboutUs</div>
+                <div class="o_panel_body">
+                    <t t-snippet="cr_internal_website_theme.about_us_snippet_section1"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.about_us_snippet_section2"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.about_us_snippet_section3"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.about_us_snippet_section4"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.about_us_snippet_section5"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                </div>
+            </div>
+
+
+            <div id="services_snippets" class="o_panel">
+                <div class="o_panel_header">Services</div>
+                <div class="o_panel_body">
+                    <t t-snippet="cr_internal_website_theme.service1_erp_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service2_crm_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service3_pos_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service4_web_dev_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service5_odoo_dev_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service6_odoo_integration_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service7_odoo_implementation_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service8_odoo_customization_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service9_odoo_migration_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service10_odoo_support_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service11_odoo_consulting_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service12_odoo_training_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                    <t t-snippet="cr_internal_website_theme.service13_sap_services_solution"
+                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="custom_snippets_client" inherit_id="website.snippets" name="Custom Snippets">
+        <xpath expr="//div[@id='snippet_structure']" position="before">
+            <div id="snippet_structure" class="o_panel">
+                <div class="o_panel_header">YourHome</div>
+                <div class="o_panel_body">
+                    <!-- ... -->
+<!--                    <t t-snippet="cr_internal_website_theme.case_study"-->
+<!--                       t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg">-->
+<!--                        <keywords>explore, case, studies</keywords>-->
+<!--                    </t>-->
+                     <t t-snippet="cr_internal_website_theme.explore_clients"
+   t-thumbnail="/cr_internal_website_theme/static/src/img/hero_thumb.svg"
+   data-drop-in=".oe_structure"
+   data-drop-near=".oe_structure > *"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

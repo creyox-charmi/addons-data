@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="about_us_snippet_section3" name="AboutUS Section-3">
+        <section class="what-makes-different-section cr_font">
+            <div class="different-container">
+                <h2 class="different-main-title">What Makes Us Different</h2>
+
+                <div class="different-features-wrapper">
+
+                    <!-- Feature 1: Image Left, Content Right -->
+                    <div class="feature-item feature-layout-left" style="--delay: 0.1s">
+                        <div class="feature-image-box">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&amp;h=500&amp;fit=crop&amp;crop=center"
+                                 alt="Deep Odoo Specialization"
+                                 class="feature-image" />
+                        </div>
+                        <div class="feature-content-box">
+                            <div class="feature-number-box">01</div>
+                            <h3 class="feature-title">Deep Odoo Specialization</h3>
+                            <p class="feature-description">While others offer generic ERP services, we live and breathe Odoo. Our team holds certified Odoo expertise across functional and technical domains, ensuring you get specialists, not generalists.</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 2: Content Left, Image Right -->
+                    <div class="feature-item feature-layout-right" style="--delay: 0.2s">
+                        <div class="feature-content-box">
+                            <div class="feature-number-box">02</div>
+                            <h3 class="feature-title">Industry-Specific Solutions</h3>
+                            <p class="feature-description">We don't believe in one-size-fits-all. Our implementations are tailored to your industry's unique challenges—whether you're in manufacturing, retail, healthcare, or logistics.</p>
+                        </div>
+                        <div class="feature-image-box">
+                            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=500&amp;h=500&amp;fit=crop&amp;crop=center"
+                                 alt="Industry-Specific Solutions"
+                                 class="feature-image" />
+                        </div>
+                    </div>
+
+                    <!-- Feature 3: Image Left, Content Right -->
+                    <div class="feature-item feature-layout-left" style="--delay: 0.3s">
+                        <div class="feature-image-box">
+                            <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=500&amp;h=500&amp;fit=crop&amp;crop=center"
+                                 alt="Transparent Development Process"
+                                 class="feature-image" />
+                        </div>
+                        <div class="feature-content-box">
+                            <div class="feature-number-box">03</div>
+                            <h3 class="feature-title">Transparent Development Process</h3>
+                            <p class="feature-description">From requirement gathering to deployment, you're part of every step. No black boxes, no surprises—just clear communication and collaborative development.</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 4: Content Left, Image Right -->
+                    <div class="feature-item feature-layout-right" style="--delay: 0.4s">
+                        <div class="feature-content-box">
+                            <div class="feature-number-box">04</div>
+                            <h3 class="feature-title">Post-Implementation Excellence</h3>
+                            <p class="feature-description">Our relationship doesn't end at go-live. We provide ongoing support, training, and continuous optimization to ensure your Odoo investment delivers long-term value.</p>
+                        </div>
+                        <div class="feature-image-box">
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&amp;h=500&amp;fit=crop&amp;crop=center"
+                                 alt="Post-Implementation Excellence"
+                                 class="feature-image" />
+                        </div>
+                    </div>
+
+                    <!-- Feature 5: Image Left, Content Right -->
+                    <div class="feature-item feature-layout-left" style="--delay: 0.5s">
+                        <div class="feature-image-box">
+                            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&amp;h=500&amp;fit=crop&amp;crop=center"
+                                 alt="Agile and Adaptive Methodology"
+                                 class="feature-image" />
+                        </div>
+                        <div class="feature-content-box">
+                            <div class="feature-number-box">05</div>
+                            <h3 class="feature-title">Agile &amp; Adaptive Methodology</h3>
+                            <p class="feature-description">Business needs evolve, and so should your ERP. Our agile approach ensures rapid iterations, quick adaptations, and solutions that scale with your growth.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </template>
+</odoo>

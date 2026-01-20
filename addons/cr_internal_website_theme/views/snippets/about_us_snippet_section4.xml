@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="about_us_snippet_section4" name="AboutUS Section-4">
+        <section class="our-team-professionals-section cr_font">
+            <div class="team-professionals-container">
+
+                <!-- Header Section -->
+                <div class="team-professionals-header">
+                    <span class="team-professionals-badge">Our Team</span>
+                    <h2 class="team-professionals-title">The People Behind Your Success</h2>
+                    <p class="team-professionals-intro">
+                        Our strength lies in our people—a diverse team of Odoo-certified consultants, developers,
+                        functional analysts, and project managers who share one common passion: delivering exceptional ERP solutions.
+                    </p>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="team-professionals-stats-row">
+                    <div class="team-stat-box" style="--stat-delay: 0.1s">
+                        <div class="team-stat-number">20+</div>
+                        <div class="team-stat-label">Certified Professionals</div>
+                    </div>
+                    <div class="team-stat-box" style="--stat-delay: 0.2s">
+                        <div class="team-stat-number">50+</div>
+                        <div class="team-stat-label">Industries Served</div>
+                    </div>
+                    <div class="team-stat-box" style="--stat-delay: 0.3s">
+                        <div class="team-stat-number">100%</div>
+                        <div class="team-stat-label">Customer Focus</div>
+                    </div>
+                </div>
+
+                <!-- Features Grid -->
+                <div class="team-professionals-grid">
+
+                    <div class="team-professional-item" style="--item-delay: 0.1s">
+                        <div class="team-professional-number">01</div>
+                        <div class="team-professional-icon-wrapper">
+                            <div class="team-professional-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="team-professional-heading">Odoo Certified Professionals</h3>
+                        <p class="team-professional-text">
+                            From developers who write clean, scalable code to functional consultants who understand
+                            your business processes inside out.
+                        </p>
+                    </div>
+
+                    <div class="team-professional-item" style="--item-delay: 0.2s">
+                        <div class="team-professional-number">02</div>
+                        <div class="team-professional-icon-wrapper">
+                            <div class="team-professional-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="team-professional-heading">Cross-Industry Experience</h3>
+                        <p class="team-professional-text">
+                            Our team brings expertise from manufacturing, e-commerce, healthcare, logistics,
+                            hospitality, and more—ensuring industry-relevant solutions.
+                        </p>
+                    </div>
+
+                    <div class="team-professional-item" style="--item-delay: 0.3s">
+                        <div class="team-professional-number">03</div>
+                        <div class="team-professional-icon-wrapper">
+                            <div class="team-professional-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="team-professional-heading">Continuous Learning Culture</h3>
+                        <p class="team-professional-text">
+                            Technology evolves, and so do we. Our team stays ahead through regular certifications,
+                            Odoo community contributions, and hands-on experimentation.
+                        </p>
+                    </div>
+
+                    <div class="team-professional-item" style="--item-delay: 0.4s">
+                        <div class="team-professional-number">04</div>
+                        <div class="team-professional-icon-wrapper">
+                            <div class="team-professional-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="team-professional-heading">Customer-First Mindset</h3>
+                        <p class="team-professional-text">
+                            We don't just solve technical problems—we become your strategic partners,
+                            invested in your long-term success.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+    </template>
+</odoo>

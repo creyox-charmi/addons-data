@@ -1,0 +1,343 @@
+// .why-choose-us {
+//   padding: 50px 20px;
+//   background: #f8f9fa;
+//   text-align: center;
+// }
+//
+// .section-title {
+//   font-size: 2.5em;
+//   margin-bottom: 40px;
+//   color: #0a1d4d;
+// }
+//
+// .flip-card-container {
+//   display: flex;
+//   flex-wrap: wrap;
+//   gap: 20px;
+//   justify-content: center;
+// }
+//
+// .flip-card {
+//   background: transparent;
+//   width: 250px;
+//   height: 250px;
+//   perspective: 1000px;
+// }
+//
+// .flip-card-inner {
+//   position: relative;
+//   width: 100%;
+//   height: 100%;
+//   transition: transform 0.8s;
+//   transform-style: preserve-3d;
+// }
+//
+// .flip-card:hover .flip-card-inner {
+//   transform: rotateY(180deg);
+// }
+//
+// .flip-card-front, .flip-card-back {
+//   position: absolute;
+//   width: 100%;
+//   height: 100%;
+//   border: 2px solid navy;
+//   background-color: white;
+//   color: #0a1d4d;
+//   border-radius: 8px;
+//   backface-visibility: hidden;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 15px;
+// }
+//
+// .flip-card-front i {
+//   font-size: 40px;
+//   margin-bottom: 15px;
+// }
+//
+// .flip-card-front h3 {
+//   font-size: 1.2em;
+// }
+//
+// .flip-card-back {
+//   transform: rotateY(180deg);
+//   font-size: 0.95em;
+// }
+// //
+// // /* Media Queries */
+// // @media (max-width: 768px) {
+// //   .flip-card {
+// //     width: 45%;
+// //     height: 240px;
+// //   }
+// // }
+// //
+// // @media (max-width: 480px) {
+// //   .flip-card {
+// //     width: 100%;
+// //     height: 230px;
+// //   }
+// // }
+// //
+// // @media (max-width: 375px) {
+// //   .flip-card {
+// //     height: 220px;
+// //   }
+// // }
+// //
+// // @media (max-width: 320px) {
+// //   .flip-card {
+// //     height: 210px;
+// //   }
+// // }
+//
+//
+//
+// /* RESPONSIVE DESIGN */
+//
+// /* ≥1200px: 6 cards per row */
+// @media (min-width: 1200px) {
+//   .flip-card {
+//     width: calc(16.66% - 20px);
+//   }
+// }
+//
+// /* 992px–1199px: 4 cards per row */
+// @media (max-width: 1199px) and (min-width: 992px) {
+//   .flip-card {
+//     width: calc(25% - 20px);
+//   }
+// }
+//
+// /* 768px–991px: 3 cards per row */
+// @media (max-width: 991px) and (min-width: 768px) {
+//   .flip-card {
+//     width: calc(33.33% - 20px);
+//   }
+// }
+//
+// /* 480px–767px: 2 cards per row */
+// @media (max-width: 767px) {
+//   .flip-card {
+//     width: calc(50% - 20px);
+//   }
+// }
+//
+// /* ≤479px: still 2 cards per row */
+// @media (max-width: 479px) {
+//   .flip-card {
+//     width: calc(50% - 20px);
+//   }
+// }
+
+
+.why-choose-us {
+  padding: 50px 20px;
+  background: #f8f9fa;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  font-weight: 800;
+  line-height: 1.3;
+  color: #1e293b;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2em;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.7em;
+  }
+}
+
+/* Flip Card Container */
+.flip-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
+/* Flip Card Base */
+.flip-card {
+  background: transparent;
+  flex: 1 1 calc(100% / 6 - 20px);
+  max-width: calc(100% / 6 - 20px);
+  height: 250px;
+  perspective: 1000px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Flip Inner */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Front and Back Shared */
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid navy;
+  border-radius: 8px;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  text-align: center;
+  color: #0a1d4d;
+  background-color: white;
+}
+
+/* Icon Styling */
+.flip-icon {
+  margin-bottom: 15px;
+  background: linear-gradient(145deg, #0a173b, #1e3a8a);
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.flip-icon i {
+  color: white;
+  font-size: 23px;
+}
+
+@media (min-width: 576px) {
+  .flip-icon {
+    font-size: 36px;
+    width: 72px;
+    height: 72px;
+    margin-bottom: 20px;
+  }
+}
+
+/* Icon Hover Effect */
+.flip-card:hover .flip-icon i {
+  transform: scale(1.1);
+}
+
+/* Front Title */
+.flip-card-front h3 {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+/* Back Side */
+.flip-card-back {
+  background-color: #0a1d4d;
+  color: white;
+  transform: rotateY(180deg);
+  background: linear-gradient(145deg, #0a173b, #1e3a8a);
+  border-radius: 20px;
+  padding: 20px;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+/* ===== Responsive Card Adjustments ===== */
+
+/* Max 4 per row on medium screens */
+@media (max-width: 1024px) {
+  .flip-card {
+    flex: 1 1 calc(100% / 4 - 20px);
+    max-width: calc(100% / 4 - 20px);
+  }
+}
+
+/* Max 2 per row on tablets */
+@media (max-width: 768px) {
+  .flip-card {
+    flex: 1 1 calc(50% - 20px);
+    max-width: calc(50% - 20px);
+    height: 220px;
+  }
+  .flip-card-back,
+  .flip-card-front {
+    padding: 12px;
+  }
+}
+
+/* Full width on mobile */
+@media (max-width: 480px) {
+  .flip-card {
+    flex: 1 1 100%;
+    max-width: 100%;
+    height: 200px;
+  }
+
+  .flip-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .flip-icon i {
+    font-size: 20px;
+  }
+
+  .flip-card-back,
+  .flip-card-front {
+    padding: 10px;
+  }
+}
+
+/* Very small phones (e.g. 320px) */
+@media (max-width: 375px) {
+  .flip-card {
+    height: 180px;
+  }
+  .flip-card-front h3 {
+    font-size: 1em;
+  }
+  .flip-card-back {
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 320px) {
+  .flip-card {
+    height: 170px;
+  }
+  .flip-icon {
+    width: 50px;
+    height: 50px;
+  }
+  .flip-icon i {
+    font-size: 18px;
+  }
+  .flip-card-front h3 {
+    font-size: 0.95em;
+  }
+  .flip-card-back {
+    font-size: 0.85em;
+  }
+}
+
+

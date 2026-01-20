@@ -1,0 +1,263 @@
+/* =========================
+   SAP Services Section
+========================= */
+.cr-sap-intro {
+    background: #ffffff;
+    padding: 90px 25px;
+}
+
+.cr-sap-container {
+    max-width: 1250px;
+    margin: auto;
+}
+
+.cr-sap-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+}
+
+.cr-sap-header-text {
+    flex: 0 0 55%;
+    max-width: 55%;
+    color: #002d62;
+}
+
+.cr-sap-header-text h1 {
+    color: #003b75;
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 20px;
+}
+
+.cr-sap-subtext {
+    font-size: 1.2rem;
+    color: #333;
+    line-height: 1.7;
+    text-align: left;
+//     text-align: justify;
+}
+
+.cr-sap-header-img {
+    flex: 0 0 45%;
+    max-width: 45%;
+    text-align: right;
+}
+
+.cr-sap-header-img img {
+    max-width: 100%;
+    height: auto;
+}
+
+.cr-sap-content h2 {
+    color: #003b75;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-top: 70px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.cr-sap-content p {
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.75;
+    margin-bottom: 22px;
+    text-align: left;
+//     text-align: justify;
+}
+
+/* ================================
+   SAP Services Features Style
+=================================*/
+.sap-services-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    list-style: none;
+    padding: 0;
+    margin: 55px 0;
+}
+
+.sap-services-features li {
+    background: linear-gradient(135deg, #f7faff, #ffffff);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    padding: 32px 22px 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.sap-services-features li:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.18);
+    border-color: #2563eb;
+}
+
+.sap-services-features li::before {
+    font-family: "Font Awesome 6 Free";
+    content: '';
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a173b, #1e3a8a);
+    margin-bottom: 18px;
+    transition: background 0.3s ease;
+}
+
+.sap-services-features li:hover::before {
+    background: linear-gradient(135deg, #1e3a8a, #0ea5e9);
+}
+
+/* Assign icons */
+.cr-sap-content ul.sap-services-features li:nth-child(1)::before { content: "\f0e8"; } /* fa-project-diagram */
+.cr-sap-content ul.sap-services-features li:nth-child(2)::before { content: "\f1c0"; } /* fa-database */
+.cr-sap-content ul.sap-services-features li:nth-child(3)::before { content: "\f121"; } /* fa-code */
+.cr-sap-content ul.sap-services-features li:nth-child(4)::before { content: "\f0ec"; } /* fa-random */
+.cr-sap-content ul.sap-services-features li:nth-child(5)::before { content: "\f233"; } /* fa-server */
+.cr-sap-content ul.sap-services-features li:nth-child(6)::before { content: "\f021"; } /* fa-sync-alt */
+.cr-sap-content ul.sap-services-features li:nth-child(7)::before { content: "\f1ad"; } /* fa-industry */
+.cr-sap-content ul.sap-services-features li:nth-child(8)::before { content: "\f19d"; } /* fa-graduation-cap */
+
+@media (max-width: 1024px) {
+    .sap-services-features {
+        grid-template-columns: repeat(3, 1fr); /* 2 columns */
+        gap: 18px;
+    }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+    .sap-services-features {
+        grid-template-columns: repeat(2, 1fr); /* still 2 columns */
+        gap: 16px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .sap-services-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 14px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 375px) {
+    .sap-services-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 12px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 320px) {
+    .sap-services-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 10px;
+    }
+}
+
+/* FAQ Styling */
+.cr-sap-content dl {
+    margin: 45px 0;
+    border-top: 2px solid #e0e6f0;
+    border-bottom: 2px solid #e0e6f0;
+    padding: 22px 0;
+    background: #ffffff;
+    border-radius: 10px;
+}
+
+.cr-sap-content dt {
+    font-weight: 700;
+    color: #003b75;
+    margin-top: 22px;
+    padding: 16px 22px 16px 48px;
+    background: #e6f0ff;
+    border-radius: 8px;
+    position: relative;
+    text-align: left;
+}
+
+.cr-sap-content dt::before {
+    font-family: "Font Awesome 6 Free";
+    content: "\f128"; /* question-circle */
+    font-weight: 900;
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #007bff;
+    font-size: 1.25rem;
+}
+
+.cr-sap-content dd {
+    margin: 12px 0 22px 22px;
+    color: #333;
+    line-height: 1.65;
+    text-align: justify;
+    padding-left: 12px;
+    border-left: 3px solid #007bff;
+    background: #f5f7fb;
+    border-radius: 5px;
+    padding: 12px 16px;
+    font-size: 1.05rem;
+}
+
+.cr-sap-content dt + dd {
+    margin-top: 12px;
+}
+
+.cr-sap-content dt:hover {
+    background: #d0e4ff;
+    cursor: default;
+}
+
+/* =========================
+   Responsive Media Queries
+========================= */
+@media (max-width: 1024px) {
+    .cr-sap-header-text h1 { font-size: 2.5rem; }
+    .cr-sap-subtext { font-size: 1.1rem; }
+    .cr-sap-content h2 { font-size: 1.9rem; }
+    .cr-sap-content p {
+        font-size: 1.05rem;
+    }
+}
+@media (max-width: 768px) {
+    .cr-sap-header-row { flex-direction: column; gap: 35px; }
+    .cr-sap-header-text, .cr-sap-header-img { flex: 1 1 100%; max-width: 100%; }
+    .cr-sap-header-text h1 { font-size: 2.1rem; }
+    .cr-sap-subtext { font-size: 1rem; }
+    .cr-sap-content ul.sap-services-features { gap: 18px; }
+    .cr-sap-content ul.sap-services-features li { flex: 1 1 100%; max-width: 100%; }
+}
+@media (max-width: 480px) {
+    .cr-sap-header-text h1 { font-size: 1.8rem; }
+    .cr-sap-subtext { font-size: 0.95rem; }
+    .cr-sap-content h2 { font-size: 1.55rem; }
+    .cr-sap-content p {
+        font-size: 0.95rem;
+    }
+}
+@media (max-width: 375px) {
+    .cr-sap-header-text h1 { font-size: 1.55rem; }
+    .cr-sap-subtext { font-size: 0.9rem; }
+    .cr-sap-content h2 { font-size: 1.35rem; }
+    .cr-sap-content ul.sap-services-features li { padding: 22px 16px 26px; }
+}
+@media (max-width: 320px) {
+    .cr-sap-header-text h1 { font-size: 1.4rem; }
+    .cr-sap-subtext { font-size: 0.85rem; }
+    .cr-sap-content h2 { font-size: 1.2rem; }
+}

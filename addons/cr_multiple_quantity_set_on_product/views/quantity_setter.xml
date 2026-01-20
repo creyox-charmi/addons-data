@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <template id="product_inherit" inherit_id="website_sale.product">
+        <xpath expr="//input[@class='product_id'][1]" position="after">
+            <!-- Add the new hidden input fields -->
+            <input type="hidden" class="product_template_id" t-att-value="product.id"/>
+            <input type="hidden"  class="multi_quantity_product" t-att-value="product.multi_quantity_product"/>
+        </xpath>
+        <xpath expr="//input[@name='add_qty']" position="attributes">
+            <!-- Set default value dynamically based on multi_quantity_product -->
+            <attribute name="t-att-value">product.multi_quantity_product or 1</attribute>
+        </xpath>
+    </template>
+
+    <template id="product_cart_line_inherit" inherit_id="website_sale.cart_lines">
+        <xpath expr="//td[@class='td-product_name']" position="inside">
+            <input type='hidden' class="multi_quantity_product" t-att-value="line.product_id.multi_quantity_product"/>
+        </xpath>
+    </template>
+
+</odoo>

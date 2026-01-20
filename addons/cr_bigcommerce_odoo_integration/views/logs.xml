@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_cr_data_processing_log_tree" model="ir.ui.view">
+        <field name="name">cr.data.processing.log.tree</field>
+        <field name="model">cr.data.processing.log</field>
+        <field name="arch" type="xml">
+            <tree string="Data Processing Logs">
+                <field name="cr_shop_id"/>
+                <field name="cr_message"/>
+                <field name="cr_record_count"/>
+                <field name="cr_status"/>
+                <field name="cr_timestamp"/>
+                <field name="cr_user_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_cr_data_processing_log_form" model="ir.ui.view">
+        <field name="name">cr.data.processing.log.form</field>
+        <field name="model">cr.data.processing.log</field>
+        <field name="arch" type="xml">
+            <form string="Data Processing Log">
+                <sheet>
+                    <group>
+                        <field name="cr_shop_id"/>
+                        <field name="cr_message"/>
+                        <field name="cr_record_count"/>
+                        <field name="cr_status"/>
+                        <field name="cr_error_message"/>
+                        <field name="cr_timestamp"/>
+                        <field name="cr_initiated_at"/>
+                        <field name="cr_user_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_cr_data_processing_log" model="ir.actions.act_window">
+        <field name="name">Data Processing Logs</field>
+        <field name="res_model">cr.data.processing.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[(1, '=', 1)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No logs found. Logs of data processing (import/export, sync, etc.) will appear here.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_cr_data_processing_log_search" model="ir.ui.view">
+        <field name="name">cr.data.processing.log.search</field>
+        <field name="model">cr.data.processing.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="cr_shop_id"/>
+                <filter string="Success" name="success" domain="[('cr_status','=','success')]"/>
+                <filter string="Failure" name="failure" domain="[('cr_status','=','failure')]"/>
+            </search>
+        </field>
+    </record>
+
+
+</odoo>

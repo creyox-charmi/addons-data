@@ -1,0 +1,2438 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Odoo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+    <link href=https://apps.odoocdn.com/web/content/7247337-184ae0e/1/web.assets_frontend.css" rel="stylesheet">
+
+</head>
+
+<body>
+<main class="container" style="border-radius:20px;">
+    <header class="py-2">
+        <div class="row align-items-center" style="margin-top: 20px;">
+            <div class="col-12 col-md-12 text-right">
+                <span style="font-size: 19px; font-weight: 500;margin-right: 20px;color: black;"><i
+                        class="fa fa-check-circle mr-1" style="color: #00D100;"></i> Community</span>
+                <span style="font-size: 19px; font-weight: 500;color: black;"><i class="fa fa-check-circle mr-1"
+                                                                                 style="color: #00D100;"></i> Enterprise</span>
+                <span style="font-size: 19px; font-weight: 500;color: black;padding: 15px;"><i
+                        class="fa fa-check-circle mr-1" style="color: #00D100;"></i> Odoo.sh</span>
+            </div>
+        </div>
+        <hr/>
+    </header>
+
+    <!-- <center><span style="font-size: 28px;" class="text-success">We are offering a 20% discount on any odoo service.</span></center> -->
+    <div class="px-md-5 py-md-4 p-2 mb-4 bg-white shadow " style="border-radius:20px; font-family:'system-ui'">
+        <center>
+            <div class="oe_container" style="margin-left:calc(-42vw + 50%); width:84vw">
+
+                <div class="row o_equal_col_sm">
+
+                    <!--                    <div class="" style="display:block; margin:0 auto;width:100%">-->
+                    <!--                        <span style="width:100%; display:inline-block">-->
+                    <!--                            -->
+                    <!--                            <img class="img img-responsive mt24 mb8"-->
+                    <!--                                 src="static_img/odoo_learning_partner_rgb-imageonline.co-merged.png"-->
+                    <!--                                 style="display:block; margin:0 auto; width: 800px;">-->
+                    <!--                            -->
+                    <!--                        </span>-->
+                    <!--                    </div>-->
+
+                </div>
+                <!-- </center> -->
+            </div>
+        </center>
+        <div class="position-relative mb-4" style="border-radius:10px">
+            <img alt="" class="w-100 h-100 position-absolute img-fluid left_0" loading="lazy"
+                 src="static_img/main_bg.jpg" style="border-radius: 25px;">
+            <div class="p-lg-5 p-3 position-relative">
+                <div class="row py-4 py-lg-0">
+                    <div class="col-md-12">
+                        <h1 style="font-family:'system-ui'; font-style:normal; font-weight:bold; font-size:calc(2.06rem + 1vw); line-height:120%; text-align:center; text-transform:capitalize">
+                            <span style="font-family:system-ui; color:#10488A; font-size:calc(2.06rem + 1vw)">GET PERSONALIZED DEMO</span>
+                        </h1>
+                    </div>
+                    <div class="col-md-12 py-2">
+                        <p style="font-family:system-ui; font-weight:500; font-size:18px; line-height:150% !important; text-align:center; letter-spacing:-0.02em; color:#4F4F4F">
+                            Please send your inquiry on email or skype to know more about this application.
+                        </p>
+                    </div>
+                    <div class="col-md-12 py-2 text-center ">
+                        <a href="mailto:support@creyox.com" target="_blank"
+                           style="background-color:#091E42; border-radius:12px; display:inline-block; padding:7px 33px; border:1px solid #091E42"
+                           class="mx-1 mb-2 deep-1 deep_hover">
+                            <img class="img" style="width:30px" src="static_img/email.png">
+                            <span class="pl-2" style="color:#fff; font-size:16px; vertical-align:middle">
+                                Email Us
+                            </span>
+                        </a>
+                        <a href="skype:live:.cid.d7506ede68fce23e?chat" target="_blank"
+                           style="background-color:#091E42; border-radius:12px; display:inline-block; padding:7px 33px; border:1px solid #091E42"
+                           class="mx-1 mb-2 deep-1 deep_hover">
+                            <img class="img" style="width:27px" src="static_img/skype.png">
+                            <span class="pl-2" style="color:#fff; font-size:16px; vertical-align:middle">
+                                Skype Us
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="px-md-5 py-md-4 p-2 mb-4 bg-white shadow " style="border-radius:20px; font-family:'system-ui'">
+        <div class="position-relative mb-4" style="border-radius:10px">
+            <img alt="" class="w-100 h-100 position-absolute img-fluid left_0" loading="lazy"
+                 src="static_img/main_bg.jpg" style="border-radius: 25px;">
+            <div class="p-lg-5 p-3 position-relative">
+                <div class="row py-4 py-lg-0">
+                    <div class="col-md-12">
+                        <h1 style="font-family:'system-ui'; font-style:normal; font-weight:bold; font-size:calc(2.06rem + 1vw); line-height:120%; text-align:center; text-transform:capitalize">
+                            <span style="font-family:system-ui; color:#10488A; font-size:calc(2.06rem + 1vw)">Odoo To BigCommerce Integration</span>
+                        </h1>
+                    </div>
+                    <div class="col-md-12 py-2 text-center ">
+                        <a class="btn btn-primary btn-lg mt8" target="_blank" style="color: #FFFFFF !important;"
+                           href="https://www.youtube.com/playlist?list=PLyj8q3CcVly1UnBJyiVQmWXp4E8WJucAa">
+                            <i class="fa fa-check-square"></i> Watch Playlist
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4 bg-white shadow" style="border-radius:20px; font-family:'system-ui'; font-weight:400">
+        <div class="tab-content p-md-5 p-2 py-3" id="myTabContent">
+            <div class="card shadow"
+                 style="background-color:#FFFAFA !important; border-color:#dfdfdf; border-radius:10px">
+                <br/>
+                <div class="row mb-5">
+                    <div class="col-12 col-md-12 text-center text-md-left">
+                        <center><h1 style="color: #000099;">Overview</h1></center>
+                    </div>
+                </div>
+                <div class="row align-items-center mb-4" style="margin-top:-25px">
+                    <div class="row align-items-center mb-4" style="margin-top:-25px">
+                        <div class="col-12 col-md-12">
+                            <div class="col-10 col-md-12" style="padding-left: 30px;">
+                                <p style="font-size: 20px;">
+                                    The BigCommerce Odoo Integration Module is a robust solution designed to seamlessly
+                                    connect BigCommerce e-commerce stores with Odoo ERP, enabling efficient two-way data
+                                    synchronization. This module supports importing and exporting critical business
+                                    data, real-time updates via webhooks, scheduled actions for automation, and detailed
+                                    logging for all operations. It simplifies e-commerce operations, enhances inventory
+                                    management, and ensures data consistency across platforms, making it ideal for
+                                    businesses seeking to streamline workflows and improve operational efficiency.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="card shadow"
+                 style="background-color:#FFFAFA !important; border-color:#dfdfdf; border-radius:10px">
+                <img src="images/Workflow.gif" alt="" class="img img-fluid shadow-lg mx-auto"
+                                         loading="lazy"
+                                         style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+            </div>
+
+            <br/>
+            <br/>
+            <section id="cr_hot_feature" style="padding-top:30px; background-color:transparent">
+                <div class="container">
+                    <div class="text-center mb-5">
+                        <h1 style="font-size:35px; color:#000099; margin-bottom:10px">
+                            Hot Features</h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                   Real-Time Synchronization
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Flexible Scheduling
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Manual Webhook
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Detailed Logging
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Action Control
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Multi-Store Management
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Auto Import Product
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Auto Update Product
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Auto Import Order
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Auto Update Order
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Categories
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Brands
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Taxes
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Product
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Product Variants
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Product Images
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Customer
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Customer Address
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Inventory
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Shipping Zones
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Shipping Methods
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Sync Locations
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 mb-2">
+                            <div class="d-flex justify-content-center align-items-center rounded shadow"
+                                 style="padding:15px; border:1px solid #9ebdfb; border-bottom:4px solid #9ebdfb; background-color:#f8fffc; border-radius:0.25rem !important">
+                                <span style="color:#212121; font-weight:600; vertical-align:middle; padding-left:10px; text-align:center">
+                                    Real-Time Inventory Sync
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <br/>
+            <br/>
+
+            <ul class="nav nav-tabs justify-content-center bg-transparent" id="nav-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a id="home-tab-features" data-bs-toggle="pill" href="#pills-feature" role="tab"
+                       aria-controls="pills-feature"
+                       aria-selected="true" class="nav-link active">Features
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a id="home-tab-backend" data-bs-toggle="pill" href="#pills-home" role="tab"
+                       aria-controls="pills-home"
+                       aria-selected="true" class="nav-link">Import
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="portal-export" data-bs-toggle="pill" href="#pills-export" role="tab"
+                       aria-controls="pill-faq" aria-selected="false"
+                    >Export
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="portal-ws" data-bs-toggle="pill" href="#pills-ws" role="tab"
+                       aria-controls="pill-faq" aria-selected="false"
+                    >Webhooks/Schedule
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="portal-faq" data-bs-toggle="pill" href="#pills-faq" role="tab"
+                       aria-controls="pill-faq" aria-selected="false"
+                    >FAQ
+                    </a>
+                </li>
+            </ul>
+            <br/>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="px-3 pt-3 tab-pane fade show active" id="pills-feature" role="tabpanel"
+                     aria-labelledby="portal-tab">
+                    <div class="row mb-5">
+                        <div class="col-12 col-md-12 text-center text-md-left">
+                            <center><h1 style="color: #000099;">Features</h1></center>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-4" style="margin-top:-25px">
+                        <div class="col-12 col-md-12">
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                               Import currency data from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Import categories data from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Import brand information data from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Import products, including image, variants and attributes data from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Import customer data from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Import customer addresses data from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Import tax data from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                 Import store locations data from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Import shipping zones and their shipping methods from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Import Stocks data from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                 Import order statuses from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Import orders from BigCommerce to Odoo.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Export product categories from Odoo to BigCommerce.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Export products, including variants and images from Odoo to BigCommerce.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Export customer data from Odoo to BigCommerce.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Sync addresses from Odoo to BigCommerce.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Export location data from Odoo to BigCommerce.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Export stock data from Odoo to BigCommerce.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Automatically create orders in Odoo when orders are placed in BigCommerce.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Reflect any order changes (e.g., status updates) in Odoo in real-time.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Automatically create product in Odoo when product are created in BigCommerce.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Reflect any product changes in Odoo in real-time.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Create or delete webhooks manually for customized event handling.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Configure scheduled imports for orders and products at customizable intervals (minutes, hours, days, etc.).
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Create, update, or delete scheduled actions as needed.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Track all import, export, and webhook operations with detailed logs.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Automatically log errors during operations for easy debugging.
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="container position-relative mt-4 shadow rounded"
+                                 style="background-color:#f8fffc; border-radius:10px; border-color:#dfdfdf; border:1px solid #dfdfdf; padding:15px ">
+                                <div style="display:inline">
+                                <span class="fa fa-arrow-right"
+                                      style="color:#000099; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    <span style="font-size:18px; font-weight:500; color:#212529; text-transform:capitalize; padding-left:10px">
+                                Maintain a history of all sync activities for transparency.
+                            </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="px-3 pt-1 tab-pane fade" id="pills-home" role="tabpanel" aria-labelledby="
+                            home-tab">
+                <div class="row mb-5">
+                    <div class="col-12 col-md-12 text-center text-md-left">
+                        <center><h1 style="color: #000099;">Odoo To BigCommerce Integration</h1>
+                        </center>
+                    </div>
+                </div>
+
+                <ul class="nav nav-tabs justify-content-center bg-transparent" id="nav-tab-ss" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a id="store-features" data-bs-toggle="pill" href="#pills-store" role="tab"
+                           aria-controls="pills-store"
+                           aria-selected="true" class="nav-link active">Store
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a id="currency-features" data-bs-toggle="pill" href="#pills-currency" role="tab"
+                           aria-controls="pills-currency"
+                           aria-selected="true" class="nav-link">Currency
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="category-features" data-bs-toggle="pill" href="#pills-category"
+                           role="tab"
+                           aria-controls="pill-category" aria-selected="false"
+                        >Category
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="brand-order" data-bs-toggle="pill" href="#pills-brand" role="tab"
+                           aria-controls="pill-brand" aria-selected="false"
+                        >Brand
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="product-features" data-bs-toggle="pill" href="#pills-product"
+                           role="tab"
+                           aria-controls="pill-product" aria-selected="false"
+                        >Product
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="brand-customer" data-bs-toggle="pill" href="#pills-customer"
+                           role="tab"
+                           aria-controls="pill-customer" aria-selected="false"
+                        >Customer
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="tax-features" data-bs-toggle="pill" href="#pills-tax" role="tab"
+                           aria-controls="pill-tax" aria-selected="false"
+                        >Tax
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="location-features" data-bs-toggle="pill" href="#pills-location"
+                           role="tab"
+                           aria-controls="pill-location" aria-selected="false"
+                        >Location
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="shipping-features" data-bs-toggle="pill" href="#pills-shipping"
+                           role="tab"
+                           aria-controls="pill-shipping" aria-selected="false"
+                        >Shipping
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="inventory-features" data-bs-toggle="pill" href="#pills-inventory"
+                           role="tab"
+                           aria-controls="pill-inventory" aria-selected="false"
+                        >Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="order-inventory" data-bs-toggle="pill" href="#pills-order"
+                           role="tab"
+                           aria-controls="pill-order" aria-selected="false"
+                        >Order
+                        </a>
+                    </li>
+
+                </ul>
+                </br>
+                </br>
+
+
+                <div class="tab-content" id="pills-tabContent1">
+
+                    <div class="px-3 pt-3 tab-pane fade show active" id="pills-store" role="tabpanel"
+                         aria-labelledby="portal-tab">
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=W4EaMZTVeRg">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4" style="margin-top:-25px">
+                            <div class="col-12 col-md-12">
+                                <ul style="font-size: 22px;">
+                                    <li>Go to BigCommerce</li>
+                                    <img src="images/1.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                         loading="lazy"
+                                         style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                                </ul>
+                                <ul style="font-size: 22px;">
+                                    <li>Go to BigCommerce >> Stores
+                                        </br>
+                                        Create a new record and enter the all api credentials and click on 'Import
+                                        Store
+                                        Details'.
+                                    </li>
+
+                                    <img src="images/2.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                         loading="lazy"
+                                         style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                                </ul>
+                                <ul style="font-size: 22px;">
+                                    <li>After click on 'Import Store Details' you can see the details of related
+                                        store in
+                                        page 'Store Info'.
+                                    </li>
+                                    <img src="images/3.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                         loading="lazy"
+                                         style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                                </ul>
+                                <ul style="font-size: 22px;">
+                                    <li>You can see the success or failure logs of related operation in page 'Logs'.
+                                    </li>
+                                    <img src="images/4.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                         loading="lazy"
+                                         style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                                </ul>
+                                <ul style="font-size: 22px;">
+                                    <li>From 'Import/Export' page you can import or export any data.
+                                    </li>
+                                    <img src="images/5.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                         loading="lazy"
+                                         style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                                </ul>
+                                <ul style="font-size: 22px;">
+                                    <li>From here also you can Import or Export any data.
+                                    </li>
+                                    <img src="images/6.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                         loading="lazy"
+                                         style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-currency" role="tabpanel"
+                         aria-labelledby="portal-tab">
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=ZsEeLGtd2NE">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, only one currency is currently set up.
+                            </li>
+                            <img src="images/7.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'currencies' and
+                                click on 'Import'.
+                            </li>
+                            <img src="images/8.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Configuration >> Currencies
+                                <br/>
+                                Here you can see the imported currencies and in the 'BigCommerce Info' page you can
+                                see the all related information of currency from BigCommerce.
+                            </li>
+                            <img src="images/9.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Update From BigCommerce' button if you want to update currency from
+                                BigCommerce to Odoo.
+                            </li>
+                            <img src="images/10.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>From tree view also you can update record in bulk at once.</li>
+                            <img src="images/11.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Update In BigCommerce' button if you want to update currency from Odoo to
+                                BigCommerce.
+                            </li>
+                            <img src="images/12.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>From tree view also you can update record in bulk at once.</li>
+                            <img src="images/13.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Delete' button If you want to delete record from Odoo to BigCommerce.</li>
+                            <img src="images/14.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-category" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=X12_V-sL03I">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, there are 6 Category is set up.</li>
+                            <img src="images/15.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Product
+                                Categories' and click on 'Import'.
+                            </li>
+                            <img src="images/16.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Product Info >> Product Category
+                                <br/>
+                                Here you can see the imported Category.
+                            </li>
+                            <img src="images/17.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Open any category , in the 'BigCommerce Info' tab you can see the category
+                                information.
+                            </li>
+                            <img src="images/18.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Update in BigCommerce' you can update the category in
+                                BigCommerce.
+                            </li>
+                            <img src="images/19.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Delete in BigCommerce' you can delete the category in
+                                BigCommerce.
+                            </li>
+                            <img src="images/20.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-brand" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=11wa3n9MIAE">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, there are 3 Brands is set up.
+                            </li>
+                            <img src="images/21.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Brands' and click
+                                on 'Import'.
+                            </li>
+                            <img src="images/22.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Product Info >> Brands
+                                <br/>
+                                Here you can see the imported Brands.
+                            </li>
+                            <img src="images/23.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Open any brands , here you can see the brand information.
+                            </li>
+                            <img src="images/24.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Update on BigCommerce' you can update the brand in BigCommerce.
+                            </li>
+                            <img src="images/25.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Delete from BigCommerce' you can delete the brand in
+                                BigCommerce.
+                            </li>
+                            <img src="images/26.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-product" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=qzKN8UaSiMc">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, there are 13 Products is set up.
+                            </li>
+                            <img src="images/27.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Products' and
+                                click on 'Import'.
+                            </li>
+                            <img src="images/28.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Product Info >> Products
+                                <br/>
+                                Here you can see the imported products with images and it's variants.
+                            </li>
+                            <img src="images/29.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Product Info >> Product Variants
+                                <br/>
+                                Here you can see the imported product variants.
+                            </li>
+                            <img src="images/30.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Open any products ,in the 'BigCommerce' page you can see the product information.
+                            </li>
+                            <img src="images/31.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Import Image' you can import the image manually.
+                            </li>
+                            <img src="images/32.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Import Variants' you can import the variants manually.
+                            </li>
+                            <img src="images/33.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Update Product In BigCommerce' you can update the product in
+                                BigCommerce from Odoo.
+                            </li>
+                            <img src="images/34.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Delete Product In BigCommerce' you can delete the product in
+                                BigCommerce.
+                            </li>
+                            <img src="images/35.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>From tree view also you can perform this two operation for bulk records.
+                            </li>
+                            <img src="images/36.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-customer" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=ZD7rmeBSwWA">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, only 1 customer is set up.
+                            </li>
+                            <img src="images/37.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Customers' and
+                                click on 'Import'.
+                            </li>
+                            <img src="images/38.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Customers
+                                <br/>
+                                Here you can see the imported customer.
+                            </li>
+                            <img src="images/39.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Open customer ,in the 'BigCommerce Info' page you can see the customer information.
+                            </li>
+                            <img src="images/40.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Update customer in BigCommerce' you can update the customer from
+                                odoo to BigCommerce manually.
+                            </li>
+                            <img src="images/41.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Delete customer in BigCommerce' you can delete the customer from
+                                odoo to BigCommerce manually.
+                            </li>
+                            <img src="images/42.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Update Customer In BigCommerce' you can update the customer in
+                                BigCommerce from Odoo in bulk.
+                            </li>
+                            <img src="images/43.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, only 1 customer address is set up.
+                            </li>
+                            <img src="images/44.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Customer Address'
+                                and click on 'Import'.
+                            </li>
+                            <img src="images/45.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Customers and open any customer
+                                <br/>
+                                Here you can see the imported customer address.
+                            </li>
+                            <img src="images/46.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>From here also you can export the customer address by Click on button 'Export
+                                Customer Address'.
+                            </li>
+                            <img src="images/47.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Update address in BigCommerce' you can update the customer
+                                address from odoo to BigCommerce manually.
+                            </li>
+                            <img src="images/48.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Delete Address In BigCommerce' you can delete the customer
+                                address from odoo to BigCommerce manually.
+                            </li>
+                            <img src="images/49.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Update BigCommerce Address' you can update the customer address
+                                in BigCommerce from Odoo in bulk.
+                            </li>
+                            <img src="images/50.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-tax" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=Y18yBb5nXek">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, there are 4 tax classes is set up.
+                            </li>
+                            <img src="images/51.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, there are 1 tax rates is set up.
+                            </li>
+                            <img src="images/52.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Tax Rates' and
+                                click on 'Import'.
+                            </li>
+                            <img src="images/53.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Configuration >> Taxes
+                                <br/>
+                                Here you can see the imported taxes.
+                            </li>
+                            <img src="images/54.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Configuration >> Taxes and open any tax
+                                <br/>
+                                Here you can see in the 'Default Tax Class' the amount is set 20% as the tax rate
+                                set in the BigCommerce for 'Default Tax Class' .
+                            </li>
+                            <img src="images/55.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-location" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=WXxojObu3Sk">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, only 1 Location is set up.
+                            </li>
+                            <img src="images/56.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Locations' and
+                                click on 'Import'.
+                            </li>
+                            <img src="images/57.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Configuration >> Locations
+                                <br/>
+                                Here you can see the imported Locations.
+                            </li>
+                            <img src="images/58.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Open Any Location and from 'BigCommerce Info' page ypu can see the information of
+                                location.
+                            </li>
+                            <img src="images/59.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Update To BigCommerce' you can update location from odoo to
+                                Bigcommerce.
+                            </li>
+                            <img src="images/60.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>By Click on button 'Delete To BigCommerce' you can delete location from odoo to
+                                Bigcommerce.
+                            </li>
+                            <img src="images/61.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>You can update locations in bulk by click on button 'Update Locations To
+                                BigCommerce'.
+                            </li>
+                            <img src="images/62.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-shipping" role="tabpanel"
+                         aria-labelledby="portal-tab">
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=Z_CcXCmaD7k">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, only 1 Shipping Zone is set up.
+                            </li>
+                            <img src="images/63.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, there are 2 shipping method is enable.
+                            </li>
+                            <img src="images/64.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Shipping Zone' and
+                                click on 'Import'.
+                            </li>
+                            <img src="images/65.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Configuration >> Shipping Zone
+                                <br/>
+                                Here you can see the imported Shipping Zone.
+                            </li>
+                            <img src="images/66.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Open any Shipping Zone
+                                <br/>
+                                Here you can see the Shipping Zone details.
+                                <br/>
+                                By Click on Button 'Update From Bigcommerce' you can update shipping zone from
+                                Bigcommerce to odoo
+                                <br/>
+                                By Click on Button 'Update To Bigcommerce' you can update shipping zone from odoo to
+                                Bigcommerce
+                                <br/>
+                                By Click on Button 'Delete From Bigcommerce' you can delete shipping zone from odoo
+                                to Bigcommerce
+
+                            </li>
+                            <img src="images/67.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>You can update shipping zone in bulk from Bigcommerce to odoo by click on button
+                                'Update Zone From BigCommerce'.
+                                </br>
+                                You can update shipping zone in bulk from odoo to Bigcommerce by click on button
+                                'Update Zone To BigCommerce'.
+                            </li>
+                            <img src="images/68.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Configuration >> Shipping Methods
+                                <br/>
+                                Here you can see the imported Shipping Methods.
+                            </li>
+                            <img src="images/69.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Open any Shipping Method
+                                <br/>
+                                Here you can see the Shipping Method details in the page 'Bigcommerce'.
+                                <br/>
+                                By Click on Button 'Update From Bigcommerce' you can update shipping method from
+                                Bigcommerce to odoo
+                                <br/>
+                                By Click on Button 'Update To Bigcommerce' you can update shipping method from odoo
+                                to Bigcommerce
+                                <br/>
+                                By Click on Button 'Delete From Bigcommerce' you can delete shipping method from
+                                odoo to Bigcommerce
+
+                            </li>
+                            <img src="images/70.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>You can update shipping method in bulk from Bigcommerce to odoo by click on button
+                                'Update Shipping Method From BigCommerce'.
+                                </br>
+                                You can update shipping method in bulk from odoo to Bigcommerce by click on button
+                                'Update Shipping Method To BigCommerce'.
+                            </li>
+                            <img src="images/71.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-inventory" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=jIDCkaOnCaQ">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, only for product '[Sample] Smith Journal 13' stock is set up.
+                            </li>
+                            <img src="images/72.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Here you can see in location 'Default Location' for product '[Sample] Smith Journal
+                                13' current stock 120 is set up.
+                            </li>
+                            <img src="images/73.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Inventory' and
+                                click on 'Import'.
+                            </li>
+                            <img src="images/74.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to Inventory >> Operations >> Physical Inventory
+                                <br/>
+                                Here you can see the imported inventory for product '[Sample] Smith Journal 13' with
+                                location 'WH/Default location' and on hand quantity '120'.
+                            </li>
+                            <img src="images/75.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-order" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=d0akS8WB5qE">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, see the available order status.
+                            </li>
+                            <img src="images/100.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Order Statuses'
+                                and click on 'Import'.
+                            </li>
+                            <img src="images/76.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Sale Order >> Order Statuses
+                                <br/>
+                                Here you can see the imported order statuses.
+                            </li>
+                            <img src="images/77.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+                        <ul style="font-size: 22px;">
+                            <li>In my BigCommerce, only 1 order is set up.
+                            </li>
+                            <img src="images/78.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Import Data' and from 'Import Data Type' choose option 'Orders' and click
+                                on 'Import'.
+                            </li>
+                            <img src="images/79.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Go to BigCommerce >> Sale Order >> Order
+                                <br/>
+                                Here you can see the imported orders.
+                            </li>
+                            <img src="images/80.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Open any Sale Order
+                                <br/>
+                                Here you can see the all details of orders.
+                                <br/>
+                                By click on button 'Update Order In BigCommerce' you can update the order from odoo
+                                to BigCommerce manually.
+                                <br/>
+                                By click on button 'Get Order Status' you can get the order status from BigCommerce
+                                to odoo manually.
+
+                            </li>
+                            <img src="images/81.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>You can update order in bulk from Bigcommerce to odoo by click on button 'Update
+                                From BigCommerce'.
+                                </br>
+                                You can update order in bulk from odoo to Bigcommerce by click on button 'Update To
+                                BigCommerce'.
+                            </li>
+                            <img src="images/82.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>You can also import order using date.
+                            </li>
+                            <img src="images/83.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Here you Can Enter custom Prefix for your Bigcommerce store Orders.
+                            </li>
+                            <img src="images/96.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>From here you can configure options for auto create customer and auto create products if
+                                the customer or product not exist in odoo at the time of order creation if option is
+                                enable otherwise you get notification.
+
+                            </li>
+                            <img src="images/101.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="px-3 pt-1 tab-pane fade" id="pills-export" role="tabpanel" aria-labelledby="
+                            home-tab">
+                <div class="row mb-5">
+                    <div class="col-12 col-md-12 text-center text-md-left">
+                        <center><h1 style="color: #000099;">Odoo To BigCommerce Integration</h1>
+                        </center>
+                    </div>
+                </div>
+
+                <ul class="nav nav-tabs justify-content-center bg-transparent" id="nav-tab-ss2" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link show active" id="category-export-features" data-bs-toggle="pill"
+                           href="#pills-category-export"
+                           role="tab"
+                           aria-controls="pill-category-export" aria-selected="false"
+                        >Category
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="product-export-features" data-bs-toggle="pill"
+                           href="#pills-product-export"
+                           role="tab"
+                           aria-controls="pill-product-export" aria-selected="false"
+                        >Product
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="customer-export-features" data-bs-toggle="pill"
+                           href="#pills-customer-export"
+                           role="tab"
+                           aria-controls="pill-customer-export" aria-selected="false"
+                        >Customer
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="location-export-features" data-bs-toggle="pill"
+                           href="#pills-location-export"
+                           role="tab"
+                           aria-controls="pill-location-export" aria-selected="false"
+                        >Location
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="inventory-export-features" data-bs-toggle="pill"
+                           href="#pills-inventory-export"
+                           role="tab"
+                           aria-controls="pill-inventory-export" aria-selected="false"
+                        >Inventory
+                        </a>
+                    </li>
+
+                </ul>
+                </br>
+                </br>
+
+
+                <div class="tab-content" id="pills-tabContent2">
+                    <div class="px-3 pt-3 tab-pane fade show active" id="pills-category-export" role="tabpanel"
+                         aria-labelledby="portal-tab">
+                        <div class="row align-items-center mb-4" style="margin-top:-25px">
+                            <div class="p-lg-5 p-3 position-relative">
+                                <div class="row py-4 py-lg-0">
+                                    <div class="col-md-12 py-2 text-center ">
+                                        <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                           style="color: #FFFFFF !important;"
+                                           href="https://www.youtube.com/watch?v=f4zlIuVdprs">
+                                            <i class="fa fa-check-square"></i> Watch Video
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul style="font-size: 22px;">
+                                <li>Click on 'Export Data' and from 'Export Data Type' choose option 'Categories'
+                                    and
+                                    click on 'Export'.
+                                </li>
+                                <img src="images/84.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                     loading="lazy"
+                                     style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                            </ul>
+
+                            <ul style="font-size: 22px;">
+                                <li>In Bigcommerce we can see the exported categories.
+                                </li>
+                                <img src="images/85.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                     loading="lazy"
+                                     style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                            </ul>
+
+
+                        </div>
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-product-export" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=8kNXZ0OUrAI">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Export Data' and from 'Export Data Type' choose option 'Products' and
+                                click on 'Export'.
+                            </li>
+                            <img src="images/86.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>In Bigcommerce we can see the exported products with it's image and variants.
+                            </li>
+                            <img src="images/87.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-customer-export" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=s0Nuyu2OBU8">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Export Data' and from 'Export Data Type' choose option 'Customers' and
+                                click on 'Export'.
+                            </li>
+                            <img src="images/88.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>In Bigcommerce we can see the exported customers.
+                            </li>
+                            <img src="images/89.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Export Data' and from 'Export Data Type' choose option 'Customer
+                                Addresses' and click on 'Export'.
+                            </li>
+                            <img src="images/90.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>In Bigcommerce we can see the related customer address in customer address book.
+                            </li>
+                            <img src="images/91.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-location-export" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <div class="p-lg-5 p-3 position-relative">
+                            <div class="row py-4 py-lg-0">
+                                <div class="col-md-12 py-2 text-center ">
+                                    <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                       style="color: #FFFFFF !important;"
+                                       href="https://www.youtube.com/watch?v=Eudy6MZug90">
+                                        <i class="fa fa-check-square"></i> Watch Video
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <ul style="font-size: 22px;">
+                            <li>GO to Inventory >> Configuration >> Locations
+                                </br>
+                                Select the Location you want to export to BigCommerce and click button 'Export
+                                Location To BigCommerce'.
+                            </li>
+                            <img src="images/97.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>From here selet the store and click 'Confirm' Button.
+                            </li>
+                            <img src="images/98.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>In BigCommerce you can see the Exported Locations.
+                            </li>
+                            <img src="images/99.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                    </div>
+
+                    <div class="px-3 pt-3 tab-pane fade" id="pills-inventory-export" role="tabpanel"
+                         aria-labelledby="portal-tab">
+
+                        <ul style="font-size: 22px;">
+                            <li>Click on 'Export Data' and from 'Export Data Type' choose option 'Inventory' and
+                                click on 'Export'.
+                            </li>
+                            <img src="images/92.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                        <ul style="font-size: 22px;">
+                            <li>In BigCommerce stock is exported in the related location.
+                            </li>
+                            <img src="images/102.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                 loading="lazy"
+                                 style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                        </ul>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="px-3 pt-1 tab-pane fade" id="pills-ws" role="tabpanel" aria-labelledby="
+                            home-tab">
+                <div class="row mb-5">
+                    <div class="col-12 col-md-12 text-center text-md-left">
+                        <center><h1 style="color: #000099;">Odoo To BigCommerce Integration</h1>
+                        </center>
+                    </div>
+                </div>
+
+                </br>
+                </br>
+
+
+                <div class="tab-content" id="pills-tabContent3">
+                    <div class="px-3 pt-3 tab-pane fade show active" id="pills-ws-feature" role="tabpanel"
+                         aria-labelledby="portal-tab">
+                        <div class="row align-items-center mb-4" style="margin-top:-25px">
+                            <div class="p-lg-5 p-3 position-relative">
+                                <div class="row py-4 py-lg-0">
+                                    <div class="col-md-12 py-2 text-center ">
+                                        <a class="btn btn-primary btn-lg mt8" target="_blank"
+                                           style="color: #FFFFFF !important;"
+                                           href="https://www.youtube.com/watch?v=GLi4D2Kgi90">
+                                            <i class="fa fa-check-square"></i> Watch Video
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <ul style="font-size: 22px;">
+                                <li>Go to Bigcommerce >> Stores
+                                    </br>
+                                    The 'Schedule Action' page allows you to configure a schedule for product
+                                    imports.
+                                    You can also customize the time, and update or delete these schedules.
+                                </li>
+                                <img src="images/93.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                     loading="lazy"
+                                     style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                            </ul>
+
+                            <ul style="font-size: 22px;">
+                                <li>Go to Bigcommerce >> Stores
+                                    </br>
+                                    The 'Schedule Action' page allows you to configure a schedule for order imports.
+                                    You
+                                    can also customize the time, and update or delete these schedules.
+                                </li>
+                                <img src="images/94.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                     loading="lazy"
+                                     style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                            </ul>
+
+                            <ul style="font-size: 22px;">
+                                <li>Go to Bigcommerce >> Stores
+                                    </br>
+                                    Navigate to 'Webhooks' page
+                                    </br>
+                                    Here You can create or delete Webhooks for Orders and Products and Inventory.
+                                    You'll receive real-time updates for order or product changes, and Odoo will
+                                    automatically reflect those changes.
+                                </li>
+                                <img src="images/95.png" alt="" class="img img-fluid shadow-lg mx-auto mt-4 mb-5"
+                                     loading="lazy"
+                                     style="border: 1px solid rgb(242, 238, 247); border-radius: 11px;"/>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-------------------- FAQ tab ----------------------------->
+            <div class="px-3 pt-3 tab-pane fade" id="pills-faq" role="tabpanel" aria-labelledby="portal-tab">
+                <div class="tab-pane">
+                    <div class="panel-group" id="question-top" role="tablist">
+                        <div class="panel panel-default shadow rounded bg-white"
+                             style="padding:20px; margin-bottom:20px">
+                            <div class="panel-heading" role="tab" id="question1" style="border:0; padding:0">
+                                <h4 class="panel-title" style="margin:0">
+                                    <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion"
+                                       href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                                       style="font-size:16px; margin:0; color:#212121; text-decoration:none; font-weight:600; letter-spacing:1px; display:flex">
+                                            <span class="fa fa-question-circle"
+                                                  style="color:#3363c1; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                        Is this app compatible with Odoo Community as well as Enterprise?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="answer1" class="panel-collapse collapse show" role="tabpanel"
+                                 aria-labelledby="headingOne">
+                                <div class="panel-body" style="padding-top:20px">
+                                    <ul style="font-size:16px; padding-left:30px; color:#555; margin:0">
+                                        <li style="margin-bottom:0px">
+                                            Yes, this app works perfectly with Odoo Enterprise (Odoo.sh &
+                                            On-Premise) as well as Community.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default shadow rounded bg-white"
+                             style="padding:20px; margin-bottom:20px">
+                            <div class="panel-heading" role="tab" id="question7" style="border:0; padding:0">
+                                <h4 class="panel-title" style="margin:0">
+                                    <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion"
+                                       href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                                       style="font-size:16px; margin:0; color:#212121; text-decoration:none; font-weight:600; letter-spacing:1px; display:flex">
+                                            <span class="fa fa-question-circle"
+                                                  style="color:#3363c1; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                        Is this app compatible with self-hosted server or odoo.sh?
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="answer7" class="panel-collapse collapse show" role="tabpanel"
+                                 aria-labelledby="headingOne">
+                                <div class="panel-body" style="padding-top:20px">
+                                    <ul style="font-size:16px; padding-left:30px; color:#555; margin:0">
+                                        <li style="margin-bottom:0px">
+                                            Yes, this app works with self-hosted server or odoo.sh.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default shadow rounded bg-white"
+                         style="padding:20px; margin-bottom:20px">
+                        <div class="panel-heading" role="tab" id="question2" style="border:0; padding:0">
+                            <h4 class="panel-title" style="margin:0">
+                                <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion"
+                                   href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                                   style="font-size:16px; margin:0; color:#212121; text-decoration:none; font-weight:600; letter-spacing:1px; display:flex">
+                                            <span class="fa fa-question-circle"
+                                                  style="color:#3363c1; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    Is this app compatible with Odoo Online?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="answer2" class="panel-collapse collapse show" role="tabpanel"
+                             aria-labelledby="headingOne">
+                            <div class="panel-body" style="padding-top:20px">
+                                <ul style="font-size:16px; padding-left:30px; color:#555; margin:0">
+                                    <li style="margin-bottom:0px">
+                                        No, this app will not work for Odoo Online.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default shadow rounded bg-white"
+                         style="padding:20px; margin-bottom:20px">
+                        <div class="panel-heading" role="tab" id="question3" style="border:0; padding:0">
+                            <h4 class="panel-title" style="margin:0">
+                                <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion"
+                                   href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                                   style="font-size:16px; margin:0; color:#212121; text-decoration:none; font-weight:600; letter-spacing:1px; display:flex">
+                                            <span class="fa fa-question-circle"
+                                                  style="color:#3363c1; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    How to contact if there is need of any Customization?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="answer3" class="panel-collapse collapse show" role="tabpanel"
+                             aria-labelledby="headingOne">
+                            <div class="panel-body" style="padding-top:20px">
+                                <ul style="font-size:16px; padding-left:30px; color:#555; margin:0">
+                                    <li style="margin-bottom:0px">
+                                        Please contact us on <b>support@creyox.com</b>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default shadow rounded bg-white"
+                         style="padding:20px; margin-bottom:20px">
+                        <div class="panel-heading" role="tab" id="question4" style="border:0; padding:0">
+                            <h4 class="panel-title" style="margin:0">
+                                <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion"
+                                   href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                                   style="font-size:16px; margin:0; color:#212121; text-decoration:none; font-weight:600; letter-spacing:1px; display:flex">
+                                            <span class="fa fa-question-circle"
+                                                  style="color:#3363c1; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    Do I get free support when I buy these app?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="answer4" class="panel-collapse collapse show" role="tabpanel"
+                             aria-labelledby="headingOne">
+                            <div class="panel-body" style="padding-top:20px">
+                                <ul style="font-size:16px; padding-left:30px; color:#555; margin:0">
+                                    <li style="margin-bottom:0px">
+                                        Yes, we give free support when you buy these app for 60 Days.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default shadow rounded bg-white"
+                         style="padding:20px; margin-bottom:20px">
+                        <div class="panel-heading" role="tab" id="question5" style="border:0; padding:0">
+                            <h4 class="panel-title" style="margin:0">
+                                <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion"
+                                   href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                                   style="font-size:16px; margin:0; color:#212121; text-decoration:none; font-weight:600; letter-spacing:1px; display:flex">
+                                            <span class="fa fa-question-circle"
+                                                  style="color:#3363c1; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    Do I need to buy all versions separately paying for each version?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="answer5" class="panel-collapse collapse show" role="tabpanel"
+                             aria-labelledby="headingOne">
+                            <div class="panel-body" style="padding-top:20px">
+                                <ul style="font-size:16px; padding-left:30px; color:#555; margin:0">
+                                    <li style="margin-bottom:0px">
+                                        Yes, you need to pay different prices of app version wise.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default shadow rounded bg-white"
+                         style="padding:20px; margin-bottom:20px">
+                        <div class="panel-heading" role="tab" id="question6" style="border:0; padding:0">
+                            <h4 class="panel-title" style="margin:0">
+                                <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion"
+                                   href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                                   style="font-size:16px; margin:0; color:#212121; text-decoration:none; font-weight:600; letter-spacing:1px; display:flex">
+                                            <span class="fa fa-question-circle"
+                                                  style="color:#3363c1; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                    The app i paid for is not working, What should i do?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="answer6" class="panel-collapse collapse show" role="tabpanel"
+                             aria-labelledby="headingOne">
+                            <div class="panel-body" style="padding-top:20px">
+                                <ul style="font-size:16px; padding-left:30px; color:#555; margin:0">
+                                    <li style="margin-bottom:0px">
+                                        You can raise a Ticket on <b>support@creyox.com</b> we'll get back to
+                                        you with fixes.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default shadow rounded bg-white"
+                     style="padding:20px; margin-bottom:20px">
+                    <div class="panel-heading" role="tab" id="question8" style="border:0; padding:0">
+                        <h4 class="panel-title" style="margin:0">
+                            <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion"
+                               href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                               style="font-size:16px; margin:0; color:#212121; text-decoration:none; font-weight:600; letter-spacing:1px; display:flex">
+                                            <span class="fa fa-question-circle"
+                                                  style="color:#3363c1; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                Do you offer help with setup and installation?
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="answer8" class="panel-collapse collapse show" role="tabpanel"
+                         aria-labelledby="headingOne">
+                        <div class="panel-body" style="padding-top:20px">
+                            <ul style="font-size:16px; padding-left:30px; color:#555; margin:0">
+                                <li style="margin-bottom:0px">
+                                    Yes! If you have already purchased and need assistance with setup and installation,
+                                    we offer free support on one system to get you started. Our team will guide you
+                                    through the initial setup process, ensuring everything is configured correctly for
+                                    your business needs.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-12 col-md-12 text-center text-md-left">
+                    <center><h1 style="color: #000099;"></h1></center>
+                </div>
+            </div>
+
+            <div class="pr-5" style="font-size: 1.6rem; font-weight: 600; color: #0b3b52;">
+                <br/>
+                <center><a style="text-align: center; color: #000099;" target="_blank"
+                           href="https://apps.odoo.com/apps/modules/browse?author=Creyox Technologies"><i
+                        class="fa fa-list"></i> OUR MORE APPS</a></center>
+                <br/>
+                <center>
+                    <div style="border: 1px solid black;width:50%;"></div>
+                </center>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-12 col-md-12 text-center text-md-left" style="margin-top: 40px;">
+                    <center><h1 style="color: #000099;"><i class="fa fa-handshake-o"
+                                                           style="color: #B87333;"></i> Our
+                        Services <i class="fa fa-handshake-o" style="color: #B87333;"></i></h1></center>
+                </div>
+            </div>
+            <div class="container" style="width: 100%; height:100%;">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        <div class="box p-4 shadow rounded mb-2"
+                             style="background-color: #99b3ff;border: 2px solid #000099;border-radius: 0.25rem !important;">
+                            <a href="mailto:support@creyox.com" target="_blank"
+                               style="text-decoration: none;">
+                                <div class="icon_img mb-2">
+                                    <h3><i class="fa fa-cloud-upload" style="color: #000099;"></i></h3>
+                                </div>
+                                <div class="content">
+                                    <p class="mb-0"
+                                       style="font-size: 18px;color: #000099;font-weight: bold;">
+                                        Odoo <br/>Implementation
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="box p-4 shadow rounded mb-2"
+                             style="background-color: #99ff99;border: 2px solid #006600;border-radius: 0.25rem !important;">
+                            <a href="mailto:support@creyox.com" target="_blank"
+                               style="text-decoration: none;">
+                                <div class="icon_img mb-2">
+                                    <h3><i class="fa fa-gear" style="color: #006600;"></i></h3>
+                                </div>
+                                <div class="content">
+                                    <p class="mb-0"
+                                       style="font-size: 18px;color: #006600;font-weight: bold;">
+                                        Odoo <br/>
+                                        Customization</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="box p-4 shadow rounded mb-2"
+                             style="background-color: #ff9980;border: 2px solid #b32400;border-radius: 0.25rem !important;">
+                            <a href="mailto:support@creyox.com" target="_blank"
+                               style="text-decoration: none;">
+                                <div class="icon_img mb-2">
+                                    <h3><i class="fa fa-exchange" style="color: #b32400;"></i></h3>
+                                </div>
+                                <div class="content">
+                                    <p class="mb-0"
+                                       style="font-size: 18px;color: #b32400;font-weight: bold;">
+                                        Odoo <br/>
+                                        Migration</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center">
+
+                        <div class="box p-4 shadow rounded mb-2"
+                             style="background-color: #ffe699;border: 2px solid #997300;border-radius: 0.25rem !important;">
+                            <a href="mailto:support@creyox.com" target="_blank"
+                               style="text-decoration: none;">
+                                <div class="icon_img mb-2">
+                                    <h3><i class="fa fa-users" style="color: #997300;"></i></h3>
+                                </div>
+                                <div class="content">
+                                    <p class="mb-0"
+                                       style="font-size: 18px;color: #997300;font-weight: bold;">
+                                        Support &<br>
+                                        Maintenance</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="pr-5" style="font-size: 1.6rem; font-weight: 600; color: #0b3b52;">
+                    <br/>
+                    <center><a style="text-align: center; color: light green;" href="mailto:support@creyox.com"><i class="fa fa-envelope"></i> Email Us</a></center>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+</main>
+
+<link href="https://apps.odoocdn.com/web/content/7247337-184ae0e/1/web.assets_frontend.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

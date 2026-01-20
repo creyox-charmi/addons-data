@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="about_us_snippet_section1" name="AboutUS Section-1">
+
+
+        <section id="cr_about_intro_banner" class="about-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="about-banner-inner">
+                    <h1 class="about-banner-title">
+                        About Our Company
+                    </h1>
+                    <p class="about-banner-tagline">
+                        We are passionate about delivering innovative ERP solutions that empower businesses
+                        to grow, scale, and succeed.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="about-banner-breadcrumbs">
+                            <li>
+                                <a class="about-breadcrumb-link" href="/">
+                                    Home
+                                    <span class="about-breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="about-breadcrumb-current" aria-current="page">
+                                    About Us
+                                </span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="our-story-section cr_font">
+            <div class="story-container">
+
+                <!-- Header -->
+                <div class="story-header">
+<!--                    <span class="story-badge">Our Story</span>-->
+                    <h2 class="story-title">Our Story From Vision to Reality</h2>
+                </div>
+
+                <!-- Content Grid -->
+                <div class="story-grid">
+
+                    <!-- Image -->
+                    <div class="story-image-wrapper">
+    <div class="asymmetric-grid">
+        <div class="asymmetric-large">
+            <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&amp;q=80"
+                 alt="Planning &amp; Strategy"
+                 class="story-img"/>
+            <div class="image-overlay">
+                <h4>Planning &amp; Strategy</h4>
+            </div>
+        </div>
+
+        <div class="asymmetric-small-top">
+            <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&amp;q=80"
+                 alt="Development &amp; Implementation"
+                 class="story-img"/>
+            <div class="image-overlay">
+                <h4>Development &amp; Implementation</h4>
+            </div>
+        </div>
+
+        <div class="asymmetric-small-bottom">
+            <img src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=800&amp;q=80"
+                 alt="Success &amp; Growth"
+                 class="story-img"/>
+            <div class="image-overlay">
+                <h4>Success &amp; Growth</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+                    <!-- Content -->
+                    <div class="story-content">
+                        <p class="story-paragraph">
+                            It started with a simple observation: businesses were drowning in disconnected systems and
+                            ERP solutions that promised everything but delivered complexity.
+                        </p>
+
+                        <p class="story-paragraph">
+                            In 2020, a small team of passionate developers came together with a shared belief—that
+                            enterprise software shouldn't be a burden. We discovered Odoo not just as a platform, but as
+                            a philosophy—modular, flexible, and designed for real business needs.
+                        </p>
+
+                        <p class="story-paragraph">
+                            Our first client was skeptical. They'd been burned before. But we did something different—we
+                            listened. When they went live without downtime, word spread.
+                        </p>
+
+                        <p class="story-paragraph">
+                            Today: 200+ implementations, 500+ custom modules, 20+ certified specialists. But the mission
+                            hasn't changed. We're still that team that believes ERP should empower, not complicate.
+                        </p>
+
+                        <div class="story-highlight">
+                            This isn't just what we do. It's why we exist.
+                        </div>
+
+                        <!-- Stats -->
+<!--                        <div class="story-stats">-->
+<!--                            <div class="story-stat-box">-->
+<!--                                <div class="story-stat-number">200+</div>-->
+<!--                                <div class="story-stat-label">Projects</div>-->
+<!--                            </div>-->
+<!--                            <div class="story-stat-box">-->
+<!--                                <div class="story-stat-number">500+</div>-->
+<!--                                <div class="story-stat-label">Modules</div>-->
+<!--                            </div>-->
+<!--                            <div class="story-stat-box">-->
+<!--                                <div class="story-stat-number">20+</div>-->
+<!--                                <div class="story-stat-label">Experts</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+    </template>
+</odoo>

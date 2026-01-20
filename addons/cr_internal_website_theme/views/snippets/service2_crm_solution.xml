@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="service2_crm_solution" name="service2_crm_solution">
+
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_crm_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Comprehensive CRM Solutions for Your Business
+                    </h1>
+                    <p class="banner-tagline">
+                        Manage leads, boost sales, and strengthen customer relationships with our tailored CRM
+                        solutions.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">CRM Solutions</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-crm-solution-intro o_website_snippet cr_font" aria-labelledby="crm-solution-heading">
+            <div class="cr-crm-container">
+                <!-- First Row: Heading Left / Image Right -->
+                <div class="cr-crm-header-row">
+                    <div class="cr-crm-header-text">
+                        <h1 id="crm-solution-heading">CRM Solutions for Modern Businesses</h1>
+                        <p class="cr-crm-subtext">
+                            Our CRM solutions empower your organization to manage leads, track opportunities, automate
+                            workflows,
+                            and improve customer relationships. Streamline communication, monitor sales pipelines, and
+                            gain
+                            actionable insights to drive growth. With seamless integrations and automation, your team
+                            can
+                            focus on what matters most — nurturing customer relationships and increasing revenue.
+                        </p>
+                    </div>
+                    <div class="cr-crm-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/crm-solution.png" alt="CRM Solutions"/>
+                    </div>
+                </div>
+
+                <section class="crm-usecases">
+                    <div class="crm-usecases-container">
+                        <h2 class="crm-usecases-title">CRM Use Cases Across Industries</h2>
+
+                        <div class="crm-usecases-wrapper">
+
+                            <!-- Left side image -->
+                            <div class="crm-usecases-image">
+                                <img src="/cr_internal_website_theme/static/src/img/use_cases.png" alt="CRM Use Cases"/>
+                            </div>
+
+                            <!-- Right side use case boxes -->
+                            <div class="crm-usecase-list">
+                                <div class="usecase">
+                                    <h4>Retail</h4>
+                                    <p>Track customer purchases, run loyalty programs, and personalize promotions.</p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Manufacturing</h4>
+                                    <p>Manage distributors, automate order tracking, and forecast demand.</p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Healthcare</h4>
+                                    <p>Centralize patient interactions, schedule follow-ups, and maintain compliance.
+                                    </p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Real Estate</h4>
+                                    <p>Manage property inquiries, automate client follow-ups, and track deals.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- Content Below -->
+                <div class="cr-crm-content">
+                    <h2>Why Choose Our CRM Solution?</h2>
+                    <p>
+                        Our CRM platform adapts to your business needs, helping you manage customer interactions
+                        efficiently,
+                        improve sales processes, and boost overall productivity. With centralized data, automation, and
+                        real-time analytics, you can make smarter decisions and focus on growing customer relationships.
+                    </p>
+
+                    <ul class="crm-features">
+                        <li>
+                            <strong>Lead Management:</strong>
+                            Track and manage leads effectively to maximize conversion.
+                        </li>
+                        <li>
+                            <strong>Sales Automation:</strong>
+                            Automate repetitive sales tasks to save time and increase efficiency.
+                        </li>
+                        <li>
+                            <strong>Customer Insights:</strong>
+                            Gain actionable insights from detailed analytics and reporting.
+                        </li>
+                        <li>
+                            <strong>Pipeline Tracking:</strong>
+                            Visualize opportunities and manage your sales funnel efficiently.
+                        </li>
+                        <li>
+                            <strong>Integration:</strong>
+                            Connect with email, marketing, and other business apps seamlessly.
+                        </li>
+                        <li>
+                            <strong>Customization &amp; Flexibility:</strong>
+                            Tailor workflows, dashboards, and modules to match your unique business processes.
+                        </li>
+                        <li>
+                            <strong>Mobile Accessibility:</strong>
+                            Access your CRM anytime, anywhere with fully responsive web and mobile apps.
+                        </li>
+                        <li>
+                            <strong>Collaboration Tools:</strong>
+                            Promote teamwork with shared calendars, task assignments, and internal chat features.
+                        </li>
+                        <li>
+                            <strong>Security &amp; Compliance:</strong>
+                            Ensure data privacy with robust encryption and GDPR compliance.
+                        </li>
+                        <li>
+                            <strong>Automation &amp; AI:</strong>
+                            Use AI-driven lead scoring, predictive analytics, and automated follow-ups to increase
+                            efficiency.
+                        </li>
+                    </ul>
+
+
+                    <h2>Our Implementation Approach</h2>
+                    <p>
+                        From consultation to deployment, our CRM implementation ensures smooth adoption across all
+                        teams.
+                        We analyze your sales processes, customize the system, and provide training and support for
+                        long-term success.
+                    </p>
+
+                    <section class="crm-benefits-section">
+                        <div class="crm-benefits-container">
+                            <h2 class="crm-section-title">Key Benefits of CRM</h2>
+
+                            <div class="crm-benefits-grid">
+                                <div class="crm-benefit-card">
+                                    <h3>+40%</h3>
+                                    <p>Increase in lead conversion</p>
+                                </div>
+                                <div class="crm-benefit-card">
+                                    <h3>-25%</h3>
+                                    <p>Reduction in manual work</p>
+                                </div>
+                                <div class="crm-benefit-card">
+                                    <h3>+30%</h3>
+                                    <p>Boost in customer retention</p>
+                                </div>
+                                <div class="crm-benefit-card">
+                                    <h3>24/7</h3>
+                                    <p>Access from anywhere</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="crm-integration-app o_website_snippet" aria-labelledby="crm-integration-heading">
+                        <h2 id="crm-integration-heading">Our Most Popular CRM Integration App</h2>
+                        <div class="crm-integration-container">
+
+
+                            <!-- Left Image -->
+                            <div class="crm-integration-image">
+                                <img src="/cr_internal_website_theme/static/src/img/3cx-crm-odoo.png"
+                                     alt="3CX CRM Odoo Integration App"/>
+                            </div>
+
+                            <!-- Right Content -->
+                            <div class="crm-integration-content">
+
+                                <h3>3CX CRM Odoo Integration</h3>
+                                <p>
+                                    Simplify your business communication with seamless integration between
+                                    <strong>3CX</strong>
+                                    and <strong>Odoo CRM</strong>.
+                                    Our solution enables real-time call tracking, automatic lead creation,
+                                    and efficient customer management — directly from Odoo.
+                                    Empower your sales and support teams with a single powerful platform.
+                                </p>
+                                <a href="https://apps.odoo.com/apps/modules/18.0/cr_3cx_crm_connector" class="crm-btn">
+                                    Learn More
+                                </a>
+                            </div>
+
+                        </div>
+                    </section>
+
+
+                    <section class="crm-cta-section o_wfull" aria-labelledby="crm-cta-heading">
+                        <!-- Floating bubbles -->
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+
+                        <div class="container crm-cta-container">
+                            <div class="crm-cta-row">
+                                <!-- Text -->
+                                <div class="crm-cta-text">
+                                    <h2 id="crm-cta-heading">
+                                        Ready to <span class="highlight">Transform Your Business</span>?
+                                    </h2>
+                                    <p>Start your journey with our CRM today and experience smarter sales and stronger
+                                        customer relationships.
+                                    </p>
+                                </div>
+
+                                <!-- Button (same pattern as ERP CTA) -->
+                                <a href="/contactus" class="dark-cta-btn" title="Request Free CRM Demo"
+                                   aria-label="Get CRM Demo">
+                                    <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                                    <span>Request a Free Demo</span>
+                                </a>
+
+
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Can CRM integrate with our email tools?</dt>
+                        <dd>Yes, our CRM supports major email and communication tools.</dd>
+                        <dt>Does it include sales automation?</dt>
+                        <dd>Absolutely! Automate repetitive tasks and workflows to boost efficiency.</dd>
+                        <dt>Do you provide training?</dt>
+                        <dd>Yes, we offer hands-on training and continuous support for your team.</dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+<!--    <record id="cr_internal_website_theme.service2_crm_solution_000_scss" model="ir.asset">-->
+<!--        <field name="name">SERVICE-2 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/service2_crm_solution/000.scss</field>-->
+<!--    </record>-->
+</odoo>

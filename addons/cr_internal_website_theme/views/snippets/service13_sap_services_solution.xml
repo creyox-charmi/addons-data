@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- SAP Services Snippet Template -->
+    <template id="service13_sap_services_solution" name="service13_sap_services_solution">
+
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_sap_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Comprehensive SAP Services
+                    </h1>
+                    <p class="banner-tagline">
+                        Transform your enterprise with SAP—covering implementation, customization, migration,
+                        integration, and support. Our certified consultants ensure your business harnesses the
+                        full potential of SAP solutions.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">SAP Services</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-sap-intro o_website_snippet cr_font" aria-labelledby="sap-services-heading">
+            <div class="cr-sap-container">
+                <!-- Header Row -->
+                <div class="cr-sap-header-row">
+                    <div class="cr-sap-header-text">
+                        <h1 id="sap-services-heading">Empower Your Business with SAP Solutions</h1>
+                        <p class="cr-sap-subtext">
+                            SAP is the backbone of enterprise operations across the globe. Our SAP services are
+                            designed to help organizations improve efficiency, achieve scalability, and adapt
+                            to digital transformation. Whether you need implementation, migration, or ongoing
+                            support, we provide tailored solutions to match your unique business needs.
+                            <br/><br/>
+                            Our certified SAP experts combine technical expertise with industry-specific
+                            knowledge to deliver end-to-end services—from initial strategy and planning to
+                            deployment and continuous optimization.
+                        </p>
+                    </div>
+                    <div class="cr-sap-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/sap-services.png" alt="SAP Services"/>
+                    </div>
+                </div>
+
+                <!-- Content Below -->
+                <div class="cr-sap-content">
+                    <h2>Why Choose Our SAP Services?</h2>
+                    <p>
+                        We deliver SAP services that go beyond technology—we deliver measurable results.
+                        By aligning SAP’s powerful capabilities with your strategic goals, we help you unlock
+                        efficiency, ensure compliance, and enable growth.
+                        <br/><br/>
+                        From <strong>SAP S/4HANA migrations</strong> to <strong>cloud integration</strong>,
+                        <strong>custom module development</strong>, and <strong>24/7 managed support</strong>,
+                        our services ensure long-term success with SAP.
+                    </p>
+
+                    <ul class="sap-services-features">
+                        <li>
+                            <strong>SAP Implementation:</strong>
+                            End-to-end deployment of SAP ERP and industry-specific solutions.
+                        </li>
+                        <li>
+                            <strong>SAP S/4HANA Migration:</strong>
+                            Seamless transition from legacy systems to modern SAP landscapes.
+                        </li>
+                        <li>
+                            <strong>SAP Customization:</strong>
+                            Tailor workflows, modules, and interfaces for your business processes.
+                        </li>
+                        <li>
+                            <strong>SAP Integration:</strong>
+                            Connect SAP with third-party applications, APIs, and enterprise platforms.
+                        </li>
+                        <li>
+                            <strong>Cloud &amp; Hosting:</strong>
+                            Deploy SAP on cloud environments for scalability and cost-efficiency.
+                        </li>
+                        <li>
+                            <strong>Managed Support:</strong>
+                            Ongoing monitoring, upgrades, and issue resolution by certified experts.
+                        </li>
+                        <li>
+                            <strong>Industry-Specific Solutions:</strong>
+                            Pre-configured SAP templates for manufacturing, retail, finance, and more.
+                        </li>
+                        <li>
+                            <strong>Training &amp; Knowledge Transfer:</strong>
+                            Empower your team with role-based SAP training and best practices.
+                        </li>
+                    </ul>
+
+                    <h2>Our SAP Implementation Approach</h2>
+                    <p>
+                        Our approach is <strong>strategic, structured, and result-driven</strong>.
+                        We start with an in-depth analysis of your business requirements, followed by a
+                        roadmap aligned with your goals. Our consultants follow a proven methodology that
+                        minimizes risks, reduces downtime, and ensures faster adoption.
+                        <br/><br/>
+                        We focus on change management, continuous testing, and post-go-live optimization—so
+                        your organization experiences a smooth digital transformation with SAP.
+                    </p>
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Which industries do you serve?</dt>
+                        <dd>We deliver SAP solutions for manufacturing, retail, logistics, healthcare, finance, and more.</dd>
+                        <dt>Do you offer SAP cloud hosting?</dt>
+                        <dd>Yes, we provide SAP cloud hosting and hybrid deployment options for maximum flexibility.</dd>
+                        <dt>Can you support global rollouts?</dt>
+                        <dd>Absolutely. Our consultants have experience in multi-country SAP implementations.</dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+<!--    <record id="cr_internal_website_theme.service13_sap_services_solution_000_scss" model="ir.asset">-->
+<!--        <field name="name">SERVICE-13 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/service13_sap_services_solution/000.scss</field>-->
+<!--    </record>-->
+</odoo>

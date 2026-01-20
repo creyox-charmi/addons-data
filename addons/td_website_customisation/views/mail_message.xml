@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_mail_message_form_inherit_blog_read" model="ir.ui.view">
+        <field name="name">mail.message.form.blog.read</field>
+        <field name="model">mail.message</field>
+        <field name="inherit_id" ref="mail.mail_message_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='subject']" position="after">
+                <field name="is_read_by_blog_author"/>
+                <field name="read_by_partner_ids"/>
+                <field name="is_portal_reply"/>
+                <field name="portal_reply_body"/>
+                <field name="portal_read_partner_ids"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_mail_message_tree_inherit_blog_read" model="ir.ui.view">
+        <field name="name">mail.message.tree.blog.read</field>
+        <field name="model">mail.message</field>
+        <field name="inherit_id" ref="mail.view_message_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='subject']" position="after">
+                <field name="is_read_by_blog_author"/>
+                <field name="read_by_partner_ids"/>
+                <field name="is_portal_reply"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

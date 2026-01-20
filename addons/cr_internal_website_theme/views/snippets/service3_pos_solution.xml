@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service3_pos_solution" name="service3_pos_solution">
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_pos_banner cr_font" class="service-intro-banner hero-section-wave">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Comprehensive POS Solutions for Your Business
+                    </h1>
+                    <p class="banner-tagline">
+                        Streamline sales, manage inventory, and provide a seamless checkout experience with our tailored
+                        POS solutions.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">POS Solutions</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-pos-solution-intro o_website_snippet cr_font" aria-labelledby="pos-solution-heading">
+            <div class="cr-pos-container">
+                <!-- Header Row -->
+                <div class="cr-pos-header-row">
+                    <div class="cr-pos-header-text">
+                        <h1 id="pos-solution-heading">POS Solutions for Modern Businesses</h1>
+                        <p class="cr-pos-subtext">
+                            Our POS solutions help you manage sales, inventory, and customer interactions efficiently.
+                            With fast checkout,
+                            real-time reporting, and integrated inventory management, you can enhance customer
+                            experience and drive more sales.
+                        </p>
+                    </div>
+                    <div class="cr-pos-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/pos-solution.png" alt="POS Solutions"/>
+                    </div>
+                </div>
+
+                <section class="pos-usecases">
+                    <div class="pos-usecases-container">
+                        <h2 class="pos-usecases-title">POS Use Cases Across Industries</h2>
+
+                        <div class="pos-usecases-wrapper">
+
+                            <!-- Left side image -->
+                            <div class="pos-usecases-image">
+                                <img src="/cr_internal_website_theme/static/src/img/pos_use.png" alt="POS Use Cases"/>
+                            </div>
+
+                            <!-- Right side use case boxes -->
+                            <div class="pos-usecase-list">
+                                <div class="usecase">
+                                    <h4>Retail</h4>
+                                    <p>Manage billing, discounts, and customer loyalty with ease.</p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Restaurants</h4>
+                                    <p>Streamline orders, kitchen printing, and split billing.</p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Salons &amp; Spas</h4>
+                                    <p>Track appointments, memberships, and service packages.
+                                    </p>
+                                </div>
+                                <div class="usecase">
+                                    <h4>Gas Stations</h4>
+                                    <p>Quick pump billing with accurate shift and sales tracking.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- Content Below -->
+                <div class="cr-pos-content">
+                    <h2>Why Choose Our POS Solution?</h2>
+                    <p>
+                        Our POS platform adapts to your business needs, enabling quick transactions, accurate inventory
+                        tracking,
+                        and detailed sales analytics. Optimize your retail operations, improve customer satisfaction,
+                        and increase revenue.
+                    </p>
+
+                    <ul class="pos-features">
+                        <li>
+                            <strong>Fast Checkout:</strong>
+                            Quick and seamless transactions for your customers.
+                        </li>
+                        <li>
+                            <strong>Inventory Management:</strong>
+                            Keep stock levels updated in real-time across all locations.
+                        </li>
+                        <li>
+                            <strong>Sales Reporting:</strong>
+                            Monitor sales trends with detailed analytics and dashboards.
+                        </li>
+                        <li>
+                            <strong>Customer Management:</strong>
+                            Track customer purchases and loyalty programs efficiently.
+                        </li>
+                        <li>
+                            <strong>Multi-Platform:</strong>
+                            Works seamlessly on desktop, tablet, and mobile devices.
+                        </li>
+                        <li>
+                            <strong>Secure Payments:</strong>
+                            Integrated with multiple payment gateways.
+                        </li>
+                        <!-- New Features -->
+                        <li>
+                            <strong>Omnichannel Support:</strong>
+                            Manage sales seamlessly across online, in-store, and mobile.
+                        </li>
+                        <li>
+                            <strong>Advanced Discounts &amp; Promotions:</strong>
+                            Easily set up offers and loyalty campaigns.
+                        </li>
+                        <li>
+                            <strong>Employee Management:</strong>
+                            Track staff performance and access within POS.
+                        </li>
+                        <li>
+                            <strong>Offline Mode:</strong>
+                            Continue selling even without internet connectivity.
+                        </li>
+                    </ul>
+
+
+                    <h2>Our Implementation Approach</h2>
+                    <p>
+                        From planning to deployment, we ensure a smooth POS setup tailored to your business needs.
+                        Our team provides training and support to guarantee efficient adoption and long-term success.
+                    </p>
+
+                    <!-- 🔥 Our Most Popular POS Apps -->
+                    <section class="pos-popular-apps o_website_snippet" aria-labelledby="pos-apps-heading">
+                        <div class="container">
+                            <h2 id="pos-apps-heading">Our Most Popular POS Apps</h2>
+
+                            <!-- App 1 -->
+                            <div class="pos-app-row">
+                                <div class="pos-app-image">
+                                    <img src="/cr_internal_website_theme/static/src/img/pos1.png"
+                                         alt="Direct Print PoS Order Receipt"/>
+                                </div>
+                                <div class="pos-app-content">
+                                    <h3>Direct Print PoS Order Receipt</h3>
+                                    <p>
+                                        Print receipts directly from Odoo POS to your ESC/POS-compatible printer.
+                                        Enjoy faster billing, reduced errors, and a seamless checkout experience.
+                                    </p>
+                                    <a href="https://apps.odoo.com/apps/modules/18.0/cr_escpos_printer"
+                                       class="pos-btn" target="_blank">Learn More
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- App 2 -->
+                            <div class="pos-app-row reverse">
+                                <div class="pos-app-content">
+                                    <h3>POS Network Printer</h3>
+                                    <p>
+                                        Connect multiple POS stations with a shared network printer.
+                                        Simplify restaurant orders, kitchen printing, and centralized management.
+                                    </p>
+                                    <a href="https://apps.odoo.com/apps/modules/18.0/cr_pos_network_printer"
+                                       class="pos-btn" target="_blank">Learn More
+                                    </a>
+                                </div>
+                                <div class="pos-app-image">
+                                    <img src="/cr_internal_website_theme/static/src/img/pos4.png"
+                                         alt="POS Network Printer"/>
+                                </div>
+                            </div>
+
+                            <!-- App 3 -->
+                            <div class="pos-app-row">
+                                <div class="pos-app-image">
+                                    <img src="/cr_internal_website_theme/static/src/img/pos3.png"
+                                         alt="Direct Print PoS Restaurant Receipt"/>
+                                </div>
+                                <div class="pos-app-content">
+                                    <h3>Direct Print PoS Restaurant Receipt</h3>
+                                    <p>
+                                        Specially designed for restaurants — route orders directly to kitchen/bar
+                                        printers.
+                                        Enhance efficiency, reduce wait times, and improve customer service.
+                                    </p>
+                                    <a href="https://apps.odoo.com/apps/modules/18.0/cr_escpos_printer_res"
+                                       class="pos-btn" target="_blank">Learn More
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="pos-cta-section o_wfull" aria-labelledby="pos-cta-heading">
+                        <!-- Floating bubbles -->
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+
+                        <div class="container pos-cta-container">
+                            <div class="pos-cta-row">
+                                <!-- Text -->
+                                <div class="pos-cta-text">
+                                    <h2 id="pos-cta-heading">
+                                        Ready to <span class="highlight">Upgrade Your POS Experience</span>? 🚀
+                                    </h2>
+                                </div>
+
+                                <!-- Button (same pattern as ERP CTA) -->
+                                <a href="/contactus" class="dark-cta-btn" title="Request Free POS Demo"
+                                   aria-label="Get POS Demo">
+                                    <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                                    <span>Request a Free Demo</span>
+                                </a>
+
+
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>Can POS integrate with my inventory system?</dt>
+                        <dd>Yes, our POS integrates with major inventory and accounting systems.</dd>
+                        <dt>Does it support multi-location stores?</dt>
+                        <dd>Absolutely! Track sales and inventory across all your stores.</dd>
+                        <dt>Do you provide training?</dt>
+                        <dd>Yes, our experts provide hands-on training and support for your staff.</dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+<!--    <record id="cr_internal_website_theme.service3_pos_solution_000_scss" model="ir.asset">-->
+<!--        <field name="name">SERVICE-3 000 SCSS</field>-->
+<!--        <field name="bundle">web.assets_frontend</field>-->
+<!--        <field name="path">cr_internal_website_theme/static/src/snippets/service3_pos_solution/000.scss</field>-->
+<!--    </record>-->
+</odoo>
+
+

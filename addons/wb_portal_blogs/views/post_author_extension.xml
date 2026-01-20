@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="post_author_custom" inherit_id="website_blog.post_author">
+        <xpath expr="//span[@t-field='blog_post.author_id']" position="replace">
+            <!--            <t t-debug=""/>-->
+            <span t-if="true" t-field="blog_post.author_id"
+                  t-options='{ "widget": "contact", "fields": ["name", "email", "phone","mobile", "city", "zip", "state_id", "country_id"] }'/>
+        </xpath>
+    </template>
+
+    <!--    &lt;!&ndash; Ocultar bloque original de etiquetas en blog_post_content &ndash;&gt;-->
+    <!--    <template id="hide_blog_tags_from_content" inherit_id="website_blog.blog_post_content">-->
+    <!--        <xpath expr="//div[@t-if='len(blog_post.tag_ids) > 0']"-->
+    <!--               position="replace">-->
+    <!--            <div class="d-none"></div>-->
+    <!--        </xpath>-->
+    <!--    </template>-->
+
+    <!-- Agregar bloque de etiquetas después del autor -->
+    <template id="post_author_with_tags" inherit_id="website_blog.post_author">
+        <xpath expr="//div[contains(@t-attf-class, 'o_not_editable') and contains(@t-attf-class, 'align-items-center') and contains(@t-attf-class, 'position-relative')]"
+               position="after">
+            <div t-if="len(blog_post.tag_ids) > 0" class="mt-2">
+                <span class="text-muted">Tags:</span>
+                <t t-foreach="blog_post.tag_ids" t-as="one_tag">
+                    <a class="badge text-primary border me-1 post_link"
+                       t-attf-href="#{blog_url(tag=slug(one_tag), date_begin=False, date_end=False)}"
+                       t-esc="one_tag.name"/>
+                </t>
+            </div>
+
+            <t t-set="blog_spot_id"
+               t-value="(( request.params.get('blog_post').id if request.params.get('blog_post', False) else False ) if request.params else False) if request else False"/>
+            <!--            <span t-esc="repr(blog_spot_id)"/>-->
+            <t t-if="blog_spot_id">
+                <t t-set="blog_entry" t-value="env['blog.post'].search([('id','=',blog_spot_id)])"/>
+                <!--            <t t-if="blog_entry.author_id">-->
+                <t t-set="social_urls"
+                   t-value="[blog_entry.author_id.facebook_url, blog_entry.author_id.twitter_url, blog_entry.author_id.linkedin_url, blog_entry.author_id.youtube_url, blog_entry.author_id.instagram_url, blog_entry.author_id.github_url]"/>
+
+                <t t-if="any(social_urls)">
+                    <div class="o_wblog_sidebar_block pb-5 mt-4">
+                        <h6 class="text-uppercase pb-3 mb-4 border-bottom fw-bold">Sígueme en mis redes</h6>
+                        <!--                    <p>-->
+                        <!--                        Representación del objeto:-->
+                        <!--                        <span t-esc="repr(blog_entry)"/>-->
+                        <!--                    <br/>-->
+                        <!--                    <t t-set="blog_spot_id" t-value="request.params.get('blog_post').id"/>-->
+                        <!--                    <t t-set="blog_entry" t-value="env['blog.post'].search([('id','=',blog_spot_id)])"/>-->
+                        <!--                    <span t-esc="repr(blog_entry)"/>-->
+                        <!--                    <br/>-->
+
+                        <!--                        <span t-esc="repr(blog_entry.author_id.name)"/>-->
+
+
+                        <!--                    </p>-->
+                        <div t-if="blog_entry" class="d-flex flex-wrap gap-2">
+                            <t t-if="blog_entry.author_id.facebook_url">
+                                <a t-attf-href="{{blog_entry.author_id.facebook_url}}" target="_blank"
+                                   class="social-icon" aria-label="Facebook" title="Visitar perfil de Facebook">
+                                    <i class="fa fa-facebook"/>
+                                </a>
+                            </t>
+                            <t t-if="blog_entry.author_id.twitter_url">
+                                <a t-attf-href="{{blog_entry.author_id.twitter_url}}" target="_blank"
+                                   class="social-icon" aria-label="X" title="Visitar perfil de X">
+                                    <i class="fa fa-twitter text-twitter"/>
+                                </a>
+                            </t>
+                            <t t-if="blog_entry.author_id.linkedin_url">
+                                <a t-attf-href="{{blog_entry.author_id.linkedin_url}}" target="_blank"
+                                   class="social-icon" aria-label="LinkedIn" title="Visitar perfil de LinkedIn">
+                                    <i class="fa fa-linkedin"/>
+                                </a>
+                            </t>
+                            <t t-if="blog_entry.author_id.youtube_url">
+                                <a t-attf-href="{{blog_entry.author_id.youtube_url}}" target="_blank"
+                                   class="social-icon" aria-label="YouTube" title="Visitar canal de YouTube">
+                                    <i class="fa fa-youtube-play"/>
+                                </a>
+                            </t>
+                            <t t-if="blog_entry.author_id.instagram_url">
+                                <a t-attf-href="{{blog_entry.author_id.instagram_url}}" target="_blank"
+                                   class="social-icon" aria-label="Instagram" title="Visitar perfil de Instagram">
+                                    <i class="fa fa-instagram"/>
+                                </a>
+                            </t>
+                            <t t-if="blog_entry.author_id.github_url">
+                                <a t-attf-href="{{blog_entry.author_id.github_url}}" target="_blank"
+                                   class="social-icon" aria-label="GitHub" title="Visitar perfil de GitHub">
+                                    <i class="fa fa-github"/>
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+
+</odoo>

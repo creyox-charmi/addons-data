@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service7_odoo_implementation_solution" name="service7_odoo_implementation_solution">
+
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_odoo_implementation_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        End-to-End Odoo Implementation Services
+                    </h1>
+                    <p class="banner-tagline">
+                        From strategy to deployment, our Odoo implementation experts deliver a robust ERP foundation
+                        that ensures smooth business operations and long-term scalability.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">Odoo Implementation</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="cr-odoo-implementation-intro o_website_snippet cr_font" aria-labelledby="odoo-implementation-heading">
+            <div class="cr-odoo-container">
+                <!-- Header Row -->
+                <div class="cr-odoo-header-row">
+                    <div class="cr-odoo-header-text">
+                        <h1 id="odoo-implementation-heading">Successful Odoo Implementation for Sustainable Growth</h1>
+                        <p class="cr-odoo-subtext">
+                            Implementing an ERP system is more than just software deployment — it’s about transforming
+                            your business operations for efficiency, visibility, and growth.
+                            Our Odoo implementation services cover requirement analysis, process mapping, module
+                            configuration, customization, data migration, and user training.
+                            With deep domain expertise and proven methodologies, we ensure your Odoo ERP implementation
+                            is smooth, scalable, and tailored to your unique workflows.
+                            We focus on minimizing risks, maximizing ROI, and ensuring long-term business success.
+                        </p>
+                    </div>
+                    <div class="cr-odoo-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/odoo-implementation.png"
+                             alt="Odoo Implementation"/>
+                    </div>
+                </div>
+
+                <!-- Content Below -->
+                <div class="cr-odoo-content">
+                    <h2>Why Choose Our Odoo Implementation Services?</h2>
+                    <p>
+                        Unlike one-size-fits-all deployments, we follow a consultative and phased approach to Odoo
+                        implementation.
+                        Our certified Odoo consultants work closely with your teams to understand your processes,
+                        challenges, and growth goals.
+                        With end-to-end services from planning to post-go-live support, we ensure every phase of
+                        implementation delivers measurable business value.
+                        Our structured methodology reduces risks, improves adoption, and ensures a faster time-to-value
+                        for your ERP investment.
+                    </p>
+
+                    <ul class="odoo-features">
+                        <li>
+                            <strong>Business Process Analysis:</strong>
+                            Detailed assessment of your workflows to design the right ERP framework.
+                        </li>
+                        <li>
+                            <strong>Module Implementation:</strong>
+                            Deployment of core and industry-specific Odoo modules tailored to your needs.
+                        </li>
+                        <li>
+                            <strong>Custom Development:</strong>
+                            Extend Odoo functionality with custom apps and features.
+                        </li>
+                        <li>
+                            <strong>Data Migration:</strong>
+                            Secure migration of legacy system data into Odoo with accuracy and integrity.
+                        </li>
+                        <li>
+                            <strong>User Training:</strong>
+                            Hands-on training to ensure smooth adoption and usability across teams.
+                        </li>
+                        <li>
+                            <strong>Testing &amp; Quality Assurance:</strong>
+                            Rigorous testing to ensure stability, performance, and compliance.
+                        </li>
+                        <li>
+                            <strong>Post-Go-Live Support:</strong>
+                            Continuous monitoring, bug fixes, and optimization after deployment.
+                        </li>
+                        <li>
+                            <strong>Scalability Planning:</strong>
+                            Flexible design to accommodate future expansion and process growth.
+                        </li>
+                        <li>
+                            <strong>Change Management:</strong>
+                            Structured guidance to ensure smooth organizational transition to Odoo ERP.
+                        </li>
+                        <li>
+                            <strong>Long-term Partnership:</strong>
+                            Dedicated support for upgrades, improvements, and ongoing ERP evolution.
+                        </li>
+                    </ul>
+
+                    <section class="web-cta-section o_wfull" aria-labelledby="web-cta-heading">
+                        <!-- Floating bubbles -->
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+
+                        <div class="container web-cta-container">
+                            <div class="web-cta-row">
+                                <!-- Text -->
+                                <div class="web-cta-text">
+                                    <h2 id="web-cta-heading">
+                                        Have an <span class="highlight">Implementation</span> Need?
+                                    </h2>
+                                </div>
+
+                                <!-- Button (same pattern as ERP CTA) -->
+                                <a href="/contactus" class="dark-cta-btn" title="Request An Implementation"
+                                   aria-label="Get Website Demo">
+                                    <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                                    <span>Request An Implementation</span>
+                                </a>
+
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <h2>Our Implementation Approach</h2>
+                    <p>
+                        We adopt a phased and agile-driven approach to ERP implementation.
+                        Starting from discovery and requirement gathering, we design blueprints, configure modules, and
+                        perform iterative testing.
+                        Our experts focus on change management, user adoption, and knowledge transfer throughout the
+                        process.
+                        After deployment, we provide continuous support, performance monitoring, and strategic
+                        improvements, ensuring your ERP evolves alongside your business.
+                        This holistic approach ensures minimal disruption, high adoption rates, and sustainable
+                        long-term success.
+                    </p>
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>How long does Odoo implementation take?</dt>
+                        <dd>The timeline depends on business complexity, modules required, and level of customization.
+                            Typically, it ranges from a few weeks to several months.
+                        </dd>
+                        <dt>Do you provide user training?</dt>
+                        <dd>Yes, we provide in-depth training sessions to ensure your employees can fully utilize Odoo
+                            efficiently.
+                        </dd>
+                        <dt>Can you migrate data from our old system?</dt>
+                        <dd>Absolutely. We handle secure and accurate data migration from legacy systems, spreadsheets,
+                            or other ERPs.
+                        </dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    </template>
+
+    <!--    <record id="cr_internal_website_theme.service7_odoo_implementation_solution_000_scss" model="ir.asset">-->
+    <!--        <field name="name">SERVICE-7 000 SCSS</field>-->
+    <!--        <field name="bundle">web.assets_frontend</field>-->
+    <!--        <field name="path">cr_internal_website_theme/static/src/snippets/service7_odoo_implementation_solution/000.scss</field>-->
+    <!--    </record>-->
+</odoo>

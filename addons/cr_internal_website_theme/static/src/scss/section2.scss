@@ -1,0 +1,1212 @@
+/* ============ SECTION BASE - PROFESSIONAL ============ */
+.growth-section {
+  background: #ffffff;
+  position: relative;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  overflow: hidden;
+}
+
+.growth-section::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.06), transparent 70%);
+  border-radius: 50%;
+}
+
+.growth-section::after {
+  content: '';
+  position: absolute;
+  bottom: -150px;
+  left: -150px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.04), transparent 70%);
+  border-radius: 50%;
+}
+
+@media (min-width: 576px) {
+  .growth-section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .growth-section {
+    padding-top: 3.5rem;
+    padding-bottom: 3.5rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .growth-section {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+}
+
+.growth-section .row {
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* ============ CONTENT STYLES - PROFESSIONAL ============ */
+.content-enhanced-wrapper {
+  padding: 0;
+}
+
+@media (min-width: 992px) {
+  .content-enhanced-wrapper {
+    padding-right: 2rem;
+  }
+}
+
+/* Top Badge */
+.top-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 50px;
+  margin-bottom: 1.5rem;
+}
+
+.badge-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.badge-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0A173B;
+  letter-spacing: 0.3px;
+}
+
+/* Main Heading */
+.growth-section .main-heading {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: #0A173B;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+@media (min-width: 576px) {
+  .growth-section .main-heading {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .growth-section .main-heading {
+    font-size: 2.25rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .growth-section .main-heading {
+    font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .growth-section .main-heading {
+    font-size: 2.75rem;
+  }
+}
+
+.highlight-text {
+  display: block;
+  color: #3b82f6;
+  font-weight: 900;
+}
+
+/* Sub Heading */
+.growth-section .sub-heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .growth-section .sub-heading {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .growth-section .sub-heading {
+    font-size: 1.375rem;
+  }
+}
+
+.growth-section .sub-heading strong {
+  color: #0A173B;
+  font-weight: 700;
+}
+
+/* Description Text */
+.growth-section .description-text {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: #6c757d;
+  line-height: 1.8;
+  margin-bottom: 1.25rem;
+  text-align: justify;
+}
+
+@media (min-width: 768px) {
+  .growth-section .description-text {
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .growth-section .description-text {
+    font-size: 1.1875rem;
+  }
+}
+
+.growth-section .description-text strong {
+  color: #495057;
+  font-weight: 700;
+}
+
+/* Feature Points List */
+.feature-points-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 2rem;
+}
+
+.feature-point-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border-left: 3px solid #3b82f6;
+  transition: all 0.2s ease;
+}
+
+.feature-point-item:hover {
+  transform: translateX(5px);
+  background: #f1f5f9;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.point-check {
+  width: 24px;
+  height: 24px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.feature-point-item span {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Mobile Text Alignment */
+@media (max-width: 991px) {
+  .content-enhanced-wrapper {
+    text-align: center;
+  }
+
+  .growth-section .main-heading,
+  .growth-section .sub-heading {
+    text-align: center;
+  }
+
+  .growth-section .description-text {
+    text-align: center;
+  }
+
+  .feature-points-list {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ============ VISUAL CONTAINER - PROFESSIONAL ============ */
+.growth-visual-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: 500px;
+  margin: 0 auto 2rem;
+}
+
+@media (min-width: 992px) {
+  .growth-visual-container {
+    margin: 0 auto;
+    height: 550px;
+  }
+}
+
+/* ============ ROCKET WRAPPER ============ */
+.rocket-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+/* ============ PROFESSIONAL ROCKET DESIGN ============ */
+.rocket-body {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 140px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-radius: 50% 50% 20% 20%;
+  box-shadow: 0 15px 40px rgba(59, 130, 246, 0.3);
+  animation: rocket-fly 5s ease-in-out infinite;
+  z-index: 10;
+}
+
+.rocket-tip {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-bottom: 35px solid #1e40af;
+}
+
+.rocket-window {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  background: #93c5fd;
+  border-radius: 50%;
+  border: 4px solid #1e40af;
+}
+
+.rocket-stripe {
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: rgba(30, 64, 175, 0.4);
+}
+
+.rocket-stripe.stripe-1 {
+  top: 60px;
+}
+
+.rocket-stripe.stripe-2 {
+  top: 70px;
+}
+
+.rocket-fin {
+  position: absolute;
+  bottom: 15px;
+  width: 35px;
+  height: 50px;
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.rocket-fin-left {
+  left: -28px;
+  transform: rotate(-15deg);
+}
+
+.rocket-fin-right {
+  right: -28px;
+  transform: rotate(15deg);
+}
+
+/* ============ FLAMES - PROFESSIONAL ============ */
+.rocket-flame {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.flame-large {
+  width: 16px;
+  height: 45px;
+  background: linear-gradient(180deg, #fef3c7, #fbbf24, #f59e0b, #ef4444);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  animation: flame-flicker 0.3s ease-in-out infinite alternate;
+}
+
+.flame-1 {
+  animation-delay: 0s;
+}
+
+.flame-2 {
+  animation-delay: 0.15s;
+  height: 50px;
+}
+
+.flame-3 {
+  animation-delay: 0.3s;
+  height: 42px;
+}
+
+/* Exhaust Particles */
+.exhaust-particle {
+  position: absolute;
+  bottom: -70px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: rgba(251, 191, 36, 0.6);
+  border-radius: 50%;
+  animation: exhaust-rise 2s ease-out infinite;
+}
+
+.ex-1 {
+  animation-delay: 0s;
+  left: 40%;
+}
+
+.ex-2 {
+  animation-delay: 0.5s;
+  left: 45%;
+}
+
+.ex-3 {
+  animation-delay: 1s;
+  left: 55%;
+}
+
+.ex-4 {
+  animation-delay: 1.5s;
+  left: 60%;
+}
+
+/* ============ STARS - PROFESSIONAL ============ */
+.star-particle {
+  position: absolute;
+  font-size: 14px;
+  color: #fbbf24;
+  animation: star-twinkle 3s ease-in-out infinite;
+}
+
+.star-p-1 { top: 10%; left: 15%; animation-delay: 0s; }
+.star-p-2 { top: 20%; right: 12%; animation-delay: 0.8s; font-size: 12px; }
+.star-p-3 { top: 55%; left: 8%; animation-delay: 1.6s; }
+.star-p-4 { top: 65%; right: 18%; animation-delay: 2.4s; font-size: 12px; }
+.star-p-5 { top: 35%; left: 22%; animation-delay: 1s; font-size: 10px; }
+.star-p-6 { top: 45%; right: 22%; animation-delay: 2s; font-size: 12px; }
+.star-p-7 { top: 75%; left: 15%; animation-delay: 0.5s; }
+.star-p-8 { top: 25%; left: 8%; animation-delay: 3s; font-size: 10px; }
+
+/* ============ CLOUDS - PROFESSIONAL ============ */
+.cloud-element {
+  position: absolute;
+  animation: cloud-drift 30s linear infinite;
+}
+
+.cloud-puff {
+  position: absolute;
+  background: rgba(226, 232, 240, 0.8);
+  border-radius: 100px;
+}
+
+.cloud-e-1 {
+  bottom: 28%;
+  left: -100px;
+  animation-delay: 0s;
+}
+
+.cloud-e-1 .puff-1 { width: 40px; height: 40px; top: 0; left: 0; }
+.cloud-e-1 .puff-2 { width: 50px; height: 35px; top: 10px; left: 30px; }
+.cloud-e-1 .puff-3 { width: 35px; height: 30px; top: 15px; left: 15px; }
+
+.cloud-e-2 {
+  bottom: 52%;
+  left: -120px;
+  animation-delay: 10s;
+}
+
+.cloud-e-2 .puff-1 { width: 50px; height: 50px; top: 0; left: 0; }
+.cloud-e-2 .puff-2 { width: 60px; height: 40px; top: 15px; left: 35px; }
+.cloud-e-2 .puff-3 { width: 40px; height: 35px; top: 20px; left: 20px; }
+
+.cloud-e-3 {
+  bottom: 18%;
+  left: -110px;
+  animation-delay: 20s;
+}
+
+.cloud-e-3 .puff-1 { width: 45px; height: 45px; top: 0; left: 0; }
+.cloud-e-3 .puff-2 { width: 55px; height: 38px; top: 12px; left: 32px; }
+.cloud-e-3 .puff-3 { width: 38px; height: 32px; top: 18px; left: 18px; }
+
+/* ============ ACHIEVEMENT BADGES - PROFESSIONAL ============ */
+.achievement-badge {
+  position: absolute;
+  animation: badge-float 5s ease-in-out infinite;
+  z-index: 5;
+}
+
+.badge-glow {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 18px;
+  filter: blur(10px);
+}
+
+.badge-inner {
+  position: relative;
+  background: #ffffff;
+  padding: 14px 18px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: center;
+  min-width: 90px;
+}
+
+.badge-icon {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+.badge-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.badge-value {
+  font-size: 15px;
+  font-weight: 800;
+  color: #3b82f6;
+}
+
+.badge-pos-1 {
+  top: 8%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.badge-pos-2 {
+  top: 12%;
+  right: 5%;
+  animation-delay: 1.5s;
+}
+
+.badge-pos-3 {
+  bottom: 20%;
+  left: 8%;
+  animation-delay: 3s;
+}
+
+/* ============ ORBIT RINGS - PROFESSIONAL ============ */
+.orbit-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px dashed rgba(59, 130, 246, 0.2);
+  border-radius: 50%;
+  animation: orbit-spin 40s linear infinite;
+}
+
+.ring-size-1 {
+  width: 300px;
+  height: 300px;
+}
+
+.ring-size-2 {
+  width: 400px;
+  height: 400px;
+  animation-duration: 50s;
+  animation-direction: reverse;
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.orbit-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #3b82f6;
+  border-radius: 50%;
+}
+
+.dot-1 { top: 0; left: 50%; transform: translateX(-50%); }
+.dot-2 { bottom: 0; left: 50%; transform: translateX(-50%); background: #06b6d4; }
+.dot-3 { top: 50%; left: 0; transform: translateY(-50%); background: #10b981; }
+.dot-4 { top: 50%; right: 0; transform: translateY(-50%); background: #8b5cf6; }
+
+/* ============ BACKGROUND GLOW - PROFESSIONAL ============ */
+.bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.15;
+  z-index: 1;
+}
+
+.glow-blue {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.3), transparent);
+  top: 10%;
+  left: 10%;
+}
+
+.glow-green {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.2), transparent);
+  bottom: 10%;
+  right: 10%;
+}
+
+/* ============ ANIMATIONS - PROFESSIONAL ============ */
+@keyframes rocket-fly {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+
+@keyframes flame-flicker {
+  0% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(0.9);
+    opacity: 0.85;
+  }
+}
+
+@keyframes exhaust-rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-50px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes cloud-drift {
+  0% {
+    left: -120px;
+  }
+  100% {
+    left: calc(100% + 120px);
+  }
+}
+
+@keyframes badge-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes orbit-spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* ============ RESPONSIVE - PROFESSIONAL ============ */
+@media (max-width: 991px) {
+  .growth-visual-container {
+    height: 450px;
+    max-width: 450px;
+  }
+
+  .rocket-body {
+    width: 80px;
+    height: 125px;
+  }
+
+  .rocket-tip {
+    border-left-width: 27px;
+    border-right-width: 27px;
+    border-bottom-width: 32px;
+  }
+
+  .rocket-window {
+    width: 26px;
+    height: 26px;
+  }
+
+  .badge-inner {
+    padding: 12px 16px;
+    min-width: 80px;
+  }
+
+  .badge-icon {
+    font-size: 24px;
+  }
+
+  .ring-size-1 {
+    width: 260px;
+    height: 260px;
+  }
+
+  .ring-size-2 {
+    width: 350px;
+    height: 350px;
+  }
+}
+
+@media (max-width: 576px) {
+  .growth-visual-container {
+    height: 380px;
+    max-width: 340px;
+  }
+
+  .rocket-body {
+    width: 70px;
+    height: 110px;
+  }
+
+  .rocket-tip {
+    border-left-width: 24px;
+    border-right-width: 24px;
+    border-bottom-width: 28px;
+  }
+
+  .rocket-window {
+    width: 22px;
+    height: 22px;
+  }
+
+  .rocket-fin {
+    width: 30px;
+    height: 45px;
+  }
+
+  .flame-large {
+    width: 14px;
+    height: 38px;
+  }
+
+//   .badge-pos-3 {
+//     display: none;
+//   }
+
+  .badge-inner {
+    padding: 10px 14px;
+    min-width: 70px;
+  }
+
+  .ring-size-1 {
+    width: 220px;
+    height: 220px;
+  }
+
+  .ring-size-2 {
+    width: 300px;
+    height: 300px;
+  }
+
+  .star-particle {
+    font-size: 12px;
+  }
+
+  .star-p-5,
+  .star-p-7,
+  .star-p-8 {
+    display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .growth-section .main-heading {
+    font-size: 1.6rem;
+  }
+
+  .growth-section .sub-heading {
+    font-size: 1.0625rem;
+  }
+
+  .growth-section .description-text {
+    font-size: 1rem;
+  }
+}
+
+
+
+.badge-pos-4 {
+  bottom: 20%;
+  right: 8%;
+  animation-delay: 4.5s;
+}
+
+
+
+
+/* ============ ACHIEVEMENT BADGES - COMPLETE RESPONSIVE SOLUTION ============ */
+
+/* Default positioning (Desktop - 1200px and up) */
+.badge-pos-1 {
+  top: 5%;
+  left: 2%;
+  animation-delay: 0s;
+}
+
+.badge-pos-2 {
+  top: 5%;
+  right: 2%;
+  animation-delay: 1.5s;
+}
+
+.badge-pos-3 {
+  bottom: 15%;
+  left: 2%;
+  animation-delay: 3s;
+}
+
+.badge-pos-4 {
+  bottom: 15%;
+  right: 2%;
+  animation-delay: 4.5s;
+}
+
+/* Large Desktop (1400px and up) */
+@media (min-width: 1400px) {
+  .badge-pos-1 {
+    top: 8%;
+    left: 5%;
+  }
+
+  .badge-pos-2 {
+    top: 8%;
+    right: 5%;
+  }
+
+  .badge-pos-3 {
+    bottom: 18%;
+    left: 5%;
+  }
+
+  .badge-pos-4 {
+    bottom: 18%;
+    right: 5%;
+  }
+}
+
+/* Medium Desktop (1200px to 1399px) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .badge-pos-1 {
+    top: 6%;
+    left: 3%;
+  }
+
+  .badge-pos-2 {
+    top: 6%;
+    right: 3%;
+  }
+
+  .badge-pos-3 {
+    bottom: 16%;
+    left: 3%;
+  }
+
+  .badge-pos-4 {
+    bottom: 16%;
+    right: 3%;
+  }
+}
+
+/* Small Desktop / Large Tablet (992px to 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .badge-pos-1 {
+    top: 8%;
+    left: 1%;
+  }
+
+  .badge-pos-2 {
+    top: 8%;
+    right: 1%;
+  }
+
+  .badge-pos-3 {
+    bottom: 18%;
+    left: 1%;
+  }
+
+  .badge-pos-4 {
+    bottom: 18%;
+    right: 1%;
+  }
+
+  .badge-inner {
+    padding: 11px 14px;
+    min-width: 80px;
+  }
+
+  .badge-icon {
+    font-size: 24px;
+  }
+
+  .badge-text {
+    font-size: 10px;
+  }
+
+  .badge-value {
+    font-size: 14px;
+  }
+}
+
+/* Tablet Landscape (768px to 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .badge-pos-1 {
+    top: 10%;
+    left: 0%;
+  }
+
+  .badge-pos-2 {
+    top: 10%;
+    right: 0%;
+  }
+
+  .badge-pos-3 {
+    bottom: 22%;
+    left: 0%;
+  }
+
+  .badge-pos-4 {
+    bottom: 22%;
+    right: 0%;
+  }
+
+  .badge-inner {
+    padding: 10px 12px;
+    min-width: 75px;
+  }
+
+  .badge-icon {
+    font-size: 22px;
+  }
+
+  .badge-text {
+    font-size: 9px;
+  }
+
+  .badge-value {
+    font-size: 13px;
+  }
+}
+
+/* Tablet Portrait (577px to 767px) */
+@media (min-width: 577px) and (max-width: 767px) {
+  .badge-pos-1 {
+    top: 12%;
+    left: 2%;
+  }
+
+  .badge-pos-2 {
+    top: 12%;
+    right: 2%;
+  }
+
+  .badge-pos-3 {
+    bottom: 25%;
+    left: 2%;
+  }
+
+  .badge-pos-4 {
+    bottom: 25%;
+    right: 2%;
+  }
+
+  .badge-inner {
+    padding: 9px 11px;
+    min-width: 70px;
+  }
+
+  .badge-icon {
+    font-size: 20px;
+  }
+
+  .badge-text {
+    font-size: 9px;
+  }
+
+  .badge-value {
+    font-size: 12px;
+  }
+}
+
+/* Mobile Landscape (481px to 576px) */
+@media (min-width: 481px) and (max-width: 576px) {
+  .badge-pos-1 {
+    top: 15%;
+    left: 3%;
+  }
+
+  .badge-pos-2 {
+    top: 15%;
+    right: 3%;
+  }
+
+  .badge-pos-3 {
+    bottom: 28%;
+    left: 3%;
+  }
+
+  .badge-pos-4 {
+    bottom: 28%;
+    right: 3%;
+  }
+
+  .badge-inner {
+    padding: 8px 10px;
+    min-width: 65px;
+  }
+
+  .badge-icon {
+    font-size: 18px;
+  }
+
+  .badge-text {
+    font-size: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-value {
+    font-size: 11px;
+  }
+}
+
+/* Mobile Portrait (376px to 480px) */
+@media (min-width: 376px) and (max-width: 480px) {
+  .badge-pos-1 {
+    top: 14%;
+    left: 4%;
+  }
+
+  .badge-pos-2 {
+    top: 14%;
+    right: 4%;
+  }
+
+  .badge-pos-3 {
+    bottom: 14%;
+    left: 4%;
+  }
+
+  .badge-pos-4 {
+    bottom: 14%;
+    right: 4%;
+  }
+
+  .badge-inner {
+    padding: 7px 9px;
+    min-width: 60px;
+  }
+
+  .badge-icon {
+    font-size: 16px;
+  }
+
+  .badge-text {
+    font-size: 8px;
+    letter-spacing: 0.2px;
+  }
+
+  .badge-value {
+    font-size: 10px;
+  }
+}
+
+/* Small Mobile (361px to 375px) */
+@media (min-width: 361px) and (max-width: 375px) {
+  .badge-pos-1 {
+    top: 14%;
+    left: 5%;
+  }
+
+  .badge-pos-2 {
+    top: 14%;
+    right: 5%;
+  }
+
+  .badge-pos-3 {
+    bottom: 14%;
+    left: 5%;
+  }
+
+  .badge-pos-4 {
+    bottom: 14%;
+    right: 5%;
+  }
+
+  .badge-inner {
+    padding: 6px 8px;
+    min-width: 58px;
+  }
+
+  .badge-icon {
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+
+  .badge-text {
+    font-size: 7px;
+    letter-spacing: 0.2px;
+    margin-bottom: 2px;
+  }
+
+  .badge-value {
+    font-size: 10px;
+  }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+  .badge-pos-1 {
+    top: 14%;
+    left: 6%;
+  }
+
+  .badge-pos-2 {
+    top: 14%;
+    right: 6%;
+  }
+
+  .badge-pos-3 {
+    bottom: 14%;
+    left: 6%;
+  }
+
+  .badge-pos-4 {
+    bottom: 14%;
+    right: 6%;
+  }
+
+  .badge-inner {
+    padding: 6px 7px;
+    min-width: 55px;
+  }
+
+  .badge-icon {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .badge-text {
+    font-size: 7px;
+    letter-spacing: 0.1px;
+    margin-bottom: 2px;
+  }
+
+  .badge-value {
+    font-size: 9px;
+  }
+}
+
+/* Ultra Small Mobile (max-width: 320px) */
+@media (max-width: 320px) {
+  .badge-pos-1 {
+    top: 14%;
+    left: 2%;
+  }
+
+  .badge-pos-2 {
+    top: 14%;
+    right: 2%;
+  }
+
+  .badge-pos-3 {
+    bottom: 14%;
+    left: 2%;
+  }
+
+  .badge-pos-4 {
+    bottom: 14%;
+    right: 2%;
+  }
+
+  .badge-inner {
+    padding: 5px 6px;
+    min-width: 50px;
+  }
+
+  .badge-icon {
+    font-size: 13px;
+    margin-bottom: 1px;
+  }
+
+  .badge-text {
+    font-size: 7px;
+    letter-spacing: 0px;
+    margin-bottom: 1px;
+  }
+
+  .badge-value {
+    font-size: 9px;
+  }
+}

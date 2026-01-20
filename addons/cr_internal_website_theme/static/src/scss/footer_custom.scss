@@ -1,0 +1,725 @@
+// ==========================================
+// Custom Footer SCSS
+// File: custom_footer/static/src/scss/footer_custom.scss
+// ==========================================
+
+// Variables
+$primary-color: #0a173b;        // Deep Navy Blue (Main Color)
+$secondary-color: #ffffff;      // White
+$text-color: #ffffff;
+$text-muted: rgba(255, 255, 255, 0.7);
+$border-color: rgba(255, 255, 255, 0.1);
+$hover-bg: rgba(255, 255, 255, 0.1);
+$accent-light: rgba(255, 255, 255, 0.05);
+
+// Mixins
+@mixin transition($property: all, $duration: 0.3s, $timing: ease) {
+    transition: $property $duration $timing;
+}
+
+@mixin hover-effect {
+    @include transition;
+    &:hover {
+        transform: translateY(-3px);
+    }
+}
+
+// Main Footer Wrapper
+.custom_footer_wrapper {
+    background: $primary-color;
+    color: $text-color;
+    position: relative;
+    overflow: hidden;
+
+    // Simple top border
+//     &::before {
+//         content: '';
+//         position: absolute;
+//         top: 0;
+//         left: 0;
+//         right: 0;
+//         height: 2px;
+//         background: $secondary-color;
+//     }
+
+    // Subtle diagonal stripe pattern
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+            linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.02) 49%, rgba(255, 255, 255, 0.02) 51%, transparent 52%);
+        background-size: 30px 30px;
+        pointer-events: none;
+        opacity: 0.5;
+    }
+}
+.custom_footer_wrapper {
+// Main Footer Section
+.custom_footer_main {
+    padding: 60px 0 40px;
+    position: relative;
+
+    .container {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+// Footer Columns
+.footer_column {
+    margin-bottom: 30px;
+
+    @media (max-width: 768px) {
+        text-align: center;
+    }
+}
+
+// Logo Section
+.footer_logo_section {
+    .footer_logo {
+        max-width: 220px;
+        height: auto;
+        filter: brightness(0) invert(1);
+        @include transition(transform);
+
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+
+    .footer_company_name {
+        color: $text-color;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-top: 1rem;
+    }
+}
+
+.footer_description {
+    color: $text-muted;
+    line-height: 1.8;
+    font-size: 0.95rem;
+}
+
+// Stats Counter Section
+// .footer_stats {
+//     display: grid;
+//     grid-template-columns: repeat(3, 1fr);
+//     gap: 15px;
+//     margin-top: 25px;
+//
+//     @media (max-width: 768px) {
+//         justify-items: center;
+//     }
+//
+//     .stat_item {
+//         text-align: center;
+//         padding: 20px 15px;
+//         background: $accent-light;
+//         border-radius: 8px;
+//         border: 1px solid $border-color;
+//         @include transition;
+//
+//         &:hover {
+//             background: $hover-bg;
+//             border-color: rgba(255, 255, 255, 0.3);
+//             transform: translateY(-3px);
+//         }
+//
+//         .stat_number {
+//             font-size: 1.8rem;
+//             font-weight: 700;
+//             color: $secondary-color;
+//             margin-bottom: 5px;
+//         }
+//
+//         .stat_label {
+//             font-size: 0.75rem;
+//             color: $text-muted;
+//             text-transform: uppercase;
+//             letter-spacing: 1px;
+//         }
+//     }
+// }
+//
+// // Certificates
+// .footer_certificates {
+//     display: flex;
+//     gap: 15px;
+//     align-items: center;
+//
+//     @media (max-width: 768px) {
+//         justify-content: center;
+//     }
+//
+//     .cert_badge {
+//         max-width: 60px;
+//         height: auto;
+//         opacity: 0.8;
+//         @include transition(opacity);
+//
+//         &:hover {
+//             opacity: 1;
+//         }
+//     }
+// }
+
+// Footer Headings
+.footer_heading {
+    color: $text-color;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background: $secondary-color;
+
+        @media (max-width: 768px) {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+}
+
+// Footer Links
+.footer_links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        margin-bottom: 12px;
+
+        a {
+            color: $text-muted;
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            @include transition(all, 0.3s);
+            position: relative;
+            padding-left: 0;
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                bottom: -2px;
+                width: 0;
+                height: 1px;
+                background-color: white;
+    visibility: hidden;
+    transition: width 0.3s ease-in-out, visibility 0s linear 0.3s;
+            }
+
+            &:hover {
+                color: $secondary-color;
+//                 padding-left: 5px;
+
+                &::before {
+                       width: 100%;
+    visibility: visible;
+    transition-delay: 0s;
+                }
+            }
+        }
+    }
+}
+
+// Contact Info
+.footer_contact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 18px;
+        color: $text-muted;
+        font-size: 0.95rem;
+
+        @media (max-width: 768px) {
+            justify-content: center;
+            text-align: left;
+        }
+
+        i {
+            color: $secondary-color;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            min-width: 20px;
+            margin-top: 3px;
+        }
+
+        a {
+            color: $text-muted;
+            text-decoration: none;
+            @include transition;
+
+            &:hover {
+                color: $secondary-color;
+            }
+        }
+    }
+}
+
+// Newsletter Section
+.footer_newsletter {
+    .newsletter_title {
+        color: $text-color;
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-size: 1rem;
+    }
+
+    .newsletter_form {
+        .input-group {
+            background: $accent-light;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid $border-color;
+            @include transition;
+
+            &:focus-within {
+                border-color: $secondary-color;
+                background: $hover-bg;
+            }
+        }
+
+        .newsletter_input {
+            background: transparent;
+            border: none;
+            color: $text-color;
+            padding: 14px 20px;
+            font-size: 0.9rem;
+
+            &::placeholder {
+                color: $text-muted;
+            }
+
+            &:focus {
+                background: transparent;
+                color: $text-color;
+                box-shadow: none;
+            }
+        }
+
+        .newsletter_btn {
+            background: $secondary-color;
+            border: none;
+            color: $primary-color;
+            padding: 14px 30px;
+            font-weight: 600;
+            @include transition;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.9);
+                transform: translateX(3px);
+            }
+
+            i {
+                font-size: 1rem;
+                color: $primary-color;
+            }
+        }
+    }
+}
+
+// Social Media
+.footer_social {
+    .social_title {
+        color: $text-color;
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-size: 1rem;
+    }
+
+    .social_icons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        @media (max-width: 768px) {
+            justify-content: center;
+        }
+    }
+
+    .social_icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        background: $accent-light;
+        color: $text-color;
+        text-decoration: none;
+        font-size: 1.2rem;
+        @include transition;
+        border: 1px solid $border-color;
+
+        &:hover {
+            background: $secondary-color;
+            border-color: $secondary-color;
+            transform: translateY(-3px);
+
+            i {
+                color: $primary-color;
+            }
+        }
+    }
+}
+
+// Footer Bottom Bar
+.custom_footer_bottom {
+    background: rgba(0, 15, 30, 0.6);
+    padding: 25px 0;
+    border-top: 1px solid rgba($secondary-color, 0.2);
+    backdrop-filter: blur(10px);
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg,
+            transparent 0%,
+            $secondary-color 50%,
+            transparent 100%);
+    }
+
+    .footer_copyright {
+        color: $text-muted;
+        font-size: 0.9rem;
+
+        strong {
+            color: $text-color;
+            font-weight: 600;
+        }
+    }
+
+    .footer_legal_links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+
+        @media (max-width: 768px) {
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        li {
+            a {
+                color: $text-muted;
+                text-decoration: none;
+                font-size: 0.9rem;
+                @include transition;
+                position: relative;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -3px;
+                    left: 0;
+                    width: 0;
+                    height: 1px;
+                    background: $secondary-color;
+                    @include transition;
+                }
+
+                &:hover {
+                    color: $secondary-color;
+
+                    &::after {
+                        width: 100%;
+                    }
+                }
+            }
+
+            &:not(:last-child) {
+                border-right: 1px solid $border-color;
+                padding-right: 20px;
+            }
+        }
+    }
+}
+
+// Back to Top Button
+.back_to_top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: $secondary-color;
+    color: $primary-color;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1.2rem;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    @include transition(all, 0.3s);
+    border: 1px solid $secondary-color;
+
+    &.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &:hover {
+        background: transparent;
+        transform: translateY(-5px);
+
+        i {
+            color: $secondary-color;
+        }
+    }
+
+    i {
+        color: $primary-color;
+        @include transition;
+    }
+}
+
+// Trust Badges Section
+// .footer_trust_badges {
+//     background: rgba(0, 10, 25, 0.8);
+//     padding: 20px 0;
+//     border-top: 1px solid rgba($secondary-color, 0.15);
+//
+//     .trust_badges_wrapper {
+//         display: flex;
+//         justify-content: space-between;
+//         align-items: center;
+//         flex-wrap: wrap;
+//         gap: 20px;
+//
+//         @media (max-width: 768px) {
+//             justify-content: center;
+//         }
+//
+//         .trust_badge {
+//             display: flex;
+//             align-items: center;
+//             gap: 10px;
+//             color: $text-muted;
+//             font-size: 0.9rem;
+//             padding: 10px 20px;
+//             background: rgba(255, 255, 255, 0.03);
+//             border-radius: 25px;
+//             border: 1px solid rgba($secondary-color, 0.2);
+//             @include transition;
+//
+//             i {
+//                 color: $secondary-color;
+//                 font-size: 1.2rem;
+//                 filter: drop-shadow(0 0 5px rgba($secondary-color, 0.4));
+//             }
+//
+//             &:hover {
+//                 background: rgba(255, 255, 255, 0.08);
+//                 border-color: $secondary-color;
+//                 transform: translateY(-3px);
+//                 box-shadow: 0 5px 15px rgba($secondary-color, 0.3);
+//
+//
+//                 span {
+//                     color: $text-color;
+//                 }
+//             }
+//         }
+//     }
+// }
+
+@keyframes iconBounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+// Responsive Adjustments
+@media (max-width: 992px) {
+    .custom_footer_main {
+        padding: 50px 0 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .custom_footer_main {
+        padding: 40px 0 20px;
+    }
+
+    .footer_heading {
+        text-align: center;
+    }
+
+    .footer_links,
+    .footer_contact {
+        text-align: left;
+        display: inline-block;
+    }
+
+    .back_to_top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+// Animation for elements on scroll (optional)
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.footer_column {
+    animation: fadeInUp 0.6s ease-out;
+
+    &:nth-child(1) { animation-delay: 0.1s; }
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+    &:nth-child(4) { animation-delay: 0.4s; }
+}
+}
+
+
+
+// Professional Badge Seal
+.footer_badge_seal {
+    @media (max-width: 768px) {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.badge_container {
+    display: inline-block;
+
+    .badge_circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+
+        &:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+    }
+
+    .badge_inner {
+        text-align: center;
+    }
+
+    .badge_icon {
+        font-size: 2.5rem;
+        color: #10b981;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .badge_title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: $text-color;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .badge_subtitle {
+        font-size: 0.85rem;
+        color: $text-muted;
+        margin-top: 2px;
+    }
+}
+
+
+
+
+
+
+
+
+// Technology Stack Section
+.footer_tech_stack {
+
+    @media (max-width: 768px) {
+        text-align: center;
+    }
+
+    h6 {
+        color: $text-color;
+        font-weight: 600;
+        margin-bottom: 16px;
+        font-size: 0.95rem;
+    }
+
+    .tech_icons_list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+
+        @media (max-width: 768px) {
+            justify-content: center;
+        }
+
+        .tech_item {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: $text-color;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.25s ease;
+            border-bottom: 2px solid transparent;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.15);
+                border-bottom-color: $secondary-color;
+            }
+        }
+    }
+}

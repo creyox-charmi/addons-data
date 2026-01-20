@@ -1,0 +1,279 @@
+/* =========================
+   Odoo Support Section
+========================= */
+.cr-odoo-support-intro {
+    background: #ffffff;
+    padding: 90px 25px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.cr-odoo-container {
+    max-width: 1250px;
+    margin: auto;
+}
+
+.cr-odoo-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+}
+
+.cr-odoo-header-text {
+    flex: 0 0 55%;
+    max-width: 55%;
+    color: #001f54;
+}
+
+.cr-odoo-header-text h1 {
+    color: #002855;
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 20px;
+}
+
+.cr-odoo-subtext {
+    font-size: 1.2rem;
+    color: #333;
+    line-height: 1.7;
+    text-align: justify;
+}
+
+.cr-odoo-header-img {
+    flex: 0 0 45%;
+    max-width: 45%;
+    text-align: right;
+}
+
+.cr-odoo-header-img img {
+    max-width: 100%;
+    height: auto;
+}
+
+.cr-odoo-content h2 {
+    color: #002855;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-top: 70px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.cr-odoo-content p {
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.75;
+    margin-bottom: 22px;
+    text-align: justify;
+}
+
+/* ================================
+   Odoo Support Features Style
+=================================*/
+.odoo-support-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    list-style: none;
+    padding: 0;
+    margin: 55px 0;
+}
+
+.odoo-support-features li {
+    background: linear-gradient(135deg, #f0f6ff, #ffffff);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0;
+    padding: 32px 22px 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+}
+
+.odoo-support-features li:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.18);
+    border-color: #1e3a8a;
+}
+
+.odoo-support-features li::before {
+    content: '';
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a173b, #1e3a8a);
+    margin-bottom: 18px;
+    transition: background 0.3s ease;
+}
+
+.odoo-support-features li:hover::before {
+    background: linear-gradient(135deg, #1e3a8a, #0ea5e9);
+}
+
+/* Assign icons */
+.cr-odoo-content ul.odoo-support-features li:nth-child(1)::before { content: "\f0f3"; } /* fa-bell - Incident */
+.cr-odoo-content ul.odoo-support-features li:nth-child(2)::before { content: "\f188"; } /* fa-bug - Debugging */
+.cr-odoo-content ul.odoo-support-features li:nth-child(3)::before { content: "\f201"; } /* fa-chart-line - Performance */
+.cr-odoo-content ul.odoo-support-features li:nth-child(4)::before { content: "\f129"; } /* fa-question-circle - Assistance */
+.cr-odoo-content ul.odoo-support-features li:nth-child(5)::before { content: "\f021"; } /* fa-sync - Upgrades */
+.cr-odoo-content ul.odoo-support-features li:nth-child(6)::before { content: "\f3ed"; } /* fa-shield-alt - Security */
+.cr-odoo-content ul.odoo-support-features li:nth-child(7)::before { content: "\f121"; } /* fa-code - Enhancements */
+.cr-odoo-content ul.odoo-support-features li:nth-child(8)::before { content: "\f0ec"; } /* fa-exchange-alt - Integrations */
+.cr-odoo-content ul.odoo-support-features li:nth-child(9)::before { content: "\f0c2"; } /* fa-cloud - Cloud */
+.cr-odoo-content ul.odoo-support-features li:nth-child(10)::before { content: "\f2b9"; } /* fa-user-tie - Account Manager */
+
+.web-features li {
+    background: linear-gradient(135deg, #f0f4ff, #ffffff);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0;
+    padding: 30px 20px 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+
+@media (max-width: 1024px) {
+    .odoo-support-features {
+        grid-template-columns: repeat(3, 1fr); /* 2 columns */
+        gap: 18px;
+    }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+    .odoo-support-features {
+        grid-template-columns: repeat(2, 1fr); /* still 2 columns */
+        gap: 16px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .odoo-support-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 14px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 375px) {
+    .odoo-support-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 12px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 320px) {
+    .odoo-support-features {
+        grid-template-columns: 1fr; /* single column */
+        gap: 10px;
+    }
+}
+
+//
+// /* FAQ Styling */
+// .cr-odoo-content dl {
+//     margin: 45px 0;
+//     border-top: 2px solid #e0e6f0;
+//     border-bottom: 2px solid #e0e6f0;
+//     padding: 22px 0;
+//     background: #ffffff;
+//     border-radius: 10px;
+// }
+//
+// .cr-odoo-content dt {
+//     font-weight: 700;
+//     color: #002855;
+//     margin-top: 22px;
+//     padding: 16px 22px 16px 48px;
+//     background: #e6f0ff;
+//     border-radius: 8px;
+//     position: relative;
+//     text-align: left;
+// }
+//
+// .cr-odoo-content dt::before {
+//     content: "\f128"; /* question-circle */
+//     font-family: "Font Awesome 5 Free";
+//     font-weight: 900;
+//     position: absolute;
+//     left: 18px;
+//     top: 50%;
+//     transform: translateY(-50%);
+//     color: #007bff;
+//     font-size: 1.25rem;
+// }
+//
+// .cr-odoo-content dd {
+//     margin: 12px 0 22px 22px;
+//     color: #333;
+//     line-height: 1.65;
+//     text-align: justify;
+//     padding-left: 12px;
+//     border-left: 3px solid #007bff;
+//     background: #f5f7fb;
+//     border-radius: 5px;
+//     padding: 12px 16px;
+//     font-size: 1.05rem;
+// }
+//
+// .cr-odoo-content dt + dd {
+//     margin-top: 12px;
+// }
+//
+// .cr-odoo-content dt:hover {
+//     background: #d0e4ff;
+//     cursor: default;
+// }
+//
+// /* =========================
+//    Responsive Media Queries
+// ========================= */
+// @media (max-width: 1024px) {
+//     .cr-odoo-header-text h1 { font-size: 2.5rem; }
+//     .cr-odoo-subtext { font-size: 1.1rem; }
+//     .cr-odoo-content h2 { font-size: 1.9rem; }
+//     .cr-odoo-content p {
+//         font-size: 1.05rem;
+//     }
+// }
+// @media (max-width: 768px) {
+//     .cr-odoo-header-row { flex-direction: column; gap: 35px; }
+//     .cr-odoo-header-text, .cr-odoo-header-img { flex: 1 1 100%; max-width: 100%; }
+//     .cr-odoo-header-text h1 { font-size: 2.1rem; }
+//     .cr-odoo-subtext { font-size: 1rem; }
+//     .cr-odoo-content ul.odoo-support-features { gap: 18px; }
+//     .cr-odoo-content ul.odoo-support-features li { flex: 1 1 100%; max-width: 100%; }
+// }
+// @media (max-width: 480px) {
+//     .cr-odoo-header-text h1 { font-size: 1.8rem; }
+//     .cr-odoo-subtext { font-size: 0.95rem; }
+//     .cr-odoo-content h2 { font-size: 1.55rem; }
+//     .cr-odoo-content p {font-size: 0.95rem;}
+// }
+// @media (max-width: 375px) {
+//     .cr-odoo-header-text h1 { font-size: 1.55rem; }
+//     .cr-odoo-subtext { font-size: 0.9rem; }
+//     .cr-odoo-content h2 { font-size: 1.35rem; }
+//     .cr-odoo-content ul.odoo-support-features li { padding: 22px 16px 26px; }
+// }
+// @media (max-width: 320px) {
+//     .cr-odoo-header-text h1 { font-size: 1.4rem; }
+//     .cr-odoo-subtext { font-size: 0.85rem; }
+//     .cr-odoo-content h2 { font-size: 1.2rem; }
+// }

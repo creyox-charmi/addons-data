@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_blog_confirmation_modal" name="Blog Terms Confirmation Modal">
+        <div class="modal fade" id="termsConfirmationModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="termsContent">
+                            <div class="text-center">
+                                <i class="fa fa-spinner fa-spin fa-2x"></i>
+                                <p>Loading terms and conditions...</p>
+                            </div>
+                        </div>
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" id="agreeTerms"/>
+                            <label class="form-check-label fw-bold text-danger" for="agreeTerms">
+                                I agree to the terms and conditions for publishing my data
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="confirmPublish" disabled="1">Confirm &amp; Publish</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="portal_my_blogs_form_view_edit_inherit" inherit_id="wb_portal_blogs.portal_my_blogs_form_view_edit">
+        <xpath expr="//form[@id='blogForm']" position="after">
+            <t t-call="td_website_customisation.portal_blog_confirmation_modal"/>
+        </xpath>
+
+        <xpath expr="//div[@class='alert alert-danger alert-dismissible fade show']" position="after">
+            <t t-if="request.params.get('error_terms')">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="fa fa-exclamation-triangle mt-1 position-relative"/>
+                    <strong>Terms Required!</strong>
+                    You must agree to terms and conditions to publish your blog.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

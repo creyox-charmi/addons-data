@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Customize Job Application Page -->
+    <template id="job_apply_custom" inherit_id="website_hr_recruitment.apply" name="Custom Job Application">
+
+        <xpath expr="//div[@id='wrap']" position="replace">
+            <div id="wrap" class="custom_apply_page">
+
+                <!-- Hero Section -->
+                <section class="apply_hero_section cr_font">
+                    <div class="container">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/jobs">Jobs</a></li>
+                                <li class="breadcrumb-item"><a t-attf-href="/jobs/detail/#{slug(job)}"><span t-field="job.name"/></a></li>
+                                <li class="breadcrumb-item active">Apply</li>
+                            </ol>
+                        </nav>
+                        <h1 class="apply_title">Apply for this Position</h1>
+                        <p class="apply_subtitle">Fill out the form below and we'll get back to you soon</p>
+                    </div>
+                </section>
+
+                <!-- Application Form Section -->
+                <section class="apply_form_section cr_font">
+                    <div class="container">
+                        <div class="row">
+
+                            <!-- Form Column -->
+                            <div class="col-lg-8">
+                                <div class="apply_form_wrapper">
+
+                                    <span class="hidden" data-for="hr_recruitment_form" t-att-data-values="{'department_id': job and job.department_id.id or '', 'job_id': job and job.id or ''}"/>
+
+                                    <form id="hr_recruitment_form" action="/website/form/" method="post"
+                                        enctype="multipart/form-data" class="professional_apply_form o_mark_required"
+                                        data-mark="*" data-model_name="hr.applicant"
+                                        data-success-mode="redirect" data-success-page="/job-thank-you"
+                                        hide-change-model="true">
+
+                                        <!-- Name -->
+                                        <div class="form_group s_website_form_field s_website_form_required" data-type="char">
+                                            <label for="recruitment1" class="form_label">
+                                                Full Name <span class="required_mark">*</span>
+                                            </label>
+                                            <div class="input_wrapper">
+                                                <i class="fa fa-user input_icon"></i>
+                                                <input id="recruitment1" type="text" class="form_input s_website_form_input"
+                                                    name="partner_name" placeholder="John Doe" required="" data-fill-with="name"/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Email and Phone -->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form_group s_website_form_field s_website_form_required" data-type="email">
+                                                    <label for="recruitment2" class="form_label">
+                                                        Email Address <span class="required_mark">*</span>
+                                                    </label>
+                                                    <div class="input_wrapper">
+                                                        <i class="fa fa-envelope input_icon"></i>
+                                                        <input id="recruitment2" type="email" class="form_input s_website_form_input"
+                                                            name="email_from" placeholder="john@example.com" required="" data-fill-with="email"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form_group s_website_form_field s_website_form_required" data-type="char">
+                                                    <label for="recruitment3" class="form_label">
+                                                        Phone Number <span class="required_mark">*</span>
+                                                    </label>
+                                                    <div class="input_wrapper">
+                                                        <i class="fa fa-phone input_icon"></i>
+                                                        <input id="recruitment3" type="tel" class="form_input s_website_form_input"
+                                                            name="partner_mobile" placeholder="+1 (555) 000-0000" required="" data-fill-with="phone"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- LinkedIn -->
+                                        <div class="form_group s_website_form_field" data-type="char">
+                                            <label for="recruitment4" class="form_label">
+                                                LinkedIn Profile
+                                            </label>
+                                            <div class="input_wrapper">
+                                                <i class="fa fa-linkedin input_icon"></i>
+                                                <input id="recruitment4" type="text" class="form_input s_website_form_input"
+                                                    name="linkedin_profile" placeholder="https://www.linkedin.com/in/yourprofile" data-fill-with="linkedin_profile"/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Resume Upload -->
+                                        <div class="form_group s_website_form_field" data-type="binary">
+                                            <label for="recruitment6" class="form_label">
+                                                Upload Resume
+                                            </label>
+                                            <div class="file_upload_wrapper">
+                                                <input id="recruitment6" type="file" class="file_input s_website_form_input o_resume_input" name="Resume" accept=".pdf,.doc,.docx"/>
+                                                <label for="recruitment6" class="file_upload_label">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                    <span>Choose file or drag here</span>
+                                                </label>
+                                                <span class="file_help_text">Optional if you provided a LinkedIn profile (PDF, DOC, DOCX)</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Cover Letter -->
+                                        <div class="form_group s_website_form_field" data-type="text">
+                                            <label for="recruitment5" class="form_label">
+                                                Cover Letter / Introduction
+                                            </label>
+                                            <div class="input_wrapper">
+                                                <i class="fa fa-comment input_icon textarea_icon"></i>
+                                                <textarea id="recruitment5" class="form_input form_textarea s_website_form_input"
+                                                    name="description" rows="6" placeholder="Tell us why you're a great fit for this position..."></textarea>
+                                            </div>
+                                        </div>
+
+                                        <!-- Hidden Fields -->
+                                        <div class="s_website_form_field s_website_form_dnone">
+                                            <input type="hidden" class="s_website_form_input" name="job_id"/>
+                                        </div>
+                                        <div class="s_website_form_field s_website_form_dnone">
+                                            <input type="hidden" class="s_website_form_input" name="department_id"/>
+                                        </div>
+
+                                        <!-- Submit Button -->
+                                        <div class="form_group s_website_form_submit">
+                                            <button type="submit" class="btn_submit s_website_form_send">
+                                                <span>Submit Application</span>
+                                                <i class="fa fa-paper-plane"></i>
+                                            </button>
+                                            <span id="s_website_form_result" class="form_result"></span>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Job Info Sidebar -->
+                            <div class="col-lg-4">
+                                <div class="job_info_sidebar">
+
+                                    <!-- Back Button -->
+                                    <a t-attf-href="/jobs/detail/#{slug(job)}" class="btn_back">
+                                        <i class="fa fa-arrow-left"></i> Back to Job Description
+                                    </a>
+
+                                    <!-- Job Details Card -->
+                                    <div class="info_card">
+                                        <h3 class="card_title">Position Details</h3>
+
+                                        <div class="info_item" t-if="job.name">
+                                            <div class="info_label">Job Title</div>
+                                            <div class="info_value" t-field="job.name"/>
+                                        </div>
+
+                                        <div class="info_item">
+                                            <div class="info_label">Location</div>
+                                            <div class="info_value">
+                                                <span t-if="job.address_id" t-field="job.address_id" t-options='{"widget": "contact", "fields": ["city"], "no_tag_br": True, "no_marker": True}'/>
+                                                <span t-else="">Remote</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="info_item" t-if="job.department_id">
+                                            <div class="info_label">Department</div>
+                                            <div class="info_value" t-field="job.department_id"/>
+                                        </div>
+
+                                        <div class="info_item" t-if="job.contract_type_id">
+                                            <div class="info_label">Employment Type</div>
+                                            <div class="info_value" t-field="job.contract_type_id"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Additional Info -->
+                                    <div class="info_card" t-if="job.job_details">
+                                        <div t-field="job.job_details"/>
+                                    </div>
+
+                                    <!-- Help Card -->
+                                    <div class="help_card">
+                                        <i class="fa fa-question-circle"></i>
+                                        <h4>Need Help?</h4>
+                                        <p>If you have questions about this position or the application process, feel free to contact us.</p>
+                                        <a href="/contactus" class="btn_help">Contact Us</a>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </xpath>
+
+    </template>
+
+</odoo>

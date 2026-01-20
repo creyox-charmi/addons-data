@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Professional Contact Us Page -->
+    <template id="contactus_professional" inherit_id="website.contactus" name="Professional Contact Page">
+        <xpath expr="//div[@id='wrap']" position="replace">
+            <div id="wrap" class="professional_contact_page">
+
+                <!-- Hero Section -->
+                <section class="contact_hero_section cr_font">
+                    <div class="contact_hero_overlay"></div>
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <div class="hero_content">
+                                    <h1 class="hero_title">Get In Touch</h1>
+                                    <p class="hero_subtitle">Have a question or want to work together? We'd love to hear
+                                        from you.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="hero_stats">
+                                    <div class="stat_box">
+                                        <i class="fa fa-clock-o"></i>
+                                        <h3>24 Hours</h3>
+                                        <p>Average Response Time</p>
+                                    </div>
+                                    <div class="stat_box">
+                                        <i class="fa fa-users"></i>
+                                        <h3>1250+</h3>
+                                        <p>Happy Clients</p>
+                                    </div>
+                                    <div class="stat_box">
+                                        <i class="fa fa-globe"></i>
+                                        <h3>Global</h3>
+                                        <p>Support Available</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Main Contact Section -->
+                <section class="contact_main_section cr_font">
+                    <div class="container">
+                        <div class="row">
+
+                            <!-- Contact Form -->
+                            <div class="col-lg-7">
+                                <div class="contact_form_wrapper">
+                                    <div class="form_header">
+                                        <h2>Send Us A Message</h2>
+                                        <p>Fill out the form below and our team will get back to you within 24 hours.
+                                        </p>
+                                    </div>
+
+                                    <form id="contactus_form" action="/website/form/" method="post"
+                                          enctype="multipart/form-data"
+                                          class="professional_contact_form o_mark_required" data-mark="*"
+                                          data-model_name="mail.mail" data-success-mode="redirect"
+                                          data-success-page="/contactus-thank-you" data-pre-fill="true">
+
+                                        <!-- Name Field -->
+                                        <div class="form_group s_website_form_field s_website_form_required"
+                                             data-type="char">
+                                            <label for="contact_name" class="form_label">
+                                                Full Name
+                                                <span class="required_mark">*</span>
+                                            </label>
+                                            <div class="input_wrapper">
+                                                <i class="fa fa-user input_icon"></i>
+                                                <input id="contact_name" type="text"
+                                                       class="form_input s_website_form_input"
+                                                       name="name" placeholder="John Doe" required=""
+                                                       data-fill-with="name"/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Email and Phone Row -->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form_group s_website_form_field s_website_form_required"
+                                                     data-type="email">
+                                                    <label for="contact_email" class="form_label">
+                                                        Email Address
+                                                        <span class="required_mark">*</span>
+                                                    </label>
+                                                    <div class="input_wrapper">
+                                                        <i class="fa fa-envelope input_icon"></i>
+                                                        <input id="contact_email" type="email"
+                                                               class="form_input s_website_form_input"
+                                                               name="email_from" placeholder="john@example.com"
+                                                               required="" data-fill-with="email"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form_group s_website_form_field" data-type="char">
+                                                    <label for="contact_phone" class="form_label">
+                                                        Phone Number
+                                                    </label>
+                                                    <div class="input_wrapper">
+                                                        <i class="fa fa-phone input_icon"></i>
+                                                        <input id="contact_phone" type="tel"
+                                                               class="form_input s_website_form_input"
+                                                               name="phone" placeholder="+1 (555) 000-0000"
+                                                               data-fill-with="phone"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Company Field -->
+                                        <div class="form_group s_website_form_field" data-type="char">
+                                            <label for="contact_company" class="form_label">
+                                                Company Name
+                                            </label>
+                                            <div class="input_wrapper">
+                                                <i class="fa fa-building input_icon"></i>
+                                                <input id="contact_company" type="text"
+                                                       class="form_input s_website_form_input"
+                                                       name="company" placeholder="Your Company"
+                                                       data-fill-with="commercial_company_name"/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Subject Field -->
+                                        <div class="form_group s_website_form_field s_website_form_required"
+                                             data-type="char">
+                                            <label for="contact_subject" class="form_label">
+                                                Subject
+                                                <span class="required_mark">*</span>
+                                            </label>
+                                            <div class="input_wrapper">
+                                                <i class="fa fa-tag input_icon"></i>
+                                                <input id="contact_subject" type="text"
+                                                       class="form_input s_website_form_input"
+                                                       name="subject" placeholder="How can we help you?" required=""/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Message Field -->
+                                        <div class="form_group s_website_form_field s_website_form_required"
+                                             data-type="text">
+                                            <label for="contact_message" class="form_label">
+                                                Message
+                                                <span class="required_mark">*</span>
+                                            </label>
+                                            <div class="input_wrapper">
+                                                <i class="fa fa-comment input_icon textarea_icon"></i>
+                                                <textarea id="contact_message"
+                                                          class="form_input form_textarea s_website_form_input"
+                                                          name="description" rows="5"
+                                                          placeholder="Tell us more about your inquiry..."
+                                                          required=""></textarea>
+                                            </div>
+                                        </div>
+
+                                        <!-- Hidden Email To Field -->
+                                        <div class="s_website_form_field s_website_form_dnone">
+                                            <input type="hidden" class="s_website_form_input" name="email_to"/>
+                                        </div>
+
+                                        <!-- Submit Button -->
+                                        <div class="form_group s_website_form_submit">
+                                            <button type="submit" class="btn_submit s_website_form_send cta-button">
+                                                <span>Send Message</span>
+                                                <i class="fa fa-paper-plane"></i>
+                                            </button>
+                                            <span id="s_website_form_result" class="form_result"></span>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Contact Information Sidebar -->
+                            <div class="col-lg-5">
+                                <div class="contact_info_sidebar">
+
+                                    <!-- Contact Details -->
+                                    <div class="info_card">
+                                        <h3 class="info_card_title">Contact Information</h3>
+                                        <p class="info_card_subtitle">Reach out to us through any of these channels</p>
+
+                                        <div class="info_items">
+                                            <div class="info_item">
+                                                <div class="info_icon">
+                                                    <i class="fa fa-map-marker"></i>
+                                                </div>
+                                                <div class="info_content">
+                                                    <h4>Our Office</h4>
+                                                    <p>306 - Business Bay High Street,<br/>Dr. Yagnik Road,<br/>Rajkot -
+                                                        360005,<br/>Gujarat,<br/>India
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div class="info_item">
+                                                <div class="info_icon">
+                                                    <i class="fa fa-phone"></i>
+                                                </div>
+                                                <div class="info_content">
+                                                    <h4>Phone Number</h4>
+                                                    <p>
+                                                        <a href="tel: +91 9265290098">+91 9265290098</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div class="info_item">
+                                                <div class="info_icon">
+                                                    <i class="fa fa-envelope"></i>
+                                                </div>
+                                                <div class="info_content">
+                                                    <h4>Email Address</h4>
+                                                    <p>
+                                                        <a href="mailto:info@creyox.com">info@creyox.com</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div class="info_item">
+                                                <div class="info_icon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                <div class="info_content">
+                                                    <h4>Business Hours</h4>
+                                                    <p>Monday - Friday: 9:00 AM - 6:00 PM<br/>Saturday: 10:00 AM - 4:00
+                                                        PM<br/>Sunday: Closed
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Social Media Card -->
+                                    <div class="info_card social_card">
+                                        <h3 class="info_card_title">Follow Us</h3>
+                                        <p class="info_card_subtitle">Stay connected on social media</p>
+
+                                        <div class="social_links">
+                                            <a href="/website/social/facebook" target="_blank" class="social_link">
+                                                <i class="fa fa-facebook"></i>
+                                            </a>
+                                            <a href="/website/social/twitter" target="_blank" class="social_link">
+                                                <i class="fa fa-twitter"></i>
+                                            </a>
+                                            <a href="/website/social/linkedin" target="_blank" class="social_link">
+                                                <i class="fa fa-linkedin"></i>
+                                            </a>
+                                            <a href="/website/social/instagram" target="_blank" class="social_link">
+                                                <i class="fa fa-instagram"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Map Section (Optional) -->
+                <section class="contact_map_section cr_font">
+                    <div class="map_wrapper">
+                        <iframe src="https://maps.google.com/maps?q=306+Business+Bay+High+Street+Dr+Yagnik+Road+Rajkot+360005+Gujarat+India&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=&amp;output=embed"
+                                width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </section>
+
+                <!-- FAQ Section -->
+                <section class="contact_faq_section cr_font">
+                    <div class="container">
+                        <div class="section_header text-center">
+                            <h2>Frequently Asked Questions</h2>
+                            <p>Quick answers to questions you may have</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="faq_item">
+                                    <h4>
+                                        <i class="fa fa-question-circle"></i>
+                                        How quickly will I get a response?
+                                    </h4>
+                                    <p>We typically respond to all inquiries within 24 hours during business days. For
+                                        urgent matters, please call us directly.
+                                    </p>
+                                </div>
+                                <div class="faq_item">
+                                    <h4>
+                                        <i class="fa fa-question-circle"></i>
+                                        What services do you offer?
+                                    </h4>
+                                    <p>We offer ERP solutions, CRM systems, POS solutions, web development, and
+                                        comprehensive Odoo services including implementation and customization.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="faq_item">
+                                    <h4>
+                                        <i class="fa fa-question-circle"></i>
+                                        Do you offer free consultations?
+                                    </h4>
+                                    <p>Yes, we offer a complimentary initial consultation to understand your needs and
+                                        discuss how we can help your business.
+                                    </p>
+                                </div>
+                                <div class="faq_item">
+                                    <h4>
+                                        <i class="fa fa-question-circle"></i>
+                                        Where are you located?
+                                    </h4>
+                                    <p>Our main office is located at 123 Business Street, Suite 100. However, we serve
+                                        clients globally through remote services.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </xpath>
+    </template>
+</odoo>

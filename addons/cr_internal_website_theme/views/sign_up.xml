@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="signup_custom" inherit_id="auth_signup.signup" name="Custom Signup Page">
+
+         <xpath expr="//input[@type='hidden']" position="after">
+             <div class="signup_logo_section">
+                <img src="/cr_internal_website_theme/static/src/img/logo_creyox.png" alt="Company Logo" class="signup_logo"/>
+            </div>
+         </xpath>
+
+<!--        <xpath expr="//form[@class='oe_signup_form']" position="replace">-->
+<!--            <div class="custom_signup_container">-->
+<!--                <div class="signup_card">-->
+
+<!--                    &lt;!&ndash; Logo Section &ndash;&gt;-->
+<!--                    <div class="signup_logo_section">-->
+<!--                        <img src="/cr_internal_website_theme/static/src/img/logo_creyox.png" alt="Company Logo" class="signup_logo"/>-->
+<!--&lt;!&ndash;                        <h2 class="signup_title">Create Account</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <p class="signup_subtitle">Join us today and get started</p>&ndash;&gt;-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Signup Form &ndash;&gt;-->
+<!--                    <form class="custom_signup_form" role="form" method="post" t-if="not message">-->
+<!--                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
+
+<!--                        &lt;!&ndash; Email Field &ndash;&gt;-->
+<!--                        <div class="form_group">-->
+<!--                            <label for="login" class="form_label">-->
+<!--                                <i class="fa fa-envelope"></i> Email Address-->
+<!--                            </label>-->
+<!--                            <div class="input_wrapper">-->
+<!--                                <i class="fa fa-envelope input_icon"></i>-->
+<!--                                <input type="text" name="login" t-att-value="login" id="login"-->
+<!--                                       class="form_input" placeholder="Enter your email"-->
+<!--                                       autocapitalize="off" required="required" autofocus="autofocus"-->
+<!--                                       t-att-readonly="'readonly' if only_passwords else None"/>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Name Field &ndash;&gt;-->
+<!--                        <div class="form_group">-->
+<!--                            <label for="name" class="form_label">-->
+<!--                                <i class="fa fa-user"></i> Full Name-->
+<!--                            </label>-->
+<!--                            <div class="input_wrapper">-->
+<!--                                <i class="fa fa-user input_icon"></i>-->
+<!--                                <input type="text" name="name" t-att-value="name" id="name"-->
+<!--                                       class="form_input" placeholder="e.g. John Doe"-->
+<!--                                       required="required"-->
+<!--                                       t-att-readonly="'readonly' if only_passwords else None"-->
+<!--                                       t-att-autofocus="'autofocus' if login and not only_passwords else None"/>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Password Field &ndash;&gt;-->
+<!--                        <div class="form_group">-->
+<!--                            <label for="password" class="form_label">-->
+<!--                                <i class="fa fa-lock"></i> Password-->
+<!--                            </label>-->
+<!--                            <div class="input_wrapper">-->
+<!--                                <i class="fa fa-key input_icon"></i>-->
+<!--                                <input type="password" name="password" id="password"-->
+<!--                                       class="form_input" placeholder="Create a password"-->
+<!--                                       required="required"-->
+<!--                                       t-att-autofocus="'autofocus' if only_passwords else None"/>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Confirm Password Field &ndash;&gt;-->
+<!--                        <div class="form_group">-->
+<!--                            <label for="confirm_password" class="form_label">-->
+<!--                                <i class="fa fa-lock"></i> Confirm Password-->
+<!--                            </label>-->
+<!--                            <div class="input_wrapper">-->
+<!--                                <i class="fa fa-key input_icon"></i>-->
+<!--                                <input type="password" name="confirm_password" id="confirm_password"-->
+<!--                                       class="form_input" placeholder="Re-enter your password"-->
+<!--                                       required="required"/>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Error Message &ndash;&gt;-->
+<!--                        <div class="alert alert_error" t-if="error" role="alert">-->
+<!--                            <i class="fa fa-exclamation-circle"></i>-->
+<!--                            <t t-esc="error"/>-->
+<!--                        </div>-->
+
+<!--                        <input type="hidden" name="redirect" t-att-value="redirect"/>-->
+<!--                        <input type="hidden" name="token" t-att-value="token"/>-->
+
+<!--                        &lt;!&ndash; Submit Button &ndash;&gt;-->
+<!--                        <div class="form_group">-->
+<!--                            <button type="submit" class="btn_signup">-->
+<!--                                <span>Sign up</span>-->
+<!--                                <i class="fa fa-arrow-right"></i>-->
+<!--                            </button>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; OAuth Login &ndash;&gt;-->
+<!--                        <div class="o_login_auth"/>-->
+
+<!--                    </form>-->
+
+<!--                    &lt;!&ndash; Footer Links &ndash;&gt;-->
+<!--                    <div class="signup_footer">-->
+<!--                        <p>Already have an account? <a t-attf-href="/web/login?{{ keep_query() }}">Sign In</a></p>-->
+<!--                    </div>-->
+
+<!--                </div>-->
+<!--            </div>-->
+<!--        </xpath>-->
+    </template>
+
+</odoo>

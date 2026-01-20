@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Hero Snippet Template -->
+    <template id="service1_erp_solution" name="service1_erp_solution">
+        <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <section id="cr_service_intro_banner" class="service-intro-banner hero-section-wave cr_font">
+            <div class="container">
+                <div class="banner-inner-content">
+                    <h1 class="banner-main-title">
+                        Comprehensive ERP Solutions for Your Business
+                    </h1>
+                    <p class="banner-tagline">
+                        Streamline operations, boost efficiency, and drive growth with our tailored ERP implementation
+                        and support services.
+                    </p>
+                    <nav aria-label="breadcrumb">
+                        <ul class="banner-breadcrumbs">
+                            <li>
+                                <a class="breadcrumb-link" href="/">
+                                    Home
+                                    <span class="breadcrumb-separator fa fa-angle-right"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <span class="breadcrumb-current" aria-current="page">ERP Solutions</span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="cr-erp-solution-intro o_website_snippet cr_font" aria-labelledby="erp-solution-heading">
+            <div class="cr-erp-container">
+                <!-- First Row: Heading Left / Image Right -->
+                <div class="cr-erp-header-row">
+                    <div class="cr-erp-header-text">
+                        <h1 id="erp-solution-heading">ERP Solutions for Modern Businesses</h1>
+                        <p class="cr-erp-subtext">
+                            Our ERP solutions empower your organization with efficiency, scalability, and data-driven
+                            decision-making. Whether you’re managing inventory, sales, HR, or finances, our system
+                            streamlines every process so you can focus on growth. By centralizing all business functions
+                            into a single intelligent platform, we eliminate silos, reduce manual errors, and give your
+                            team the freedom to work smarter, not harder. With powerful automation, real-time reporting,
+                            and seamless integrations, you gain the tools to make faster, more informed decisions. Our
+                            ERP is built to adapt as your business grows, ensuring long-term sustainability,
+                            flexibility, and a competitive edge in today’s fast-moving market. Beyond implementation,
+                            our dedicated support ensures that your operations continue to run smoothly, helping you
+                            unlock innovation and maximize ROI at every step.
+                        </p>
+                    </div>
+                    <div class="cr-erp-header-img">
+                        <img src="/cr_internal_website_theme/static/src/img/erp-solution.png" alt="ERP Solutions"/>
+                    </div>
+                </div>
+
+                <!-- Content Below -->
+                <div class="cr-erp-content">
+                    <h2>Why Choose Our ERP Solution?</h2>
+                    <p>
+                        From SMEs to large enterprises, our ERP platform is built to adapt and evolve with your business
+                        needs.
+                        Backed by intuitive design and robust features, it ensures your operations stay smooth and
+                        competitive.
+                        With real-time insights, seamless integration across departments, and powerful automation, you
+                        can
+                        eliminate redundancies, reduce costs, and improve decision-making. Our solution is highly
+                        customizable,
+                        scalable, and designed to grow with your organization—empowering you to stay ahead of industry
+                        changes
+                        and focus on driving innovation. Beyond technology, our expert support and training ensure a
+                        seamless
+                        transition and long-term success.
+                    </p>
+
+                    <section class="cr-erp-solution-features o_website_snippet" aria-labelledby="industries-heading">
+                        <ul class="erp-features">
+                            <li>
+                                <strong>AI-Powered Insights:</strong>
+                                Leverage AI to analyze data and predict trends for smarter decision-making.
+                            </li>
+                            <li>
+                                <strong>Cloud Accessibility:</strong>
+                                Access your ERP system anytime, anywhere securely via the cloud.
+                            </li>
+                            <li>
+                                <strong>Mobile-First Design:</strong>
+                                Manage operations on-the-go with fully responsive mobile apps.
+                            </li>
+                            <li>
+                                <strong>Security &amp; Compliance:</strong>
+                                Ensure data privacy and regulatory compliance with advanced security features.
+                            </li>
+                            <li>
+                                <strong>Custom Workflows:</strong>
+                                Tailor dashboards and workflows to fit your unique processes.
+                            </li>
+                            <li>
+                                <strong>Multi-Currency &amp; Multi-Language:</strong>
+                                Perfect for global operations with multiple currencies and languages.
+                            </li>
+                            <li>
+                                <strong>Integration Hub:</strong>
+                                Connect seamlessly with other business apps for smooth operations.
+                            </li>
+                            <li>
+                                <strong>Automated Reporting:</strong>
+                                Generate real-time and scheduled reports for finance and management teams.
+                            </li>
+                            <li>
+                                <strong>Scalable Architecture:</strong>
+                                Easily scale your ERP system as your business grows.
+                            </li>
+                            <li>
+                                <strong>24/7 Support &amp; Training:</strong>
+                                Dedicated assistance ensures smooth adoption and operation.
+                            </li>
+
+                        </ul>
+                    </section>
+                    <h2>Our Implementation Approach</h2>
+                    <p>
+                        We don’t just deliver software — we deliver success. From planning to deployment and beyond,
+                        our expert team ensures a smooth and successful ERP transition for your organization.
+                        Our approach begins with a deep understanding of your business goals, processes, and challenges,
+                        followed by a tailored roadmap that minimizes risks and maximizes value. We adopt industry best
+                        practices,
+                        agile methodologies, and a phased rollout strategy to ensure seamless adoption across all
+                        departments.
+                        Beyond go-live, we provide continuous support, training, and optimization so your team gains
+                        confidence
+                        and your ERP system evolves with your growing business. With us, ERP implementation isn’t just a
+                        project
+                        — it’s a partnership built for long-term success.
+                    </p>
+
+                    <!-- CTA Section -->
+                    <section class="erp-cta-section o_wfull" aria-labelledby="erp-cta-heading">
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+
+                        <div class="container erp-cta-container">
+                            <div class="erp-cta-row">
+                                <!-- Text Block -->
+                                <div class="erp-cta-text">
+                                    <h2 id="erp-cta-heading">
+                                        Ready to <span class="highlight">Transform Your Business</span> with ERP?
+                                    </h2>
+
+                                </div>
+
+                                <!-- Button -->
+                                <a href="#erp-demo-form" class="dark-cta-btn" title="Schedule Free ERP Demo"
+                                   aria-label="Get ERP Demo">
+                                    <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                                    <span>Schedule a Free Demo</span>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Industries We Serve -->
+                    <section class="erp-industries-section">
+                        <div class="erp-industries-container">
+                            <h2 class="erp-section-title">Industries We Serve</h2>
+
+                            <div class="erp-industries-grid">
+                                <!-- First Row -->
+                                <div class="erp-industry-card">
+                                    <i class="fas fa-hospital"></i>
+                                    <span>Healthcare</span>
+                                </div>
+                                <div class="erp-industry-card">
+                                    <i class="fas fa-industry"></i>
+                                    <span>Manufacturing</span>
+                                </div>
+                                <div class="erp-industry-card">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span>Finance</span>
+                                </div>
+                                <div class="erp-industry-card">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>E-Commerce</span>
+                                </div>
+
+                                <!-- Second Row -->
+                                <div class="erp-industry-card">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Consulting</span>
+                                </div>
+                                <div class="erp-industry-card">
+                                    <i class="fas fa-store"></i>
+                                    <span>Retail</span>
+                                </div>
+                                <div class="erp-industry-card">
+                                    <i class="fas fa-truck"></i>
+                                    <span>Logistics</span>
+                                </div>
+                                <div class="erp-industry-card">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>Professional Services</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <section class="erp-solutions">
+                        <div class="erp-solutions-container">
+
+                            <!-- Section Title -->
+                            <h2 class="erp-solutions-title">Our ERP Solutions</h2>
+
+                            <div class="erp-solutions-wrapper">
+
+                                <!-- Left side image -->
+                                <div class="erp-solutions-image">
+                                    <img src="/cr_internal_website_theme/static/src/img/b1.png"
+                                         alt="ERP Solutions"/>
+                                </div>
+
+                                <!-- Right side 4 boxes -->
+                                <div class="erp-solutions-boxes">
+                                    <div class="erp-solution-box">
+                                        <h3>CRM Management</h3>
+                                        <p>Centralize customer data and streamline sales pipeline tracking.</p>
+                                    </div>
+                                    <div class="erp-solution-box">
+                                        <h3>Inventory Control</h3>
+                                        <p>Real-time stock monitoring and automated reordering.</p>
+                                    </div>
+                                    <div class="erp-solution-box">
+                                        <h3>HR &amp; Payroll</h3>
+                                        <p>Employee lifecycle management with payroll automation.</p>
+                                    </div>
+                                    <div class="erp-solution-box">
+                                        <h3>Accounting &amp; Finance</h3>
+                                        <p>Integrated financial reports and multi-currency support.</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <!-- Neumorphic Contact / Demo Form Section -->
+                    <section class="contact-section">
+                        <div class="contact-wrapper">
+                            <!-- Left Side Form -->
+                            <div class="contact-form">
+                                <h2>Get in Touch</h2>
+                                <p>Fill out the form below and our team will reach out shortly.</p>
+                                <form id="erp-demo-form">
+
+                                    <div class="form-group">
+                                        <input type="text" name="name" placeholder=" " required="1"/>
+                                        <label>Your Name</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" name="email" placeholder=" " required="1"/>
+                                        <label>Your Email</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="tel" name="phone" placeholder=" " required="1"/>
+                                        <label>Contact Number</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="company" placeholder=" "/>
+                                        <label>Company Name</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea name="message" placeholder=" " required="1"></textarea>
+                                        <label>Your Message</label>
+                                    </div>
+                                    <button type="submit">Send Message</button>
+                                </form>
+
+                                <div id="successPopup">
+                                    <div class="popup-box">
+                                        <div class="popup-icon">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div id="popupMessage"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Right Side Image -->
+                            <div class="contact-image">
+                                <img src="/cr_internal_website_theme/static/src/img/b2.png" alt="Illustration"/>
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <h2>Frequently Asked Questions</h2>
+                    <dl>
+                        <dt>How long does ERP implementation take?</dt>
+                        <dd>Implementation time varies depending on business size, but typically ranges from a few weeks
+                            to a few months.
+                        </dd>
+                        <dt>Can the ERP integrate with my existing tools?</dt>
+                        <dd>Yes, our ERP supports integrations with major third-party applications.</dd>
+                        <dt>Do you provide training?</dt>
+                        <dd>Absolutely! We provide hands-on training and continuous support to your team.</dd>
+                    </dl>
+
+
+                </div>
+            </div>
+        </section>
+
+
+    </template>
+
+    <record id="cr_internal_website_theme.service1_erp_solution_000_scss" model="ir.asset">
+        <field name="name">SERVICE-1 000 SCSS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_internal_website_theme/static/src/snippets/service1_erp_solution/000.scss</field>
+    </record>
+
+    <record id="cr_internal_website_theme.service1_erp_solution_000_js" model="ir.asset">
+        <field name="name">SERVICE-1 000 JS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">cr_internal_website_theme/static/src/snippets/service1_erp_solution/000.js</field>
+    </record>
+</odoo>

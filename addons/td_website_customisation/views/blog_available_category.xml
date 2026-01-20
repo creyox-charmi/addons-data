@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_blog_available_category_form" model="ir.ui.view">
+        <field name="name">blog.available.category.form</field>
+        <field name="model">blog.available.category</field>
+        <field name="arch" type="xml">
+            <form string="Blog Available Category">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_blog_available_category_tree" model="ir.ui.view">
+        <field name="name">blog.available.category.tree</field>
+        <field name="model">blog.available.category</field>
+        <field name="arch" type="xml">
+            <tree string="Blog Available Categories">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_blog_available_category" model="ir.actions.act_window">
+        <field name="name">Available Categories</field>
+        <field name="res_model">blog.available.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+<!--    <menuitem-->
+<!--        id="menu_blog_available_category"-->
+<!--        name="Available Categories"-->
+<!--        parent="website_blog.menu_website_blog_root_global"-->
+<!--        sequence="41"-->
+<!--        action="action_blog_available_category"-->
+<!--    />-->
+</odoo>
