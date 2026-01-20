@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+
+    <t t-name="hr_attendance_break_and_resume.AttendanceBreakDialog" id="AttendanceBreakDialog">
+        <Dialog size="'md'"  fullscreen="true" title="'Attendance Break'">
+            <t t-set-slot="header">
+                <div class="d-flex w-100">
+                    <h4>Attendance Break</h4>
+                    <div t-on-click="onClose" type="button" class="btn-close" aria-label="Close"/>
+                </div>
+            </t>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="d-flex justify-content-center align-items-center" id="break_pin_pad_button">
+                        <t t-set="break" t-value="this.state.breakState == 'break'"/>
+                        <t t-if="this.state.checkedIn">
+                            <button t-if="break" t-on-click="() => this.onClickResumeBreak()" t-attf-class="o_hr_attendance_break_resume_icon btn btn-info align-self-center px-5 py-3 mt-4 mb-2">
+                                <i t-attf-class="fa fa-3x fa-toggle-on align-middle"/>
+                                <span class="align-middle fs-2 ms-3">Resume</span>
+                            </button>
+                            <button t-if="!break" t-on-click="() => this.onClickResumeBreak()" t-attf-class="o_hr_attendance_break_resume_icon btn btn-primary align-self-center px-5 py-3 mt-4 mb-2">
+                                <i t-attf-class="fa fa-3x fa-toggle-off align-middle"/>
+                                <span class="align-middle fs-2 ms-3">Break</span>
+                            </button>
+
+                            <button t-on-click="() => this.onClickSignInOut()" t-attf-class="o_hr_attendance_break_resume_icon btn btn-warning align-self-center px-5 py-3 mt-4 mb-2"
+                                style="margin-left: 8px !important;">
+                                <i t-attf-class="fa fa-3x fa-sign-out align-middle"/>
+                                <span class="align-middle fs-2 ms-3">Check out</span>
+                            </button>
+                        </t>
+                    </div>
+                </div>
+            </div>
+             <t t-set-slot="footer">
+                <button class="btn btn-secondary" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+
+</template>

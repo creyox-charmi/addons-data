@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="ks_gantt_view_base.ks_gantt_content" t-inherit-mode="extension"
+       t-name="td_monetary_planning.ks_gantt_content">
+         <xpath expr="//ul[@class='ks-menu']" position="inside">
+             <li class="ks-item">
+                <button class="btn btn-secondary" id="ks_toggle_cost" t-on-click="_ksToggleTimePercentage">
+                    <img src="/ks_gantt_view_base/static/src/images/toggle_no_of_days.svg" alt="Start &amp; End Time"/>
+                    Start &amp; End Time
+                </button>
+            </li>
+             <li class="ks-item">
+                <button class="btn btn-secondary" id="ks_toggle_cost" t-on-click="_ksToggleCost">
+                    <img src="/td_monetary_planning/static/src/images/cost.svg" alt="Cost"/>
+                    Cost
+                </button>
+            </li>
+             <li class="ks-item">
+                <button class="btn btn-secondary" id="ks_toggle_target" t-on-click="_ksToggleTarget" style="display: none;">
+                            <img src="/td_monetary_planning/static/src/images/target.svg" alt="Target"/>
+
+                    Target
+                </button>
+            </li>
+             <li class="ks-item">
+                <button class="btn btn-secondary" id="ks_toggle_sale" t-on-click="_ksToggleSale">
+                            <img src="/td_monetary_planning/static/src/images/sale.svg" alt="Sale"/>
+                    Sale
+                </button>
+            </li>
+
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add sub-options AFTER the base template content -->
+    <template id="payment_delivery_smartposti"
+              name="SmartPosti Sub-Options"
+              inherit_id="website_sale.payment_delivery_methods">
+
+
+        <xpath expr="//t[@t-if='delivery.website_description']" position="after">
+            <t t-if="delivery.delivery_type == 'smartposti'">
+
+                <t t-set="company" t-value="delivery.env.company"/>
+                <t t-set="partner_country_obj" t-value="order.partner_id.country_id"/>
+                <t t-set="partner_country" t-value="partner_country_obj.code if partner_country_obj else 'EE'"/>
+
+                <!-- Get country-based prices -->
+                <t t-set="courier_price_record" t-value="delivery.env['smartposti.country.price'].search([
+                    ('company_id', '=', company.id),
+                    ('service_type', '=', 'courier'),
+                    ('country_id', '=', partner_country_obj.id if partner_country_obj else False)
+                ], limit=1) if partner_country_obj else False"/>
+
+                <t t-set="pudo_price_record" t-value="delivery.env['smartposti.country.price'].search([
+                    ('company_id', '=', company.id),
+                    ('service_type', '=', 'pudo'),
+                    ('country_id', '=', partner_country_obj.id if partner_country_obj else False)
+                ], limit=1) if partner_country_obj else False"/>
+
+                <!-- Set prices (country-specific or fallback to 0) -->
+                <t t-set="base_courier_price" t-value="courier_price_record.price if courier_price_record else 0"/>
+                <t t-set="base_pudo_price" t-value="pudo_price_record.price if pudo_price_record else 0"/>
+
+                <!-- Calculate prices with tax -->
+                <t t-set="courier_price"
+                   t-value="delivery._calculate_price_with_tax(base_courier_price, order) if base_courier_price else 0"/>
+                <t t-set="pudo_price"
+                   t-value="delivery._calculate_price_with_tax(base_pudo_price, order) if base_pudo_price else 0"/>
+
+                <!-- Fetch PUDO places only -->
+                <t t-set="pudo_places" t-value="delivery.env['smartposti.place'].search([
+                    ('place_type', '=', 'pudo'),
+                    ('active', '=', True),
+                    ('country', '=', partner_country)
+                ], order='city, name')"/>
+
+                <!-- Get sequence values -->
+                <t t-set="courier_sequence" t-value="company.smartposti_courier_sequence or 1"/>
+                <t t-set="pudo_sequence" t-value="company.smartposti_pudo_sequence or 2"/>
+
+                <!-- Determine which service should be displayed first -->
+                <t t-set="show_courier_first" t-value="courier_sequence &lt; pudo_sequence"/>
+
+                <div class="o_smartposti_selector mt-3 p-3 bg-light rounded border">
+
+                    <t t-if="courier_price == 0 and pudo_price == 0">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fa fa-exclamation-triangle me-2"/>
+                            <strong>SmartPosti delivery is not available for <t t-esc="partner_country_obj.name if partner_country_obj else 'your country'"/>.
+                            </strong>
+                            <p class="mb-0 small">Please contact support or choose a different delivery method.</p>
+                        </div>
+                    </t>
+
+                    <t t-else="">
+                        <!-- Hidden field to track service type -->
+                        <input type="hidden"
+                               name="smartposti_service_type"
+                               class="smartposti_service_type"
+                               t-att-value="'courier' if (show_courier_first and courier_price != 0) or pudo_price == 0 else 'pudo'"/>
+                    </t>
+
+                    <!-- Service Type Selection -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Select Delivery Method:</label>
+
+                        <!-- Courier First Order (sequence 1) -->
+                        <t t-if="show_courier_first">
+                            <!-- Courier Option -->
+                            <t t-if="courier_price != 0">
+                                <div class="form-check mb-2">
+                                    <input type="radio"
+                                           name="smartposti_type_radio"
+                                           value="courier"
+                                           id="smartposti_courier"
+                                           class="form-check-input smartposti-type-radio"
+                                           t-att-checked="'checked' if pudo_price == 0 else None"
+                                           t-att-data-price="courier_price"
+                                           t-att-data-carrier-id="delivery.id"/>
+                                    <label class="form-check-label" for="smartposti_courier">
+                                        <i class="fa fa-truck me-2 text-success"/>
+                                        <strong>
+                                            <t t-esc="company.smartposti_courier_label if company.smartposti_custom_service_names else 'Kuller (uksele)'"/>
+                                        </strong>
+                                        <span class="badge bg-success ms-2">
+                                            € <t t-esc="'%.2f' % courier_price"/>
+                                        </span>
+                                    </label>
+                                </div>
+                            </t>
+
+                            <!-- PUDO Option -->
+                            <t t-if="pudo_price != 0">
+                                <div class="form-check mb-2">
+                                    <input type="radio"
+                                           name="smartposti_type_radio"
+                                           value="pudo"
+                                           id="smartposti_pudo"
+                                           class="form-check-input smartposti-type-radio"
+                                           t-att-checked="'checked' if courier_price == 0 else None"
+                                           t-att-data-price="pudo_price"
+                                           t-att-data-carrier-id="delivery.id"/>
+                                    <label class="form-check-label" for="smartposti_pudo">
+                                        <i class="fa fa-cube me-2 text-primary"/>
+                                        <strong>
+                                            <t t-esc="company.smartposti_pudo_label if company.smartposti_custom_service_names else 'Pakiautomaadid'"/>
+                                        </strong>
+                                        <span class="badge bg-success ms-2">
+                                            € <t t-esc="'%.2f' % pudo_price"/>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <!-- PUDO Locations immediately after PUDO option -->
+                                <div class="pudo-locations-section ms-4 mb-3"
+                                     t-att-style="'display:none;' if courier_price != 0 else ''">
+                                    <label class="form-label small">Select Parcel Machine:</label>
+                                    <select name="smartposti_place_id"
+                                            class="form-select form-select-sm smartposti-place-select"
+                                            data-place-type="pudo"
+                                            style="width: 100%;"
+                                            t-if="pudo_places">
+                                        <option value="">-- Select Location --</option>
+                                        <t t-foreach="pudo_places" t-as="place">
+                                            <option t-att-value="place.id"
+                                                    t-att-data-name="place.name"
+                                                    t-att-data-address="'%s, %s' % (place.address, place.city)">
+                                                <t t-esc="place.name"/> - <t t-esc="place.city"/>
+                                                <t t-if="place.postal_code">(<t t-esc="place.postal_code"/>)</t>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <p t-else="" class="text-muted small mb-0">No parcel machines available for
+                                        <t t-esc="partner_country_obj.name if partner_country_obj else 'this country'"/>
+                                    </p>
+                                </div>
+
+                                <!-- Selected Location Display -->
+                                <div class="alert alert-info small mb-0 ms-4 smartposti-selection-info"
+                                     style="display:none;">
+                                    <strong>Selected:</strong>
+                                    <span class="selected-location-name"></span>
+                                    <br/>
+                                    <small class="selected-location-address"></small>
+                                </div>
+                            </t>
+                        </t>
+
+                        <!-- PUDO First Order (sequence 1) -->
+                        <t t-else="">
+                            <!-- PUDO Option -->
+                            <t t-if="pudo_price != 0">
+                                <div class="form-check mb-2">
+                                    <input type="radio"
+                                           name="smartposti_type_radio"
+                                           value="pudo"
+                                           id="smartposti_pudo"
+                                           class="form-check-input smartposti-type-radio"
+                                           t-att-checked="'checked' if courier_price == 0 else None"
+                                           t-att-data-price="pudo_price"
+                                           t-att-data-carrier-id="delivery.id"/>
+                                    <label class="form-check-label" for="smartposti_pudo">
+                                        <i class="fa fa-cube me-2 text-primary"/>
+                                        <strong>
+                                            <t t-esc="company.smartposti_pudo_label if company.smartposti_custom_service_names else 'Pakiautomaadid'"/>
+                                        </strong>
+                                        <span class="badge bg-success ms-2">
+                                            € <t t-esc="'%.2f' % pudo_price"/>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <!-- PUDO Locations immediately after PUDO option -->
+                                <div class="pudo-locations-section ms-4 mb-3"
+                                     t-att-style="'' if courier_price == 0 else 'display:none;'">
+                                    <label class="form-label small">Select Parcel Machine:</label>
+                                    <select name="smartposti_place_id"
+                                            class="form-select form-select-sm smartposti-place-select"
+                                            data-place-type="pudo"
+                                            style="width: 100%;"
+                                            t-if="pudo_places">
+                                        <option value="">-- Select Location --</option>
+                                        <t t-foreach="pudo_places" t-as="place">
+                                            <option t-att-value="place.id"
+                                                    t-att-data-name="place.name"
+                                                    t-att-data-address="'%s, %s' % (place.address, place.city)">
+                                                <t t-esc="place.name"/> - <t t-esc="place.city"/>
+                                                <t t-if="place.postal_code">(<t t-esc="place.postal_code"/>)</t>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <p t-else="" class="text-muted small mb-0">No parcel machines available for
+                                        <t t-esc="partner_country_obj.name if partner_country_obj else 'this country'"/>
+                                    </p>
+                                </div>
+
+                                <!-- Selected Location Display -->
+                                <div class="alert alert-info small mb-0 ms-4 smartposti-selection-info"
+                                     style="display:none;">
+                                    <strong>Selected:</strong>
+                                    <span class="selected-location-name"></span>
+                                    <br/>
+                                    <small class="selected-location-address"></small>
+                                </div>
+                            </t>
+
+                            <!-- Courier Option -->
+                            <t t-if="courier_price != 0">
+                                <div class="form-check mb-2">
+                                    <input type="radio"
+                                           name="smartposti_type_radio"
+                                           value="courier"
+                                           id="smartposti_courier"
+                                           class="form-check-input smartposti-type-radio"
+                                           t-att-checked="'checked' if pudo_price == 0 else None"
+                                           t-att-data-price="courier_price"
+                                           t-att-data-carrier-id="delivery.id"/>
+                                    <label class="form-check-label" for="smartposti_courier">
+                                        <i class="fa fa-truck me-2 text-success"/>
+                                        <strong>
+                                            <t t-esc="company.smartposti_courier_label if company.smartposti_custom_service_names else 'Kuller (uksele)'"/>
+                                        </strong>
+                                        <span class="badge bg-success ms-2">
+                                            € <t t-esc="'%.2f' % courier_price"/>
+                                        </span>
+                                    </label>
+                                </div>
+                            </t>
+                        </t>
+
+                    </div>
+
+                </div>
+            </t>
+        </xpath>
+
+    </template>
+
+</odoo>

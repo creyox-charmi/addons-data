@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+    <t t-inherit="hr_attendance.attendance_menu" t-inherit-mode="extension">
+        <xpath expr="//Dropdown//t[@t-set-slot='default']//button[@t-if='this.isFirstAttendance']" position="after">       
+            <div t-if="this.showBreak" class="d-flex flex-column gap-3">
+                <t t-set="break" t-value="this.state.breakState == 'break'"/>
+                <t t-if="this.state.checkedIn">
+                    <div class="att_container d-flex flex-column p-3 bg-100 rounded">
+                        <div class="d-flex align-items-center justify-content-between ">
+                            <small t-if="break" class="text-muted">Click here to resume.</small>
+                            <small t-if="!break" class="text-muted">Click here to break.</small>
+                        </div>
+                        <button t-if="break" t-on-click="() => this.onClickResumeBreak()" class="flex-basis-100 mt-3" t-attf-class="btn btn-{{ this.state.checkedIn ? 'info' : 'success' }}">
+                            <span>Resume</span>
+                            <i t-attf-class="fa fa-toggle-on ms-1"/>
+                        </button>
+
+                        <button t-if="!break" t-on-click="() => this.onClickResumeBreak()" class="flex-basis-100 mt-3" t-attf-class="btn btn-{{ this.state.checkedIn ? 'info' : 'success' }}">
+                            <span>Break</span>
+                            <i t-attf-class="fa fa-toggle-on ms-1"/>
+                        </button>
+                    </div>
+                </t>
+            </div>
+        </xpath>
+    </t>
+</template>

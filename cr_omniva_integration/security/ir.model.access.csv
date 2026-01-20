@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_omniva_location,omniva.location.place.user,model_omniva_location,base.group_user,1,1,1,1
+access_omniva_country_price_user,omniva.country.price.user,model_omniva_country_price,base.group_user,1,0,0,0
+access_omniva_country_price_manager,omniva.country.price.manager,model_omniva_country_price,stock.group_stock_manager,1,1,1,1

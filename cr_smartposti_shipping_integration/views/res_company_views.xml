@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form_smartposti" model="ir.ui.view">
+        <field name="name">res.company.form.smartposti</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_info']" position="after">
+                <page string="SmartPosti Configuration" name="smartposti_config">
+                    <group>
+                        <group string="API Credentials">
+                            <field name="smartposti_environment" widget="radio"/>
+                            <field name="smartposti_base_url" readonly="1"/>
+                            <field name="smartposti_api_key" password="True"
+                                   placeholder="Enter your SmartPosti API Key"/>
+                            <field name="smartposti_gateway_secret" password="True"
+                                   placeholder="Enter your Gateway Secret"/>
+                        </group>
+                        <group string="Test Connection">
+                            <button name="action_test_smartposti_connection"
+                                    type="object"
+                                    string="Test Connection"
+                                    class="oe_highlight"
+                                    icon="fa-plug"/>
+                        </group>
+                    </group>
+
+                    <separator string="Default Service Configuration"/>
+                    <group>
+                        <group string="Defaults">
+                            <field name="smartposti_default_country"/>
+                            <field name="smartposti_default_place_type"/>
+                            <field name="smartposti_default_size"/>
+                            <field name="smartposti_label_format"/>
+                            <field name="smartposti_use_door_code"/>
+                        </group>
+
+
+                        <group string="Default Name">
+                            <field name="smartposti_pudo_price"
+                                   widget="monetary"
+                                   invisible="1"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="smartposti_courier_price"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   invisible="1"/>
+                            <field name="smartposti_custom_service_names"/>
+                            <field name="smartposti_courier_label"
+                                   invisible="not smartposti_custom_service_names"
+                                   required="smartposti_custom_service_names"/>
+                            <field name="smartposti_pudo_label"
+                                   invisible="not smartposti_custom_service_names"
+                                   required="smartposti_custom_service_names"/>
+                            <field name="smartposti_courier_sequence"/>
+                            <field name="smartposti_pudo_sequence"/>
+                        </group>
+
+                        <group string="Notifications" invisible="not smartposti_use_door_code">
+                            <field name="smartposti_notification_email"
+                                   placeholder="notifications@company.com"/>
+                            <field name="smartposti_notification_phone"
+                                   placeholder="+372xxxxxxxx"/>
+                        </group>
+                    </group>
+
+                    <separator string="Additional Services" invisible="not smartposti_use_door_code"/>
+                    <group invisible="not smartposti_use_door_code">
+                        <group string="Service Options">
+                            <field name="smartposti_enable_express"/>
+                            <field name="smartposti_enable_id_check"/>
+                            <field name="smartposti_enable_age_check"/>
+                            <field name="smartposti_enable_cod"/>
+                        </group>
+                        <group string="Return Configuration">
+                            <field name="smartposti_enable_returns"/>
+                            <field name="smartposti_return_days"
+                                   invisible="not smartposti_enable_returns"
+                                   required="smartposti_enable_returns"/>
+                        </group>
+                    </group>
+
+                    <separator string="Pickup Places Management"/>
+                    <group>
+                        <button name="action_sync_smartposti_places"
+                                type="object"
+                                string="Sync Pickup Places"
+                                class="btn-primary"
+                                icon="fa-refresh"
+                                help="Sync pickup places from SmartPosti API for default country"
+                                confirm="This will sync pickup places for the all country. Proceed?"/>
+                    </group>
+                </page>
+                <page string="Country-Based Pricing(Smartposti)">
+                    <field name="smartposti_country_price_ids">
+                        <tree editable="bottom">
+                            <field name="service_type" required="1"/>
+                            <field name="country_id" required="1"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="price" required="1" widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

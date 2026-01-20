@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- Inherit web.FormView -->
+    <t t-inherit="web.FormView" t-inherit-mode="extension">
+        <!-- Modify the second control-panel-create-button with btn-outline-primary -->
+        <xpath expr="//t[@t-set-slot='control-panel-create-button'][2]/t[1]/button" position="replace">
+            <t t-if="canCreate">
+                <button t-if="model.root.resModel == 'sale.order'" type="button" class="btn btn-outline-primary o_form_button_create" data-hotkey="c" t-on-click.stop="create">
+                    New <i class="fa fa-caret-down" style="color: inherit;"/>
+                </button>
+                <button t-else="" type="button" class="btn btn-outline-primary o_form_button_create" data-hotkey="c" t-on-click.stop="create">
+                    New
+                </button>
+            </t>
+        </xpath>
+    </t>
+</templates>

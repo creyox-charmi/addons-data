@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="td_view_task_project" model="ir.ui.view">
+            <field name="name">project.task.td_view</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2" />
+            <field name="arch" type="xml">
+                <xpath expr="//group/group[1]" position="inside">
+                    <field name="amount_cost" />
+                    <field name="amount_target" />
+                    <field name="price_subtotal" />
+                    <field name="subtask_percentage" />
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Inherit Project Task Gantt View -->
+         <record id="ks_task_view_gantt_inherit" model="ir.ui.view">
+            <field name="name">Project Task Gantt View Inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="ks_gantt_view_project.ks_task_view_gantt"/>
+            <field name="arch" type="xml">
+                <!-- Target the ks_gantt root -->
+                <xpath expr="//ks_gantt" position="attributes">
+                    <attribute name="subtask_percentage">subtask_percentage</attribute>
+                    <attribute name="amount_cost">amount_cost</attribute>
+                    <attribute name="amount_target">amount_target</attribute>
+                    <attribute name="price_subtotal">price_subtotal</attribute>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

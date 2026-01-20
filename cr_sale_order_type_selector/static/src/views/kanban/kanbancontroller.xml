@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="web.KanbanView" t-inherit-mode="extension" t-name="cr_sale_order_type_selector.KanbanView">
+          <xpath expr="//t[@t-set-slot='control-panel-create-button']/t[1]/button" position="replace">
+            <t t-if="canCreate">
+                <button t-if="model.root.resModel == 'sale.order'" type="button" class="btn btn-primary o-kanban-button-new" accesskey="c" t-on-click="() => this.createRecord()" data-bounce-button="">
+                    New <i class="fa fa-caret-down" style="color: inherit;"/>
+                </button>
+                <button t-else="" type="button" class="btn btn-primary o-kanban-button-new" accesskey="c" t-on-click="() => this.createRecord()" data-bounce-button="">
+                    New
+                </button>
+            </t>
+        </xpath>
+    </t>
+</templates>

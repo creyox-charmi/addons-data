@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_picking_form_inherit_bigcommerce" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.bigcommerce</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[last()]" position="after">
+                <page string="BigCommerce" invisible="not bigcommerce_store_id">
+                    <group>
+                        <field name="bigcommerce_store_id"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bigcommerce_delivery_orders" model="ir.actions.act_window">
+        <field name="name">Delivery Orders</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('picking_type_code', '=', 'outgoing'),('bigcommerce_store_id','!=','False')]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="menu_bigcommerce_delivery_orders"
+          name="Delivery Orders"
+          parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+          action="action_bigcommerce_delivery_orders"
+          sequence="35"/>
+
+
+</odoo>

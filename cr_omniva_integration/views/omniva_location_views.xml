@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="omniva_location_view_tree" model="ir.ui.view">
+        <field name="name">omniva.location.tree</field>
+        <field name="model">omniva.location</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="city"/>
+                <field name="country"/>
+                <field name="location_type"/>
+                <field name="zip_code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="omniva_location_action" model="ir.actions.act_window">
+        <field name="name">Omniva Locations</field>
+        <field name="res_model">omniva.location</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="omniva_location_menu"
+              name="Omniva Locations"
+              parent="stock.menu_stock_config_settings"
+              action="omniva_location_action"/>
+</odoo>

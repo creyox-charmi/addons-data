@@ -1,0 +1,188 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* cr_smartposti_shipping_integration
+# 	* cr_omniva_integration
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-24 11:47+0000\n"
+"PO-Revision-Date: 2025-10-24 12:00+0000\n"
+"Last-Translator: Your Name <you@example.com>\n"
+"Language-Team: Estonian <et@odoo-community.org>\n"
+"Language: et\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: cr_omniva_integration
+#. odoo-python
+#: code:addons/cr_omniva_integration/models/stock_picking.py:0
+#, python-format
+msgid ""
+"%s delivery requires a valid mobile number or email.\n"
+"Mobile: %s\n"
+"Email: %s\n"
+"Please ensure mobile number is in international format (e.g., +372XXXXXXXX)"
+msgstr ""
+"%s kohaletoimetamiseks on vaja kehtivat mobiilinumbrit või e-posti aadressi.\n"
+"Mobiil: %s\n"
+"E-post: %s\n"
+"Palun veenduge, et mobiilinumber oleks rahvusvahelises vormingus (nt +372XXXXXXXX)"
+
+#. module: cr_omniva_integration
+#. odoo-python
+#: code:addons/cr_omniva_integration/models/stock_picking.py:0
+#, python-format
+msgid ""
+"%s delivery requires at least mobile number or email for the delivery "
+"partner."
+msgstr ""
+"%s kohaletoimetamiseks on vaja vähemalt mobiilinumbrit või e-posti aadressi "
+"kohaletoimetamise partneri jaoks."
+
+#. module: cr_smartposti_shipping_integration
+#: model_terms:ir.ui.view,arch_db:cr_smartposti_shipping_integration.view_company_form_smartposti
+msgid "+372xxxxxxxx"
+msgstr "+372xxxxxxxx"
+
+#. module: cr_omniva_integration
+#: model_terms:ir.ui.view,arch_db:cr_omniva_integration.payment_delivery_omniva
+msgid ""
+"<i class=\"fa fa-building me-2 text-info\"/>\n"
+"                                <strong>Post Office</strong>"
+msgstr ""
+"<i class=\"fa fa-building me-2 text-info\"/>\n"
+"                                <strong>Postkontor</strong>"
+
+#. module: cr_omniva_integration
+#: model_terms:ir.ui.view,arch_db:cr_omniva_integration.payment_delivery_omniva
+msgid ""
+"<i class=\"fa fa-cube me-2 text-primary\"/>\n"
+"                                <strong>Parcel Machine</strong>"
+msgstr ""
+"<i class=\"fa fa-cube me-2 text-primary\"/>\n"
+"                                <strong>Pakiautomaat</strong>"
+
+#. module: cr_smartposti_shipping_integration
+#: model_terms:ir.ui.view,arch_db:cr_smartposti_shipping_integration.payment_delivery_smartposti
+msgid ""
+"<i class=\"fa fa-cube me-2 text-primary\"/>\n"
+"                                <strong>Parcel Machines (Pakiautomaadid)</strong>"
+msgstr ""
+"<i class=\"fa fa-cube me-2 text-primary\"/>\n"
+"                                <strong>Pakiautomaadid</strong>"
+
+#. module: cr_smartposti_shipping_integration
+#: model_terms:ir.ui.view,arch_db:cr_smartposti_shipping_integration.view_delivery_carrier_form_smartposti
+msgid "<i class=\"fa fa-info-circle\"/> <strong>Configuration Location</strong>"
+msgstr "<i class=\"fa fa-info-circle\"/> <strong>Konfiguratsiooni asukoht</strong>"
+
+#. modules: cr_omniva_integration, cr_smartposti_shipping_integration
+#: model_terms:ir.ui.view,arch_db:cr_omniva_integration.payment_delivery_omniva
+#: model_terms:ir.ui.view,arch_db:cr_smartposti_shipping_integration.payment_delivery_smartposti
+msgid ""
+"<i class=\"fa fa-truck me-2 text-success\"/>\n"
+"                                <strong>Courier (Door-to-Door)</strong>"
+msgstr ""
+"<i class=\"fa fa-truck me-2 text-success\"/>\n"
+"                                <strong>Kuller (uksele)</strong>"
+
+#. modules: cr_omniva_integration, cr_smartposti_shipping_integration
+#: model_terms:ir.ui.view,arch_db:cr_omniva_integration.payment_delivery_omniva
+#: model_terms:ir.ui.view,arch_db:cr_smartposti_shipping_integration.payment_delivery_smartposti
+msgid "<option value=\"\">-- Select Location --</option>"
+msgstr "<option value=\"\">-- Vali asukoht --</option>"
+
+#. module: cr_smartposti_shipping_integration
+#. odoo-python
+#: code:addons/cr_smartposti_shipping_integration/models/res_company.py:0
+#, python-format
+msgid "Unexpected error: %s"
+msgstr "Ootamatu viga: %s"
+
+#. module: cr_omniva_integration
+#. odoo-python
+#: code:addons/cr_omniva_integration/models/stock_picking.py:0
+#, python-format
+msgid "Unexpected label response"
+msgstr "Ootamatu sildi vastus"
+
+#. module: cr_omniva_integration
+#. odoo-python
+#: code:addons/cr_omniva_integration/models/stock_picking.py:0
+#, python-format
+msgid "Unexpected response from Omniva API. No shipments saved or failed."
+msgstr "Ootamatu vastus Omniva API-lt. Saadetisi ei salvestatud ega nurjunud."
+
+#. module: cr_smartposti_shipping_integration
+#: model:ir.model.fields,help:cr_smartposti_shipping_integration.field_smartposti_place__place_id
+msgid "Unique place identifier from SmartPosti"
+msgstr "Unikaalne asukoha identifikaator SmartPosti süsteemist"
+
+#. module: cr_smartposti_shipping_integration
+#: model:ir.model.fields,field_description:cr_smartposti_shipping_integration.field_smartposti_place__updated_date
+msgid "Updated Date"
+msgstr "Uuendamise kuupäev"
+
+#. module: cr_smartposti_shipping_integration
+#: model:ir.model.fields,field_description:cr_smartposti_shipping_integration.field_res_company__smartposti_use_door_code
+msgid "Use Door Code Service"
+msgstr "Kasuta uksekoodi teenust"
+
+#. module: cr_smartposti_shipping_integration
+#: model:ir.model.fields,help:cr_smartposti_shipping_integration.field_stock_picking__smartposti_express
+msgid "Use SmartPosti Express service"
+msgstr "Kasuta SmartPosti Express teenust"
+
+#. module: cr_omniva_integration
+#. odoo-python
+#: code:addons/cr_omniva_integration/models/stock_picking.py:0
+#, python-format
+msgid "Warning: Failed to create Omniva shipment automatically: %s"
+msgstr "Hoiatus: Omniva saadetise automaatne loomine ebaõnnestus: %s"
+
+#. module: cr_smartposti_shipping_integration
+#. odoo-python
+#: code:addons/cr_smartposti_shipping_integration/models/delivery_carrier.py:0
+#, python-format
+msgid "Warning: Shipment created but label generation failed: %s"
+msgstr "Hoiatus: Saadetis loodi, kuid sildi genereerimine ebaõnnestus: %s"
+
+#. module: cr_smartposti_shipping_integration
+#: model:ir.model.fields.selection,name:cr_smartposti_shipping_integration.selection__res_company__smartposti_default_place_type__ipb
+msgid "White Box"
+msgstr "Valge kast"
+
+#. module: cr_smartposti_shipping_integration
+#: model:ir.model.fields.selection,name:cr_smartposti_shipping_integration.selection__smartposti_place__place_type__ipb
+msgid "White Box (IPB)"
+msgstr "Valge kast (IPB)"
+
+#. module: cr_smartposti_shipping_integration
+#: model_terms:ir.ui.view,arch_db:cr_smartposti_shipping_integration.smartposti_place_view_search
+msgid "White Boxes (IPB)"
+msgstr "Valged kastid (IPB)"
+
+#. module: cr_omniva_integration
+#: model:ir.model.fields,help:cr_omniva_integration.field_res_company__omniva_developer_id
+msgid "X-Integration-Agent-Id header value"
+msgstr "X-Integration-Agent-Id päise väärtus"
+
+#. module: cr_omniva_integration
+#: model:ir.model.fields,help:cr_omniva_integration.field_res_company__omniva_customer_code
+#: model_terms:ir.ui.view,arch_db:cr_omniva_integration.view_company_omniva_config_form
+msgid "Your Omniva customer code (e.g., 37884)"
+msgstr "Teie Omniva kliendikood (nt 37884)"
+
+#. module: cr_omniva_integration
+#: model:ir.model.fields,field_description:cr_omniva_integration.field_omniva_location__zip_code
+msgid "ZIP"
+msgstr "Postiindeks"
+
+#. module: cr_smartposti_shipping_integration
+#: model_terms:ir.ui.view,arch_db:cr_smartposti_shipping_integration.view_company_form_smartposti
+msgid "notifications@company.com"
+msgstr "teavitused@ettevote.ee"

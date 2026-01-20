@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Stock Picking Form View - SmartPosti Integration -->
+    <record id="stock_picking_form_smartposti" model="ir.ui.view">
+        <field name="name">stock.picking.form.smartposti</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add carrier_id field if not already visible -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="carrier_id"
+                       invisible="picking_type_code != 'outgoing'"
+                       readonly="state in ['cancel', 'done']"
+                       options="{'no_create': True}"/>
+            </xpath>
+
+            <!-- Add SmartPosti options group after carrier -->
+            <xpath expr="//field[@name='carrier_id']" position="after">
+                <group name="smartposti_options"
+                       string="SmartPosti Delivery Options"
+                       colspan="2" col="2" invisible="delivery_type != 'smartposti'">
+
+                    <field name="smartposti_place_id"
+                           string="Pickup Point"
+                           context="{'default_country': carrier_id.smartposti_country}"
+                           options="{'no_create': True, 'no_open': True}"
+                           placeholder="Select a SmartPosti pickup location..."/>
+
+                    <field name="smartposti_size"
+                           string="Package Size"
+                           required="carrier_id.delivery_type == 'smartposti'"/>
+
+                    <field name="smartposti_express"
+                           string="Express Delivery"
+                           invisible="not carrier_id.smartposti_enable_express"/>
+
+                    <field name="smartposti_temperature_sensitive"
+                           string="Temperature Sensitive"/>
+
+                    <field name="smartposti_door_code"
+                           string="Door Code"
+                           readonly="1"
+                           invisible="not smartposti_door_code"/>
+
+                    <field name="smartposti_barcode"
+                           string="Tracking Barcode"
+                           readonly="1"
+                           invisible="not smartposti_barcode"/>
+                </group>
+            </xpath>
+
+            <!-- Add tracking button in header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_smartposti_track_shipment"
+                        string="Track Shipment"
+                        type="object"
+                        class="btn-primary"
+                        invisible="carrier_id.delivery_type != 'smartposti' or not smartposti_barcode"
+                        groups="stock.group_stock_user"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

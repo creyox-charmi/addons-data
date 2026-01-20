@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="portal_purchase_rfq_tree" name="Create a Purchase RFQ">
+        <t t-call="website.layout">
+            <t t-set="products_json">
+                <t t-raw="products"/>
+            </t>
+            <div id="wrap" class="container mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="/my/home">
+                                        <i class="fa fa-home"/>
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Create a Purchase RFQ</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <h3>Create a Purchase RFQ</h3>
+
+                <form id="quotation_form" action="/create_purchase_rfq/success" method="POST">
+
+                    <!-- Customer Selection -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Customer</label>
+                                <div class="d-flex align-items-center">
+                                    <select name="partner_id" class="form-control me-2" id="customer_id"
+                                            style="width: 25%; flex: 1;">
+                                        <option value=""/>
+                                        <option value="add_new_customer">➕ Add New Customer</option>
+                                        <t t-foreach="customers" t-as="customer">
+                                            <option t-att-value="customer.id">
+                                                <t t-esc="customer.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+
+                    <!-- Product Line Input -->
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label>Product</label>
+                           <select name="product_id" id="product_id" class="form-control select2_product_search">
+    <option value="">Select a Product</option>
+    <t t-foreach="products" t-as="product">
+        <option
+            t-att-value="product.id"
+            t-att-data-name="product.name"
+            t-att-data-price="product.list_price">
+            <t t-esc="product.name"/>
+        </option>
+    </t>
+</select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Price</label>
+                            <input type="text" name="price" id="price" class="form-control" readonly="1"
+                                   style="height: 50px;"/>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Quantity</label>
+                            <input type="number" name="quantity" id="quantity" class="form-control"
+                                   style="height: 50px;"/>
+                        </div>
+                        <div class="col-md-2 d-flex mb-2 align-items-end">
+                            <button type="button" class="btn btn-primary" id="add_product_btn_rfq">
+                                <b>+</b>
+                                Add Product
+                            </button>
+                        </div>
+                    </div>
+                    <br/>
+
+                    <!-- Quotation Table -->
+                    <table class="table table-bordered mt-4">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotation_lines"></tbody>
+                    </table>
+
+                    <button type="submit" class="btn btn-primary">Generate Purchase RFQ</button>
+                    <br/>
+                    <br/>
+                </form>
+
+                <!-- Add Customer Modal -->
+                <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="add_customer_form">
+                                    <div class="mb-3">
+                                        <label for="customer_name" class="form-label">Customer Name</label>
+                                        <input type="text" class="form-control" id="customer_name" name="customer_name"
+                                               required="1"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="customer_phone" class="form-label">Phone</label>
+                                        <input type="text" class="form-control" id="customer_phone"
+                                               name="customer_phone"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="customer_email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="customer_email"
+                                               name="customer_email"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="street" class="form-label">Street</label>
+                                        <input type="text" class="form-control" id="street" name="street"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="street2" class="form-label">Street 2</label>
+                                        <input type="text" class="form-control" id="street2" name="street2"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="city" class="form-label">City</label>
+                                        <input type="text" class="form-control" id="city" name="city"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="zip" class="form-label">Zip Code</label>
+                                        <input type="text" class="form-control" id="zip" name="zip"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Select a Country</label>
+                                        <select name="countries" id="countries" class="form-control">
+                                            <option value="">Select a Country</option>
+                                            <t t-foreach="countries" t-as="country">
+                                                <option t-att-value="country.id">
+                                                    <t t-esc="country.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Select a State</label>
+                                        <select name="states" id="states" class="form-control">
+                                            <option value="">Select a State</option>
+                                            <t t-foreach="states" t-as="states">
+                                                <option t-att-value="states.id">
+                                                    <t t-esc="states.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <br/>
+                                    <button type="submit" class="btn btn-primary">Create Customer</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CSS & JS assets -->
+<t t-jquery="head" t-operation="append">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .select2-container--default .select2-selection--single {
+            height: 50px;
+            line-height: 50px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 50px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 50px;
+        }
+    </style>
+</t>
+
+<!-- REMOVE the entire <t t-jquery="body" t-operation="append"> section -->
+
+                <!-- CSS & JS assets -->
+<!--                <t t-jquery="head" t-operation="append">-->
+<!--                    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>-->
+<!--                    <link href="cr_portal_quote_and_rfq/static/src/css/quotation_styles.css" rel="stylesheet"/>-->
+<!--                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+<!--                    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>-->
+<!--                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--                    <script src="cr_portal_quote_and_rfq/static/src/js/quotation_scripts.js"></script>-->
+<!--                    <style>-->
+<!--                        .select2-container&#45;&#45;default .select2-selection&#45;&#45;single {-->
+<!--                        height: 50px;-->
+<!--                        line-height: 50px;-->
+<!--                        border: 2px solid #ddd;-->
+<!--                        border-radius: 8px;-->
+<!--                        background-color: #f9f9f9;-->
+<!--                        transition: all 0.3s ease;-->
+<!--                        box-shadow: 0 2px 5px rgba(0,0,0,0.1);-->
+<!--                        }-->
+<!--                        .select2-container&#45;&#45;default .select2-selection&#45;&#45;single .select2-selection__rendered {-->
+<!--                        line-height: 50px;-->
+<!--                        }-->
+<!--                        .select2-container&#45;&#45;default .select2-selection&#45;&#45;single .select2-selection__arrow {-->
+<!--                        height: 50px;-->
+<!--                        }-->
+<!--                    </style>-->
+<!--                </t>-->
+
+                <!-- Logic -->
+<!--                <t t-jquery="body" t-operation="append">-->
+<!--                    <script>-->
+<!--                        $(document).ready(function () {-->
+<!--                        const productSelect = $('#product_id');-->
+<!--                        const priceInput = $('#price');-->
+<!--                        const quantityInput = $('#quantity');-->
+<!--                        const quotationLines = $('#quotation_lines');-->
+
+<!--                        // Init Select2 for Product-->
+<!--                        productSelect.select2({-->
+<!--                        placeholder: "Select a Product",-->
+<!--                        allowClear: true-->
+<!--                        });-->
+
+<!--                        // Init Select2 for Customer-->
+<!--                        $('#customer_id').select2({-->
+<!--                        placeholder: "Select a Customer",-->
+<!--                        allowClear: true-->
+<!--                        });-->
+
+<!--                        // Trigger on select2 selection-->
+<!--                        productSelect.on('select2:select', function (e) {-->
+<!--                        const selected = $(this).find(':selected');-->
+<!--                        const price = selected.data('price');-->
+<!--                        priceInput.val(price || '');-->
+<!--                        });-->
+
+<!--                        // Clear price and UOM when product is cleared-->
+<!--                        productSelect.on('select2:clear', function () {-->
+<!--                        priceInput.val('');-->
+<!--                        });-->
+
+<!--                        // Add line-->
+<!--                        $('#add_product_btn_rfq').on('click', function () {-->
+<!--                        const productId = productSelect.val();-->
+<!--                        const productName = productSelect.find(':selected').text();-->
+<!--                        const price = parseFloat(priceInput.val());-->
+<!--                        const quantity = parseFloat(quantityInput.val());-->
+
+<!--                        if (!productId || !price || !quantity) {-->
+<!--                        alert("Please fill all product fields.");-->
+<!--                        return;-->
+<!--                        }-->
+
+<!--                        const subtotal = (price * quantity).toFixed(2);-->
+<!--                        const row = `-->
+<!--                        <tr>-->
+<!--                            <td>${productName}</td>-->
+<!--                            <td>${price.toFixed(2)}</td>-->
+<!--                            <td>${quantity}</td>-->
+<!--                            <td>${subtotal}</td>-->
+<!--                            <td>-->
+<!--                                <button type="button" class="btn btn-danger btn-sm delete-row">-->
+<!--                                    <b>x</b>-->
+<!--                                    Delete-->
+<!--                                </button>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        <input type="hidden" name="product_ids[]" value="${productId}"/>-->
+<!--                        <input type="hidden" name="prices[]" value="${price.toFixed(2)}"/>-->
+<!--                        <input type="hidden" name="quantities[]" value="${quantity}"/>-->
+<!--                        `;-->
+<!--                        quotationLines.append(row);-->
+
+<!--                        // Clear fields-->
+<!--                        productSelect.val(null).trigger('change');-->
+<!--                        priceInput.val('');-->
+<!--                        quantityInput.val('');-->
+<!--                        });-->
+
+<!--                        // Delete row-->
+<!--                        quotationLines.on('click', '.delete-row', function () {-->
+<!--                        const row = $(this).closest('tr');-->
+<!--                        const nextInputs = row.nextUntil('tr');-->
+<!--                        row.remove();-->
+<!--                        nextInputs.remove();-->
+<!--                        });-->
+
+<!--                        // Form validation-->
+<!--                        $('#quotation_form').on('submit', function (e) {-->
+<!--                        if (!$('#customer_id').val()) {-->
+<!--                        e.preventDefault();-->
+<!--                        alert("Please select a customer before generating the quotation.");-->
+<!--                        }-->
+<!--                        });-->
+<!--                        });-->
+<!--                    </script>-->
+<!--                </t>-->
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_purchase_rfq" name="Create a Purchase RFQ" inherit_id="portal.portal_my_home" priority="35">
+        <xpath expr="//div[@id='portal_client_category']" position="before">
+            <t t-set="portal_purchase_rfq_category_enable" t-value="True"/>
+            <div id="portal_purchase_rfq_category" class="col-lg-4 col-md-6" style="margin-left: 140px;">
+                <a t-attf-href="/portal_purchase_rfq_tree" style="text-decoration: none;">
+                    <div class="card mt-3" style="width: 400px; background-color: #888888; border: none;">
+                        <div class="card-body">
+                            <h6 style="text-align: center;padding-top: 5px;">
+                                <b>Create a Purchase RFQ</b>
+                            </h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

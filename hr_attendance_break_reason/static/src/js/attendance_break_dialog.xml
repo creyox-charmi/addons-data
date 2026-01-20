@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hr_attendance_break_reason.AttendanceBreakDialog" t-inherit="hr_attendance_break_and_resume.AttendanceBreakDialog" t-inherit-mode="extension">
+        <!-- Replace the entire button section to add reason above Break button -->
+        <xpath expr="//div[@id='break_pin_pad_button']" position="replace">
+            <div class="d-flex flex-column justify-content-center align-items-center" id="break_pin_pad_button">
+                <t t-set="break" t-value="this.state.breakState == 'break'"/>
+                <t t-if="this.state.checkedIn">
+                    <!-- Show reason selection ONLY when about to start break (currently in resume state) -->
+                    <t t-if="!break">
+                        <div class="card p-3 mb-3 align-self-center" style="width: 400px;">
+                            <h6 class="mb-2">Select Break Reason:</h6>
+                            <div class="mb-2">
+                                <select class="form-select" t-on-change="(ev) => this.onReasonSelect(ev)">
+                                    <option value="">-- Select Reason --</option>
+                                    <t t-foreach="this.state.breakReasons || []" t-as="reason" t-key="reason.id">
+                                        <option t-att-value="reason.id" t-esc="reason.name"/>
+                                    </t>
+                                </select>
+                            </div>
+                            <div>
+                                <input type="text" class="form-control" placeholder="Or enter new reason"
+                                       t-on-input="(ev) => this.onCustomReasonInput(ev)"
+                                       t-att-value="this.state.customReason || ''"/>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Show Resume button when on break -->
+                    <button t-if="break" t-on-click="() => this.onClickResumeBreak()"
+                            t-attf-class="o_hr_attendance_break_resume_icon btn btn-info align-self-center px-5 py-3 mt-4 mb-2">
+                        <i t-attf-class="fa fa-3x fa-toggle-on align-middle"/>
+                        <span class="align-middle fs-2 ms-3">Resume</span>
+                    </button>
+
+                    <!-- Show Break button when not on break -->
+                    <button t-if="!break" t-on-click="() => this.onClickResumeBreak()"
+                            t-attf-class="o_hr_attendance_break_resume_icon btn btn-primary align-self-center px-5 py-3 mt-4 mb-2">
+                        <i t-attf-class="fa fa-3x fa-toggle-off align-middle"/>
+                        <span class="align-middle fs-2 ms-3">Break</span>
+                    </button>
+
+                    <!-- Check out button -->
+                    <button t-on-click="() => this.onClickSignInOut()"
+                            t-attf-class="o_hr_attendance_break_resume_icon btn btn-warning align-self-center px-5 py-3 mt-4 mb-2"
+                            style="margin-left: 8px !important;">
+                        <i t-attf-class="fa fa-3x fa-sign-out align-middle"/>
+                        <span class="align-middle fs-2 ms-3">Check out</span>
+                    </button>
+                </t>
+            </div>
+        </xpath>
+    </t>
+</templates>

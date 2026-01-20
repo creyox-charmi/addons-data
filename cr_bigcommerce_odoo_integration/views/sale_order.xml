@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_order_form_bigcommerce_extension" model="ir.ui.view">
+        <field name="name">sale.order.form.bigcommerce</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_get_bigcommerce_order_status"
+                        string="Get Order Status"
+                        type="object"
+                        class="btn-primary"
+                        invisible="not bigcommerce_store_id"/>
+                <button name="action_update_bigcommerce_order"
+                        string="Update Order In BigCommerce"
+                        type="object"
+                        class="btn-primary"
+                        invisible="not bigcommerce_store_id"/>
+            </xpath>
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="BigCommerce Info" invisible="not bigcommerce_store_id">
+                    <group>
+                        <group string="Order Information">
+                            <field name="bigcommerce_store_id" readonly="1"/>
+                            <field name="bigcommerce_order_id" readonly="1"/>
+                            <field name="bigcommerce_order_status_id" readonly="1"/>
+                        </group>
+                        <group string="Financial Details">
+                            <field name="bigcommerce_subtotal_ex_tax" readonly="1"/>
+                            <field name="bigcommerce_subtotal_inc_tax" readonly="1"/>
+                            <field name="bigcommerce_subtotal_tax" readonly="1"/>
+                            <field name="bigcommerce_total_ex_tax" readonly="1"/>
+                            <field name="bigcommerce_total_inc_tax" readonly="1"/>
+                            <field name="bigcommerce_total_tax" readonly="1"/>
+                            <field name="bigcommerce_discount_amount" readonly="1"/>
+                            <field name="bigcommerce_refunded_amount" readonly="1"/>
+                        </group>
+                        <group string="Shipping Costs">
+                            <field name="bigcommerce_base_shipping_cost" readonly="1"/>
+                            <field name="bigcommerce_shipping_cost_ex_tax" readonly="1"/>
+                            <field name="bigcommerce_shipping_cost_inc_tax" readonly="1"/>
+                        </group>
+                        <group string="Payment Information">
+                            <field name="bigcommerce_payment_method" readonly="1"/>
+                            <field name="bigcommerce_payment_status" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="bigcommerce_customer_message" readonly="1" nolabel="1"
+                               placeholder="Customer Message"/>
+                        <field name="bigcommerce_staff_notes" readonly="1" nolabel="1" placeholder="Staff Notes"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bigcommerce_orders" model="ir.actions.act_window">
+        <field name="name">BigCommerce Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('bigcommerce_order_id', '!=', False)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="menu_bigcommerce_store_sale_orders"
+              name="Sale Order"
+              parent="cr_bigcommerce_odoo_integration.cr_bigcommerce_menu"/>
+
+    <menuitem id="menu_bigcommerce_store_orders"
+              name="Order"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_store_sale_orders"
+              action="action_bigcommerce_orders"/>
+
+    <!-- Bulk Update BigCommerce Order -->
+    <record id="action_bulk_update_bigcommerce_order" model="ir.actions.server">
+        <field name="name">Update To BigCommerce</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_sale_order"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_update_bigcommerce_order()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+    <!-- Bulk Import BigCommerce Order -->
+    <record id="action_bulk_import_bigcommerce_order" model="ir.actions.server">
+        <field name="name">Update From BigCommerce</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_sale_order"/>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_import_bigcommerce_order()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+</odoo>

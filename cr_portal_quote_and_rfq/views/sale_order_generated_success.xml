@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="sale_generated_success_template" name="Thank You Page">
+        <t t-call="website.layout">
+            <div class="oe_structure">
+                <div class="container text-center" style="padding-top: 50px; padding-bottom: 50px;">
+                    <div style="font-size: 80px; color: #333;">
+                        <i class="fa fa-thumbs-up"/>
+                    </div>
+                    <h2>Thank You!</h2>
+                    <hr style="width: 50px; margin: 10px auto; border: 1px solid #333;"/>
+                    <p>
+                        <strong>Quotation with
+                            Sale Order:
+                            <t t-esc="sale_order.name"/>
+                            <br/>
+                            has been Generated successfully
+                        </strong>
+                    </p>
+                    <a t-attf-href="/my/orders/{{ sale_order.id }}?access_token={{ sale_order.access_token }}"
+                       class="btn btn-primary mt-3">
+                        Access Sale Order
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

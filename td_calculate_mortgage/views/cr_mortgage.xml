@@ -1,0 +1,94 @@
+<odoo>
+    <record id="view_cr_mortgage_tree" model="ir.ui.view">
+        <field name="name">cr.mortgage.tree</field>
+        <field name="model">cr.mortgage</field>
+        <field name="arch" type="xml">
+            <tree string="Mortgages">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="province"/>
+                <field name="saved_money"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_cr_mortgage_form" model="ir.ui.view">
+        <field name="name">cr.mortgage.form</field>
+        <field name="model">cr.mortgage</field>
+        <field name="arch" type="xml">
+            <form string="Mortgage Form">
+                <sheet>
+
+                    <group>
+                        <group string="Client Detail">
+                        <field name="name"/>
+                        <field name="email"/>
+                        <field name="number"/>
+                        <field name="province"/>
+                        <field name="work_since"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Which situation do you identify with?">
+                            <field name="situation"/>
+                            <field name="situation_province"/>
+                        </group>
+                        <group string="What type of home are you looking for?">
+                            <field name="type_of_home"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="What is the value of the house?">
+                            <field name="value_of_house"/>
+                        </group>
+                        <group string="How much money do you have saved?">
+                            <field name="saved_money"/>
+                            <field name="mortgage_year"/>
+                        </group>
+                    </group>
+
+                    <!-- Shopping / Monthly Net Income -->
+                    <group>
+                        <group string="Are you shopping alone or is someone else accompanying you?">
+                            <field name="shopping"/>
+                        </group>
+                        <group string="What is your monthly net income level?">
+                            <field name="monthly_net_income"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="How much is spent on loans and card usage?">
+                            <field name="spent_on_loans_and_card_usage1"/>
+                        </group>
+                        <group string="Headline 2"  invisible="shopping != '2'">
+                            <field name="spent_on_loans_and_card_usage2"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cr_mortgage" model="ir.actions.act_window">
+        <field name="name">Mortgage</field>
+        <field name="res_model">cr.mortgage</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem id="menu_cr_mortgage_root" name="Mortgage" parent="website.menu_website_configuration"/>
+
+
+    <record id="action_cr_mortgage_window" model="ir.actions.act_window">
+        <field name="name">Mortgage</field>
+        <field name="res_model">cr.mortgage</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_cr_mortgage_items" name="Manage Mortgages" parent="td_calculate_mortgage.menu_cr_mortgage_root"
+              action="action_cr_mortgage_window"/>
+</odoo>

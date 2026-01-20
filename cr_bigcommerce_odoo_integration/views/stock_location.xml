@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_location_form_inherit_bigcommerce_tab" model="ir.ui.view">
+        <field name="name">stock.location.form.inherit.bigcommerce.tab</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_update_location_to_bigcommerce"
+                            type="object"
+                            string="Update to BigCommerce"
+                            class="oe_highlight"
+                            invisible="not bc_location_id"/>
+                    <button name="action_delete_location_from_bigcommerce"
+                            type="object"
+                            string="Delete to BigCommerce"
+                            class="oe_highlight"
+                            invisible="not bc_location_id"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='comment']" position="after">
+                <notebook>
+                    <page string="BigCommerce Info">
+                        <group>
+                            <group string="General Info">
+                                <field name="bigcommerce_store_id"/>
+                                <field name="bc_location_id" readonly="1"/>
+                                <field name="transaction_id"/>
+                                <field name="code"/>
+                                <field name="label"/>
+                                <field name="description"/>
+                                <field name="managed_by_external_source"/>
+                                <field name="type_id"/>
+                                <field name="enabled"/>
+                                <field name="operating_hours"/>
+                                <field name="time_zone"/>
+                                <field name="storefront_visibility"/>
+                                <field name="created_at"/>
+                                <field name="updated_at"/>
+                            </group>
+
+                            <group string="Address Information">
+                                <field name="address1"/>
+                                <field name="address2"/>
+                                <field name="city"/>
+                                <field name="state"/>
+                                <field name="zip"/>
+                                <field name="country_code"/>
+                                <field name="phone"/>
+                                <field name="latitude"/>
+                                <field name="longitude"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bigcommerce_locations" model="ir.actions.act_window">
+        <field name="name">BigCommerce Locations</field>
+        <field name="res_model">stock.location</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('bigcommerce_store_id', '!=', False)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_bulk_update_locations_to_bigcommerce" model="ir.actions.server">
+        <field name="name">Update Locations to BigCommerce</field>
+        <field name="model_id" ref="stock.model_stock_location"/>
+        <field name="binding_model_id" ref="cr_bigcommerce_odoo_integration.model_stock_location"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_bulk_update_locations_to_bigcommerce()</field>
+    </record>
+
+
+    <menuitem id="menu_bigcommerce_locations"
+              name="Locations"
+              parent="cr_bigcommerce_odoo_integration.menu_bigcommerce_configuration"
+              action="action_bigcommerce_locations"/>
+
+
+    <record id="action_export_location_to_bigcommerce" model="ir.actions.server">
+        <field name="name">Export Location To BigCommerce</field>
+        <field name="model_id" ref="cr_bigcommerce_odoo_integration.model_stock_location"/>
+        <field name="binding_model_id" ref="stock.model_stock_location"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_sync_inventory()</field>
+        <field name="binding_type">action</field>
+    </record>
+
+</odoo>

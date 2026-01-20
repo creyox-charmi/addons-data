@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="ks_gantt_view_base.ks_gantt_content" t-inherit-mode="extension"
+       t-name="cr_custom_buttons_project_gantt_view.ks_gantt_content">
+         <xpath expr="//ul[@class='ks-menu']" position="inside">
+             <li class="ks-item">
+                <button class="btn btn-secondary" id="ks_toggle_cost" t-on-click="_ksToggleCost">
+                    <img src="/cr_custom_buttons_project_gantt_view/static/src/images/cost.svg" alt="Cost"/>
+                    Cost
+                </button>
+            </li>
+             <li class="ks-item">
+                <button class="btn btn-secondary" id="ks_toggle_target" t-on-click="_ksToggleTarget">
+                            <img src="/cr_custom_buttons_project_gantt_view/static/src/images/target.svg" alt="Target"/>
+
+                    Target
+                </button>
+            </li>
+             <li class="ks-item">
+                <button class="btn btn-secondary" id="ks_toggle_sale" t-on-click="_ksToggleSale">
+                            <img src="/cr_custom_buttons_project_gantt_view/static/src/images/sale.svg" alt="Sale"/>
+                    Sale
+                </button>
+            </li>
+
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- Extend the OWL template web.ListView and append a caret after the New button -->
+    <t t-extend="web.ListView">
+        <t t-jquery="button.o_list_button_add" t-operation="append">
+            <!-- I use a Unicode caret to avoid icon libs issues -->
+            <span class="ms-1 o_list_new_caret" aria-hidden="true">▾</span>
+            <!--
+            Alternative using Odoo icons (if you prefer):
+            <i class="oi oi-chevron-down ms-1" aria-hidden="true"/>
+            -->
+<!--        </t>-->
+    </t>
+</templates>

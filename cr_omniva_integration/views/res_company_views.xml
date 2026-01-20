@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_omniva_config_form" model="ir.ui.view">
+        <field name="name">res.company.form.omniva</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_info']" position="after">
+                <page string="Omniva Configuration" name="omniva_config">
+                    <group>
+                        <group string="API Credentials">
+                            <field name="omniva_api_url" widget="radio"/>
+                            <field name="omniva_username"/>
+                            <field name="omniva_password" password="True"/>
+                            <field name="omniva_customer_code"
+                                   help="Your Omniva customer code (e.g., 37884)"/>
+                            <field name="omniva_developer_id"/>
+                            <field name="omniva_default_hs_code"/>
+                        </group>
+
+                        <!-- NEW: Delivery Prices Section -->
+                        <group string="Default Name">
+                            <field name="omniva_courier_price"
+                                   widget="monetary"
+                                   invisible="1"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="omniva_parcel_machine_price"
+                                   widget="monetary"
+                                   invisible="1"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="omniva_post_office_price"
+                                   widget="monetary"
+                                   invisible="1"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="omniva_custom_service_names"/>
+                            <field name="omniva_courier_label" invisible="not omniva_custom_service_names"
+                                    required="omniva_custom_service_names"/>
+                            <field name="omniva_pudo_label" invisible="not omniva_custom_service_names"
+                                    required="omniva_custom_service_names"/>
+                            <field name="omniva_post_office_label" invisible="not omniva_custom_service_names"
+                                    required="omniva_custom_service_names"/>
+                            <field name="omniva_courier_sequence"/>
+                            <field name="omniva_parcel_machine_sequence"/>
+                            <field name="omniva_post_office_sequence"/>
+
+
+                        </group>
+
+                        <group string="Actions">
+                            <button name="action_test_omniva_connection"
+                                    type="object"
+                                    string="Test Connection"
+                                    class="oe_highlight"
+                                    icon="fa-plug"/>
+                            <button name="action_sync_omniva_locations"
+                                    type="object"
+                                    string="Sync Locations"
+                                    class="btn-primary"
+                                    icon="fa-refresh"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" role="alert">
+                        <strong>Setup Instructions:</strong>
+                        <ul>
+                            <li>Get credentials from your Omniva Account Manager</li>
+                            <li>Configure delivery prices for each channel</li>
+                            <li>Sync locations after configuring</li>
+                            <li>Test connection before going live</li>
+                        </ul>
+                    </div>
+                </page>
+                <page name="Country-Based Pricing(Omniva)">
+                    <field name="omniva_country_price_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="company_id" column_invisible="1"/>
+                            <field name="delivery_channel" required="1"/>
+                            <field name="country_id" required="1"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="price" required="1" widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

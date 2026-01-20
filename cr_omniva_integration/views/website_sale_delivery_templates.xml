@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="payment_delivery_omniva"
+              name="Omniva Delivery Options"
+              inherit_id="website_sale.payment_delivery_methods">
+
+        <xpath expr="//t[@t-if='delivery.website_description']" position="after">
+            <t t-if="delivery.delivery_type == 'omniva'">
+                <t t-set="partner_country_obj" t-value="order.partner_id.country_id"/>
+                <t t-set="company" t-value="delivery.env.company"/>
+
+                <!-- Fetch locations by type -->
+                <t t-set="parcel_machines" t-value="delivery.env['omniva.location'].search([
+                    ('location_type', '=', '0'),
+                    ('active', '=', True),
+                     ('country', '=', partner_country_obj.code if partner_country_obj else False)
+                ], order='country, city, name', limit=1000000)"/>
+
+                <t t-set="post_offices" t-value="delivery.env['omniva.location'].search([
+                    ('location_type', '=', '1'),
+                    ('active', '=', True),
+                     ('country', '=', partner_country_obj.code if partner_country_obj else False)
+                ], order='country, city, name', limit=1000000)"/>
+
+                <!-- Get country-based prices -->
+                <t t-set="courier_price_record" t-value="delivery.env['omniva.country.price'].search([
+                    ('company_id', '=', company.id),
+                    ('delivery_channel', '=', 'COURIER'),
+                    ('country_id', '=', partner_country_obj.id if partner_country_obj else False)
+                ], limit=1) if partner_country_obj else False"/>
+
+                <t t-set="parcel_machine_price_record" t-value="delivery.env['omniva.country.price'].search([
+                    ('company_id', '=', company.id),
+                    ('delivery_channel', '=', 'PARCEL_MACHINE'),
+                    ('country_id', '=', partner_country_obj.id if partner_country_obj else False)
+                ], limit=1) if partner_country_obj else False"/>
+
+                <t t-set="post_office_price_record" t-value="delivery.env['omniva.country.price'].search([
+                    ('company_id', '=', company.id),
+                    ('delivery_channel', '=', 'POST_OFFICE'),
+                    ('country_id', '=', partner_country_obj.id if partner_country_obj else False)
+                ], limit=1) if partner_country_obj else False"/>
+
+                <t t-set="base_courier_price" t-value="courier_price_record.price if courier_price_record else 0"/>
+                <t t-set="base_parcel_machine_price_record" t-value="parcel_machine_price_record.price if parcel_machine_price_record else 0"/>
+                <t t-set="base_post_office_price" t-value="post_office_price_record.price if post_office_price_record else 0"/>
+
+                <!-- Set prices -->
+                <t t-set="courier_price" t-value="delivery._calculate_price_with_tax(base_courier_price, order) if base_courier_price else 0"/>
+                <t t-set="parcel_machine_price" t-value="delivery._calculate_price_with_tax(base_parcel_machine_price_record, order) if base_parcel_machine_price_record else 0"/>
+                <t t-set="post_office_price" t-value="delivery._calculate_price_with_tax(base_post_office_price, order) if base_post_office_price else 0"/>
+
+                <!-- Get sequences -->
+                <t t-set="courier_seq" t-value="company.omniva_courier_sequence or 1"/>
+                <t t-set="parcel_seq" t-value="company.omniva_parcel_machine_sequence or 2"/>
+                <t t-set="post_seq" t-value="company.omniva_post_office_sequence or 3"/>
+
+                <!-- Create sortable list of services -->
+                <t t-set="services" t-value="[]"/>
+                <t t-if="courier_price != 0" t-set="services" t-value="services + [{'type': 'courier', 'seq': courier_seq, 'price': courier_price}]"/>
+                <t t-if="parcel_machine_price != 0" t-set="services" t-value="services + [{'type': 'parcel_machine', 'seq': parcel_seq, 'price': parcel_machine_price}]"/>
+                <t t-if="post_office_price != 0" t-set="services" t-value="services + [{'type': 'post_office', 'seq': post_seq, 'price': post_office_price}]"/>
+
+                <!-- Sort services by sequence -->
+                <t t-set="sorted_services" t-value="sorted(services, key=lambda x: x['seq'])"/>
+
+                <div class="o_omniva_selector mt-3 p-3 bg-light rounded border">
+
+                    <!-- Delivery Channel Selection with Prices -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Select Delivery Method:</label>
+
+                        <!-- Loop through sorted services -->
+                        <t t-foreach="sorted_services" t-as="service">
+                            <t t-set="is_first" t-value="service_index == 0"/>
+
+                            <!-- Courier -->
+                            <t t-if="service['type'] == 'courier'">
+                                <div class="form-check mb-2">
+                                    <input type="radio"
+                                           name="omniva_channel_radio"
+                                           value="COURIER"
+                                           id="omniva_courier"
+                                           class="form-check-input omniva-channel-radio"
+                                           t-att-data-carrier-id="delivery.id"
+                                           t-att-data-price="courier_price"/>
+                                    <label class="form-check-label" for="omniva_courier">
+                                        <i class="fa fa-truck me-2 text-success"/>
+                                        <strong>
+                                            <t t-esc="company.omniva_courier_label if company.omniva_custom_service_names else 'Kuller (uksele)'"/>
+                                        </strong>
+                                        <span class="badge bg-success ms-2">
+                                            € <t t-esc="'%.2f' % courier_price"/>
+                                        </span>
+                                    </label>
+                                </div>
+                            </t>
+
+                            <!-- Parcel Machine -->
+                            <t t-if="service['type'] == 'parcel_machine'">
+                                <div class="form-check mb-2">
+                                    <input type="radio"
+                                           name="omniva_channel_radio"
+                                           value="PARCEL_MACHINE"
+                                           id="omniva_parcel_machine"
+                                           class="form-check-input omniva-channel-radio"
+                                           t-att-data-carrier-id="delivery.id"
+                                           t-att-data-price="parcel_machine_price"/>
+                                    <label class="form-check-label" for="omniva_parcel_machine">
+                                        <i class="fa fa-cube me-2 text-primary"/>
+                                        <strong>
+                                            <t t-esc="company.omniva_pudo_label if company.omniva_custom_service_names else 'Pakiautomaadid'"/>
+                                        </strong>
+                                        <span class="badge bg-success ms-2">
+                                            € <t t-esc="'%.2f' % parcel_machine_price"/>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <!-- Parcel Machine Dropdown -->
+                                <div class="parcel-machine-section ms-4 mb-3" t-att-style="'display:none;'">
+                                    <label class="form-label small">Select Parcel Machine:</label>
+                                    <select name="omniva_location_id"
+                                            class="form-select form-select-sm omniva-location-select"
+                                            data-location-type="parcel_machine"
+                                            style="width: 100%;"
+                                            t-if="parcel_machines">
+                                        <option value="">-- Select Location --</option>
+                                        <t t-foreach="parcel_machines" t-as="location">
+                                            <option t-att-value="location.id"
+                                                    t-att-data-name="location.name"
+                                                    t-att-data-address="'%s, %s' % (location.address or '', location.city)">
+                                                <t t-esc="location.country"/> - <t t-esc="location.city"/> - <t t-esc="location.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <p t-else="" class="text-muted small">No parcel machines available</p>
+                                </div>
+                            </t>
+
+                            <!-- Post Office -->
+                            <t t-if="service['type'] == 'post_office'">
+                                <div class="form-check mb-2">
+                                    <input type="radio"
+                                           name="omniva_channel_radio"
+                                           value="POST_OFFICE"
+                                           id="omniva_post_office"
+                                           class="form-check-input omniva-channel-radio"
+                                           t-att-data-carrier-id="delivery.id"
+                                           t-att-data-price="post_office_price"/>
+                                    <label class="form-check-label" for="omniva_post_office">
+                                        <i class="fa fa-building me-2 text-info"/>
+                                        <strong>
+                                            <t t-esc="company.omniva_post_office_label if company.omniva_custom_service_names else 'Postkontor'"/>
+                                        </strong>
+                                        <span class="badge bg-success ms-2">
+                                            € <t t-esc="'%.2f' % post_office_price"/>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <!-- Post Office Dropdown -->
+                                <div class="post-office-section ms-4 mb-3" t-att-style="'display:none;'">
+                                    <label class="form-label small">Select Post Office:</label>
+                                    <select name="omniva_location_id"
+                                            class="form-select form-select-sm omniva-location-select"
+                                            data-location-type="post_office"
+                                            style="width: 100%;"
+                                            t-if="post_offices">
+                                        <option value="">-- Select Location --</option>
+                                        <t t-foreach="post_offices" t-as="location">
+                                            <option t-att-value="location.id"
+                                                    t-att-data-name="location.name"
+                                                    t-att-data-address="'%s, %s' % (location.address or '', location.city)">
+                                                <t t-esc="location.country"/> - <t t-esc="location.city"/> - <t t-esc="location.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <p t-else="" class="text-muted small">No post offices available</p>
+                                </div>
+                            </t>
+                        </t>
+
+                    </div>
+
+                    <!-- Selected Location Display -->
+                    <div class="alert alert-info small mb-0 omniva-selection-info" style="display:none;">
+                        <strong>Selected:</strong>
+                        <span class="selected-location-name"></span>
+                        <br/>
+                        <small class="selected-location-address"></small>
+                    </div>
+
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

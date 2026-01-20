@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Form View to add reason field -->
+    <record id="hr_attendance_view_form_break_reason" model="ir.ui.view">
+        <field name="name">hr.attendance.form.break.reason</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance_break_and_resume.hr_attendance_view_form_kiosk_break"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='break_ids']//tree/field[@name='break_time']" position="after">
+                <field name="reason_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Break and Resume Model Tree View -->
+    <record id="view_hr_attendance_break_and_resume_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.break.and.resume.tree</field>
+        <field name="model">hr.attendance.break.and.resume</field>
+        <field name="arch" type="xml">
+            <tree string="Break Records" create="false" edit="false">
+                <field name="employee_id"/>
+                <field name="attendance_id"/>
+                <field name="break_time"/>
+                <field name="resume_time"/>
+                <field name="reason_id"/>
+                <field name="attendance_break_state"/>
+                <field name="break_hours"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Break and Resume Model Form View -->
+    <record id="view_hr_attendance_break_and_resume_form" model="ir.ui.view">
+        <field name="name">hr.attendance.break.and.resume.form</field>
+        <field name="model">hr.attendance.break.and.resume</field>
+        <field name="arch" type="xml">
+            <form string="Break Record">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="attendance_id"/>
+                            <field name="reason_id"/>
+                        </group>
+                        <group>
+                            <field name="break_time"/>
+                            <field name="resume_time"/>
+                            <field name="attendance_break_state"/>
+                            <field name="break_hours"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Break Records -->
+    <record id="action_hr_attendance_break_records" model="ir.actions.act_window">
+        <field name="name">Break Records</field>
+        <field name="res_model">hr.attendance.break.and.resume</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem
+        id="menu_hr_attendance_break_records"
+        name="Break Records"
+        parent="hr_attendance.menu_hr_attendance_root"
+        action="action_hr_attendance_break_records"
+        sequence="99"/>
+</odoo>

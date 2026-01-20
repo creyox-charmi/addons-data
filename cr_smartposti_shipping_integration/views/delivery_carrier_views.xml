@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_delivery_carrier_form_smartposti" model="ir.ui.view">
+        <field name="name">delivery.carrier.form.smartposti</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Minimal SmartPosti configuration -->
+            <xpath expr="//group[@name='delivery_details']" position="after">
+                <group string="SmartPosti Configuration" invisible="delivery_type != 'smartposti'">
+
+                    <div colspan="2" class="alert alert-info mt-3">
+                        <p><i class="fa fa-info-circle"/> <strong>Configuration Location</strong></p>
+                        <p>All SmartPosti settings are managed in:
+                           <strong>Settings → Companies → SmartPosti Configuration</strong>
+                        </p>
+                        <p>This delivery method will use the company-level configuration.</p>
+                    </div>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

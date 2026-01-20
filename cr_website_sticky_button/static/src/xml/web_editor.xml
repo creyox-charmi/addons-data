@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-inherit="web_editor.LinkTools" t-inherit-mode="extension">
+        <xpath expr="//we-row[@class='link-shape-row']" position="after">
+            <we-row>
+                <we-button
+                        t-attf-class="o_we_user_value_widget o_we_checkbox_wrapper o_we_sublevel_1 #{this.stickyButton ? 'active' : ''}">
+                    <we-title class="o_long_title">Sticky Button</we-title>
+                    <we-checkbox class='cr_sticky' name="is_sticky_button"
+                                 t-att-checked="this.stickyButton ? 'checked' : undefined"/>
+                </we-button>
+            </we-row>
+
+        </xpath>
+    </t>
+</templates>

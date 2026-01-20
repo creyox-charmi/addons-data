@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_smartposti_place_user,smartposti.place.user,model_smartposti_place,base.group_user,1,1,1,1
+access_smartposti_place_stock_user,smartposti.place.stock.user,model_smartposti_place,base.group_user,1,1,1,1
+access_smartposti_place_manager,smartposti.place.manager,model_smartposti_place,base.group_user,1,1,1,1
+access_smartposti_country_price_manager,smartposti.country.price.manager,model_smartposti_country_price,,1,1,1,1

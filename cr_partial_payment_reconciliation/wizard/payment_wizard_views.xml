@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_payment_wizard_form" model="ir.ui.view">
+            <field name="name">payment.wizard.form</field>
+            <field name="model">payment.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Payment Wizard">
+                    <group>
+                        <group>
+                            <field name="amount_total" readonly="1" widget="monetary"/>
+                            <field name="amount_due" readonly="1" widget="monetary"/>
+                            <field name="account_move_id" readonly ="1"/>
+                            <field name="currency_id" readonly="1"/>
+                            <field name="amount_to_pay" widget="monetary"/>
+                            <field name="partner_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="account_move_line_id" />
+                            <field name="payment" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="company_currency_id" readonly="1"/>
+                            <field name="remaining_amount_for_payment" readonly="1" widget="monetary"/>
+                            <field name="remaining_amount_for_invoice" readonly="1" widget="monetary"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Register Payment" type="object" name="process_payment" class="btn-primary"/>
+                        <button string="Discard" special="cancel" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

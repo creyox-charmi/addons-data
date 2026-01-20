@@ -1,0 +1,208 @@
+/* SmartPosti Delivery Selector Styles */
+
+.o_smartposti_location_selector {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    border: 1px solid #dee2e6;
+}
+
+/* Service type radio buttons styling */
+.o_smartposti_service_type:checked + label {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+/* Search input group styling */
+.o_pudo_search_input,
+.o_po_search_input {
+    border-right: none;
+}
+
+.o_pudo_search_btn,
+.o_po_search_btn {
+    border-left: none;
+}
+
+/* Scrollbar styling for location lists */
+.o_pudo_list_container::-webkit-scrollbar,
+.o_po_list_container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.o_pudo_list_container::-webkit-scrollbar-track,
+.o_po_list_container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.o_pudo_list_container::-webkit-scrollbar-thumb,
+.o_po_list_container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.o_pudo_list_container::-webkit-scrollbar-thumb:hover,
+.o_po_list_container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Location item styling */
+.o_location_item {
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    padding: 12px;
+    background: white;
+}
+
+.o_location_item:hover {
+    border-color: #0d6efd;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
+    transform: translateY(-1px);
+    background-color: #f0f7ff;
+}
+
+.o_location_item:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(13, 110, 253, 0.15);
+}
+
+.o_location_item.selected {
+    border-color: #198754;
+    background-color: #d1e7dd;
+}
+
+/* Selected location display */
+.o_selected_pudo,
+.o_selected_po {
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.o_selected_pudo .btn-close,
+.o_selected_po .btn-close {
+    font-size: 0.75rem;
+}
+
+/* Loading indicator */
+.o_pudo_loading,
+.o_po_loading {
+    padding: 20px;
+}
+
+/* Country select dropdown */
+.o_pudo_country_select,
+.o_po_country_select {
+    max-width: 250px;
+}
+
+/* Price display */
+.o_smartposti_price {
+    font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .o_smartposti_location_selector {
+        padding: 10px;
+    }
+
+    .o_location_item {
+        padding: 10px;
+    }
+
+    .o_pudo_country_select,
+    .o_po_country_select {
+        max-width: 100%;
+    }
+}
+
+/* Alert styling */
+.o_pudo_list_container .alert,
+.o_po_list_container .alert {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+/* Icon styling */
+.o_location_item .fa {
+    min-width: 20px;
+}
+
+/* Service selector margins */
+.o_pudo_selector,
+.o_po_selector {
+    margin-left: 0;
+    margin-top: 10px;
+}
+
+/* Form check styling */
+.form-check-input.o_smartposti_service_type {
+    margin-top: 0.4em;
+}
+
+.form-check-label {
+    padding-left: 0.5rem;
+}
+
+/* Input group improvements */
+.input-group-text {
+    background-color: white;
+    border-right: none;
+}
+
+/* Badge styling for price */
+.o_wsale_delivery_badge_price {
+    font-size: 0.95rem;
+}
+
+/* Delivery carrier card when SmartPosti selected */
+.o_delivery_carrier_select:has(input[delivery_type="smartposti"]:checked) {
+    border-color: #0d6efd;
+    background-color: #f0f7ff;
+}
+
+/* Animation for loading spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Add this CSS to your assets */
+
+label:has(.o_smartposti_selector) ~ .o_wsale_delivery_badge_price,
+label:has(.o_omniva_selector) ~ .o_wsale_delivery_badge_price {
+    display: none !important;
+}
+
+/* Show price when service is selected */
+label:has(.o_smartposti_selector) ~ .o_wsale_delivery_badge_price.show-price,
+label:has(.o_omniva_selector) ~ .o_wsale_delivery_badge_price.show-price {
+    display: inline-block !important;
+}
+
+
+
+
+
+
+

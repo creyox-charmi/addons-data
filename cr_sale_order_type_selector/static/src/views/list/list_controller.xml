@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="web.ListView" t-inherit-mode="extension" t-name="cr_sale_order_type_selector.ListView">
+         <xpath expr="//t[@t-set-slot='control-panel-create-button']/t[1]/button" position="replace">
+            <t t-if="activeActions.create and props.showButtons">
+                <button t-if="model.root.resModel == 'sale.order'" type="button" class="btn btn-primary o_list_button_add" data-hotkey="c" t-on-click="onClickCreate" data-bounce-button="">
+                    New <i class="fa fa-caret-down" style="color: inherit;"/>
+                </button>
+                <button t-else="" type="button" class="btn btn-primary o_list_button_add" data-hotkey="c" t-on-click="onClickCreate" data-bounce-button="">
+                    New
+                </button>
+            </t>
+        </xpath>
+    </t>
+</templates>

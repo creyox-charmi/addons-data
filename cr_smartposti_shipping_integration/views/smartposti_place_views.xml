@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- SmartPosti Places Tree View -->
+    <record id="smartposti_place_view_tree" model="ir.ui.view">
+        <field name="name">smartposti.place.tree</field>
+        <field name="model">smartposti.place</field>
+        <field name="arch" type="xml">
+            <tree string="SmartPosti Places" default_order="country,city,name">
+                <field name="place_id"/>
+                <field name="name"/>
+                <field name="city"/>
+                <field name="address"/>
+                <field name="country"/>
+                <field name="place_type"/>
+                <field name="postal_code"/>
+                <field name="is_express" widget="boolean_toggle"/>
+                <field name="is_outdoor" widget="boolean_toggle"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- SmartPosti Places Form View -->
+    <record id="smartposti_place_view_form" model="ir.ui.view">
+        <field name="name">smartposti.place.form</field>
+        <field name="model">smartposti.place</field>
+        <field name="arch" type="xml">
+            <form string="SmartPosti Place">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" required="1"/>
+                        </h1>
+                        <h3>
+                            <field name="place_id" readonly="1"/>
+                        </h3>
+                    </div>
+
+                    <group>
+                        <group name="basic_info" string="Basic Information">
+                            <field name="place_type"/>
+                            <field name="country"/>
+                            <field name="city"/>
+                            <field name="address"/>
+                            <field name="postal_code"/>
+                            <field name="routing_code"/>
+                        </group>
+
+                        <group name="details" string="Details">
+                            <field name="availability"/>
+                            <field name="is_express"/>
+                            <field name="is_outdoor"/>
+                            <field name="group_name"/>
+                            <field name="group_id"/>
+                            <field name="group_sort"/>
+                        </group>
+
+                        <group name="location" string="Location" col="4">
+                            <field name="latitude"/>
+                            <field name="longitude"/>
+                        </group>
+
+                        <group name="dates" string="Sync Information" col="4">
+                            <field name="created_date" readonly="1"/>
+                            <field name="updated_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page name="description" string="Description">
+                            <field name="description" widget="text"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- SmartPosti Places Search View -->
+    <record id="smartposti_place_view_search" model="ir.ui.view">
+        <field name="name">smartposti.place.search</field>
+        <field name="model">smartposti.place</field>
+        <field name="arch" type="xml">
+            <search string="SmartPosti Places">
+                <field name="name"/>
+                <field name="city"/>
+                <field name="place_id"/>
+                <field name="postal_code"/>
+                <field name="address"/>
+
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
+
+                <separator/>
+                <filter name="apt" string="Blue Boxes (APT)" domain="[('place_type', '=', 'apt')]"/>
+                <filter name="ipb" string="White Boxes (IPB)" domain="[('place_type', '=', 'ipb')]"/>
+                <filter name="po" string="Post Offices" domain="[('place_type', '=', 'po')]"/>
+                <filter name="pudo" string="Parcel Points" domain="[('place_type', '=', 'pudo')]"/>
+
+                <separator/>
+                <filter name="express" string="Express Available" domain="[('is_express', '=', True)]"/>
+                <filter name="outdoor" string="Outdoor" domain="[('is_outdoor', '=', True)]"/>
+
+                <group expand="1" string="Group By">
+                    <filter name="group_country" string="Country" context="{'group_by': 'country'}"/>
+                    <filter name="group_city" string="City" context="{'group_by': 'city'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'place_type'}"/>
+                    <filter name="group_group_name" string="Region" context="{'group_by': 'group_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- SmartPosti Places Action -->
+    <record id="smartposti_place_action" model="ir.actions.act_window">
+        <field name="name">SmartPosti Places</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">smartposti.place</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="smartposti_place_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No SmartPosti places found!
+            </p>
+            <p>
+                SmartPosti pickup places are synchronized from the API.
+                Configure a SmartPosti carrier and sync places to populate this list.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="smartposti_place_menu"
+              name="SmartPosti Places"
+              parent="stock.menu_stock_config_settings"
+              action="smartposti_place_action"
+              sequence="50"/>
+</odoo>
